@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layouts');
 });
+
+Route::get('/permission', 'PermissionController@index');
+
+Route::get('/view-add-permission', 'PermissionController@viewstore');
+
+Route::post('/add-permission', 'PermissionController@store');
