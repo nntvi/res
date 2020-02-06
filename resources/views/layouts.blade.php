@@ -13,7 +13,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="keywords" content="Visitors Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
     Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
-    <base href="{{ asset('')}}">
+        <base href="{{ asset('')}}">
         <script
             type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
         <!-- bootstrap-css -->
@@ -293,7 +293,7 @@
                                 <ul class="sub">
                                     <li><a href="{{ URL::to('/permission') }}">Permission</a></li>
                                     <li><a href="nhomthucdon.html">Users</a></li>
-                                    
+
                                 </ul>
                             </li>
                             <li class="sub-menu">
@@ -380,14 +380,17 @@
 
             <section id="main-content">
                 <section class="wrapper">
-                    @yield('content')
+                    <div class="table-agile-info">
+                        <div class="panel panel-default">
+                            @yield('content')
+                        </div>
+                    </div>
                 </section>
                 <!-- footer -->
-               
+
                 <!-- / footer -->
             </section>
-        </section>
-        <!--main content end-->
+            <!--main content end-->
         </section>
         <script src="{{ asset('js/bootstrap.js') }}"></script>
         <script src="{{ asset('js/jquery.dcjqaccordion.2.7.js') }}"></script>

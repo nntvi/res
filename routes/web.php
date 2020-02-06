@@ -20,3 +20,9 @@ Route::get('/permission', 'PermissionController@index');
 Route::get('/view-add-permission', 'PermissionController@viewstore');
 
 Route::post('/add-permission', 'PermissionController@store');
+
+Route::get('/edit-permission/{id}','PermissionController@getEdit');
+
+Route::post('/edit-post-permission/{id}','PermissionController@postEdit');
+
+Route::get('/delete-permission/{id}','PermissionController@delete');
