@@ -11,18 +11,76 @@
 |
 */
 
+
+// use Illuminate\Support\Facades\Auth;
+
+
+
+Auth::routes(['register' => false]);
+
 Route::get('/', function () {
     return view('layouts');
 });
 
-Route::get('/permission', 'PermissionController@index');
 
-Route::get('/view-add-permission', 'PermissionController@viewstore');
+Route::group(['middleware' => ['auth']], function() {
+    // Permission
+    Route::get('/permission/index', 'PermissionController@index')->name('permission.index');
 
-Route::post('/add-permission', 'PermissionController@store');
+    // Route::get('/permission/store', 'PermissionController@viewstore')->name('permission.store');
 
-Route::get('/edit-permission/{id}','PermissionController@getEdit');
+    Route::post('/permission/store', 'PermissionController@store')->name('permission.p_store');
 
-Route::post('/edit-post-permission/{id}','PermissionController@postEdit');
+    Route::get('/permission/viewupdate/{id}','PermissionController@getEdit')->name('permission.update');
 
-Route::get('/delete-permission/{id}','PermissionController@delete');
+    Route::post('/permission/update/{id}','PermissionController@postEdit')->name('permission.p_update');
+
+    Route::get('/permission/delete/{id}','PermissionController@delete')->name('permission.delete');
+
+    // Permission Detail
+    Route::get('/per_detail/index', 'PermissionDetailController@index')->name('perdetail.index');
+
+    // Route::get('/per_detail/store', 'PermissionDetailController@viewStore')->name('perdetail.store');
+
+    Route::post('/per_detail/store', 'PermissionDetailController@store')->name('perdetail.p_store');
+
+    Route::get('/per_detail/viewupdate/{id}','PermissionDetailController@getEdit')->name('perdetail.update');
+
+    Route::post('/per_detail/update/{id}','PermissionDetailController@postEdit')->name('perdetail.p_update');
+
+    Route::get('/per_detail/delete/{id}','PermissionDetailController@delete')->name('perdetail.delete');
+
+    // UserPermsision
+    Route::get('/user/index', 'UserController@index')->name('user.index');
+    Route::get('/user/store', 'UserController@viewstore')->name('user.store');
+    Route::post('/user/store', 'UserController@store')->name('user.p_store');
+    Route::get('/user/update/{id}', 'UserController@viewUpdate')->name('user.update');
+    Route::post('/user/update/{id}', 'UserController@update')->name('user.p_update');
+    Route::get('/user/delete/{id}', 'UserController@delete')->name('user.delete');
+
+    // Area & Table
+    Route::get('/area/index', 'AreaController@index')->name('area.index');
+    Route::post('/area/store', 'AreaController@store')->name('area.p_store');
+    Route::post('/area/update/{id}', 'AreaController@update')->name('area.update');
+    Route::get('/area/delete/{id}', 'AreaController@delete')->name('area.delete');
+
+    Route::get('/table/index', 'TableController@index')->name('table.index');
+    Route::get('/table/store', 'TableController@viewStore')->name('table.store');
+    Route::post('/table/store', 'TableController@store')->name('table.p_store');
+
+    Route::get('/table/viewupdate/{id}', 'TableController@viewUpdate')->name('table.update');
+    Route::post('/table/update/{id}', 'TableController@update')->name('table.p_update');
+    Route::get('/table/delete/{id}', 'TableController@delete')->name('table.delete');
+
+    // Group Menu
+    Route::get('/groupmenu/index', 'GroupMenuController@index')->name('groupmenu.index');
+    Route::post('/groupmenu/store', 'GroupMenuController@store')->name('groupmenu.store');
+    Route::post('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
+    Route::post('/groupmenu/update/{id}', 'GroupMenuController@update')->name('groupmenu.update');
+    Route::get('/groupmenu/delete/{id}', 'GroupMenuController@delete')->name('groupmenu.delete');
+});
+
+
+
+
+Route::get('/home', 'HomeController@index')->name('home');

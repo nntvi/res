@@ -19,7 +19,7 @@ class CreateTablePermissionDetail extends Migration
             $table->string('action_name');
             $table->string('action_code');
 
-            $table->foreign('id_per')->references('id')->on('permissions');
+
         });
     }
 

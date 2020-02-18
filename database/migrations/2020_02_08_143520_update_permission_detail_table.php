@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTableCustomer extends Migration
+class UpdatePermissionDetailTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateTableCustomer extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->renameColumn('email', 'phone');
+        Schema::table('permission__details', function (Blueprint $table) {
+            $table->dropColumn('action_code');
         });
     }
 
@@ -25,7 +25,7 @@ class UpdateTableCustomer extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function (Blueprint $table) {
+        Schema::table('permission__details', function (Blueprint $table) {
             //
         });
     }

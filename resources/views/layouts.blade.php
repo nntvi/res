@@ -1,12 +1,4 @@
-
-<!--A Design by W3layouts
-    Author: W3layout
-    Author URL: http://w3layouts.com
-    License: Creative Commons Attribution 3.0 Unported
-    License URL: http://creativecommons.org/licenses/by/3.0/
-    -->
-    <!DOCTYPE html>
-
+<!DOCTYPE html>
     <head>
         <title>Visitors an Admin Panel Category Bootstrap Responsive Website Template | Home :: w3layouts</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,6 +29,7 @@
         <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
         <script src="{{ asset('js/raphael-min.js') }}"></script>
         <script src="{{ asset('js/morris.js') }}"></script>
+        <script src="{{ asset('js/notify.js') }}"></script>
     </head>
 
     <body>
@@ -46,7 +39,7 @@
                 <!--logo start-->
                 <div class="brand">
                     <a href="index.html" class="logo">
-                        VISITORS
+                       RESTAUR_T
                     </a>
                     <div class="sidebar-toggle-box">
                         <div class="fa fa-bars"></div>
@@ -241,13 +234,21 @@
                         <li class="dropdown">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <img alt="" src="images/2.png">
-                                <span class="username">John Doe</span>
+                                <span class="username">{{auth()->user()->name}}</span>
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu extended logout">
                                 <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
                                 <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
-                                <li><a href="login.html"><i class="fa fa-key"></i> Log Out</a></li>
+                                <li><a  href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                  document.getElementById('logout-form').submit();">
+                                     {{ __('Logout') }}
+                                     <i class="fa fa-key"></i></a></li>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                             </ul>
                         </li>
                         <!-- user login dropdown end -->
@@ -263,6 +264,17 @@
                     <!-- sidebar menu start-->
                     <div class="leftside-navigation">
                         <ul class="sidebar-menu" id="nav-accordion">
+                                <li class="sub-menu">
+                                        <a href="javascript:;">
+                                            <i class="fa fa-th"></i>
+                                            <span>Phân quyền</span>
+                                        </a>
+                                        <ul class="sub">
+                                            <li><a href="{{ route('permission.index')}}">Permission</a></li>
+                                            <li><a href="{{ route('perdetail.index') }}">Permission Details</a></li>
+                                            <li><a href="{{ route('user.index') }}">Users</a></li>
+                                        </ul>
+                                    </li>
                             <li>
                                 <a class="active" href="index.html">
                                     <i class="fa fa-dashboard"></i>
@@ -284,16 +296,20 @@
                                     <li><a href="thietlapgia.html">Thiết lập giá</a></li>
                                 </ul>
                             </li>
-
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-th"></i>
-                                    <span>Phân quyền</span>
+                                    <span>Danh mục</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="{{ URL::to('/permission') }}">Permission</a></li>
-                                    <li><a href="nhomthucdon.html">Users</a></li>
-
+                                    <li><a href="{{route('area.index')}}">Khu vực</a></li>
+                                    <li><a href="{{route('table.index')}}">Phòng bàn</a></li>
+                                    <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
+                                    <li><a href="douong_monan.html">Đồ uống - Món ăn</a></li>
+                                    <li><a href="topping.html">Topping, ghi chú món</a></li>
+                                    <li><a href="nhanvien.html">Nhân viên</a></li>
+                                    <li><a href="khachhang.html">Khách hàng</a></li>
+                                    <li><a href="nhacungcap.html">Nhà cung cấp</a></li>
                                 </ul>
                             </li>
                             <li class="sub-menu">

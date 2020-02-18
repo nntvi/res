@@ -15,7 +15,7 @@ class UpdateTablePermisstionDetail extends Migration
     {
         Schema::table('permission__details', function (Blueprint $table) {
             $table->unsignedBigInteger('id_per')->change();
-            $table->foreign('id_per')->references('id')->on('permissions');
+
         });
     }
 

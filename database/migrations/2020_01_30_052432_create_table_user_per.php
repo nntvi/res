@@ -18,8 +18,7 @@ class CreateTableUserPer extends Migration
             $table->unsignedBigInteger('id_per');
             $table->unsignedBigInteger('id_user');
 
-            $table->foreign('id_per')->references('id')->on('permissions');
-            $table->foreign('id_user')->references('id')->on('users');
+
         });
     }
 

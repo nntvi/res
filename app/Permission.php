@@ -35,4 +35,10 @@ class Permission extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function peraction()
+    {
+        return $this->hasMany('App\PermissionAction', 'id_per');
+    }
+
 }

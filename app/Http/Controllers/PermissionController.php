@@ -1,52 +1,57 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Helper\ICheckAction;
+use App\Repositories\PermissionRepository\IPermissionRepository;
 use App\Permission;
+use App\PermissionAction;
+use App\PermissionDetail;
 use Illuminate\Http\Request;
 use Redirect;
 
 class PermissionController extends Controller
 {
+    private $checkAction;
+    private $permissionRepository;
+
+    public function __construct(ICheckAction $checkAction, IPermissionRepository $permissionRepository )
+    {
+        $this->checkAction = $checkAction;
+        $this->permissionRepository = $permissionRepository;
+    }
+
+    // show permission
     public function index(){
-        $permissions = Permission::all();
-
-        return view('permission.index', compact('permissions'));
-    }
-    public function viewstore(){
-
-        return view('permission.store');
+        return $this->permissionRepository->showAllPermission();
     }
 
+    // store permission
     public function store(Request $req){
-        dd($req);
-        $input = $req->all();
-
-        $permission = Permission::create($input);
-
-        if($permission){
-            return Redirect::to('/permission');
-        }
+        $this->permissionRepository->validatorRequestStore($req);
+        return $this->permissionRepository->addPermission($req);
     }
 
+    // view Update Permission
     public function getEdit($id)
     {
-        $permission = Permission::find($id);
-        return view('permission.update',['permission' => $permission]);
+        $permissiondetails = $this->permissionRepository->getPermissionDetail();
+        $permission = $this->permissionRepository->findPermission($id);
+        $peractions = $this->permissionRepository->getPerActionById($id);
+
+        $data = $this->permissionRepository->getOldPerDetail($permissiondetails,$peractions);
+        return view('permission/update',compact('permission','data', 'permissiondetails'));
     }
 
+    // post Update Permission
     public function postEdit(Request $req, $id)
     {
-        $permission = Permission::find($id);
-        $permission->name = $req->name;
-        $permission->save();
-
-        return redirect('permission');
+        $permission = $this->permissionRepository->findPermission($id);
+        return $this->permissionRepository->updatePermission($req,$permission);
     }
 
+    // delete Permission
     public function delete($id)
     {
-        $permission = Permission::find($id);
-        $permission->delete();
-        return redirect('permission');
+        return $this->permissionRepository->deletePermission($id);
     }
 }
