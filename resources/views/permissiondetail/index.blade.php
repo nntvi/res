@@ -9,8 +9,9 @@
                     <div class="portlet-title">
                             <div class="caption">
                                 <i class="fa fa-gift"></i>
-                                Thêm mới quyền </div>
-                        </div>
+                                Thêm mới quyền
+                            </div>
+                    </div>
                         <div class="portlet-body">
                             <div class="form">
                                 <form class="panel-body"

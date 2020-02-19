@@ -264,52 +264,56 @@
                     <!-- sidebar menu start-->
                     <div class="leftside-navigation">
                         <ul class="sidebar-menu" id="nav-accordion">
-                                <li class="sub-menu">
-                                        <a href="javascript:;">
-                                            <i class="fa fa-th"></i>
-                                            <span>Phân quyền</span>
-                                        </a>
-                                        <ul class="sub">
-                                            <li><a href="{{ route('permission.index')}}">Permission</a></li>
-                                            <li><a href="{{ route('perdetail.index') }}">Permission Details</a></li>
-                                            <li><a href="{{ route('user.index') }}">Users</a></li>
-                                        </ul>
-                                    </li>
-                            <li>
-                                <a class="active" href="index.html">
-                                    <i class="fa fa-dashboard"></i>
-                                    <span>Bán hàng</span>
-                                </a>
-                            </li>
                             <li>
                                 <a href="tongquan.html">
                                     <i class="fa fa-bullhorn"></i>
-                                    <span>Tổng quan</span>
+                                        <span>Tổng quan</span>
                                 </a>
                             </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-book"></i>
-                                    <span>Hàng hóa</span>
+                                        <span>Hàng hóa</span>
                                 </a>
                                 <ul class="sub">
                                     <li><a href="thietlapgia.html">Thiết lập giá</a></li>
+                                    <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
+                                    <li><a href="douong_monan.html">Đồ uống - Món ăn</a></li>
+                                    <li><a href="{{route('topping.index')}}">Topping, ghi chú món</a></li>
                                 </ul>
                             </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-th"></i>
-                                    <span>Danh mục</span>
+                                        <span>Phân quyền</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="{{route('area.index')}}">Khu vực</a></li>
-                                    <li><a href="{{route('table.index')}}">Phòng bàn</a></li>
-                                    <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
-                                    <li><a href="douong_monan.html">Đồ uống - Món ăn</a></li>
-                                    <li><a href="topping.html">Topping, ghi chú món</a></li>
-                                    <li><a href="nhanvien.html">Nhân viên</a></li>
+                                    <li><a href="{{ route('permission.index')}}">Permission</a></li>
+                                    <li><a href="{{ route('perdetail.index') }}">Permission Details</a></li>
+                                    <li><a href="{{ route('user.index') }}">Users</a></li>
+                                    </ul>
+                            </li>
+                            <li class="sub-menu">
+                                    <a href="javascript:;">
+                                        <i class="fa fa-book"></i>
+                                            <span>Nhà hàng</span>
+                                    </a>
+                                    <ul class="sub">
+                                        <li><a href="">Màn hình thu ngân</a></li>
+                                        <li><a href="">Màn hình order</a></li>
+                                        <li><a href="">Màn hình khu vực bếp</a></li>
+                                        <li><a href="{{route('area.index')}}">Khu vực</a></li>
+                                        <li><a href="{{route('table.index')}}">Phòng bàn</a></li>
+                                    </ul>
+                                </li>
+                            <li class="sub-menu">
+                                <a href="javascript:;">
+                                    <i class="fa fa-th"></i>
+                                    <span>Đối tác</span>
+                                </a>
+                                <ul class="sub">
                                     <li><a href="khachhang.html">Khách hàng</a></li>
-                                    <li><a href="nhacungcap.html">Nhà cung cấp</a></li>
+                                    <li><a href="{{route('supplier.index')}}">Nhà cung cấp</a></li>
                                 </ul>
                             </li>
                             <li class="sub-menu">
@@ -323,12 +327,18 @@
                                     <li><a href="danhmuckho.html">Danh mục kho</a></li>
                                 </ul>
                             </li>
-                            <li>
-                                <a href="khuyenmai.html">
-                                    <i class="fa fa-bullhorn"></i>
-                                    <span>Khuyến mãi</span>
-                                </a>
-                            </li>
+                            <li class="sub-menu">
+                                    <a href="javascript:;">
+                                        <i class="fa fa-tasks"></i>
+                                        <span>Giao dịch</span>
+                                    </a>
+                                    <ul class="sub">
+                                        <li><a href="">Danh sách đơn hàng</a></li>
+                                        <li><a href="">Nhập hàng</a></li>
+                                        <li><a href="">Trả hàng nhà cung cấp</a></li>
+                                        <li><a href="">Giao dịch khác(hủy,tặng)</a></li>
+                                    </ul>
+                                </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-envelope"></i>
@@ -336,7 +346,7 @@
                                 </a>
                                 <ul class="sub">
                                     <li><a href="theodonhang.html">Theo đơn hàng</a></li>
-                                    <li><a href="thuchi.html"></a>Thu chi</li>
+                                    <li><a href="thuchi.html">Thu chi</li></a>
                                     <li><a href="theoban.html">Theo bàn</a></li>
                                     <li><a href="theokhachhang.html">Theo khách hàng</a></li>
                                     <li><a href="theonhom.html">Doanh thu theo nhóm</a></li>

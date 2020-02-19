@@ -26,28 +26,16 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth']], function() {
     // Permission
     Route::get('/permission/index', 'PermissionController@index')->name('permission.index');
-
-    // Route::get('/permission/store', 'PermissionController@viewstore')->name('permission.store');
-
     Route::post('/permission/store', 'PermissionController@store')->name('permission.p_store');
-
     Route::get('/permission/viewupdate/{id}','PermissionController@getEdit')->name('permission.update');
-
     Route::post('/permission/update/{id}','PermissionController@postEdit')->name('permission.p_update');
-
     Route::get('/permission/delete/{id}','PermissionController@delete')->name('permission.delete');
 
     // Permission Detail
     Route::get('/per_detail/index', 'PermissionDetailController@index')->name('perdetail.index');
-
-    // Route::get('/per_detail/store', 'PermissionDetailController@viewStore')->name('perdetail.store');
-
     Route::post('/per_detail/store', 'PermissionDetailController@store')->name('perdetail.p_store');
-
     Route::get('/per_detail/viewupdate/{id}','PermissionDetailController@getEdit')->name('perdetail.update');
-
     Route::post('/per_detail/update/{id}','PermissionDetailController@postEdit')->name('perdetail.p_update');
-
     Route::get('/per_detail/delete/{id}','PermissionDetailController@delete')->name('perdetail.delete');
 
     // UserPermsision
@@ -78,6 +66,20 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
     Route::post('/groupmenu/update/{id}', 'GroupMenuController@update')->name('groupmenu.update');
     Route::get('/groupmenu/delete/{id}', 'GroupMenuController@delete')->name('groupmenu.delete');
+
+    // Topping
+    Route::get('/topping/index', 'ToppingController@index')->name('topping.index');
+    Route::post('/topping/store', 'ToppingController@store')->name('topping.p_store');
+    Route::post('/topping/update/{id}', 'ToppingController@update')->name('topping.p_update');
+    Route::get('/topping/delete/{id}', 'ToppingController@delete')->name('topping.delete');
+
+    // Supplier
+    Route::get('/supplier/index', 'SupplierController@index')->name('supplier.index');
+    Route::get('/supplier/store', 'SupplierController@viewStore')->name('supplier.store');
+    Route::post('/supplier/store', 'SupplierController@store')->name('supplier.p_store');
+    Route::get('/supplier/viewupdate/{id}', 'SupplierController@viewUpdate')->name('supplier.update');
+    Route::post('/supplier/update/{id}', 'SupplierController@update')->name('supplier.p_update');
+    Route::get('/supplier/delete/{id}', 'SupplierController@delete')->name('supplier.delete');
 });
 
 

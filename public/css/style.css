@@ -3283,9 +3283,9 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     direction: ltr;
     cursor: pointer;
 }
-#ToppingForm_toppingName, #ToppingForm_toppingPrice_em_, #ToppingForm_toppingCategory{
+/* #ToppingForm_toppingName, #ToppingForm_toppingPrice_em_, #ToppingForm_toppingCategory{
     margin-top: 10px;
-}
+} */
 .yellow-crusta.btn {
     color: white;
     background-color: #4cd137;

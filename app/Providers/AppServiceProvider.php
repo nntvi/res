@@ -47,6 +47,16 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\GroupMenuRepository\IGroupMenuRepository',
             'App\Repositories\GroupMenuRepository\GroupMenuRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\ToppingRepository\IToppingRepository',
+            'App\Repositories\ToppingRepository\ToppingRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\SupplierRepository\ISupplierRepository',
+            'App\Repositories\SupplierRepository\SupplierRepository'
+        );
     }
 
     /**

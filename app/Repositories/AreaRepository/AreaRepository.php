@@ -49,7 +49,6 @@ class AreaRepository extends Controller implements IAreaRepository{
     {
         $area = new Area();
         $area->name = $req->nameArea;
-        dd($area);
         $area->save();
         return redirect(route('area.index'))->with('success',"Thêm thành công");
     }
