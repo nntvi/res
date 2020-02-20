@@ -304,6 +304,7 @@
                                         <li><a href="">Màn hình khu vực bếp</a></li>
                                         <li><a href="{{route('area.index')}}">Khu vực</a></li>
                                         <li><a href="{{route('table.index')}}">Phòng bàn</a></li>
+                                        <li><a href="{{route('cook.index')}}">Bếp</a></li>
                                     </ul>
                                 </li>
                             <li class="sub-menu">

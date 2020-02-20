@@ -46,12 +46,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/user/update/{id}', 'UserController@update')->name('user.p_update');
     Route::get('/user/delete/{id}', 'UserController@delete')->name('user.delete');
 
-    // Area & Table
+    // Area
     Route::get('/area/index', 'AreaController@index')->name('area.index');
     Route::post('/area/store', 'AreaController@store')->name('area.p_store');
     Route::post('/area/update/{id}', 'AreaController@update')->name('area.update');
     Route::get('/area/delete/{id}', 'AreaController@delete')->name('area.delete');
 
+    // Table
     Route::get('/table/index', 'TableController@index')->name('table.index');
     Route::get('/table/store', 'TableController@viewStore')->name('table.store');
     Route::post('/table/store', 'TableController@store')->name('table.p_store');
@@ -62,6 +63,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Group Menu
     Route::get('/groupmenu/index', 'GroupMenuController@index')->name('groupmenu.index');
+    Route::get('/groupmenu/viewstore', 'GroupMenuController@viewStore')->name('groupmenu.v_store');
     Route::post('/groupmenu/store', 'GroupMenuController@store')->name('groupmenu.store');
     Route::post('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
     Route::post('/groupmenu/update/{id}', 'GroupMenuController@update')->name('groupmenu.update');
@@ -80,6 +82,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/supplier/viewupdate/{id}', 'SupplierController@viewUpdate')->name('supplier.update');
     Route::post('/supplier/update/{id}', 'SupplierController@update')->name('supplier.p_update');
     Route::get('/supplier/delete/{id}', 'SupplierController@delete')->name('supplier.delete');
+
+    // Cook
+    Route::get('/cook/index', 'CookController@index')->name('cook.index');
+    Route::get('/cook/store', 'CookController@store')->name('cook.store');
+    Route::post('/cook/update/{id}', 'CookController@update')->name('cook.update');
 });
 
 

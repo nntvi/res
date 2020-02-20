@@ -20,10 +20,8 @@ class CheckAction implements ICheckAction {
         $result = array();
         foreach ( $permissions as $permission ) {
             $peractions = $permission->peraction;
-          //  dd($peractions);
             if ($peractions) {
                 foreach ( $peractions as $peraction ) {
-                    echo $peraction->id_per_detail;
                     $per_detail = PermissionDetail::where('id', $peraction->id_per_detail )->first('action_code');
                     array_push( $result, $per_detail);
                 }

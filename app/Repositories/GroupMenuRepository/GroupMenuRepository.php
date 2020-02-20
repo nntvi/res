@@ -4,12 +4,19 @@ namespace App\Repositories\GroupMenuRepository;
 use App\Http\Controllers\Controller;
 use App\Repositories\GroupMenuRepository\IGroupMenuRepository;
 use App\GroupMenu;
-
+use App\CookArea;
 class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     public function getAllGroupMenu()
     {
-        $groupmenus = GroupMenu::all();
-        return view('groupmenu.index',compact('groupmenus'));
+        $groupmenus = GroupMenu::with('cookArea')->get();
+        $cooks = CookArea::all();
+        $cook_active = array();
+        foreach ($cooks as $key => $cook) {
+            if($cook->status != '0'){
+                $cook_active[] = $cook;
+            }
+        }
+        return view('groupmenu.index',compact('groupmenus','cook_active'));
     }
 
     public function validatorRequestStore($req){
@@ -17,12 +24,15 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
             'name.required' => 'Không để trống tên thực đơn',
             'name.min' => 'Tên thực đơn nhiều hơn 3 ký tự',
             'name.max' => 'Tên thực đơn giới hạn 30 ký tự',
-            'name.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống'
+            'name.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
+
+            'idCook.required' => 'Vui lòng chọn bếp cho nhóm thực đơn',
         ];
 
         $req->validate(
             [
                 'name' => 'required|min:3|max:30|unique:groupmenu,name',
+                'idCook' =>'required'
             ],
             $messeages
         );
@@ -60,6 +70,8 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     {
         $groupmenu = new GroupMenu();
         $groupmenu->name = $request->name;
+        $groupmenu->id_cook = $request->idCook;
+
         $groupmenu->save();
         return redirect(route('groupmenu.index'));
     }
@@ -68,18 +80,27 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     {
         $temp = $request->nameSearch;
         $groupmenus = GroupMenu::where('name','LIKE',"%{$temp}%")->get();
-        return view('groupmenu.search',compact('groupmenus'));
+        $cooks = CookArea::all();
+        $cook_active = array();
+        foreach ($cooks as $key => $cook) {
+            if($cook->status != '0'){
+                $cook_active[] = $cook;
+            }
+        }
+        return view('groupmenu.search',compact('groupmenus','cook_active'));
     }
 
     public function updateGroupMenu($request, $id)
     {
         $groupmenu = GroupMenu::find($id);
         $groupmenu->name = $request->nameGroupArea;
+        $groupmenu->id_cook = $request->idCook;
         $groupmenu->save();
         return redirect(route('groupmenu.index'));
     }
     public function deleteGroupMenu($id)
     {
-
+        $groupmenu = GroupMenu::find($id)->delete();
+        return redirect(route('groupmenu.index'));
     }
 }

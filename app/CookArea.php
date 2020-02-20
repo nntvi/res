@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GroupMenu extends Model
+class CookArea extends Model
 {
-    /**
+   /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'groupmenu';
+    protected $table = 'cook_area';
 
     /**
      * The primary key associated with the table.
@@ -33,11 +33,12 @@ class GroupMenu extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'status'
     ];
 
-    public function cookArea()
+    public function groupMenu()
     {
-        return $this->belongsTo('App\CookArea','id_cook');
+        return $this->hasMany('App\GroupMenu','id_cook');
     }
 }

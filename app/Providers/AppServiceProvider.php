@@ -57,6 +57,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\SupplierRepository\ISupplierRepository',
             'App\Repositories\SupplierRepository\SupplierRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\CookRepository\ICookRepository',
+            'App\Repositories\CookRepository\CookRepository'
+        );
     }
 
     /**
