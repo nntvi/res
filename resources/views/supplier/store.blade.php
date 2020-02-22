@@ -111,15 +111,14 @@
                                 </div>
                                 <div class="row">
                                         <div class="form-group">
-
-                                                    <label class="col-md-2 control-label" for="title">
-                                                        Ghi chú:
-                                                    </label>
-                                                    <div class="col-md-8">
-                                                        <textarea type="text" size="40" class="form-control" rows="4"
-                                                            name="note">
-                                                        </textarea>
-                                                    </div>
+                                            <label class="col-md-2 control-label" for="title">
+                                                 Ghi chú:
+                                            </label>
+                                            <div class="col-md-8">
+                                                <textarea type="text" size="40" class="form-control" rows="4"
+                                                    name="note">
+                                                </textarea>
+                                            </div>
                                         </div>
                                     </div>
                             <div class="row" style="margin-top: 20px">

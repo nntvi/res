@@ -5,7 +5,7 @@
             <div class="panel-heading">
                 Phân quyền
             </div>
-            <div class="portlet box green-meadow" style="margin-top: 20px;">
+            <div class="portlet box green-meadow">
                     <div class="portlet-title">
                             <div class="caption">
                                 <i class="fa fa-coffee"></i>
@@ -100,7 +100,8 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{ route('permission.delete',['id' => $permission->id])}}"  class="btn default btn-xs red radius">
+                                            <a href="{{ route('permission.delete',['id' => $permission->id])}}"  class="btn default btn-xs red radius"
+                                                    onclick="return confirm('Bạn muốn xóa dữ liệu này?')">
                                                 <i class="fa fa-trash-o"> Xóa</i>
                                             </a>
                                         </td>

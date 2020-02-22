@@ -95,7 +95,7 @@
                                             <a href="{{route('area.delete',['id'=> $area->id])}}">
                                                 <button type="submit"
                                                 class="btn default btn-xs red radius">
-                                                    <i class="fa fa-trash-o"> Xóa</i>
+                                                    <i class="fa fa-trash-o" onclick="return confirm('Bạn muốn xóa dữ liệu này?')"> Xóa</i>
                                                 </button>
                                             </a>
                                         </td>

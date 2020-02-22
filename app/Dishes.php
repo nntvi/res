@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GroupMenu extends Model
+class Dishes extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'groupmenu';
+    protected $table = 'dishes';
 
     /**
      * The primary key associated with the table.
@@ -25,7 +25,7 @@ class GroupMenu extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -33,15 +33,18 @@ class GroupMenu extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'code',        'name',        'image',        'describe',   'dvt',
+        'status',        'sale_price',        'capital_price',
+        'id_topping',       'id_groupmenu',     'tax'
     ];
 
-    public function cookArea()
+    public function groupMenu()
     {
-        return $this->belongsTo('App\CookArea','id_cook');
+       return $this->belongsTo('App\GroupMenu','id_groupmenu');
     }
-    public function dishes()
+
+    public function unit()
     {
-        return $this->hasMany('App\Dishes');
+        return $this->belongsTo('App\Unit','id_dvt');
     }
 }

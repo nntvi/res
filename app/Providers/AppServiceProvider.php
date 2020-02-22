@@ -62,6 +62,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\CookRepository\ICookRepository',
             'App\Repositories\CookRepository\CookRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\DishRepository\IDishRepository',
+            'App\Repositories\DishRepository\DishRepository'
+        );
     }
 
     /**

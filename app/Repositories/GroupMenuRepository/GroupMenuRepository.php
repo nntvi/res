@@ -5,10 +5,12 @@ use App\Http\Controllers\Controller;
 use App\Repositories\GroupMenuRepository\IGroupMenuRepository;
 use App\GroupMenu;
 use App\CookArea;
+use App\Dishes;
+
 class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     public function getAllGroupMenu()
     {
-        $groupmenus = GroupMenu::with('cookArea')->get();
+        $groupmenus = GroupMenu::with('cookArea')->paginate(5);
         $cooks = CookArea::all();
         $cook_active = array();
         foreach ($cooks as $key => $cook) {
@@ -101,6 +103,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     public function deleteGroupMenu($id)
     {
         $groupmenu = GroupMenu::find($id)->delete();
+        $dishes = Dishes::where('id_groupmenu',$id)->delete();
         return redirect(route('groupmenu.index'));
     }
 }

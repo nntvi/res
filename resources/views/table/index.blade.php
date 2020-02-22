@@ -75,7 +75,7 @@
                                         </td>
                                         <td>
                                             <a href="{{route('table.delete',['id'=>$table->id])}}"
-                                                class="btn default btn-xs red radius">
+                                                class="btn default btn-xs red radius" onclick="return confirm('Bạn muốn xóa dữ liệu này?')">
                                                 <i class="fa fa-trash-o"> Xóa</i>
                                             </a>
                                         </td>

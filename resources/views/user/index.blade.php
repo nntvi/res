@@ -50,7 +50,8 @@
                                         <td>
                                             <a href="{{ route('user.update', ['id' => $user->id])}}" class="active" ui-toggle-class=""><i
                                                         class="fa fa-pencil-square-o text-success text-active"></i></a>
-                                            <a href="{{ route('user.delete',['id' => $user->id])}}" ><i class="fa fa-times text-danger text"></i></a>
+                                            <a href="{{ route('user.delete',['id' => $user->id])}}" ><i class="fa fa-times text-danger text"
+                                                onclick="return confirm('Bạn muốn xóa dữ liệu này?')"></i></a>
                                         </td>
                                       </tr>
                                       @endforeach

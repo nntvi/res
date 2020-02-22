@@ -276,9 +276,8 @@
                                         <span>Hàng hóa</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="thietlapgia.html">Thiết lập giá</a></li>
                                     <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
-                                    <li><a href="douong_monan.html">Đồ uống - Món ăn</a></li>
+                                    <li><a href="{{route('dishes.index')}}">Đồ uống - Món ăn</a></li>
                                     <li><a href="{{route('topping.index')}}">Topping, ghi chú món</a></li>
                                 </ul>
                             </li>

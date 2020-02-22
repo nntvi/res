@@ -35,10 +35,7 @@
 
                 <div class="portlet-body">
                     <div class="row" style="margin: 10px 0px;">
-                        <div class="col-md-12">
-                            <div class="btn red radius btn-delete" onclick="">
-                                Xóa danh sách </div>
-                        </div>
+
                     </div>
                     <div class="table-responsive">
                         <div id="news-grid" class="grid-view">

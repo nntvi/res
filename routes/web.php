@@ -87,6 +87,15 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/cook/index', 'CookController@index')->name('cook.index');
     Route::get('/cook/store', 'CookController@store')->name('cook.store');
     Route::post('/cook/update/{id}', 'CookController@update')->name('cook.update');
+
+    // Dishes
+    Route::get('/dishes/index', 'DishesController@index')->name('dishes.index');
+    Route::get('/dishes/store', 'DishesController@viewStore')->name('dishes.store');
+    Route::post('/dishes/store', 'DishesController@store')->name('dishes.p_store');
+    Route::get('/dishes/viewupdate/{id}', 'DishesController@viewUpdate')->name('dishes.update');
+    Route::post('/dishes/update/{id}', 'DishesController@update')->name('dishes.p_update');
+    Route::get('/dishes/delete/{id}', 'DishesController@delete')->name('dishes.delete');
+    Route::post('/dishes/search', 'DishesController@search')->name('dishes.search');
 });
 
 

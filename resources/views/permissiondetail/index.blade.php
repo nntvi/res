@@ -71,7 +71,9 @@
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a href="{{route('perdetail.delete',['id' => $item->id])}}" class="btn default btn-xs red radius">
+                                                    <a href="{{route('perdetail.delete',['id' => $item->id])}}"
+                                                            onclick="return confirm('Bạn muốn xóa dữ liệu này?')"
+                                                             class="btn default btn-xs red radius">
                                                         <i class="fa fa-trash-o"> Xóa</i>
                                                     </a>
                                                 </td>
