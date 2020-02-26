@@ -31,7 +31,7 @@ class AreaController extends Controller
 
     public function update(Request $request, $id)
     {
-        return $this->areaRepository->validatorRequestUpdate($request);
+        $this->areaRepository->validatorRequestUpdate($request);
         return $this->areaRepository->updateArea($request,$id);
     }
 

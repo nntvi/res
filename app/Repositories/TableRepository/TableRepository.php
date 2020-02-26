@@ -9,8 +9,9 @@ use App\Table;
 class TableRepository extends Controller implements ITableRepository{
     public function getAllTable()
     {
-        $tables = Table::with('getArea')->get();
-        return view('table/index',compact('tables'));
+        $tables = Table::with('getArea')->paginate(8);
+        $areas = Area::all();
+        return view('table/index',compact('tables','areas'));
     }
 
     public function viewAddTable()

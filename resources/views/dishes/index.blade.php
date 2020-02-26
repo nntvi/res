@@ -16,6 +16,12 @@
             </div>
         </div>
         <div class="portlet box green-meadow">
+                <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-coffee"></i>
+                            Tìm kiếm vào Tạo mới
+                        </div>
+                </div>
                 <div class="row">
                     <div class="col-md-4 col-sm-12" style=" margin-top: 25px;">
                         <a class="btn btn-primary" href="#" role="button" style="margin-left: 19px">Nhập liệu

@@ -96,6 +96,35 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/dishes/update/{id}', 'DishesController@update')->name('dishes.p_update');
     Route::get('/dishes/delete/{id}', 'DishesController@delete')->name('dishes.delete');
     Route::post('/dishes/search', 'DishesController@search')->name('dishes.search');
+
+    // Material Group
+    Route::get('/material/index', 'MaterialController@index')->name('material.index');
+    Route::post('/material/store', 'MaterialController@store')->name('material.store');
+    Route::post('/material/update/{id}', 'MaterialController@update')->name('material.update');
+    Route::get('/material/delete/{id}', 'MaterialController@delete')->name('material.delete');
+
+    // Material Action
+    Route::get('/material_action/index', 'MaterialActionController@index')->name('material_action.index');
+    Route::get('/material_action/viewStore', 'MaterialActionController@viewStore')->name('material_action.store');
+    Route::post('/material_action/store', 'MaterialActionController@store')->name('material_action.p_store');
+    Route::get('/material_action/moreDetail/{id}', 'MaterialActionController@showMoreDetail')->name('material_action.detail');
+    Route::get('/material_action/update/{id}', 'MaterialActionController@viewUpdate')->name('material_action.update');
+    Route::post('/material_action/update/{id}', 'MaterialActionController@update')->name('material_action.p_update');
+    Route::get('/material_action/delete/{id}', 'MaterialActionController@delete')->name('material_action.delete');
+
+    // Material Detail
+    Route::get('/material_detail/index', 'MaterialDetailController@index')->name('material_detail.index');
+    Route::post('/material_detail/store', 'MaterialDetailController@store')->name('material_detail.store');
+    Route::post('/material_detail/update/{id}', 'MaterialDetailController@update')->name('material_detail.update');
+    Route::get('/material_detail/delete/{id}', 'MaterialDetailController@delete')->name('material_detail.delete');
+    Route::post('/material_detail/search', 'MaterialDetailController@search')->name('material_detail.search');
+
+    // Order
+    Route::get('/order/index', 'OrderController@index')->name('order.index');
+    Route::get('/order/getTable/{id}', 'OrderController@getTable')->name('order.gettables');
+
+    // Staff
+    Route::get('/cashier/index', 'CashierController@index')->name('cashier.index');
 });
 
 

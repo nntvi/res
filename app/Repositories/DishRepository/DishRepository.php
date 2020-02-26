@@ -4,6 +4,8 @@ namespace App\Repositories\DishRepository;
 use App\Dishes;
 use App\Http\Controllers\Controller;
 use App\GroupMenu;
+use App\Material;
+use App\MaterialDetail;
 use App\Unit;
 
 class DishRepository extends Controller implements IDishRepository{
@@ -19,7 +21,16 @@ class DishRepository extends Controller implements IDishRepository{
         $units = Unit::orderBy('name')->get();
         return $units;
     }
-
+    public function getMaterial()
+    {
+        $materials = Material::all();
+        return $materials;
+    }
+    public function getMaterialDetail()
+    {
+        $materialDetails = MaterialDetail::all();
+        return $materialDetails;
+    }
     public function validatorRequestStore($req){
         $messeages = [
             'name.required' => 'Không để trống tên món',
@@ -66,6 +77,7 @@ class DishRepository extends Controller implements IDishRepository{
         $dish->tax = $request->tax;
         $dish->describe = $request->note;
         $dish->status = $request->status;
+        $dish->id_groupnvl = $request->idGroupNVL;
 
         if($request->hasFile('file')){
             // mảng chứa đuôi file
@@ -97,7 +109,8 @@ class DishRepository extends Controller implements IDishRepository{
 
     public function showUpdateDish($id)
     {
-        $dish = Dishes::with('groupmenu','unit')->find($id);
+        $dish = Dishes::with('groupmenu','unit','material')->find($id);
+
         return $dish;
     }
 
@@ -143,6 +156,7 @@ class DishRepository extends Controller implements IDishRepository{
         $dish->tax = $request->tax;
         $dish->describe = $request->note;
         $dish->status = $request->status;
+        $dish->id_groupnvl = $request->idGroupNVL;
 
         if($request->hasFile('file')){
             // mảng chứa đuôi file
@@ -168,6 +182,8 @@ class DishRepository extends Controller implements IDishRepository{
         }else{
             $error['empty'] = "Chưa chọn file ảnh";
         }
+
+        // dd($dish);
         $dish->save();
         return redirect(route('dishes.index'));
     }

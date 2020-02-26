@@ -47,4 +47,9 @@ class Dishes extends Model
     {
         return $this->belongsTo('App\Unit','id_dvt');
     }
+
+    public function material()
+    {
+        return $this->belongsTo('App\Material','id_groupnvl');
+    }
 }

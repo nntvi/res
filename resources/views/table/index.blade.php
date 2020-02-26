@@ -1,7 +1,7 @@
 @extends('layouts')
 @section('content')
 <div class="table-agile-info">
-        <div class="panel panel-default">
+    <div class="panel panel-default">
             <div class="panel-heading">
                 Danh mục
             </div>
@@ -15,34 +15,71 @@
                     </nav>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-9 col-sm-12">
-                    <a class="btn btn-primary" href="#" role="button" style="margin-left: 19px">Nhập liệu
-                        file excel</a>
-                    <a class="btn btn-primary" href="{{route('table.store')}}" role="button"
-                        style="margin-left: 5px">Tạo mới</a>
-                </div>
-            </div>
-            <div class="portlet box green-meadow " style="margin-top: 20px;">
+
+            <div class="portlet box green-meadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-coffee"></i>
-                        Thêm mới khu vực
+                       Thêm mới bàn
                     </div>
                 </div>
-
+                <div class="portlet-body">
+                    <div class="table-responsive">
+                        <div class="form">
+                            <form class="panel-body" enctype="multipart/form-data" role="form"
+                                action="{{route('table.p_store')}}" method="POST">
+                                @csrf
+                                <div class="col-md-12">
+                                    <div class="row">
+                                            <div class="col-md-3">
+                                                    <label class="control-label">Mã Bàn<span style="color: #ff0000">
+                                                            *</span></label> <input type="text" size="40"
+                                                        class="form-control" name="codeTable" maxlength="255"
+                                                        value="">
+                                                        <span class="error-message">{{ $errors->first('codeTable') }}</span></p>
+                                            </div>
+                                        <div class="col-md-3">
+                                            <label class="control-label">Tên Bàn<span style="color: #ff0000">
+                                                    *</span></label> <input type="text" size="40" value=""
+                                                class="form-control" name="nameTable" maxlength="255">
+                                                <span class="error-message">{{ $errors->first('nameTable') }}</span></p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="control-label">Khu Vực<span style="color: #ff0000"> *</span></label>
+                                            <select class="form-control" name="idArea">
+                                                @foreach ($areas as $area)
+                                                    <option id="{{$area->id}}" value="{{$area->id}}" >{{$area->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="errorMessage" id="Table_area_id_em_"
+                                                style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="submit" class="btn green-meadow radius"
+                                                style="width:105px; margin-top: 40px;" name="yt0" value="Thêm mới">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-coffee"></i>
+                        Danh sách bàn
+                    </div>
+                </div>
                 <div class="portlet-body">
                     <div class="row" style="margin: 10px 2px;">
                         <div class="col-md-6">
-                            <button class="btn red radius btn-delete" id="deleteList_area">Xóa danh
-                                sách</button>
+
                         </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" name="checkall" id="delete_checkbox"></th>
                                     <th>STT</th>
                                     <th>Mã bàn</th>
                                     <th>Tên bàn</th>
@@ -60,9 +97,6 @@
                                 @endforeach --}}
                                 @foreach ($tables as $key => $table)
                                     <tr>
-                                        <td><input class="delete_checkbox_item" type="checkbox"
-                                                name="delete_checkbox_item[]" value="235080">
-                                        </td>
                                         <td style="width: 10px">{{$key+1}}</td>
                                         <td>{{$table->code}}</td>
                                         <td>{{$table->name}}</td>
@@ -92,18 +126,13 @@
                               </div>
                               <div class="col-sm-7 text-right text-center-xs">
                                 <ul class="pagination pagination-sm m-t-none m-b-none">
-                                  <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                                  <li><a href="">1</a></li>
-                                  <li><a href="">2</a></li>
-                                  <li><a href="">3</a></li>
-                                  <li><a href="">4</a></li>
-                                  <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
+                                  {{ $tables->links() }}
                                 </ul>
                               </div>
                             </div>
                     </footer>
                 </div>
             </div>
-        </div>
     </div>
+</div>
 @endsection

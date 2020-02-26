@@ -42,4 +42,7 @@ class Table extends Model
     {
         return $this->belongsTo('App\Area','id_area');
     }
+
+
+
 }

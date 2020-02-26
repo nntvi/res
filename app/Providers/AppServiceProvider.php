@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,6 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Schema::defaultStringLength(199);
+
         $this->app->bind(
             'App\Helper\ICheckAction',
             'App\Helper\CheckAction'
@@ -66,6 +69,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Repositories\DishRepository\IDishRepository',
             'App\Repositories\DishRepository\DishRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\OrderRepository\IOrderRepository',
+            'App\Repositories\OrderRepository\OrderRepository'
         );
     }
 

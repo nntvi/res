@@ -279,6 +279,9 @@
                                     <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
                                     <li><a href="{{route('dishes.index')}}">Đồ uống - Món ăn</a></li>
                                     <li><a href="{{route('topping.index')}}">Topping, ghi chú món</a></li>
+                                    <li><a href="{{route('material.index')}}">Nhóm công thức từng món</a></li>
+                                    <li><a href="{{route('material_detail.index')}}">Nguyên vật liệu</a></li>
+                                    <li><a href="{{route('material_action.index')}}">Chi tiết NVL từng món</a></li>
                                 </ul>
                             </li>
                             <li class="sub-menu">
@@ -298,8 +301,8 @@
                                             <span>Nhà hàng</span>
                                     </a>
                                     <ul class="sub">
-                                        <li><a href="">Màn hình thu ngân</a></li>
-                                        <li><a href="">Màn hình order</a></li>
+                                        <li><a href="{{route('order.index')}}">Màn hình order</a></li>
+                                        <li><a href="{{route('cashier.index')}}">Màn hình thu ngân</a></li>
                                         <li><a href="">Màn hình khu vực bếp</a></li>
                                         <li><a href="{{route('area.index')}}">Khu vực</a></li>
                                         <li><a href="{{route('table.index')}}">Phòng bàn</a></li>

@@ -20,13 +20,16 @@ class DishesController extends Controller
     {
         $groupmenus = $this->dishesRepository->getGroupMenu();
         $dishes = Dishes::with('groupMenu.cookArea','unit')->get();
+
         return view('dishes.index',compact('dishes','groupmenus'));
     }
     public function viewStore()
     {
         $groupmenus = $this->dishesRepository->getGroupMenu();
         $units = $this->dishesRepository->getUnit();
-        return view('dishes.store',compact('groupmenus','units'));
+        $materialDetails = $this->dishesRepository->getMaterialDetail();
+        $materials = $this->dishesRepository->getMaterial();
+        return view('dishes.store',compact('groupmenus','units','materialDetails','materials'));
     }
 
     public function store(Request $request)
@@ -40,12 +43,13 @@ class DishesController extends Controller
         $dish = $this->dishesRepository->showUpdateDish($id);
         $groupmenus = $this->dishesRepository->getGroupMenu();
         $units = $this->dishesRepository->getUnit();
-        return view('dishes.update',compact('dish','groupmenus','units'));
+        $materials = $this->dishesRepository->getMaterial();
+        return view('dishes.update',compact('dish','groupmenus','units','materials'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->dishesRepository->validatorRequestUpdate($request);
+        // $this->dishesRepository->validatorRequestUpdate($request);
         return $this->dishesRepository->updateDish($request,$id);
     }
 

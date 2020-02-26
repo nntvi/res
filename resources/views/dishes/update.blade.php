@@ -84,71 +84,84 @@
                                     <span class="error-message">{{ $errors->first('idGroupMenu') }}</span></p>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="control-label">Giá Bán (*)<span style="color: #ff0000"> *</span></label>
-                                    <input type="number" size="40" class="form-control price_food" name="salePrice" value="{{$dish->sale_price}}">
-                                    <span class="error-message">{{ $errors->first('salePrice') }}</span></p>
+                                        <label class="control-label">Nhóm Nguyên Vật Liệu<span style="color: #ff0000"> *</span></label>
+                                        <select class="form-control" name="idGroupNVL">
+                                            <option value="{{$dish->material->id}}">{{$dish->material->name}}</option>
+                                            <option value="">-- Chọn nhóm nguyên vật liệu --</option>
+                                                @foreach ($materials as $material)
+                                                    <option value="{{ $material->id }}">{{$material->name}}</option>
+                                                @endforeach
+                                        </select>
                                 </div>
-                                <div class="col-md-3 margin-top-radio" style="margin-left: 0px">
-                                    @if ($dish->status == '0')
-                                        <label class="control-label">Hiển thị ra menu: &nbsp;</label>
-                                        <label class="control-label">Ẩn</label>
-                                        <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px" checked>
-                                        <label class="control-label">Hiện</label>
-                                        <input value="1" id="status2" type="radio" name="status" style="margin-right: 20px">
-                                    @else
-                                        <label class="control-label">Hiển thị ra menu: &nbsp;</label>
-                                        <label class="control-label">Ẩn</label>
-                                        <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px">
-                                        <label class="control-label">Hiện</label>
-                                        <input value="1" id="status2" type="radio" name="status" style="margin-right: 20px" checked>
-                                    @endif
-                                    <span class="error-message">{{ $errors->first('status') }}</span></p>
-                                </div>
+                                <div class="col-md-3">
+                                        <label class="control-label" for="FoodForm_Đơn_vị_tính">Đơn Vị Tính</label>
+                                        <select class="form-control" name="id_dvt">
+                                            <option value="{{$dish->unit->id}}">{{$dish->unit->name}}</option>
+                                            <div class="cover-role-body" id="filters">
+                                                @foreach ($units as $unit)
+                                                    <option value="{{ $unit->id }}">{{$unit->name}}</option>
+                                                @endforeach
+                                            </div>
+                                        </select>
+                                    </div>
+
                             </div>
                             <div class="space"></div>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label class="control-label" for="FoodForm_Đơn_vị_tính">Đơn Vị Tính</label>
-                                    <select class="form-control" name="id_dvt">
-                                        <option value="{{$dish->unit->id}}">{{$dish->unit->name}}</option>
-                                        <div class="cover-role-body" id="filters">
-                                            @foreach ($units as $unit)
-                                                <option value="{{ $unit->id }}">{{$unit->name}}</option>
-                                            @endforeach
-                                        </div>
-                                    </select>
-                                </div>
+                                    <div class="col-md-3">
+                                            <label class="control-label">Giá Bán (*)<span style="color: #ff0000"> *</span></label>
+                                            <input type="number" size="40" class="form-control price_food" name="salePrice" value="{{$dish->sale_price}}">
+                                            <span class="error-message">{{ $errors->first('salePrice') }}</span></p>
+                                    </div>
                                 <div class="col-md-3">
                                     <label>Giá vốn</label>
                                     <input class="form-control" name="capitalPrice" type="number" value="{{$dish->capital_price}}">
                                     <span class="error-message">{{ $errors->first('capitalPrice') }}</span></p>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label>Mã sản phẩm</label>
                                     <input class="form-control" name="codeDish" type="text" maxlength="40" value="{{$dish->code}}" disabled>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label>Thuế</label>
                                     <input class="form-control" maxlength="5" name="tax" type="text" value="{{$dish->tax}}">
                                     <span class="error-message">{{ $errors->first('tax') }}</span></p>
                                 </div>
-                                <div class="col-md-2" style="margin-top: 30px">
-                                    <label class="container-checkbox">Theo thời giá
-                                        @if ($dish->follow_price == '0')
-                                            <input type="hidden" value="0" name="followPrice">
-                                            <input class="role_id" name="followPrice" value="1" type="checkbox">
-                                            <span class="checked check-food"></span>
-                                        @else
-                                        <input type="hidden" value="0" name="followPrice">
-                                        <input class="role_id" name="followPrice" value="1" type="checkbox" checked>
-                                            <span class="checked check-food"></span>
-                                        @endif
-
-                                    </label>
-                                </div>
                             </div>
-                            <div class="space"></div>
+                            <div class="row">
+                                    <div class="col-md-3 margin-top-radio" style="margin-left: 0px">
+                                            @if ($dish->status == '0')
+                                                <label class="control-label">Hiển thị ra menu: &nbsp;</label>
+                                                <label class="control-label">Ẩn</label>
+                                                <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px" checked>
+                                                <label class="control-label">Hiện</label>
+                                                <input value="1" id="status2" type="radio" name="status" style="margin-right: 20px">
+                                            @else
+                                                <label class="control-label">Hiển thị ra menu: &nbsp;</label>
+                                                <label class="control-label">Ẩn</label>
+                                                <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px">
+                                                <label class="control-label">Hiện</label>
+                                                <input value="1" id="status2" type="radio" name="status" style="margin-right: 20px" checked>
+                                            @endif
+                                            <span class="error-message">{{ $errors->first('status') }}</span></p>
+                                    </div>
+                                    <div class="col-md-3" style="margin-top: 30px">
+                                            <label class="container-checkbox">Theo thời giá
+                                                @if ($dish->follow_price == '0')
+                                                    <input type="hidden" value="0" name="followPrice">
+                                                    <input class="role_id" name="followPrice" value="1" type="checkbox">
+                                                    <span class="checked check-food"></span>
+                                                @else
+                                                <input type="hidden" value="0" name="followPrice">
+                                                <input class="role_id" name="followPrice" value="1" type="checkbox" checked>
+                                                    <span class="checked check-food"></span>
+                                                @endif
+
+                                            </label>
+                                        </div>
+                            </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="col-md-4">

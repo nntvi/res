@@ -77,7 +77,7 @@
                                 @foreach ($areas as $key => $area)
                                     <tr>
                                         <td width="20%">{{$key+1}}</td>
-                                        <form method="post" action="{{route('area.update',['id' => $area->id])}}">
+                                        <form method="POST" action="{{route('area.update',['id' => $area->id])}}">
                                             @csrf
                                             <td width="50%">
                                                 <input type="hidden" name="AreaId" value="">

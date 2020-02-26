@@ -4,6 +4,7 @@ namespace App\Repositories\DishRepository;
 interface IDishRepository{
     function getGroupMenu();
     function getUnit();
+    function getMaterialDetail();
     function addDish($request);
     function showUpdateDish($id);
     function updateDish($request, $id);
@@ -12,4 +13,5 @@ interface IDishRepository{
     function deleteDish($id);
     function validatorRequestUpdate($req);
     function validatorRequestSearch($req);
+    function getMaterial();
 }
