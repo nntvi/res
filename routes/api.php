@@ -17,6 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('getTableById/{id}', 'ApiController@index');
-
+Route::get('getTableByIdArea/{id}', 'AjaxController@getTable');
+Route::get('getDishByIdGroupMenu/{id}','AjaxController@getDish');
 

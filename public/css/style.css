@@ -3266,6 +3266,9 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     color: white;
     background-color: #B53471;
 }
+.green-meadow.btn:hover{
+    background-color: #e13084;
+}
 .fileinput-button {
     position: relative;
     overflow: hidden;

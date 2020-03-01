@@ -120,9 +120,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/material_detail/search', 'MaterialDetailController@search')->name('material_detail.search');
 
     // Order
-    Route::get('/order/index', 'OrderController@index')->name('order.index');
-    Route::get('/order/getTable/{id}', 'OrderController@getTable')->name('order.gettables');
-
+    Route::get('/order/index', 'OrderController@showTable')->name('order.index');
+    Route::get('/order/orderTable/{id}', 'OrderController@orderTable')->name('order.order');
+    Route::post('/order/tempOrder/{id}','OrderController@orderTablePost')->name('order.temporder');
+    Route::get('/order/viewUpdate/{id}', 'OrderController@viewUpdate')->name('order.update');
+    Route::post('/order/update/{id}','OrderController@update')->name('order.p_update');
     // Staff
     Route::get('/cashier/index', 'CashierController@index')->name('cashier.index');
 });

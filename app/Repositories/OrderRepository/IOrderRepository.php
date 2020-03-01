@@ -3,5 +3,6 @@ namespace App\Repositories\OrderRepository;
 
 interface IOrderRepository{
     function getArea();
-    function getTable($id);
+    function getDishes();
+    function postOrder($request, $id);
 }

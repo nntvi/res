@@ -40,4 +40,5 @@ class Area extends Model
     {
         return $this->hasMany('App\Table','id_area');
     }
+
 }
