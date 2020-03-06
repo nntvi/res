@@ -34,7 +34,10 @@ class Order extends Model
      */
     protected $fillable = [
         'id_table',
-        'status'
+        'status',
+        'total_price',
+        'note',
+        'created_by'
     ];
 
     public function orderDetail()
@@ -46,4 +49,5 @@ class Order extends Model
     {
         return $this->belongsTo('App\Table','id_table');
     }
+
 }
