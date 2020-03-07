@@ -9,5 +9,7 @@ interface IUserRepository{
     function createUser($req);
     function viewUpdate($id);
     function updateUser($req,$id);
+    function updatePasswordUser($request, $id);
+    function validatorRequestUpdatePassword($req);
     function deleteUser($id);
 }

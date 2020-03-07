@@ -126,7 +126,7 @@ class UserRepository  extends Controller implements IUserRepository{
         // tìm user cần sửa
         $user = User::find($id);
         $user->name = $request->name;
-        $user->password = bcrypt($request->password);
+        //$user->password = bcrypt($request->password);
         // lưu lại
         $user->save();
 
@@ -147,6 +147,31 @@ class UserRepository  extends Controller implements IUserRepository{
         return redirect(route('user.index'));
     }
 
+    public function validatorRequestUpdatePassword($req){
+        $messeages = [
+            'password.required' => 'Không để trống password cần thay đổi',
+            'password.min' => 'Password không ít hơn 3 ký tự',
+            'password.max' => 'Password nhiều nhất 10 ký tự',
+            'password-confirm.same' => 'Password xác nhận không khớp',
+            'password-confirm.required' => 'Vui lòng nhập password xác nhận',
+        ];
+
+        $req->validate(
+            [
+                'password' => 'required|min:3|max:10',
+                'password-confirm' => 'required|same:password',
+            ],
+            $messeages
+        );
+    }
+
+    public function updatePasswordUser($request, $id)
+    {
+        $user = User::find($id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return redirect(route('user.index'))->with('success','Đổi password thành công');
+    }
     public function deleteUser($id)
     {
         // Tìm trong bảng user_per xóa trước
