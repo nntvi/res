@@ -34,8 +34,8 @@
                                             <td>{{$key+1}}</td>
                                             <td>{{$item->dish->name}}</td>
                                             <td>{{$item->amount}}</td>
-                                            <td>{{$item->dish->sale_price}}</td>
-                                            <td>{{$item->dish->sale_price * $item->amount}}</td>
+                                            <td>{{number_format($item->dish->sale_price)}}</td>
+                                            <td>{{number_format($item->dish->sale_price * $item->amount)}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -45,21 +45,20 @@
                     <div class="bs-example">
                             <table class="table">
                                 <div class="panel-heading">
-                                    Tổng tiền : {{ $totalPrice }}
+                                    Tổng tiền : {{ number_format($totalPrice) . ' đ' }}
                                 </div>
                             </table>
                         </div>
                 </section>
             </div>
             <div class="col-sm-4 com-w3ls">
-                <form action="" method="post">
+                <form action="{{route('pay.p_update',['id' => $idBillTable->id])}}" method="POST">
+                    @csrf
                     <section class="panel">
-
                             <div class="panel-body">
-                                
-                                <a href=""  class="btn btn-compose">
+                                <button type="submit"  class="btn btn-compose">
                                     Thanh toán
-                                </a>
+                                </button>
                                 <hr>
                                 <div class="form-group">
                                    <div class="row">
@@ -67,9 +66,9 @@
                                            <label for="">Tổng tiền: </label>
                                        </div>
                                        <div class="col-xs-6 col-sm-6 col-md-6 text-right">
-                                            <input style="font-weight: bold;
-                                            color: red;
-                                            font-size: 15px;" class="form-control totalPrice" type="text" value="{{$totalPrice}}" disabled>                                       </div>
+                                           <input type="text" name="total" value="{{$totalPrice}}" hidden>
+                                            <input style="font-weight: bold; color: red; font-size: 15px;" class="form-control totalPrice" type="text" value="{{$totalPrice}}" disabled>
+                                        </div>
                                    </div>
                                    <hr>
                                    <div class="row">
@@ -95,7 +94,7 @@
                                              <label for="">Ghi chú: </label>
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-12 form-group" style="margin-top: 5px">
-                                            <textarea name="" id="" class="form-control"></textarea>
+                                            <textarea name="note" class="form-control"></textarea>
                                         </div>
                                     </div>
                                     <script>

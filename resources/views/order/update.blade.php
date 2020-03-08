@@ -92,7 +92,7 @@
                                         {{ $item->created_at }}
                                     </td>
                                     <td>
-                                        @if ($item->status == '0')
+                                        @if ($order->created_at == $item->updated_at || $item->status == '0')
                                             <button type="submit" href="" class="active check" ui-toggle-class="">
                                                 <i class="fa fa-check text-success text-active"></i>
                                             </button>

@@ -136,7 +136,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/cook_screen/update/{id}', 'CookScreenController@update')->name('cook_screen.p_update');
 
     // Pay
-    Route::get('/cook_screen/index/{id}', 'PayController@index')->name('pay.index');
+    Route::get('/pay/index/{id}', 'PayController@index')->name('pay.index');
+    Route::post('/pay/update/{id}', 'PayController@update')->name('pay.p_update');
+
+
 });
 
 

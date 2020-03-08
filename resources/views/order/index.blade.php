@@ -102,14 +102,19 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title">Đã thanh toán</h5>
                                                 </div>
-                                                <div class="action">
-                                                    <div class="col-sm-6 col-xs-12 add">
-                                                        <a href="{{route('order.addmore',['id' => $order->id])}}">Thêm món</a>
+                                                @if ($order->status == '1')
+                                                    <div class="action">
+                                                        <div class="col-sm-6 col-xs-12 add">
+                                                            <a href="{{route('order.addmore',['id' => $order->id])}}">Thêm món</a>
+                                                        </div>
+                                                        <div class="col-sm-6 col-xs-12 detail">
+                                                            <a href="{{route('order.update',['id' => $order->id])}}">Xem chi tiết</a>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-sm-6 col-xs-12 detail">
-                                                        <a href="{{route('order.update',['id' => $order->id])}}">Xem chi tiết</a>
-                                                    </div>
-                                                </div>
+                                                @else
+
+                                                @endif
+
                                             </div>
                                     </div>
                                     @endif
