@@ -52,7 +52,11 @@ class UserController extends Controller
         $this->userRepository->validatorRequestUpdate($request);
         return $this->userRepository->updateUser($request,$id);
     }
-
+    public function updatePassword(Request $request, $id)
+    {
+        $this->userRepository->validatorRequestUpdatePassword($request);
+        return $this->userRepository->updatePasswordUser($request,$id);
+    }
     public function delete($id)
     {
         return $this->userRepository->deleteUser($id);

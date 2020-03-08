@@ -29,6 +29,7 @@ class PermissionDetailController extends Controller
 
     public function store(Request $req)
     {
+        $this->permissionDetailRepository->validatorRequestStore($req);
         $permissions = $req->permission;
         $input['name'] = $req->action_name;
         $str =  $req->action_name;

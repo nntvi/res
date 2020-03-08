@@ -36,7 +36,8 @@ class OrderDetailTable extends Model
         'id_bill',
         'id_dish',
         'qty',
-        'status'
+        'status',
+        'price'
     ];
 
     public function dish()

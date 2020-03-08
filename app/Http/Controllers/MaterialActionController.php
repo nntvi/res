@@ -19,8 +19,8 @@ class MaterialActionController extends Controller
     public function viewStore()
     {
         $materials = Material::all();
-        $units = Unit::all();
-        $materialDetails = MaterialDetail::all();
+        $units = Unit::orderBy('name','asc')->get();
+        $materialDetails = MaterialDetail::orderBy('name','asc')->get();
         return view('materialaction.store',compact('materials','units','materialDetails'));
     }
     public function store(Request $request)

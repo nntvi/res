@@ -23,7 +23,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
 
     public function validatorRequestStore($req){
         $messeages = [
-            'name.required' => 'Không để trống tên thực đơn',
+            'name.required' => 'Không để trống tên nhóm thực đơn',
             'name.min' => 'Tên thực đơn nhiều hơn 3 ký tự',
             'name.max' => 'Tên thực đơn giới hạn 30 ký tự',
             'name.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
@@ -73,8 +73,8 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
         $groupmenu = new GroupMenu();
         $groupmenu->name = $request->name;
         $groupmenu->id_cook = $request->idCook;
-
-        $groupmenu->save();
+        dd($groupmenu);
+        //$groupmenu->save();
         return redirect(route('groupmenu.index'));
     }
 

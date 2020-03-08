@@ -27,7 +27,7 @@ class PermissionRepository extends Controller implements IPermissionRepository
 
         $req->validate(
             [
-                'name' => 'required|min:3|max:30|unique:permission,name',
+                'name' => 'required|min:3|max:30|unique:permissions,name',
                 'permissiondetail' => 'required'
             ],
             $messeages

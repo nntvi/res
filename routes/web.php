@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/user/store', 'UserController@store')->name('user.p_store');
     Route::get('/user/update/{id}', 'UserController@viewUpdate')->name('user.update');
     Route::post('/user/update/{id}', 'UserController@update')->name('user.p_update');
+    Route::post('/user/update_password/{id}','UserController@updatePassword')->name('user.p_updatepassword');
     Route::get('/user/delete/{id}', 'UserController@delete')->name('user.delete');
 
     // Area
@@ -121,12 +122,21 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Order
     Route::get('/order/index', 'OrderController@showTable')->name('order.index');
-    Route::get('/order/orderTable/{id}', 'OrderController@orderTable')->name('order.order');
-    Route::post('/order/tempOrder/{id}','OrderController@orderTablePost')->name('order.temporder');
+    Route::get('/order/orderTable', 'OrderController@orderTable')->name('order.order');
+    Route::post('/order/tempOrder','OrderController@orderTablePost')->name('order.temporder');
     Route::get('/order/viewUpdate/{id}', 'OrderController@viewUpdate')->name('order.update');
     Route::post('/order/update/{id}','OrderController@update')->name('order.p_update');
-    // Staff
-    Route::get('/cashier/index', 'CashierController@index')->name('cashier.index');
+    Route::get('/order/addmoredish/{id}','OrderController@viewaddMoreDish')->name('order.addmore');
+    Route::post('/order/addmoredish/{id}','OrderController@addMoreDish')->name('order.p_addmore');
+    Route::get('/order/deletedish/{id}','OrderController@deleteDish')->name('order.delete');
+
+    // CookingScreen
+    Route::get('/cook_screen/index', 'CookScreenController@index')->name('cook_screen.index');
+    Route::get('/cook_screen/detail/{id}', 'CookScreenController@getDetail')->name('cook_screen.detail');
+    Route::post('/cook_screen/update/{id}', 'CookScreenController@update')->name('cook_screen.p_update');
+
+    // Pay
+    Route::get('/cook_screen/index/{id}', 'PayController@index')->name('pay.index');
 });
 
 

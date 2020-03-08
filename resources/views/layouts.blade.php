@@ -302,8 +302,7 @@
                                     </a>
                                     <ul class="sub">
                                         <li><a href="{{route('order.index')}}">Màn hình order</a></li>
-                                        <li><a href="{{route('cashier.index')}}">Màn hình thu ngân</a></li>
-                                        <li><a href="">Màn hình khu vực bếp</a></li>
+                                        <li><a href="{{route('cook_screen.index')}}">Màn hình khu vực bếp</a></li>
                                         <li><a href="{{route('area.index')}}">Khu vực</a></li>
                                         <li><a href="{{route('table.index')}}">Phòng bàn</a></li>
                                         <li><a href="{{route('cook.index')}}">Bếp</a></li>
@@ -409,11 +408,7 @@
 
             <section id="main-content">
                 <section class="wrapper">
-                    <div class="table-agile-info">
-                        <div class="panel panel-default">
-                            @yield('content')
-                        </div>
-                    </div>
+                    @yield('content')
                 </section>
                 <!-- footer -->
 
