@@ -3,60 +3,80 @@
 <div class="table-agile-info">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Nhóm thực đơn
+            Responsive Table
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
-                            <li class="breadcrumb-item"><a href="#">Nhóm thực đơn</a></li>
-                        </ol>
-                    </nav>
+            <div class="row w3-res-tb">
+            <div class="col-sm-5 m-b-xs">
+                <div class="form-group">
+                    <form action="" method="post">
+                        <div class="input-group m-bot15">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="button">Tìm kiếm</button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-10 text-left">
-                    <div class="form mr-3">
-                        <form class="panel-body" enctype="multipart/form-data" role="form"
-                            id="searchFood-form" action="{{route('groupmenu.search')}}" method="POST">
-                             @csrf
-                            <div class="row">
-                                <div class="col-md-8 col-sm-4">
-                                    <input type="text" size="40" class="form-control radius"
-                                         placeholder="Tên nhóm thực đơn" name="nameSearch" id="SearchFoodForm_foodName"
-                                        value="">
-                                    <span class="error-message">{{ $errors->first('nameSearch') }}</span></p>
+            <div class="col-sm-4">
+                <span class="error-message">{{ $errors->first('name') }}</span></p>
+                <span class="error-message">{{ $errors->first('idCook') }}</span></p>
+                <span class="error-message">{{ $errors->first('nameGroupArea') }}</span></p>
+            </div>
+            <div class="col-sm-3 ">
+                <div class="row text-right">
+                    <a href="#myModal-1" data-toggle="modal" class="btn btn-info text-right" style="margin-right: 10px">
+                        Thêm mới
+                    </a>
+                </div>
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                    <h4 class="modal-title">Thêm mới Nhóm thực đơn</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" role="form"  action="{{route('groupmenu.store')}}" method="POST">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">
+                                                Tên
+                                            </label>
+                                            <div class="col-lg-10">
+                                                <input type="text" class="form-control" name="name">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                                <label class="col-lg-2 col-sm-2 control-label">Chọn bếp</label>
+                                                <div class="col-lg-10">
+                                                    @foreach ($cook_active as $item)
+                                                        <label class="checkbox-inline">
+                                                            <input type="radio" id="cook{{$item->id}}" value="{{$item->id}}"  name="idCook"> {{$item->name}}
+                                                        </label>
+
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        <div class="form-group">
+                                            <div class="col-lg-offset-2 col-lg-10 text-right">
+                                                <button type="submit" class="btn btn-default">Thêm mới</button>
+                                            </div>
+                                        </div>
+                                    </form>
 
                                 </div>
-                                <div class="col-md-2 col-sm-12 text-center">
-                                    <input type="submit" class="btn green-meadow radius" name="yt0"
-                                    value="Tìm kiếm"> </div>
-                                </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-md-2 text-right" style="margin-top:15px">
-                        <a href="{{route('groupmenu.v_store')}}" class="btn radius btn btn-warning btn-add"  style="margin: 10px 10px; background:orange; color:black">Thêm mới</a>
-                </div>
-            </div>
 
-            <div class="portlet box green-meadow ">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-coffee"></i>
-                           Danh sách Nhóm thực đơn
-                    </div>
-                </div>
-                <div class="portlet-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <span class="error-message">{{ $errors->first('nameGroupArea') }}</span></p>
                             </div>
                         </div>
+                    </div>
+            </div>
+            </div>
+            <div class="table-responsive">
                     <div class="table-responsive">
                             <table class="table table-bordered table-hover">
-                                <thead>
+                                <thead style="background: lightyellow;">
                                     <tr>
                                         <th>STT</th>
                                         <th>Tên nhóm thực đơn</th>
@@ -102,26 +122,20 @@
                                 </tbody>
                             </table>
                     </div>
-                    <footer class="panel-footer">
-                            <div class="row">
-                                <div class="col-sm-5 text-center">
-                                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                                </div>
-                                <div class="col-sm-7 text-right text-center-xs">
-                                    {{ $groupmenus->links() }}
-                                    {{-- <ul class="pagination pagination-sm m-t-none m-b-none">
-                                        <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                                        <li><a href="">1</a></li>
-                                        <li><a href="">2</a></li>
-                                        <li><a href="">3</a></li>
-                                        <li><a href="">4</a></li>
-                                        <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
-                                    </ul> --}}
-                                </div>
-                            </div>
-                        </footer>
+            </div>
+            <footer class="panel-footer">
+            <div class="row">
+
+                <div class="col-sm-5 text-center">
+                <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+                </div>
+                <div class="col-sm-7 text-right text-center-xs">
+                <ul class="pagination pagination-sm m-t-none m-b-none">
+                        {{ $groupmenus->links() }}
+                </ul>
                 </div>
             </div>
+            </footer>
         </div>
     </div>
 @endsection

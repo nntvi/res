@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/user/store', 'UserController@store')->name('user.p_store');
     Route::get('/user/update/{id}', 'UserController@viewUpdate')->name('user.update');
     Route::post('/user/update/{id}', 'UserController@update')->name('user.p_update');
+    Route::post('/user/update_password/{id}','UserController@updatePassword')->name('user.p_updatepassword');
     Route::get('/user/delete/{id}', 'UserController@delete')->name('user.delete');
 
     // Area

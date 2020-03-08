@@ -43,7 +43,7 @@ class GroupMenuController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // $this->groupmenuRepository->validatorRequestUpadate($request);
+        $this->groupmenuRepository->validatorRequestUpadate($request);
         return  $this->groupmenuRepository->updateGroupMenu($request,$id);
     }
     public function delete($id)

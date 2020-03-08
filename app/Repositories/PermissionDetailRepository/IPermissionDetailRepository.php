@@ -5,4 +5,5 @@ interface IPermissionDetailRepository{
     function showAllDetail();
     function convertActionCode($str);
     function deleteDetail($id);
+    function validatorRequestStore($req);
 }

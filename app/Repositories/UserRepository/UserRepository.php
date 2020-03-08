@@ -51,16 +51,12 @@ class UserRepository  extends Controller implements IUserRepository{
             'name.required' => 'Không để trống tên người dùng',
             'name.mix' => 'Tên người dùng nhiều hơn 3 ký tự',
             'name.max' => 'Tên người dùng giới hạn 30 ký tự',
-            'password.required' => 'Không để trống password',
-            'password-confirm.same' => 'Password xác nhận không khớp',
             'permission.required' => 'Vui lòng chọn quyền cho user'
         ];
 
         $req->validate(
             [
                 'name' => 'required|min:3|max:30',
-                'password' => 'required',
-                'password-confirm' => 'same:password',
                 'permission' => 'required'
             ],
             $messeages
@@ -126,8 +122,9 @@ class UserRepository  extends Controller implements IUserRepository{
         // tìm user cần sửa
         $user = User::find($id);
         $user->name = $request->name;
-        $user->password = bcrypt($request->password);
+        //$user->password = bcrypt($request->password);
         // lưu lại
+        //dd($user);
         $user->save();
 
         // ở bảng user_per tìm id_user trùng với id cần sửa
@@ -147,6 +144,31 @@ class UserRepository  extends Controller implements IUserRepository{
         return redirect(route('user.index'));
     }
 
+    public function validatorRequestUpdatePassword($req){
+        $messeages = [
+            'password.required' => 'Không để trống password cần thay đổi',
+            'password.min' => 'Password không ít hơn 3 ký tự',
+            'password.max' => 'Password nhiều nhất 10 ký tự',
+            'password-confirm.same' => 'Password xác nhận không khớp',
+            'password-confirm.required' => 'Vui lòng nhập password xác nhận',
+        ];
+
+        $req->validate(
+            [
+                'password' => 'required|min:3|max:10',
+                'password-confirm' => 'required|same:password',
+            ],
+            $messeages
+        );
+    }
+
+    public function updatePasswordUser($request, $id)
+    {
+        $user = User::find($id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return redirect(route('user.index'))->with('success','Đổi password thành công');
+    }
     public function deleteUser($id)
     {
         // Tìm trong bảng user_per xóa trước
