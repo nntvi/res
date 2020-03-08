@@ -51,16 +51,12 @@ class UserRepository  extends Controller implements IUserRepository{
             'name.required' => 'Không để trống tên người dùng',
             'name.mix' => 'Tên người dùng nhiều hơn 3 ký tự',
             'name.max' => 'Tên người dùng giới hạn 30 ký tự',
-            'password.required' => 'Không để trống password',
-            'password-confirm.same' => 'Password xác nhận không khớp',
             'permission.required' => 'Vui lòng chọn quyền cho user'
         ];
 
         $req->validate(
             [
                 'name' => 'required|min:3|max:30',
-                'password' => 'required',
-                'password-confirm' => 'same:password',
                 'permission' => 'required'
             ],
             $messeages
@@ -128,6 +124,7 @@ class UserRepository  extends Controller implements IUserRepository{
         $user->name = $request->name;
         //$user->password = bcrypt($request->password);
         // lưu lại
+        //dd($user);
         $user->save();
 
         // ở bảng user_per tìm id_user trùng với id cần sửa
