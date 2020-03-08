@@ -44,4 +44,8 @@ class GroupMenu extends Model
     {
         return $this->hasMany('App\Dishes','id_groupmenu');
     }
+    public function topping()
+    {
+        return $this->hasMany('App\Topping','id_groupmenu');
+    }
 }
