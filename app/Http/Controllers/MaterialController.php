@@ -4,32 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Material;
 use Illuminate\Http\Request;
+use App\Repositories\MaterialRepository\IMaterialRepository;
 
 class MaterialController extends Controller
 {
+    private $materialRepository;
+
+    public function __construct(IMaterialRepository $materialRepository)
+    {
+        $this->materialRepository = $materialRepository;
+    }
+
     public function index()
     {
-       $materials = Material::all();
-       return view('material.index',compact('materials'));
+        return $this->materialRepository->showMaterial();
     }
+
+
     public function store(Request $request)
     {
-        $material = new Material();
-        $material->name = $request->name;
-        $material->save();
-        return redirect(route('material.index'));
+        $this->materialRepository->validatorRequestStore($request);
+        return $this->materialRepository->addMaterial($request);
     }
     public function update(Request $request, $id)
     {
-        $material = Material::find($id);
-        $material->name = $request->name;
-        $material->save();
-        return redirect(route('material.index'));
+        $this->materialRepository->validatorRequestUpdate($request);
+        return $this->materialRepository->updateMaterial($request,$id);
     }
 
     public function delete($id)
     {
-       $material = Material::find($id)->delete();
-       return redirect(route('material.index'));
+        return $this->materialRepository->deleteMaterial($id);
     }
 }

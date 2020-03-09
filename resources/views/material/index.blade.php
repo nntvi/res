@@ -3,18 +3,9 @@
 <div class="table-agile-info">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Nguyên vật liệu
+                Nhóm Nguyên vật liệu cho món
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Nguyên vật liệu</a></li>
-                            <li class="breadcrumb-item"><a href="#">Danh sách nhóm nguyên vật liệu</a></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+
             <div class="portlet box green-meadow">
                 <div class="portlet-title">
                     <div class="caption">
@@ -33,7 +24,7 @@
                                         <div class="col-md-3">
                                             <label class="control-label" for="">Tên Nguyên Vật liệu<span style="color: #ff0000"> *</span></label>
                                                 <input type="text" size="40" class="form-control" name="name" id="" maxlength="255">
-                                                <span class="error-message">{{ $errors->first('nameArea') }}</span></p>
+                                                <span class="error-message">{{ $errors->first('name') }}</span></p>
 
                                         </div>
                                         <div class="col-md-9" style="margin-top: 16px; padding-left: 0">
@@ -60,7 +51,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <span class="error-message">{{ $errors->first('AreaName') }}</span></p>
+                            <span class="error-message">{{ $errors->first('nameMaterial') }}</span></p>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -80,7 +71,7 @@
                                         <form method="post" action="{{route('material.update',['id' => $material->id])}}">
                                             @csrf
                                             <td width="50%">
-                                                <input type="hidden" name="AreaId" value="">
+                                                <input type="hidden" name="nameMaterial" value="">
                                                 <input width="30%" class="form-control" type="text"
                                                     name="name" value="{{$material->name}}">
                                             </td>
