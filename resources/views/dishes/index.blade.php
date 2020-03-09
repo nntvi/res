@@ -3,17 +3,7 @@
 <div class="table-agile-info">
     <div class="panel panel-default">
         <div class="panel-heading">
-            Danh mục
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
-                        <li class="breadcrumb-item"><a href="#">Đồ uống - món ăn</a></li>
-                    </ol>
-                </nav>
-            </div>
+            Đồ uống - Món ăn
         </div>
         <div class="portlet box green-meadow">
                 <div class="portlet-title">

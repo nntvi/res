@@ -8,13 +8,17 @@
             <div class="row w3-res-tb">
             <div class="col-sm-5 m-b-xs">
                 <div class="form-group">
-                    <form action="" method="post">
+                    <form class="panel-body" enctype="multipart/form-data" role="form"
+                            id="searchFood-form" action="{{route('groupmenu.search')}}" method="POST">
+                             @csrf
                         <div class="input-group m-bot15">
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" name="nameSearch">
                             <span class="input-group-btn">
-                                <button class="btn btn-success" type="button">Tìm kiếm</button>
+                                <button class="btn btn-success" type="submit">Tìm kiếm</button>
                             </span>
+
                         </div>
+                        <span class="error-message">{{ $errors->first('nameSearch') }}</span></p>
                     </form>
                 </div>
             </div>
@@ -22,6 +26,7 @@
                 <span class="error-message">{{ $errors->first('name') }}</span></p>
                 <span class="error-message">{{ $errors->first('idCook') }}</span></p>
                 <span class="error-message">{{ $errors->first('nameGroupArea') }}</span></p>
+
             </div>
             <div class="col-sm-3 ">
                 <div class="row text-right">

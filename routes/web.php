@@ -139,7 +139,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/pay/index/{id}', 'PayController@index')->name('pay.index');
     Route::post('/pay/update/{id}', 'PayController@update')->name('pay.p_update');
 
+    // WareHouse
+    Route::get('/warehouse/index/', 'WareHouseController@index')->name('warehouse.index');
+    Route::get('/warehouse/import/', 'WareHouseController@viewImport')->name('warehouse.import');
+    Route::post('/warehouse/import', 'WareHouseController@import')->name('warehouse.p_import');
 
+    Route::get('/excel/index/', 'WareHouseController@testExcel')->name('excel.index');
 });
 
 

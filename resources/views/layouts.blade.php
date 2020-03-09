@@ -325,7 +325,7 @@
                                 </a>
                                 <ul class="sub">
                                     <li><a href="baocaokho.html">Báo cáo kho</a></li>
-                                    <li><a href="nhapxuatkho.html">Nhập xuất kho</a></li>
+                                    <li><a href="{{route('warehouse.index')}}">Nhập xuất kho</a></li>
                                     <li><a href="danhmuckho.html">Danh mục kho</a></li>
                                 </ul>
                             </li>
