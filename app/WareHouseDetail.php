@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class WareHouseDetail extends Model
 {
-    /**
+     /**
      * The table associated with the model.
      *
      * @var string
@@ -33,15 +33,20 @@ class WareHouseDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'id_import',
-        'id_good',
-        'qty',
+        'code',
+        'id_material_detail',
         'id_unit',
-        'price'
+        'qty',
+        'price',
     ];
 
-    public function good()
+    public function materialDetail()
     {
-        return $this->belongsTo('App\MaterialDetail','id_good');
+        return $this->belongsTo('App\MaterialDetail','id_material_detail','id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo('App\Unit','id_unit','id');
     }
 }

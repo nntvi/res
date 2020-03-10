@@ -30,25 +30,17 @@
                 <thead>
                 <tr>
                     <th>STT</th>
+                    <th>Mã phiếu</th>
                     <th>Tên NVL</th>
                     <th>Nhà cung cấp</th>
+                    <th>Ngày tạo</th>
+                    <th>Chi tiết kho</th>
                     <th style="width:30px;"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    @foreach ($imp as $item)
-                        @foreach ($item->id_import as $key => $value)
-                            <td>{{$key+1}}</td>
-                            <td></td>
-                            <td><span class="text-ellipsis">{item.PrHelpText1}</span></td>
-                            <td>
-                            <a href="" class="active" ui-toggle-class=""><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
-                            </td>
 
-                        @endforeach
-
-                    @endforeach
 
                 </tr>
 

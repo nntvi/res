@@ -15,12 +15,11 @@ class CreateDetailWarehouseTable extends Migration
     {
         Schema::create('detail_warehouse', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_import');
-            $table->unsignedBigInteger('id_good');
-            $table->bigInteger('qty');
+            $table->unsignedBigInteger('code_import');
+            $table->unsignedBigInteger('id_material_detail');
             $table->unsignedBigInteger('id_unit');
+            $table->bigInteger('qty');
             $table->bigInteger('price');
-
             $table->timestamps();
         });
     }

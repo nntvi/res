@@ -141,8 +141,8 @@ Route::group(['middleware' => ['auth']], function() {
 
     // WareHouse
     Route::get('/warehouse/index/', 'WareHouseController@index')->name('warehouse.index');
-    Route::get('/warehouse/import/', 'WareHouseController@viewImport')->name('warehouse.import');
-    Route::post('/warehouse/import', 'WareHouseController@import')->name('warehouse.p_import');
+    Route::get('/warehouse/viewImport/', 'WareHouseController@viewImport')->name('warehouse.import');
+    Route::post('/warehouse/import/', 'WareHouseController@import')->name('warehouse.p_import');
 
     Route::get('/excel/index/', 'WareHouseController@testExcel')->name('excel.index');
 });
