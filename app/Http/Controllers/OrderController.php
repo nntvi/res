@@ -10,6 +10,7 @@ use App\OrderDetailTable;
 use App\Table;
 use Illuminate\Http\Request;
 use App\Repositories\OrderRepository\IOrderRepository;
+use App\Topping;
 use Carbon\Carbon;
 
 class OrderController extends Controller
@@ -60,6 +61,7 @@ class OrderController extends Controller
             ];
            OrderDetailTable::create($data);
         }
+
         return redirect(route('order.update',['id' => $orderTable->id]));
     }
 

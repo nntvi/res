@@ -13,7 +13,7 @@ class ToppingRepository extends Controller implements IToppingRepository{
     }
     public function getAllTopping()
     {
-        $toppings = Topping::with('groupMenu')->get();
+        $toppings = Topping::with('groupMenu')->paginate(5);
         return $toppings;
     }
 
