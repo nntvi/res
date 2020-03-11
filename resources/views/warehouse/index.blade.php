@@ -31,19 +31,26 @@
                 <tr>
                     <th>STT</th>
                     <th>Mã phiếu</th>
-                    <th>Tên NVL</th>
+                    <th>Tổng tiền</th>
                     <th>Nhà cung cấp</th>
+                    <th>Ghi chú</th>
                     <th>Ngày tạo</th>
-                    <th>Chi tiết kho</th>
-                    <th style="width:30px;"></th>
+                    <th>Chi tiết</th>
+
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-
-
-                </tr>
-
+                    @foreach ($listImports as $key => $import)
+                    <tr>
+                        <td>{{$key+1}}</td>
+                        <td>{{$import->code}}</td>
+                        <td>{{ number_format($import->total) . ' đ'}}</td>
+                        <td>{{$import->supplier->name}}</td>
+                        <td>{{$import->note}}</td>
+                        <td>{{$import->created_at}}</td>
+                        <td><a href="{{route('warehouse.detail',['code' => $import->code])}}">Xem chi tiết</a></td>
+                    </tr>
+                    @endforeach
                 </tbody>
             </table>
             </div>

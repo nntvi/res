@@ -15,8 +15,9 @@ class WareHouseController extends Controller
 {
     public function index()
     {
-        $imp = WareHouse::all();
-        return view('warehouse.index',compact('imp'));
+        $listImports = WareHouse::with('supplier')->get();
+        //dd($listImports);
+        return view('warehouse.index',compact('listImports'));
     }
 
     public function viewImport()
@@ -49,11 +50,42 @@ class WareHouseController extends Controller
         $warehouse->note = $request->note;
         $warehouse->total = $sum;
         $warehouse->save();
-
+        return redirect(route('warehouse.index'));
     }
 
+    public function getDetail($code)
+    {
+        $detailImports = WareHouseDetail::where('code_import',$code)->with('materialDetail','unit')->get();
+        $units = Unit::orderBy('name')->get();
+        return view('warehouse.detail',compact('detailImports','code','units'));
+    }
 
+    public function updateDetail(Request $request, $id)
+    {
+        $detailImport = WareHouseDetail::find($id);
+        $code = $detailImport->code_import;
 
+        $detailImport->qty = $request->qty;
+        $detailImport->id_unit = $request->id_unit;
+        $detailImport->price = $request->price;
+        $detailImport->save();
+
+        $check = WareHouseDetail::where('code_import',$code)->get();
+        $sum = 0;
+        foreach ($check as $key => $value) {
+            $sum += $value->qty * $value->price;
+        }
+        $import = WareHouse::where('code',$code)->update(['total' => $sum]);
+
+        return redirect(route('warehouse.detail',['code' => $code]));
+    }
+
+    public function printDetail($code)
+    {
+        $import = WareHouse::where('code',$code)->with('supplier')->first();
+        $detailImports = WareHouseDetail::where('code_import',$code)->with('materialDetail','unit')->get();
+        return view('warehouse.print',compact('import','detailImports'));
+    }
     // public function import(Request $request)
     // {
     //     $import = new WareHouse();

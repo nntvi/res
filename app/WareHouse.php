@@ -42,6 +42,11 @@ class WareHouse extends Model
 
     public function detailWareHouse()
     {
-        return $this->hasMany('App\WareHouseDetail','code_import');
+        return $this->hasMany('App\WareHouseDetail','code_import','code');
+    }
+
+    public function supplier()
+    {
+       return $this->belongsTo('App\Supplier','id_supplier','id');
     }
 }
