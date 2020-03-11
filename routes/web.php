@@ -106,7 +106,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Material Action
     Route::get('/material_action/index', 'MaterialActionController@index')->name('material_action.index');
-    Route::get('/material_action/viewStore', 'MaterialActionController@viewStore')->name('material_action.store');
+    Route::get('/material_action/viewStore/{id}', 'MaterialActionController@viewStore')->name('material_action.store');
     Route::post('/material_action/store', 'MaterialActionController@store')->name('material_action.p_store');
     Route::get('/material_action/moreDetail/{id}', 'MaterialActionController@showMoreDetail')->name('material_action.detail');
     Route::get('/material_action/update/{id}', 'MaterialActionController@viewUpdate')->name('material_action.update');

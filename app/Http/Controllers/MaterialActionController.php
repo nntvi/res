@@ -23,7 +23,7 @@ class MaterialActionController extends Controller
         $materialDetails = MaterialDetail::orderBy('name','asc')->get();
         return view('materialaction.store',compact('materials','units','materialDetails'));
     }
-    public function store(Request $request)
+    public function store(Request $request,$id)
     {
         $materialDetail = new MaterialAction();
         $materialDetail->id_groupnvl = $request->idGroupNVL;
