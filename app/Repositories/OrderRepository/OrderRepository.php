@@ -17,7 +17,7 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function getDishes()
     {
-        $groupmenus = GroupMenu::with('dishes')->get();
+        $groupmenus = GroupMenu::with('dishes','topping')->get();
         return $groupmenus;
     }
 

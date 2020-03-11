@@ -28,13 +28,13 @@
                                             <div class="col-lg-4">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
-                                                        <input type="number" name="price" value="{{$dish->sale_price}}" hidden>
                                                         <input type="checkbox" value="{{$dish->id}}" name="idDish[]">
                                                     </span>
                                                     <input type="text" class="form-control" name="nameDish" value="{{$dish->name}}">
                                                 </div>
                                             </div>
                                         @endforeach
+
                                     </div>
                             @endforeach
                         </form>

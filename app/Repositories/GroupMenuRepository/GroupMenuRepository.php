@@ -81,6 +81,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     public function searchGroupMenu($request)
     {
         $temp = $request->nameSearch;
+        //echo $temp;
         $groupmenus = GroupMenu::where('name','LIKE',"%{$temp}%")->get();
         $cooks = CookArea::all();
         $cook_active = array();

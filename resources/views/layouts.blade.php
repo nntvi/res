@@ -30,7 +30,11 @@
         <script src="{{ asset('js/raphael-min.js') }}"></script>
         <script src="{{ asset('js/morris.js') }}"></script>
         <script src="{{ asset('js/notify.js') }}"></script>
-    </head>
+        <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+        <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+        </head>
 
     <body>
         <section id="container">
@@ -325,7 +329,7 @@
                                 </a>
                                 <ul class="sub">
                                     <li><a href="baocaokho.html">Báo cáo kho</a></li>
-                                    <li><a href="nhapxuatkho.html">Nhập xuất kho</a></li>
+                                    <li><a href="{{route('warehouse.index')}}">Nhập xuất kho</a></li>
                                     <li><a href="danhmuckho.html">Danh mục kho</a></li>
                                 </ul>
                             </li>

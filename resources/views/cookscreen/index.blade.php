@@ -8,7 +8,7 @@
                     @foreach ($result as $rs)
                             @if($rs->action_code == "COOK_1")
                                 @foreach ($cooks as $cook)
-                                    @if($cook->id == 1)
+                                    @if($cook->id == 1 && $cook->status == '1')
                                     <div class="panel-heading">
                                         <a href="{{ route('cook_screen.detail',['id' => $cook->id]) }}">{{ $cook->name }}</a>
                                         </div>
@@ -17,7 +17,7 @@
                             @endif
                             @if($rs->action_code == "COOK_2")
                                 @foreach ($cooks as $cook)
-                                    @if($cook->id == 2)
+                                    @if($cook->id == 2 && $cook->status == '1')
                                     <div class="panel-heading">
                                         <a href="{{ route('cook_screen.detail',['id' => $cook->id]) }}">{{ $cook->name }}</a>
                                     </div>
@@ -27,7 +27,7 @@
 
                             @if($rs->action_code == "COOK_3")
                                 @foreach ($cooks as $cook)
-                                    @if($cook->id == 2)
+                                    @if($cook->id == 2 && $cook->status == '1')
                                     <div class="panel-heading">
                                         <a href="{{ route('cook_screen.detail',['id' => $cook->id]) }}">{{ $cook->name }}</a>
                                     </div>
