@@ -50,7 +50,7 @@
                                             <label class="control-label">Những mặt hàng cần nhập<span style="color: #ff0000"> *</span></label>
                                     </div>
                                     <div class="col-xs-6 text-right">
-                                            <button class="btn btn-info" id="addMaterial" type="button">Add</button>
+                                        <button class="btn btn-info" id="addMaterial" type="button">Add</button>
                                     </div>
                                 </div>
 
