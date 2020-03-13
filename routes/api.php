@@ -24,3 +24,6 @@ Route::get('searchDetailWarehouse/{name}','AjaxController@searchDetailWarehouse'
 
 
 
+//Route::get('searchMaterialDetail/{name}','AjaxController@getSearchMaterialDetail');
+
+

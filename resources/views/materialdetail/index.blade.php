@@ -18,10 +18,11 @@
                                             <form action="{{route('material_detail.search')}}" method="POST">
                                                 @csrf
                                                 <div class="col-md-6 col-sm-4">
-                                                    <input type="text" size="40" class="form-control radius" placeholder="Tên món ăn" name="nameSearch">
+                                                    <input type="text" size="40" class="form-control radius" id="nameMaterialDetail" placeholder="Tên món ăn" name="nameSearch">
+                                                    <span class="error-message">{{ $errors->first('nameSearch') }}</span></p>
                                                 </div>
                                                 <div class="col-md-2 col-sm-12 text-center">
-                                                        <input type="submit" class="btn green-meadow radius" name="yt0"
+                                                        <input type="submit" class="btn green-meadow radius" id="btnSearchMaterialDetail"
                                                             value="Tìm kiếm">
                                                 </div>
                                             </form>
@@ -34,7 +35,9 @@
                                                         <div class="row">
                                                             <div class="col-md-8 col-sm-4">
                                                                 <input type="text" size="40" class="form-control radius" placeholder="Tên món ăn"
-                                                                    name="name">
+                                                                    name="nameAdd">
+                                                                    <span class="error-message">{{ $errors->first('nameAdd') }}</span></p>
+
                                                             </div>
                                                             <div class="col-md-2 col-sm-12 text-center">
                                                                 <input type="submit" class="btn green-meadow radius" name="yt0"
@@ -58,7 +61,7 @@
                                 <div class="portlet-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <span class="error-message">{{ $errors->first('AreaName') }}</span></p>
+                                            <span class="error-message">{{ $errors->first('name') }}</span></p>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -71,7 +74,7 @@
                                                     <th>Xóa</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="searchMaterial">
                                                 @foreach ($materialDetails as $key => $materialDetail)
                                                     <tr>
                                                         <td width="20%">{{$key + 1}}</td>

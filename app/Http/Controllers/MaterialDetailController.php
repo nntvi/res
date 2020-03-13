@@ -4,43 +4,45 @@ namespace App\Http\Controllers;
 
 use App\MaterialAction;
 use App\MaterialDetail;
+use App\Repositories\MaterialDetailRepository\IMaterialDetailRepository;
 use Illuminate\Http\Request;
 
 class MaterialDetailController extends Controller
 {
+    private $materialDetailRepository;
+
+    public function __construct(IMaterialDetailRepository $materialDetailRepository)
+    {
+        $this->materialDetailRepository = $materialDetailRepository;
+    }
+
     public function index()
     {
-        $materialDetails = MaterialDetail::orderBy('id','desc')->paginate(10);
-        return view('materialdetail.index',compact('materialDetails'));
+        return $this->materialDetailRepository->showMaterialDetail();
     }
 
     public function store(Request $request)
     {
-        $materialDetail = new MaterialDetail();
-        $materialDetail->name = $request->name;
-        $materialDetail->save();
-        return redirect(route('material_detail.index'));
+        $this->materialDetailRepository->validatorRequestStore($request);
+        return $this->materialDetailRepository->addMaterialDetail($request);
     }
 
     public function update(Request $request,$id)
     {
-       $materialDetail = MaterialDetail::find($id);
-       $materialDetail->name = $request->name;
-       $materialDetail->save();
-       return redirect(route('material_detail.index'));
-    }
-
-    public function delete($id)
-    {
-        $materialAction = MaterialAction::where('id_material_detail',$id)->delete();
-        $materialDetail = MaterialDetail::find($id)->delete();
-        return redirect(route('material_detail.index'));
+        $this->materialDetailRepository->validatorRequestUpdate($request);
+        return $this->materialDetailRepository->updateMaterialDetail($request,$id);
     }
 
     public function search(Request $request)
     {
-        $temp = $request->nameSearch;
-        $materialDetails = MaterialDetail::where('name','LIKE',"%{$temp}%")->get();
-        return view('materialdetail.search',compact('materialDetails'));
+        $this->materialDetailRepository->validatorRequestSearch($request);
+        return $this->materialDetailRepository->searchMaterialDetail($request);
     }
+
+    public function delete($id)
+    {
+        return $this->materialDetailRepository->deleteMaterialDetail($id);
+    }
+
+
 }

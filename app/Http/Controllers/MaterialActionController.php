@@ -16,21 +16,24 @@ class MaterialActionController extends Controller
         return view('materialaction.index',compact('materials'));
     }
 
-    public function viewStore()
+    public function viewStore($id)
     {
-        $materials = Material::all();
+        $material = Material::where('id',$id)->first();
         $units = Unit::orderBy('name','asc')->get();
         $materialDetails = MaterialDetail::orderBy('name','asc')->get();
-        return view('materialaction.store',compact('materials','units','materialDetails'));
+        return view('materialaction.store',compact('material','units','materialDetails'));
     }
-    public function store(Request $request)
+    public function store(Request $request,$id)
     {
-        $materialDetail = new MaterialAction();
-        $materialDetail->id_groupnvl = $request->idGroupNVL;
-        $materialDetail->id_material_detail = $request->idMaterialDetail;
-        $materialDetail->id_dvt = $request->id_dvt;
-        $materialDetail->qty = $request->qty;
-        $materialDetail->save();
+        $count = count($request->id_material);
+        for ($i=0; $i < $count; $i++) {
+            $materialDetail = new MaterialAction();
+            $materialDetail->id_groupnvl = $request->id_groupnvl;
+            $materialDetail->id_material_detail = $request->id_material[$i];
+            $materialDetail->id_dvt = $request->id_unit[$i];
+            $materialDetail->qty = $request->qty[$i];
+            $materialDetail->save();
+        }
         return redirect(route('material_action.index'));
     }
 
@@ -45,7 +48,7 @@ class MaterialActionController extends Controller
         $materialAction = MaterialAction::where('id',$id)->with('materialDetail','unit','material')->get();
         //dd($materialAction);
         $units = Unit::all();
-        return view('materialdetail.update',compact('materialAction','units'));
+        return view('materialaction.update',compact('materialAction','units'));
     }
 
     public function update(Request $request, $id)
