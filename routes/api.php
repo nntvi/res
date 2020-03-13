@@ -17,6 +17,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('getTableByIdArea/{id}', 'AjaxController@getTable');
-Route::get('getDishByIdGroupMenu/{id}','AjaxController@getDish');
+// Get Object to Export
+Route::get('getOjbectToExport/{id}','AjaxController@getType');
+
+Route::get('searchDetailWarehouse/{name}','AjaxController@searchDetailWarehouse');
+
+
 

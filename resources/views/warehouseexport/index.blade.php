@@ -7,11 +7,11 @@
             </div>
             <div class="row w3-res-tb">
             <div class="col-sm-5 m-b-xs">
-                <a href="{{route('warehouse.import')}}">
-                    <button class="btn btn-md btn-info">Nhập Kho</button>
+                <a href="{{route('warehouse_export.export')}}">
+                    <button class="btn btn-md btn-info">Xuất Kho</button>
                 </a>
                 <a href="">
-                    <button class="btn btn-md btn-success">Nhập liệu excel</button>
+                    <button class="btn btn-md btn-success">Xuất excel</button>
                 </a>
             </div>
             <div class="col-sm-4">
@@ -20,7 +20,7 @@
                 <div class="input-group">
                 <input type="text" class="input-sm form-control" placeholder="Search">
                 <span class="input-group-btn">
-                    <button class="btn btn-sm btn-default" type="button">Go!</button>
+                    <button class="btn btn-sm btn-default" type="button">Search</button>
                 </span>
                 </div>
             </div>
@@ -31,16 +31,15 @@
                 <tr>
                     <th>STT</th>
                     <th>Mã phiếu</th>
-                    <th>Tổng tiền</th>
-                    <th>Nhà cung cấp</th>
+                    <th>Loại phiếu</th>
                     <th>Ghi chú</th>
+                    <th>Tạo bởi</th>
                     <th>Ngày tạo</th>
                     <th>Chi tiết</th>
-
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($listImports as $key => $import)
+                    {{-- @foreach ($listImports as $key => $import)
                     <tr>
                         <td>{{$key+1}}</td>
                         <td>{{$import->code}}</td>
@@ -50,7 +49,7 @@
                         <td>{{$import->created_at}}</td>
                         <td><a href="{{route('warehouse.detail',['code' => $import->code])}}">Xem chi tiết</a></td>
                     </tr>
-                    @endforeach
+                    @endforeach --}}
                 </tbody>
             </table>
             </div>

@@ -18,8 +18,8 @@ class WareHouseDetailImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new WareHouseDetail([
-            'id_import' => $row[0],
-            'id_good' => $row[1],
+            'code_import' => $row[0],
+            'id_material_detail' => $row[1],
             'qty' => $row[2],
             'id_unit' => $row[3],
             'price' => $row[4]
