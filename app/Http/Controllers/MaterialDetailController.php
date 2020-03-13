@@ -4,22 +4,27 @@ namespace App\Http\Controllers;
 
 use App\MaterialAction;
 use App\MaterialDetail;
+use App\Repositories\MaterialDetailRepository\IMaterialDetailRepository;
 use Illuminate\Http\Request;
 
 class MaterialDetailController extends Controller
 {
+    private $materialDetailRepository;
+
+    public function __construct(IMaterialDetailRepository $materialDetailRepository)
+    {
+        $this->materialDetailRepository = $materialDetailRepository;
+    }
+
     public function index()
     {
-        $materialDetails = MaterialDetail::orderBy('id','desc')->paginate(10);
-        return view('materialdetail.index',compact('materialDetails'));
+        return $this->materialDetailRepository->showMaterialDetail();
     }
 
     public function store(Request $request)
     {
-        $materialDetail = new MaterialDetail();
-        $materialDetail->name = $request->name;
-        $materialDetail->save();
-        return redirect(route('material_detail.index'));
+        $this->materialDetailRepository->validatorRequestStore($request);
+        return $this->materialDetailRepository->addMaterialDetail($request);
     }
 
     public function update(Request $request,$id)

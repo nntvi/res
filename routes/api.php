@@ -20,3 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('getTableByIdArea/{id}', 'AjaxController@getTable');
 Route::get('getDishByIdGroupMenu/{id}','AjaxController@getDish');
 
+Route::get('searchMaterialDetail/{name}','AjaxController@getSearchMaterialDetail');
+
+

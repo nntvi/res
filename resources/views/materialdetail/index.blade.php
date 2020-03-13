@@ -18,10 +18,10 @@
                                             <form action="{{route('material_detail.search')}}" method="POST">
                                                 @csrf
                                                 <div class="col-md-6 col-sm-4">
-                                                    <input type="text" size="40" class="form-control radius" placeholder="Tên món ăn" name="nameSearch">
+                                                    <input type="text" size="40" class="form-control radius" id="nameMaterialDetail" placeholder="Tên món ăn" name="nameSearch">
                                                 </div>
                                                 <div class="col-md-2 col-sm-12 text-center">
-                                                        <input type="submit" class="btn green-meadow radius" name="yt0"
+                                                        <input type="submit" class="btn green-meadow radius" id="btnSearchMaterialDetail"
                                                             value="Tìm kiếm">
                                                 </div>
                                             </form>
@@ -35,6 +35,8 @@
                                                             <div class="col-md-8 col-sm-4">
                                                                 <input type="text" size="40" class="form-control radius" placeholder="Tên món ăn"
                                                                     name="name">
+                                                                    <span class="error-message">{{ $errors->first('name') }}</span></p>
+
                                                             </div>
                                                             <div class="col-md-2 col-sm-12 text-center">
                                                                 <input type="submit" class="btn green-meadow radius" name="yt0"
@@ -71,7 +73,7 @@
                                                     <th>Xóa</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="searchMaterial">
                                                 @foreach ($materialDetails as $key => $materialDetail)
                                                     <tr>
                                                         <td width="20%">{{$key + 1}}</td>
