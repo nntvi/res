@@ -139,13 +139,19 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/pay/index/{id}', 'PayController@index')->name('pay.index');
     Route::post('/pay/update/{id}', 'PayController@update')->name('pay.p_update');
 
-    // WareHouse
+    // WareHouse Import
     Route::get('/warehouse/index/', 'WareHouseController@index')->name('warehouse.index');
     Route::get('/warehouse/viewImport/', 'WareHouseController@viewImport')->name('warehouse.import');
     Route::post('/warehouse/import/', 'WareHouseController@import')->name('warehouse.p_import');
     Route::get('/warehouse/detail/{code}', 'WareHouseController@getDetail')->name('warehouse.detail');
     Route::post('/warehouse/detail/{id}', 'WareHouseController@updateDetail')->name('warehouse.p_detail');
     Route::get('/warehouse/printdetail/{code}', 'WareHouseController@printDetail')->name('warehouse.print_detail');
+
+    // WareHouse Export
+    Route::get('/warehouse_export/index/', 'WareHouseExportController@index')->name('warehouse_export.index');
+    Route::get('/warehouse_export/viewExport/', 'WareHouseExportController@viewExport')->name('warehouse_export.export');
+
+
 
     Route::get('/excel/index/', 'WareHouseController@testExcel')->name('excel.index');
 });

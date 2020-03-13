@@ -29,23 +29,20 @@ class MaterialDetailController extends Controller
 
     public function update(Request $request,$id)
     {
-       $materialDetail = MaterialDetail::find($id);
-       $materialDetail->name = $request->name;
-       $materialDetail->save();
-       return redirect(route('material_detail.index'));
-    }
-
-    public function delete($id)
-    {
-        $materialAction = MaterialAction::where('id_material_detail',$id)->delete();
-        $materialDetail = MaterialDetail::find($id)->delete();
-        return redirect(route('material_detail.index'));
+        $this->materialDetailRepository->validatorRequestUpdate($request);
+        return $this->materialDetailRepository->updateMaterialDetail($request,$id);
     }
 
     public function search(Request $request)
     {
-        $temp = $request->nameSearch;
-        $materialDetails = MaterialDetail::where('name','LIKE',"%{$temp}%")->get();
-        return view('materialdetail.search',compact('materialDetails'));
+        $this->materialDetailRepository->validatorRequestSearch($request);
+        return $this->materialDetailRepository->searchMaterialDetail($request);
     }
+
+    public function delete($id)
+    {
+        return $this->materialDetailRepository->deleteMaterialDetail($id);
+    }
+
+
 }

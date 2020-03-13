@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WareHouseDetail extends Model
+class TypeExport extends Model
 {
-     /**
+    /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'detail_warehouse';
+    protected $table = 'warehouse_type';
 
     /**
      * The primary key associated with the table.
@@ -25,7 +25,7 @@ class WareHouseDetail extends Model
      *
      * @var bool
      */
-    public $timestamps = true;
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -33,20 +33,7 @@ class WareHouseDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'code_import',
-        'id_material_detail',
-        'id_unit',
-        'qty',
-        'price',
+        'name',
     ];
 
-    public function materialDetail()
-    {
-        return $this->belongsTo('App\MaterialDetail','id_material_detail','id');
-    }
-
-    public function unit()
-    {
-        return $this->belongsTo('App\Unit','id_unit','id');
-    }
 }

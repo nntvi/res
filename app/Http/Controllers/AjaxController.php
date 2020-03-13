@@ -2,29 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Dishes;
-use Illuminate\Http\Request;
-use App\Table;
+use App\CookArea;
+use App\Supplier;
+use App\WareHouseDetail;
 use App\MaterialDetail;
+use Illuminate\Http\Request;
+
 class AjaxController extends Controller
 {
-    public function getTable($id)
+    public function getType($id)
     {
-        $tables = Table::where('id_area',$id)->get();
-        if (is_null($tables)) {
-            return response()->json([ "message" => "Record not found"], 404);
-        }
+        if($id == 1){
+            $cooks = CookArea::all();
+            return response()->json($cooks, 200);
 
-        return response()->json($tables, 200);
+        }
+        else if($id == 3){
+            $suppliers = Supplier::all();
+            return response()->json($suppliers, 200);
+        }
+        else if($id == 2){
+            $data = array();
+            $data = [
+                'id' => 0,
+                'name' => 'Hủy'
+            ];
+            return response()->json($data, 200);
+        }
     }
-
-    public function getDish($id)
+    public function searchDetailWarehouse($name)
     {
-        $dishes = Dishes::where('id_groupmenu',$id)->get();
-        if(is_null($dishes)){
-            return response()->json([ "message" => "Record not found"], 404);
-        }
-        return response()->json($dishes,200);
+
+
     }
 
     public function getSearchMaterialDetail($name)

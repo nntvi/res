@@ -16,15 +16,15 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
 
     public function validatorRequestStore($req){
         $messeages = [
-            'name.required' => 'Không để trống tên khu vực',
-            'name.min' => 'Tên khu vực nhiều hơn 3 ký tự',
-            'name.max' => 'Tên khu vực giới hạn 30 ký tự',
-            'name.unique' => 'Tên khu vực đã tồn tại trong hệ thống'
+            'nameAdd.required' => 'Không để trống tên nvl',
+            'nameAdd.min' => 'Tên nvl nhiều hơn 3 ký tự',
+            'nameAdd.max' => 'Tên nvl giới hạn 30 ký tự',
+            'nameAdd.unique' => 'Tên nvl đã tồn tại trong hệ thống'
         ];
 
         $req->validate(
             [
-                'name' => 'required|min:3|max:30|unique:areas,name',
+                'nameAdd' => 'required|min:3|max:30|unique:material_details,name',
             ],
             $messeages
         );
@@ -35,6 +35,56 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $materialDetail = new MaterialDetail();
         $materialDetail->name = $request->name;
         $materialDetail->save();
+        return redirect(route('material_detail.index'));
+    }
+
+    public function validatorRequestSearch($req){
+        $messeages = [
+            'nameSearch.required' => 'Không để trống tên nvl cần search',
+        ];
+
+        $req->validate(
+            [
+                'nameSearch' => 'required',
+            ],
+            $messeages
+        );
+    }
+
+    public function searchMaterialDetail($request)
+    {
+        $temp = $request->nameSearch;
+        $materialDetails = MaterialDetail::where('name','LIKE',"%{$temp}%")->get();
+        return view('materialdetail.search',compact('materialDetails'));
+    }
+
+    public function validatorRequestUpdate($req){
+        $messeages = [
+            'name.required' => 'Không để trống tên nvl',
+            'name.min' => 'Tên nvl nhiều hơn 3 ký tự',
+            'name.max' => 'Tên nvl giới hạn 30 ký tự',
+            'name.unique' => 'Tên nvl đã tồn tại trong hệ thống'
+        ];
+
+        $req->validate(
+            [
+                'name' => 'required|min:3|max:30|unique:material_details,name',
+            ],
+            $messeages
+        );
+    }
+    public function updateMaterialDetail($request,$id)
+    {
+        $materialDetail = MaterialDetail::find($id);
+        $materialDetail->name = $request->name;
+        $materialDetail->save();
+        return redirect(route('material_detail.index'));
+    }
+
+    public function deleteMaterialDetail($id)
+    {
+        $materialAction = MaterialAction::where('id_material_detail',$id)->delete();
+        $materialDetail = MaterialDetail::find($id)->delete();
         return redirect(route('material_detail.index'));
     }
 }
