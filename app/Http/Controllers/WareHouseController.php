@@ -8,8 +8,8 @@ use App\Unit;
 use App\WareHouse;
 use App\WareHouseDetail;
 use Illuminate\Http\Request;
-//use Excel;
-//use App\Imports\WareHouseDetailImport;
+use Excel;
+use App\Imports\WareHouseDetailImport;
 
 class WareHouseController extends Controller
 {
@@ -86,30 +86,15 @@ class WareHouseController extends Controller
         $detailImports = WareHouseDetail::where('code_import',$code)->with('materialDetail','unit')->get();
         return view('warehouse.print',compact('import','detailImports'));
     }
-    // public function import(Request $request)
-    // {
-    //     $import = new WareHouse();
-    //     $import->id_supplier = $request->supplier;
-    //     //dd($import);
-    //     $import->save();
 
-    //     $a = $import->first('id');
-    //     $import_detail = new WareHouseDetail();
-    //     $import_detail->id_import = $a->id;
-    //     $import_detail->id_good = $request->good;
-    //     $import_detail->qty = $request->qty;
-    //     $import_detail->id_unit = $request->unit;
-    //     $import_detail->price = $request->price;
-    //     $import_detail->save();
-
-    // }
-
-    // public function testExcel()
-    // {
-    //     $res = Excel::toCollection(new WareHouseDetailImport, 'test.xlsx');
-    //     dd($res);
-    //     foreach ($res as $key => $value) {
-    //         $imp = WareHouseDetail::create($value);
-    //     }
-    // }
+    public function testExcel()
+    {
+        $res = Excel::toArray(new WareHouseDetailImport, 'test.xlsx');
+        //dd($res);
+        foreach ($res as $key => $round) {
+            foreach ($round as $key => $value) {
+                $imp = WareHouseDetail::create($value);
+            }
+        }
+    }
 }
