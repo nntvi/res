@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CookArea;
 use App\Supplier;
+use App\Unit;
 use App\WareHouseDetail;
 use Illuminate\Http\Request;
 
@@ -29,9 +30,18 @@ class AjaxController extends Controller
             return response()->json($data, 200);
         }
     }
-    public function searchDetailWarehouse($name)
+
+    public function searchMaterialExport($name)
     {
-
-
+        $detailMaterial = WareHouseDetail::with('materialDetail','unit')
+                            ->whereHas('materialDetail', function ($query)  use($name) {
+                                $query->where('name', 'LIKE', $name);
+                        })->get();
+        $units = Unit::all();
+        $data = [
+            'detailMaterial' => $detailMaterial,
+            'units' => $units
+        ];
+        return response()->json($data, 200);
     }
 }

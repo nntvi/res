@@ -53,8 +53,6 @@
                                             <button class="btn btn-info" id="addMaterial" type="button">Add</button>
                                     </div>
                                 </div>
-
-
                                 <div class="space"></div>
                                 <div id="material">
                                     <table class="table table-bordered">
@@ -105,7 +103,7 @@
                                                     <td class="remove">
                                                         <button class="removeItem btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove" style="color:white" aria-hidden="true"></span></button>
                                                     </td>
-                                                    </tr>`
+                                                </tr>`
                                     };
 
                                                 // Create user list
