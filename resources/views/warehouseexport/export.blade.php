@@ -10,7 +10,7 @@
             <div class="pannel-body">
                 <div class="position-center">
                     <div class="form">
-                        <form class="panel-body" role="form" action="{{route('warehouse.p_import')}}" method="POST">
+                        <form class="panel-body" role="form" action="{{route('warehouse_export.p_export')}}" method="POST">
                             @csrf
                             <div class="col-md-12">
                                 <div class="row">
@@ -24,6 +24,7 @@
                                         <label class="control-label">Loại xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
                                         <select class="form-control m-bot15" name="id_kind" id="type_object">
+                                            <option value="">-- Chọn loại xuất --</option>
                                             @foreach ($kinds as $kind)
                                                 <option value="{{$kind->id}}">{{$kind->name}}</option>
                                             @endforeach
@@ -60,9 +61,9 @@
                                     </div>
                                     <div class="col-xs-9">
                                         <div class="input-group m-bot15">
-                                            <input type="text" class="form-control">
+                                            <input type="text" class="form-control" id="nameMaterial" value="">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-success" type="button">Search!</button>
+                                                    <button class="btn btn-success" type="button" id="searchMaterial">Search!</button>
                                                 </span>
                                             </div>
                                     </div>
@@ -75,29 +76,29 @@
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th width=35%>Tên mặt hàng</th>
-                                                    <th width=20%>Số lượng cũ</th>
-                                                    <th width=20%>Số lượng xuất</th>
-                                                    <th width=15%>Đơn vị</th>
+                                                    <th width=23%>Tên mặt hàng</th>
+                                                    <th width=25%>Sl trong kho</th>
+                                                    <th width=24%>Số lượng xuất</th>
+                                                    <th width=15%>Đơn vị xuất</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="list">
-                                                <tr>
-                                                    <td>Giấm</td>
-                                                    <td>12</td>
-                                                    <td>10</td>
-                                                    <td>ml</td>
-                                                    <td>x</td>
-                                                </tr>
+                                                <input type="text" hidden>
                                             </tbody>
                                         </table>
                                     </div>
+                                    <script>
+                                        function clickToRemove($id){
+                                           var row = document.getElementById('row'+$id);
+                                           row.remove();
+                                        }
+                                    </script>
                                 </div>
 
                             <div class="row">
                                 <div class="col-xs-12 text-center">
-                                    <button type="submit" class="btn green-meadow radius">Tạo phiếu</button>
+                                    <button type="submit" class="btn green-meadow radius">Tạo phiếu xuất</button>
                                 </div>
                             </div>
                         </form>

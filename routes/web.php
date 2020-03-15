@@ -150,8 +150,10 @@ Route::group(['middleware' => ['auth']], function() {
     // WareHouse Export
     Route::get('/warehouse_export/index/', 'WareHouseExportController@index')->name('warehouse_export.index');
     Route::get('/warehouse_export/viewExport/', 'WareHouseExportController@viewExport')->name('warehouse_export.export');
-
-
+    Route::post('/warehouse_export/export/', 'WareHouseExportController@export')->name('warehouse_export.p_export');
+    Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');
+    Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');
+    Route::get('/warehouse_export/printdetail/{code}', 'WareHouseExportController@printDetail')->name('warehouse_export.detail');
 
     Route::get('/excel/index/', 'WareHouseController@testExcel')->name('excel.index');
 });

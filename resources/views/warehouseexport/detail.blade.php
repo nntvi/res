@@ -3,10 +3,9 @@
 <div class="table-agile-info">
     <div class="panel panel-default">
         <div class="panel-heading">
-            Chi tiết Phiếu Nhập {{ $code }}
+            Chi tiết phiếu xuất {{ $code }}
             <div class="print text-right">
-
-                <a href="{{route('warehouse.print_detail',['code' => $code])}}">
+                <a href="{{route('warehouse_export.detail',['code' => $code])}}">
                     <i class="fa fa-print" aria-hidden="true"></i>
                 </a>
             </div>
@@ -28,21 +27,17 @@
                 <th>Tên mặt hàng</th>
                 <th>Số lượng xuất</th>
                 <th>Đơn vị tính</th>
-                <th>Giá nhập</th>
-                <th>Tổng giá</th>
                 <th style="width:30px;"></th>
             </tr>
             </thead>
             <tbody>
-                @foreach ($detailImports as $key => $item)
+                @foreach ($detailExports as $key => $item)
                     <tr data-expanded="true">
                         <td>{{$key+1}}</td>
-                        <td>{{ $item->materialDetail->name }}</td>
+                        <td>{{$item->materialDetail->name}}</td>
                         <td>{{ $item->qty }}</td>
                         <td>{{ $item->unit->name}}</td>
-                        <td>{{ number_format($item->price) . ' đ'}}</td>
-                        <td>{{ number_format($item->qty * $item->price) . ' đ' }}</td>
-                        <td>
+                        {{--  <td>
                             <a href="#myModal{{$item->id}}" data-toggle="modal" class="active" ui-toggle-class=""><i class="fa fa-pencil-square-o text-success text-active"></i></a>
                             <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal{{$item->id}}" class="modal fade">
                                     <div class="modal-dialog">
@@ -96,7 +91,7 @@
                                     </div>
                                 </div>
                             <a href="" onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i class="fa fa-times text-danger text"></i></a>
-                        </td>
+                        </td>  --}}
                     </tr>
                 @endforeach
             </tbody>
