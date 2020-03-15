@@ -21,6 +21,7 @@ $(document).ready(function() {
     });
 });
 
+<<<<<<< HEAD
 $(document).ready(function() {
     $("#searchMaterial").click(function() {
         var name = $("#nameMaterial").val();
@@ -66,3 +67,28 @@ $(document).ready(function() {
         });
     });
 });
+=======
+// $(document).ready(function() {
+//     $("#btnSearchMaterialDetail").click(function() {
+//         var name = $('#nameMaterialDetail').val();
+//         //console.log(name);
+
+//         $.ajax({
+//             url: 'api/searchMaterialDetail/' + name, //Trang xử lý
+//             method: 'GET',
+//             dataType: 'JSON',
+//             success: function(data) {
+//                 $("#searchMaterial").empty();
+//                 data.forEach(function(c) {
+//                     $('#searchMaterial');
+//                 });
+//             },
+//             error: function(xhr, ajaxOptions, thrownError) {
+//                 alert(xhr.status);
+//                 alert(thrownError);
+//             }
+//         });
+//     });
+// });
+
+>>>>>>> dc4e8fa9ea94cd99af62aaadcba0b4c50a8581ef

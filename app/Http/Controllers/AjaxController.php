@@ -6,6 +6,7 @@ use App\CookArea;
 use App\Supplier;
 use App\Unit;
 use App\WareHouseDetail;
+use App\MaterialDetail;
 use Illuminate\Http\Request;
 
 class AjaxController extends Controller
@@ -43,5 +44,14 @@ class AjaxController extends Controller
             'units' => $units
         ];
         return response()->json($data, 200);
+    }
+
+    public function getSearchMaterialDetail($name)
+    {
+        $materialDetails = MaterialDetail::where('name','LIKE',"%{$name}%")->get();
+        if(is_null($materialDetails)){
+            return response()->json([ "message" => "Record not found"], 404);
+        }
+        return response()->json($materialDetails,200);
     }
 }

@@ -62,6 +62,11 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Repositories\MaterialDetailRepository\IMaterialDetailRepository',
+            'App\Repositories\MaterialDetailRepository\MaterialDetailRepository'
+        );
+
+        $this->app->bind(
             'App\Repositories\SupplierRepository\ISupplierRepository',
             'App\Repositories\SupplierRepository\SupplierRepository'
         );

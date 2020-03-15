@@ -25,3 +25,6 @@ Route::get('searchMaterialExport/{name}','AjaxController@searchMaterialExport');
 
 
 
+//Route::get('searchMaterialDetail/{name}','AjaxController@getSearchMaterialDetail');
+
+

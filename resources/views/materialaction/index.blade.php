@@ -6,7 +6,7 @@
                 Chi tiết nguyên vật liệu
             </div>
             <div class="portlet box green-meadow" style="margin-top: 20px;">
-                    <a href="{{route('material_action.store')}}" class="btn radius btn btn-warning btn-add"  style="margin: 10px 10px; background:orange; color:black">Thêm mới</a>
+                    {{--  <a href="{{route('material_action.store')}}" class="btn radius btn btn-warning btn-add"  style="margin: 10px 10px; background:orange; color:black">Thêm mới</a>  --}}
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-coffee"></i>
@@ -21,7 +21,7 @@
                                             <th scope="col">Thuộc nhóm NVL</th>
                                             <th scope="col">Tên nguyên vật liệu</th>
                                             <th scope="col">Xem chi tiết</th>
-
+                                            <th> Thêm chi tiết</th>
                                             </tr>
                                     </thead>
                                     <tbody>
@@ -38,8 +38,13 @@
                                                 <td>
                                                     <a href="{{route('material_action.detail',['id' => $material->id])}}">Xem chi tiết</a>
                                                 </td>
-
+                                                <td class="text-center">
+                                                    <a href="{{route('material_action.store',['id' => $material->id])}}">
+                                                        <i class="fa fa-plus-circle" aria-hidden="true" style="font-size: 17px; color: darkgreen"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
+
                                             @endforeach
 
                                     </tbody>
