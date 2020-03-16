@@ -85,6 +85,16 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\OrderRepository\IOrderRepository',
             'App\Repositories\OrderRepository\OrderRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\PayRepository\IPayRepository',
+            'App\Repositories\PayRepository\PayRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\WarehouseRepository\IWarehouseRepository',
+            'App\Repositories\WarehouseRepository\WarehouseRepository'
+        );
     }
 
     /**
