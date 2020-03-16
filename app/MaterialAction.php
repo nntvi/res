@@ -33,7 +33,7 @@ class MaterialAction extends Model
      * @var array
      */
     protected $fillable = [
-        'id_groupmenu',
+        'id_groupnvl',
         'id_material_detail',
         'id_dvt',
         'qty',

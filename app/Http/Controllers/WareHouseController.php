@@ -10,6 +10,7 @@ use App\WareHouseDetail;
 use Illuminate\Http\Request;
 use Excel;
 use App\Imports\WareHouseDetailImport;
+use App\Inventory;
 
 class WareHouseController extends Controller
 {
@@ -34,6 +35,7 @@ class WareHouseController extends Controller
         $sum = 0;
         for ($i=0; $i < $count; $i++) {
             $detail_warehouse = new WareHouseDetail();
+            $inventory = new Inventory();
             $detail_warehouse->code_import = $request->code;
             $detail_warehouse->id_material_detail = $request->id_material[$i];
             $detail_warehouse->qty = $request->qty[$i];
@@ -42,6 +44,7 @@ class WareHouseController extends Controller
             //dd($detail_warehouse);
             $sum+= $request->qty[$i] * $request->price[$i];
             $detail_warehouse->save();
+            $inventory->save();
         }
 
         $warehouse = new WareHouse();
@@ -87,14 +90,18 @@ class WareHouseController extends Controller
         return view('warehouse.print',compact('import','detailImports'));
     }
 
-    public function testExcel()
-    {
-        $res = Excel::toArray(new WareHouseDetailImport, 'test.xlsx');
-        //dd($res);
-        foreach ($res as $key => $round) {
-            foreach ($round as $key => $value) {
-                $imp = WareHouseDetail::create($value);
-            }
-        }
-    }
+    // public function substractMaterial()
+    // {
+
+    // }
+    // public function testExcel()
+    // {
+    //     $res = Excel::toArray(new WareHouseDetailImport, 'test.xlsx');
+    //     //dd($res);
+    //     foreach ($res as $key => $round) {
+    //         foreach ($round as $key => $value) {
+    //             $imp = WareHouseDetail::create($value);
+    //         }
+    //     }
+    // }
 }
