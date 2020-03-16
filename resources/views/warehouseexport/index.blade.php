@@ -39,17 +39,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($listImports as $key => $import)
+                    @foreach ($warehouseexports as $key => $warehouseexport)
                     <tr>
                         <td>{{$key+1}}</td>
-                        <td>{{$import->code}}</td>
-                        <td>{{ number_format($import->total) . ' đ'}}</td>
-                        <td>{{$import->supplier->name}}</td>
-                        <td>{{$import->note}}</td>
-                        <td>{{$import->created_at}}</td>
-                        <td><a href="{{route('warehouse.detail',['code' => $import->code])}}">Xem chi tiết</a></td>
+                        <td>{{$warehouseexport->code}}</td>
+                        <td>{{$warehouseexport->typeExport->name}}</td>
+                        <td>{{$warehouseexport->note}}</td>
+                        <td>{{$warehouseexport->created_by}}</td>
+                        <td>{{$warehouseexport->created_at}}</td>
+                        <td><a href="{{route('warehouse_export.detail',['code' => $warehouseexport->code])}}">Xem chi tiết</a></td>
                     </tr>
-                    @endforeach --}}
+                    @endforeach
                 </tbody>
             </table>
             </div>

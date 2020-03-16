@@ -20,7 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Get Object to Export
 Route::get('getOjbectToExport/{id}','AjaxController@getType');
 
-Route::get('searchDetailWarehouse/{name}','AjaxController@searchDetailWarehouse');
+Route::get('searchMaterialExport/{name}','AjaxController@searchMaterialExport');
+
 
 
 

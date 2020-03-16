@@ -38,4 +38,14 @@ class WarehouseExportDetail extends Model
         'id_unit',
         'qty',
     ];
+
+    public function materialDetail()
+    {
+        return $this->belongsTo('App\MaterialDetail','id_material_detail','id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo('App\Unit','id_unit','id');
+    }
 }

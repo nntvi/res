@@ -35,8 +35,13 @@ class WarehouseExport extends Model
     protected $fillable = [
         'code',
         'id_type',
-        'id_supplier',
+        'id_object',
         'note',
         'created_by'
     ];
+
+    public function typeExport()
+    {
+        return $this->belongsTo('App\TypeExport','id_type','id');
+    }
 }
