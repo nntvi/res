@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Area;
 use App\Dishes;
 use App\GroupMenu;
+use App\Inventory;
+use App\MaterialAction;
 use App\Order;
 use App\OrderDetailTable;
 use App\Table;
 use Illuminate\Http\Request;
 use App\Repositories\OrderRepository\IOrderRepository;
 use App\Topping;
+use App\WareHouseDetail;
 use Carbon\Carbon;
 
 class OrderController extends Controller

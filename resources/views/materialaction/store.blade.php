@@ -71,7 +71,7 @@
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td><input type="number" class="qty form-control" value="" name="qty[]"></td>
+                                                    <td><input type="text" class="qty form-control" value="" name="qty[]"></td>
                                                     <td>
                                                         <select class="device form-control" name="id_unit[]">
                                                             @foreach ($units as $unit)
