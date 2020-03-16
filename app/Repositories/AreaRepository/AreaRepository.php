@@ -7,6 +7,7 @@ use App\Area;
 use App\Table;
 
 class AreaRepository extends Controller implements IAreaRepository{
+
     public function getAllArea()
     {
         $areas = Area::orderBy('name', 'asc')->get();

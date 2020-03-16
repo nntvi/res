@@ -4,17 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\OrderDetailTable;
+<<<<<<< HEAD
 use App\MaterialAction;
 use App\Dishes;
 use App\Inventory;
 use App\WareHouseDetail;
+=======
+use App\Repositories\PayRepository\IPayRepository;
+>>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 class PayController extends Controller
 
 {
+    private $payRepository;
+
+    public function __construct(IPayRepository $payRepository)
+    {
+       $this->payRepository = $payRepository;
+    }
+
     public function index($id)
     {
+<<<<<<< HEAD
         $idBillTable = Order::where('id',$id)->with('table')->first();
         $bill = OrderDetailTable::selectRaw('id_dish, sum(qty) as amount')
                                 ->where('id_bill',$id)
@@ -28,6 +40,9 @@ class PayController extends Controller
            $totalPrice += $value->amount * $value->dish->sale_price;
         }
         return view('pay.index',compact('idBillTable','bill','totalPrice'));
+=======
+        return $this->payRepository->showBill($id);
+>>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
     }
 
     public function update(Request $request, $id)

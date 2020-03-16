@@ -2,35 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\MaterialDetail;
-use App\Supplier;
-use App\Unit;
-use App\WareHouse;
-use App\WareHouseDetail;
+
 use Illuminate\Http\Request;
 use Excel;
 use App\Imports\WareHouseDetailImport;
+<<<<<<< HEAD
 use App\Inventory;
+=======
+use App\Repositories\WarehouseRepository\IWarehouseRepository;
+>>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
 
 class WareHouseController extends Controller
 {
+    private $warehouseRepository;
+
+    public function __construct(IWarehouseRepository $warehouseRepository)
+    {
+        $this->warehouseRepository = $warehouseRepository;
+    }
+
     public function index()
     {
-        $listImports = WareHouse::with('supplier')->get();
-        //dd($listImports);
-        return view('warehouse.index',compact('listImports'));
+        return $this->warehouseRepository->showIndex();
     }
 
     public function viewImport()
     {
-        $suppliers = Supplier::all();
-        $material_details = MaterialDetail::orderBy('name')->get();
-        $units = Unit::all();
-        return view('warehouse.import',compact('suppliers','units','material_details'));
+        return $this->warehouseRepository->showViewImport();
     }
 
     public function import(Request $request)
     {
+<<<<<<< HEAD
         $count = count($request->id_material);
         $sum = 0;
         for ($i=0; $i < $count; $i++) {
@@ -54,42 +57,29 @@ class WareHouseController extends Controller
         $warehouse->total = $sum;
         $warehouse->save();
         return redirect(route('warehouse.index'));
+=======
+       return $this->warehouseRepository->importWarehouse($request);
+>>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
     }
 
     public function getDetail($code)
     {
-        $detailImports = WareHouseDetail::where('code_import',$code)->with('materialDetail','unit')->get();
-        $units = Unit::orderBy('name')->get();
+        $detailImports = $this->warehouseRepository->getDetailWarehouseByCode($code);
+        $units = $this->warehouseRepository->getUnit();
         return view('warehouse.detail',compact('detailImports','code','units'));
     }
 
     public function updateDetail(Request $request, $id)
     {
-        $detailImport = WareHouseDetail::find($id);
-        $code = $detailImport->code_import;
-
-        $detailImport->qty = $request->qty;
-        $detailImport->id_unit = $request->id_unit;
-        $detailImport->price = $request->price;
-        $detailImport->save();
-
-        $check = WareHouseDetail::where('code_import',$code)->get();
-        $sum = 0;
-        foreach ($check as $key => $value) {
-            $sum += $value->qty * $value->price;
-        }
-        $import = WareHouse::where('code',$code)->update(['total' => $sum]);
-
-        return redirect(route('warehouse.detail',['code' => $code]));
+        return $this->warehouseRepository->updateDetailWarehouse($request,$id);
     }
 
     public function printDetail($code)
     {
-        $import = WareHouse::where('code',$code)->with('supplier')->first();
-        $detailImports = WareHouseDetail::where('code_import',$code)->with('materialDetail','unit')->get();
-        return view('warehouse.print',compact('import','detailImports'));
+        return $this->warehouseRepository->printDetailByCode($code);
     }
 
+<<<<<<< HEAD
     // public function substractMaterial()
     // {
 
@@ -104,4 +94,7 @@ class WareHouseController extends Controller
     //         }
     //     }
     // }
+=======
+
+>>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
 }
