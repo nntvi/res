@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Excel;
 use App\Imports\WareHouseDetailImport;
+use App\Inventory;
 use App\Repositories\WarehouseRepository\IWarehouseRepository;
 
 class WareHouseController extends Controller
@@ -29,7 +30,7 @@ class WareHouseController extends Controller
 
     public function import(Request $request)
     {
-       return $this->warehouseRepository->importWarehouse($request);
+        return $this->warehouseRepository->importWarehouse($request);
     }
 
     public function getDetail($code)
@@ -49,5 +50,18 @@ class WareHouseController extends Controller
         return $this->warehouseRepository->printDetailByCode($code);
     }
 
+    // public function substractMaterial()
+    // {
 
+    // }
+    // public function testExcel()
+    // {
+    //     $res = Excel::toArray(new WareHouseDetailImport, 'test.xlsx');
+    //     //dd($res);
+    //     foreach ($res as $key => $round) {
+    //         foreach ($round as $key => $value) {
+    //             $imp = WareHouseDetail::create($value);
+    //         }
+    //     }
+    // }
 }

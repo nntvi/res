@@ -33,7 +33,7 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
     public function addMaterialDetail($request)
     {
         $materialDetail = new MaterialDetail();
-        $materialDetail->name = $request->name;
+        $materialDetail->name = $request->nameAdd;
         $materialDetail->save();
         return redirect(route('material_detail.index'));
     }
