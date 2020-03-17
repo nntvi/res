@@ -6,11 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Excel;
 use App\Imports\WareHouseDetailImport;
-<<<<<<< HEAD
 use App\Inventory;
-=======
 use App\Repositories\WarehouseRepository\IWarehouseRepository;
->>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
 
 class WareHouseController extends Controller
 {
@@ -33,33 +30,7 @@ class WareHouseController extends Controller
 
     public function import(Request $request)
     {
-<<<<<<< HEAD
-        $count = count($request->id_material);
-        $sum = 0;
-        for ($i=0; $i < $count; $i++) {
-            $detail_warehouse = new WareHouseDetail();
-            $inventory = new Inventory();
-            $detail_warehouse->code_import = $request->code;
-            $detail_warehouse->id_material_detail = $request->id_material[$i];
-            $detail_warehouse->qty = $request->qty[$i];
-            $detail_warehouse->id_unit = $request->id_unit[$i];
-            $detail_warehouse->price = $request->price[$i];
-            //dd($detail_warehouse);
-            $sum+= $request->qty[$i] * $request->price[$i];
-            $detail_warehouse->save();
-            $inventory->save();
-        }
-
-        $warehouse = new WareHouse();
-        $warehouse->code = $request->code;
-        $warehouse->id_supplier = $request->supplier;
-        $warehouse->note = $request->note;
-        $warehouse->total = $sum;
-        $warehouse->save();
-        return redirect(route('warehouse.index'));
-=======
-       return $this->warehouseRepository->importWarehouse($request);
->>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
+        return $this->warehouseRepository->importWarehouse($request);
     }
 
     public function getDetail($code)
@@ -79,7 +50,6 @@ class WareHouseController extends Controller
         return $this->warehouseRepository->printDetailByCode($code);
     }
 
-<<<<<<< HEAD
     // public function substractMaterial()
     // {
 
@@ -94,7 +64,4 @@ class WareHouseController extends Controller
     //         }
     //     }
     // }
-=======
-
->>>>>>> f14c71721dd67eb27b808c9a9fb48a742c686946
 }
