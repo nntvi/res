@@ -41,4 +41,9 @@ class CookArea extends Model
     {
         return $this->hasMany('App\GroupMenu','id_cook');
     }
+
+    public function warehouseCook()
+    {
+        return $this->hasMany('App\WarehouseCook','cook');
+    }
 }

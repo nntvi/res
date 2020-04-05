@@ -4,12 +4,19 @@ namespace App\Repositories\SupplierRepository;
 use App\Http\Controllers\Controller;
 use App\Repositories\SupplierRepository\ISupplierRepository;
 use App\Supplier;
+use App\TypeMaterial;
 
 class SupplierRepository extends Controller implements ISupplierRepository{
 
+    public function getTypeMarial()
+    {
+        $types = TypeMaterial::all();
+        return $types;
+    }
+
     public function getAllSupplier()
     {
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::with('typeMaterial')->get();
         return view('supplier.index',compact('suppliers'));
     }
 
@@ -22,12 +29,12 @@ class SupplierRepository extends Controller implements ISupplierRepository{
 
             'name.required' => 'Không để trống tên nhà cung cấp',
             'name.min' => 'Tên nhà cung cấp quá ngắn',
-            'name.max' => 'Tên nhà cung cấp không vượt quá 30 ký tự',
+            'name.max' => 'Tên nhà cung cấp không vượt quá 70 ký tự',
             'name.unique' => 'Tên nhà cung cấp đã tồn tại trong hệ thống',
 
             'address.required' => 'Không để trống địa chỉ nhà cung cấp',
             'address.min' => 'Địa chỉ nhà cung cấp quá ngắn',
-            'address.max' => 'Địa chỉ vượt quá 60 ký tự',
+            'address.max' => 'Địa chỉ vượt quá 100 ký tự',
 
             'email.required' => 'Không để trống email nhà cung cấp',
             'email.unique' => 'Email nhà cung cấp đã tồn tại trong hệ thống',
@@ -46,9 +53,9 @@ class SupplierRepository extends Controller implements ISupplierRepository{
         $req->validate(
             [
                 'code' => 'required|min:3|max:25|unique:suppliers,code',
-                'name' => 'required|min:3|max:30|unique:suppliers,name',
+                'name' => 'required|min:3|max:70|unique:suppliers,name',
                 'email' => 'required|unique:suppliers,email',
-                'address' => 'required|min:10|max:60',
+                'address' => 'required|min:10|max:100',
                 'phone' => 'required|min:10|max:10',
                 'mst' => 'required|min:10|max:20',
                 'status' => 'required'
@@ -60,7 +67,6 @@ class SupplierRepository extends Controller implements ISupplierRepository{
     public function addSupplier($request)
     {
         $supplier = new Supplier();
-
         $supplier->code = $request->code;
         $supplier->name = $request->name;
         $supplier->email = $request->email;
@@ -69,14 +75,17 @@ class SupplierRepository extends Controller implements ISupplierRepository{
         $supplier->mst = $request->mst;
         $supplier->status = $request->status;
         $supplier->note = $request->note;
+        $supplier->id_type = $request->typeMaterial;
         $supplier->save();
         return redirect(route('supplier.index'));
     }
 
     public function showViewUpdateSupplier($id)
     {
-        $supplier = Supplier::find($id);
-        return view('supplier.update',compact('supplier'));
+        $supplier = Supplier::where('id',$id)->with('typeMaterial')->first();
+        //dd($supplier);
+        $types = $this->getTypeMarial();
+        return view('supplier.update',compact('supplier','types'));
     }
 
     public function validatorRequestUpdate($req){
@@ -121,6 +130,7 @@ class SupplierRepository extends Controller implements ISupplierRepository{
         $supplier->mst = $request->mst;
         $supplier->status = $request->status;
         $supplier->note = $request->note;
+        $supplier->id_type = $request->typeMaterial;
         $supplier->save();
         return redirect(route('supplier.index'));
     }

@@ -11,7 +11,7 @@ class TypeExport extends Model
      *
      * @var string
      */
-    protected $table = 'warehouse_type';
+    protected $table = 'type_export';
 
     /**
      * The primary key associated with the table.

@@ -14,7 +14,7 @@
                             </div>
                             <div class="col-sm-6 col-md-3 ">
                                 <select class="form-control" name="idTable" style="padding-left: 0px; margin-top: 27px;">
-                                    @foreach ($tables as $table)
+                                    @foreach ($inActiveTables as $table)
                                         <option value="{{$table->id}}">{{$table->name}}</option>
                                     @endforeach
                                 </select>

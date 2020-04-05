@@ -24,6 +24,10 @@ Route::get('/', function () {
 
 
 Route::group(['middleware' => ['auth']], function() {
+    //Header
+    Route::get('/announceWarehouseCook/warehousecook', 'AnnounceController@announceWarehousecook')
+            ->name('announce.warehousecook');
+
     // Permission
     Route::get('/permission/index', 'PermissionController@index')->name('permission.index');
     Route::post('/permission/store', 'PermissionController@store')->name('permission.p_store');
@@ -133,22 +137,45 @@ Route::group(['middleware' => ['auth']], function() {
     // CookingScreen
     Route::get('/cook_screen/index', 'CookScreenController@index')->name('cook_screen.index');
     Route::get('/cook_screen/detail/{id}', 'CookScreenController@getDetail')->name('cook_screen.detail');
-    Route::post('/cook_screen/update/{id}', 'CookScreenController@update')->name('cook_screen.p_update');
+    Route::post('/cook_screen/update/{id}/{idCook}', 'CookScreenController@update')->name('cook_screen.p_update');
+    Route::get('/cook_screen/updateMaterialDetail/{idMaterial}/{idCook}', 'CookScreenController@updateMaterialDetail')
+            ->name('cook_screen.p_updatematerial');
 
     // Pay
     Route::get('/pay/index/{id}', 'PayController@index')->name('pay.index');
     Route::post('/pay/update/{id}', 'PayController@update')->name('pay.p_update');
 
-    // WareHouse Import
+    // WareHouse
     Route::get('/warehouse/index/', 'WareHouseController@index')->name('warehouse.index');
-    Route::get('/warehouse/viewImport/', 'WareHouseController@viewImport')->name('warehouse.import');
-    Route::post('/warehouse/import/', 'WareHouseController@import')->name('warehouse.p_import');
-    Route::get('/warehouse/detail/{code}', 'WareHouseController@getDetail')->name('warehouse.detail');
-    Route::post('/warehouse/detail/{id}', 'WareHouseController@updateDetail')->name('warehouse.p_detail');
-    Route::get('/warehouse/printdetail/{code}', 'WareHouseController@printDetail')->name('warehouse.print_detail');
+    Route::get('/reportwarehouse/index/', 'WareHouseController@reportIndex')->name('reportwarehouse.index');
+    Route::post('/reportwarehouse/report/', 'WareHouseController@report')
+            ->name('reportwarehouse.p_report');
+    Route::get('/reportwarehouse/reportdetail/{id}/{dateStart}/{dateEnd}', 'WareHouseController@getDetailReport')
+            ->name('reportwarehouse.detail');
+
+    //Warehouse Cook
+    Route::get('/warehousecook/index/', 'WareHouseCookController@index')->name('warehousecook.index');
+    Route::get('/warehousecook/reset/', 'WareHouseCookController@reset')->name('warehousecook.reset');
+    Route::get('/warehousecook/viewImport/', 'WareHouseCookController@viewImport')->name('warehousecook.import');
+
+    // Import Coupon
+    Route::get('/importcoupon/index/', 'ImportCouponController@index')->name('importcoupon.index');
+    Route::get('/importcoupon/viewImport/', 'ImportCouponController@viewImport')->name('importcoupon.import');
+    Route::post('/importcoupon/import/', 'ImportCouponController@import')->name('importcoupon.p_import');
+    Route::get('/importcoupon/detail/{id}', 'ImportCouponController@getDetail')->name('importcoupon.detail');
+    Route::post('/importcoupon/detail/{id}', 'ImportCouponController@updateDetail')->name('importcoupon.p_detail');
+    Route::get('/importcoupon/printdetail/{id}', 'ImportCouponController@printDetail')->name('importcoupon.print_detail');
+
+    // Export Coupon
+    Route::get('/exportcoupon/index/', 'ExportCouponController@index')->name('exportcoupon.index');
+    Route::post('/exportcoupon/viewExport/', 'ExportCouponController@viewExport')->name('exportcoupon.export');
+    Route::post('/exportcoupon/export/', 'ExportCouponController@export')->name('exportcoupon.p_export');
+    Route::get('/exportcoupon/detail/{id}', 'ExportCouponController@getDetail')->name('exportcoupon.detail');
+    Route::get('/exportcoupon/printdetail/{id}', 'ExportCouponController@printDetail')->name('exportcoupon.print_detail');
 
     // WareHouse Export
-    Route::get('/warehouse_export/index/', 'WareHouseExportController@index')->name('warehouse_export.index');
+    Route::get('/warehouse_export/cook/', 'WareHouseExportController@exportCookIndex')->name('warehouse_exportcook.index');
+
     Route::get('/warehouse_export/viewExport/', 'WareHouseExportController@viewExport')->name('warehouse_export.export');
     Route::post('/warehouse_export/export/', 'WareHouseExportController@export')->name('warehouse_export.p_export');
     Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');

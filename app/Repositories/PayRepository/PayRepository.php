@@ -33,12 +33,20 @@ class PayRepository extends Controller implements IPayRepository{
         return $totalPrice;
     }
 
+    public function countStatus($idBill)
+    {
+        $count = OrderDetailTable::where('id_bill',$idBill)
+                                    ->whereIn('status', ['1', '2'])
+                                    ->count();
+        return $count;
+    }
     public function showBill($id)
     {
         $idBillTable = $this->findOrder($id);
         $bill = $this->createBill($id);
         $totalPrice = $this->getTotalBill($bill);
-        return view('pay.index',compact('idBillTable','bill','totalPrice'));
+        $count = $this->countStatus($id);
+        return view('pay.index',compact('idBillTable','bill','totalPrice','count'));
     }
 
     public function updateStatusOrder($request,$id)

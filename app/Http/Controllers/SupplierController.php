@@ -22,7 +22,8 @@ class SupplierController extends Controller
 
     public function viewStore()
     {
-        return view('supplier.store');
+        $types = $this->supplierRepository->getTypeMarial();
+        return view('supplier.store',compact('types'));
     }
 
     public function store(Request $request)

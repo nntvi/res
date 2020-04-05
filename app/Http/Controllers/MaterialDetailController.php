@@ -23,7 +23,7 @@ class MaterialDetailController extends Controller
 
     public function store(Request $request)
     {
-        //$this->materialDetailRepository->validatorRequestStore($request);
+        $this->materialDetailRepository->validatorRequestStore($request);
         return $this->materialDetailRepository->addMaterialDetail($request);
     }
 

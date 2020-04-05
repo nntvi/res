@@ -1,153 +1,270 @@
 <?php
 namespace App\Repositories\WarehouseRepository;
 
+use App\ExportCoupon;
 use App\Http\Controllers\Controller;
 use App\WareHouse;
 use App\Supplier;
 use App\MaterialDetail;
+use App\TypeMaterial;
 use App\Unit;
 use App\WareHouseDetail;
+use App\ImportCouponDetail;
+use App\ExportCouponDetail;
+use App\ImportCoupon;
+use Illuminate\Support\Facades\DB;
 
 class WarehouseRepository extends Controller implements IWarehouseRepository{
 
-    public function getListImport()
+    public function getTypes()
     {
-        $listImports = WareHouse::with('supplier')->get();
-        return $listImports;
+        $types = TypeMaterial::all();
+        return $types;
+    }
+    public function showIndex()
+    {
+       $types = $this->getTypes();
+        return view('warehouse.index',compact('types'));
     }
 
-    public function getSuppliers()
+    public function warehouseBetweenTime($dateStart,$dateEnd)
     {
-        $suppliers = Supplier::all();
-        return $suppliers;
-    }
-
-    public function getMaterialDetail()
-    {
-        $material_details = MaterialDetail::orderBy('name')->get();
-        return $material_details;
-    }
-
-    public function getUnit()
-    {
-        $units = Unit::orderBy('name')->get();
-        return $units;
-    }
-
-        public function showIndex()
-    {
-        $listImports = $this->getListImport();
-        return view('warehouse.index',compact('listImports'));
-    }
-
-    public function showViewImport()
-    {
-        $suppliers = $this->getSuppliers();
-        $units = $this->getUnit();
-        $material_details = $this->getMaterialDetail();
-        return view('warehouse.import',compact('suppliers','units','material_details'));
-    }
-
-    public function countMaterialImport($request)
-    {
-        $count = count($request->id_material);
-        return $count;
-    }
-
-    public function createWarehouseDetail()
-    {
-        $detail_warehouse = new WareHouseDetail();
-        return $detail_warehouse;
-    }
-
-    public function createWarehouse()
-    {
-        $warehouse = new WareHouse();
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
+                                    ->with('detailMaterial','typeMaterial','unit')
+                                    ->orderBy('id_material_detail')
+                                    ->get();
         return $warehouse;
     }
-    public function importWarehouse($request)
+
+    public function importBetween($dateStart,$dateEnd)
     {
-        $count = $this->countMaterialImport($request);
-        $sum = 0;
-        for ($i=0; $i < $count; $i++) {
-            $detail_warehouse = $this->createWarehouseDetail();
-            $detail_warehouse->code_import = $request->code;
-            $detail_warehouse->id_material_detail = $request->id_material[$i];
-            $detail_warehouse->qty = $request->qty[$i];
-            $detail_warehouse->id_unit = $request->id_unit[$i];
-            $detail_warehouse->price = $request->price[$i];
-            $sum+= $request->qty[$i] * $request->price[$i];
-            $detail_warehouse->save();
-        }
-
-        $warehouse = $this->createWarehouse();
-        $warehouse->code = $request->code;
-        $warehouse->id_supplier = $request->supplier;
-        $warehouse->note = $request->note;
-        $warehouse->total = $sum;
-        $warehouse->save();
-
-        return redirect(route('warehouse.index'));
-    }
-
-    public function findDetailWarehouseById($id)
-    {
-        $detailImport = WareHouseDetail::find($id);
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+                                            ->groupBy('id_material_detail')
+                                            ->orderBy('id_material_detail')
+                                            ->get();
         return $detailImport;
     }
 
-    public function getDetailWarehouseByCode($code)
+    public function exportBetween($dateStart,$dateEnd)
     {
-        $check = WareHouseDetail::where('code_import',$code)
-                                    ->with('materialDetail','unit')
-                                    ->get();
-        return $check;
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+                                            ->groupBy('id_material_detail')
+                                            ->orderBy('id_material_detail')
+                                            ->get();
+        return $detailExport;
     }
-    public function updateDetailWarehouse($request,$id)
+    public function getValueImport($idMaterialDetail,$detailImport)
     {
-        $detailImport = $this->findDetailWarehouseById($id);
-        $code = $detailImport->code_import;
-        $detailImport->qty = $request->qty;
-        $detailImport->id_unit = $request->id_unit;
-        $detailImport->price = $request->price;
-        $detailImport->save();
-
-        $check = $this->getDetailWarehouseByCode($code);
-        $sum = 0;
-        foreach ($check as $key => $value) {
-            $sum += $value->qty * $value->price;
+        $temp = 0;
+        for ($i=0; $i < count($detailImport); $i++) {
+            if ($detailImport[$i]->id_material_detail == $idMaterialDetail) {
+                return $detailImport[$i]->total;
+                break;
+            } else {
+                $temp++;
+            }
         }
-        $import = WareHouse::where('code',$code)->update(['total' => $sum]);
-
-        return redirect(route('warehouse.detail',['code' => $code]));
+        if($temp == count($detailImport)){
+            return 0;
+        }
     }
-
-    public function findWarehouseByCode($code)
+    public function getValueExport($idMaterialDetail,$detailExport)
     {
-        $import = WareHouse::where('code',$code)->with('supplier')->first();
-        return $import;
+        $temp = 0;
+        for ($i=0; $i < count($detailExport); $i++) {
+            if ($detailExport[$i]->id_material_detail == $idMaterialDetail) {
+                return $detailExport[$i]->total;
+                break;
+            } else {
+                $temp++;
+            }
+        }
+        if($temp == count($detailExport)){
+            return 0;
+        }
+    }
+    public function getTonDauKy($toncuoiky, $xuat, $nhap) {
+        return $toncuoiky + $xuat - $nhap;
     }
 
-    public function findDetailWarehouseByCode($code)
+    public function getReportWarehouse($warehouse,$detailImport,$detailExport)
     {
-        $detailImports = WareHouseDetail::where('code_import',$code)->with('materialDetail','unit')->get();
-        return $detailImports;
+        $data = array();
+        $tempArray = array();
+        foreach ($warehouse as $key => $wh) {
+            $tempArray = [
+                'stt' => $key+1,
+                'idMaterialDetail' => $wh->id_material_detail,
+                'name' => $wh->detailMaterial->name,
+                'nameType' => $wh->typeMaterial->name,
+                'unit' => $wh->unit->name,
+                'tondauky' => $this->getTonDauKy($wh->qty,$this->getValueExport($wh->id_material_detail,$detailExport),
+                                                            $this->getValueImport($wh->id_material_detail,$detailImport)),
+                'import' => $this->getValueImport($wh->id_material_detail,$detailImport),
+                'export' => $this->getValueExport($wh->id_material_detail,$detailExport),
+                'toncuoiky' => $wh->qty
+            ];
+            array_push($data,$tempArray);
+            unset($tempArray);
+        }
+        return $data;
     }
-    public function printDetailByCode($code)
+    public function reportWarehouse($request)
     {
-        $import = $this->findWarehouseByCode($code);
-        $detailImports = $this->findDetailWarehouseByCode($code);
-        return view('warehouse.print',compact('import','detailImports'));
+        $dateStart = $request->dateStart;
+        $dateEnd = $request->dateEnd;
+        $warehouse = $this->warehouseBetweenTime($dateStart,$dateEnd);
+        $detailImport = $this->importBetween($dateStart,$dateEnd);
+        $detailExport = $this->exportBetween($dateStart,$dateEnd);
+        $arrayReport = $this->getReportWarehouse($warehouse,$detailImport,$detailExport);
+        //dd($arrayReport);
+        return view('warehouse.report',compact('arrayReport','dateStart','dateEnd'));
     }
 
-    // public function testExcel()
-    // {
-    //     $res = Excel::toArray(new WareHouseDetailImport, 'test.xlsx');
-    //     //dd($res);
-    //     foreach ($res as $key => $round) {
-    //         foreach ($round as $key => $value) {
-    //             $imp = WareHouseDetail::create($value);
-    //         }
-    //     }
-    // }
+    public function getImportById($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $detailImport = ImportCouponDetail::where('id_material_detail',$id)
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+                                            ->with('importCoupon.supplier')
+                                            ->get();
+        // dd($detailImport);
+        return $detailImport;
+    }
+
+    public function getExportById($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $detailExport = ExportCouponDetail::where('id_material_detail',$id)
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+                                            ->with('exportCoupon.typeExport')
+                                            ->get();
+        //dd($detailExport);
+        return $detailExport;
+    }
+
+    public function warehouseDetailReportById($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
+                                    ->where('id_material_detail',$id)
+                                    ->with('detailMaterial')
+                                    ->first();
+        return $warehouse;
+    }
+    public function importDetailReportById($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+                                            ->where('id_material_detail',$id)
+                                            ->groupBy('id_material_detail')
+                                            ->first();
+        return $detailImport;
+    }
+    public function exportDetailReportById($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+                                            ->where('id_material_detail',$id)
+                                            ->groupBy('id_material_detail')
+                                            ->first();
+        return $detailExport;
+    }
+    public function calculateTonDauKyById($tck,$xuat,$nhap)
+    {
+        return $tck + $xuat - $nhap;
+    }
+
+    public function importCoupon($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $a = DB::table('import_coupons')
+                ->join('detail_import_coupon', 'detail_import_coupon.code_import', '=', 'import_coupons.code')
+                ->join('suppliers','suppliers.id','=','import_coupons.id_supplier')
+                ->where('detail_import_coupon.id_material_detail',$id)
+                ->whereBetween('import_coupons.created_at',[$dateStart . $s , $dateEnd . $e])
+                ->get();
+        return $a;
+    }
+
+    public function exportCoupon($id,$dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $a = DB::table('export_coupons')
+                ->join('detail_export_coupon', 'detail_export_coupon.code_export', '=', 'export_coupons.code')
+                ->join('type_export','type_export.id','=','export_coupons.id_type')
+                ->where('detail_export_coupon.id_material_detail',$id)
+                ->whereBetween('export_coupons.created_at',[$dateStart . $s , $dateEnd . $e])
+                ->get();
+        return $a;
+    }
+
+    public function checkTonDauKy($warehouse,$detailImportById,$detailExportById)
+    {
+        if($detailImportById == null){
+            return $tondauky = $this->calculateTonDauKyById($warehouse->qty,$detailExportById->total,0);
+        }
+        if($detailExportById == null){
+            return $tondauky = $this->calculateTonDauKyById($warehouse->qty,0,$detailImportById->total);
+        }
+        else if($detailImportById != null && $detailExportById != null){
+            return $tondauky = $this->calculateTonDauKyById($warehouse->qty,$detailExportById->total,$detailImportById->total);
+        }
+    }
+    public function getInfoImport($dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $infoImports = ImportCoupon::whereBetween('created_at',[$dateStart . $s , $dateEnd . $e])
+                                ->with('detailImportCoupon.materialDetail','detailImportCoupon.unit')
+                                ->get();
+        return $infoImports;
+    }
+    public function getInfoExport($dateStart,$dateEnd)
+    {
+        $s = " 00:00:00";
+        $e = " 23:59:59";
+        $infoExports = ExportCoupon::whereBetween('created_at',[$dateStart . $s , $dateEnd . $e])
+                                    ->with('detailExportCoupon.materialDetail','detailExportCoupon.unit')
+                                    ->get();
+        return $infoExports;
+    }
+    public function getDetailReport($id,$dateStart,$dateEnd)
+    {
+        $detailImport = $this->getImportById($id,$dateStart,$dateEnd);
+        $detailExport = $this->getExportById($id,$dateStart,$dateEnd);
+        $warehouse = $this->warehouseDetailReportById($id,$dateStart,$dateEnd);
+        $detailImportById = $this->importDetailReportById($id,$dateStart,$dateEnd);
+        $detailExportById = $this->exportDetailReportById($id,$dateStart,$dateEnd);
+        $importCoupon = $this->importCoupon($id,$dateStart,$dateEnd);
+        $count = count($importCoupon)+1;
+        $exportCoupon = $this->exportCoupon($id,$dateStart,$dateEnd);
+        $tondauky = $this->checkTonDauKy($warehouse,$detailImportById,$detailExportById);
+        $infoImports = $this->getInfoImport($dateStart,$dateEnd);
+        $infoExports = $this->getInfoExport($dateStart,$dateEnd);
+        //dd($infoExports);
+        return view('warehouse.reportdetail',compact('detailImport','detailExport',
+                                                    'warehouse','detailImportById',
+                                                    'detailExportById','tondauky',
+                                                    'dateStart','dateEnd',
+                                                    'importCoupon','exportCoupon','count',
+                                                    'infoImports','infoExports'));
+    }
 }

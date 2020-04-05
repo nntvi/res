@@ -3,81 +3,74 @@
 <div class="table-agile-info">
         <div class="panel panel-default">
             <div class="panel-heading">
-            Responsive Table
+                Nhóm Thực Đơn
             </div>
             <div class="row w3-res-tb">
-            <div class="col-sm-5 m-b-xs">
-                <div class="form-group">
-                    <form class="panel-body" enctype="multipart/form-data" role="form"
-                            id="searchFood-form" action="{{route('groupmenu.search')}}" method="POST">
-                             @csrf
-                        <div class="input-group m-bot15">
-                            <input type="text" class="form-control" name="nameSearch">
-                            <span class="input-group-btn">
-                                <button class="btn btn-success" type="submit">Tìm kiếm</button>
-                            </span>
-
-                        </div>
-                        <span class="error-message">{{ $errors->first('nameSearch') }}</span></p>
-                    </form>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <span class="error-message">{{ $errors->first('name') }}</span></p>
-                <span class="error-message">{{ $errors->first('idCook') }}</span></p>
-                <span class="error-message">{{ $errors->first('nameGroupArea') }}</span></p>
-
-            </div>
-            <div class="col-sm-3 ">
-                <div class="row text-right">
-                    <a href="#myModal-1" data-toggle="modal" class="btn btn-info text-right" style="margin-right: 10px">
-                        Thêm mới
-                    </a>
-                </div>
-                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade" style="display: none;">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                    <h4 class="modal-title">Thêm mới Nhóm thực đơn</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-horizontal" role="form"  action="{{route('groupmenu.store')}}" method="POST">
-                                        @csrf
-                                        <div class="form-group">
-                                            <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">
-                                                Tên
-                                            </label>
-                                            <div class="col-lg-10">
-                                                <input type="text" class="form-control" name="name">
-                                            </div>
+                    <div class="col-sm-3 m-b-xs">
+                        <a href="#myModal-1" data-toggle="modal">
+                                <button class="btn btn-sm btn-danger">Thêm mới</button>
+                        </a>
+                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade" style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                            <h4 class="modal-title">Thêm mới Nhóm thực đơn</h4>
                                         </div>
-
-                                        <div class="form-group">
-                                                <label class="col-lg-2 col-sm-2 control-label">Chọn bếp</label>
-                                                <div class="col-lg-10">
-                                                    @foreach ($cook_active as $item)
-                                                        <label class="checkbox-inline">
-                                                            <input type="radio" id="cook{{$item->id}}" value="{{$item->id}}"  name="idCook"> {{$item->name}}
-                                                        </label>
-
-                                                    @endforeach
+                                        <div class="modal-body">
+                                            <form class="form-horizontal" role="form"  action="{{route('groupmenu.store')}}" method="POST">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">
+                                                        Tên
+                                                    </label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="name">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        <div class="form-group">
-                                            <div class="col-lg-offset-2 col-lg-10 text-right">
-                                                <button type="submit" class="btn btn-default">Thêm mới</button>
-                                            </div>
+
+                                                <div class="form-group">
+                                                        <label class="col-lg-2 col-sm-2 control-label">Chọn bếp</label>
+                                                        <div class="col-lg-10">
+                                                            @foreach ($cook_active as $item)
+                                                                <label class="checkbox-inline">
+                                                                    <input type="radio" id="cook{{$item->id}}" value="{{$item->id}}"  name="idCook"> {{$item->name}}
+                                                                </label>
+
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                <div class="form-group">
+                                                    <div class="col-lg-offset-2 col-lg-10 text-right">
+                                                        <button type="submit" class="btn btn-default">Thêm mới</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
                                         </div>
-                                    </form>
 
+                                    </div>
                                 </div>
-
                             </div>
-                        </div>
                     </div>
-            </div>
-            </div>
+                    <div class="col-sm-5">
+                            <span class="error-message">{{ $errors->first('nameSearch') }}</span></p>
+                            <span class="error-message">{{ $errors->first('name') }}</span></p>
+                            <span class="error-message">{{ $errors->first('idCook') }}</span></p>
+                            <span class="error-message">{{ $errors->first('nameGroupArea') }}</span></p>
+                    </div>
+                    <div class="col-sm-4">
+                        <form action="{{route('groupmenu.search')}}" method="POST">
+                            @csrf
+                            <div class="input-group">
+                            <input type="text" class="input-sm form-control" name="nameSearch">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-sm btn-info" type="button">Tìm kiếm</button>
+                            </span>
+                            </div>
+                        </form>
+                    </div>
+                    </div>
             <div class="table-responsive">
                     <div class="table-responsive">
                             <table class="table table-bordered table-hover">

@@ -20,7 +20,6 @@
                                         <input type="text" size="40" class="form-control" name="" maxlength="200" value="{{$material->name}}" disabled>
                                         <span class="error-message">{{ $errors->first('name') }}</span></p>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -33,8 +32,6 @@
                                         <button class="btn btn-info" id="addMaterialDetail" type="button">Add</button>
                                     </div>
                                 </div>
-
-
                                 <div class="space"></div>
                                 <div id="material-detail">
                                     <table class="table table-bordered">

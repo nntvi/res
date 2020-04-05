@@ -40,4 +40,9 @@ class Material extends Model
     {
         return $this->hasMany('App\MaterialAction','id_groupnvl');
     }
+
+    public function groupMenu()
+    {
+        return $this->belongsTo('App\GroupMenu','id_groupmenu','id');
+    }
 }

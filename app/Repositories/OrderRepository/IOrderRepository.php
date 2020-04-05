@@ -4,5 +4,8 @@ namespace App\Repositories\OrderRepository;
 interface IOrderRepository{
     function getArea();
     function getDishes();
-    function postOrder($request, $id);
+    function showTableInDay();
+    function orderTable();
+    function orderTablePost($request);
+    function addMoreDish($request,$idOrderTable);
 }

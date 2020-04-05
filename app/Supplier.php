@@ -33,6 +33,7 @@ class Supplier extends Model
      */
     protected $fillable = [
         'code',
+        'id_type',
         'name',
         'phone',
         'address',
@@ -42,5 +43,9 @@ class Supplier extends Model
         'status'
     ];
 
+    public function typeMaterial()
+    {
+        return $this->belongsTo('App\TypeMaterial','id_type','id');
+    }
 
 }

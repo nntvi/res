@@ -10,7 +10,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-coffee"></i>
-                        Nguyên vật liệu</div>
+                        Thêm mới</div>
                     <div class="tools">
                     </div>
                 </div>
@@ -22,12 +22,22 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <label class="control-label" for="">Tên Nguyên Vật liệu<span style="color: #ff0000"> *</span></label>
+                                            <label class="control-label" for="">Tên nhóm NVL cho món<span style="color: #ff0000"> *</span></label>
                                                 <input type="text" size="40" class="form-control" name="name" id="" maxlength="255">
                                                 <span class="error-message">{{ $errors->first('name') }}</span></p>
 
                                         </div>
-                                        <div class="col-md-9" style="margin-top: 16px; padding-left: 0">
+                                        <div class="col-md-3">
+                                            <label class="control-label" for="">Thuộc Danh mục món<span style="color: #ff0000"> *</span></label>
+                                            <select class="form-control m-bot15" name="idGroupMenu">
+                                                @foreach ($groupMenus as $groupmenu)
+                                                    <option value="{{$groupmenu->id}}">{{$groupmenu->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="error-message">{{ $errors->first('idGroupMenu') }}</span></p>
+
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 16px; padding-left: 0">
                                             <!-- <a href="!#" class="margin-bottom btn grey-silver radius btn-delete text-right"></a> -->
                                             <input type="submit"
                                                 class="btn green-meadow radius margin-bottom"
@@ -60,6 +70,7 @@
                                 <tr>
                                     <th>STT</th>
                                     <th>Tên nhóm NVL</th>
+                                    <th>Tên danh mục món ăn</th>
                                     <th>Cập nhật</th>
                                     <th>Xóa</th>
                                 </tr>
@@ -67,13 +78,20 @@
                             <tbody>
                                 @foreach ($materials as $key => $material)
                                     <tr>
-                                        <td width="20%">{{$key+1}}</td>
+                                        <td width="5%">{{$key+1}}</td>
                                         <form method="post" action="{{route('material.update',['id' => $material->id])}}">
                                             @csrf
-                                            <td width="50%">
-                                                <input type="hidden" name="nameMaterial" value="">
+                                            <td width="35%">
                                                 <input width="30%" class="form-control" type="text"
-                                                    name="name" value="{{$material->name}}">
+                                                    name="nameMaterial" value="{{$material->name}}">
+                                            </td>
+                                            <td>
+                                                <select class="form-control m-bot15" name="groupMenu">
+                                                    <option value="{{$material->groupMenu->id}}">{{$material->groupMenu->name}}</option>
+                                                    @foreach ($groupMenus as $groupmenu)
+                                                        <option value="{{$groupmenu->id}}">{{$groupmenu->name}}</option>
+                                                    @endforeach
+                                                </select>
                                             </td>
                                         <td width="10%">
                                             <button type="submit"

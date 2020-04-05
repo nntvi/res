@@ -36,5 +36,9 @@ class MaterialDetail extends Model
         'name'
     ];
 
+    public function typeMaterial()
+    {
+        return $this->belongsTo('App\TypeMaterial','id_type');
+    }
 
 }

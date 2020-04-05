@@ -22,6 +22,16 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Repositories\AnnouceRepository\IAnnouceRepository',
+            'App\Repositories\AnnouceRepository\AnnouceRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\AjaxRepository\IAjaxRepository',
+            'App\Repositories\AjaxRepository\AjaxRepository'
+        );
+
+        $this->app->bind(
             'App\Repositories\UserRepository\IUserRepository',
             'App\Repositories\UserRepository\UserRepository'
         );
@@ -67,6 +77,11 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Repositories\MaterialActionRepository\IMaterialActionRepository',
+            'App\Repositories\MaterialActionRepository\MaterialActionRepository'
+        );
+
+        $this->app->bind(
             'App\Repositories\SupplierRepository\ISupplierRepository',
             'App\Repositories\SupplierRepository\SupplierRepository'
         );
@@ -74,6 +89,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Repositories\CookRepository\ICookRepository',
             'App\Repositories\CookRepository\CookRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\CookScreenRepository\ICookScreenRepository',
+            'App\Repositories\CookScreenRepository\CookScreenRepository'
         );
 
         $this->app->bind(
@@ -94,6 +114,21 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Repositories\WarehouseRepository\IWarehouseRepository',
             'App\Repositories\WarehouseRepository\WarehouseRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\WarehouseCookRepository\IWarehouseCookRepository',
+            'App\Repositories\WarehouseCookRepository\WarehouseCookRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\ImportCouponRepository\IImportCouponRepository',
+            'App\Repositories\ImportCouponRepository\ImportCouponRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\ExportCouponRepository\IExportCouponRepository',
+            'App\Repositories\ExportCouponRepository\ExportCouponRepository'
         );
     }
 

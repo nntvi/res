@@ -1,84 +1,44 @@
 @extends('layouts')
+<style>
+    span.error-message{
+        color: red;
+        font-size: 12px;
+        font-style: italic;
+    }
+</style>
 @section('content')
-<div class="table-agile-info">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Topping - Ghi chú món
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
-                        <li class="breadcrumb-item"><a href="#">Topping, ghi chú món</a></li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="portlet box green-meadow ">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-gift"></i>
-                        Thêm mới topping
-                </div>
-            </div>
-            <div class="portlet-body">
-                <form class="panel-body create-food" enctype="multipart/form-data"
-                    role="form" id="createNews-form" action="{{ route('topping.p_store')}}" method="POST">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-3 col-sm-4">
-                            <label class="control-label">Tên Topping<span style="color: #ff0000;"> *</span></label>
-                            <input type="text" size="40" class="form-control" name="nameTopping" maxlength="100">
-                            <span class="error-message">{{ $errors->first('nameTopping') }}</span></p>
-
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <label class="control-label">Giá</label>
-                            <input type="number" size="40" class="form-control number" name="priceTopping">
-                            <span class="error-message">{{ $errors->first('priceTopping') }}</span></p>
-
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <label class="control-label"></label>
-                            <select class="form-control radius" name="idGroupMenu" style="margin-top: 15px">
-                                <option value="">-- Chọn tên nhóm thực đơn --</option>
-                                @foreach ($groupMenus as $groupMenu)
-                                    <option value="{{ $groupMenu->id }}">{{$groupMenu->name}}</option>
-                                @endforeach
-                            </select>
-                            <span class="error-message">{{ $errors->first('idGroupMenu') }}</span></p>
-
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <input type="submit" class="btn green-meadow radius" name="create" style="margin-top: 40px"
-                                value="Tạo mới"></div>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="space"></div>
-                            </div>
+<div class="mail-w3agile">
+    <!-- page start-->
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="table-agile-info">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Topping
+                    </div>
+                    <div class="row w3-res-tb">
+                    <div class="col-sm-5 m-b-xs">
+                        <select class="input-sm form-control w-sm inline v-middle">
+                            <option value="0">Theo tên</option>
+                            <option value="1">Theo giá</option>
+                        </select>
+                        <button class="btn btn-sm btn-default">Sắp xếp</button>
+                    </div>
+                    <div class="col-sm-3">
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                        <input type="text" class="input-sm form-control" placeholder="Search">
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm btn-default" type="button">Tìm kiếm!</button>
+                        </span>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-coffee"></i>
-                    Danh sách topping </div>
-            </div>
-
-            <div class="portlet-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        @if ($errors->any())
-                            <span class="error-message">{{ $errors->first('name') }}</span></p>
-                            <span class="error-message">{{ $errors->first('price') }}</span></p>
-                        @endif
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <div class="table-responsive">
+                    <table class="table table-striped b-t b-light">
                         <thead>
+                        <tr>
                             <tr>
                                 <th>STT</th>
                                 <th>Tên topping</th>
@@ -87,6 +47,7 @@
                                 <th>Cập nhật</th>
                                 <th>Xóa</th>
                             </tr>
+                        </tr>
                         </thead>
                         <tbody>
                             @foreach ($toppings as $key => $topping)
@@ -95,7 +56,7 @@
                                 @csrf
                                 <tr>
                                     <td width="5%">{{$key + 1}}</td>
-                                    <td width="30%">
+                                    <td width="25%">
                                         <input type="text" size="40" class="form-control"
                                             value="{{$topping->name}}" name="name" maxlength="100">
                                     </td>
@@ -129,23 +90,66 @@
                                 </tr>
                             </form>
                             @endforeach
-
                         </tbody>
                     </table>
+                    </div>
+                    <footer class="panel-footer">
+                    <div class="row">
+
+                        <div class="col-sm-5 text-center">
+                        <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+                        </div>
+                        <div class="col-sm-7 text-right text-center-xs">
+                        <ul class="pagination pagination-sm m-t-none m-b-none">
+                            <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
+                            <li><a href="">1</a></li>
+                            <li><a href="">2</a></li>
+                            <li><a href="">3</a></li>
+                            <li><a href="">4</a></li>
+                            <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
+                        </ul>
+                        </div>
+                    </div>
+                    </footer>
                 </div>
             </div>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
+        <div class="col-sm-3 com-w3ls">
+                <section class="panel">
+                    <header class="panel-heading" style="background: indianred;color: white;">
+                        Thêm mới Topping
+                    </header>
+                    <div class="panel-body">
+                        <form class="panel-body create-food" enctype="multipart/form-data"
+                            role="form" id="createNews-form" action="{{ route('topping.p_store')}}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label class="control-label">Tên Topping<span style="color: #ff0000;"> *</span></label>
+                                <input type="text" size="40" class="form-control" name="nameTopping" maxlength="100">
 
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    {{ $toppings->links() }}
-                </div>
-            </div>
-        </footer>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Giá</label>
+                                <input type="number" size="40" class="form-control number" name="priceTopping">
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Chọn tên nhóm thực đơn<span style="color: #ff0000;"> *</span></label>
+                                <select class="form-control radius" name="idGroupMenu" style="margin-top: 15px">
+                                    @foreach ($groupMenus as $groupMenu)
+                                        <option value="{{ $groupMenu->id }}">{{$groupMenu->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <span class="error-message">{{ $errors->first('nameTopping') }}</span></p>
+                            <span class="error-message">{{ $errors->first('priceTopping') }}</span>
+                            <input type="submit" class="btn btn-compose" value="Tạo mới" style="background: darkcyan;">
+                        </form>
+                    </div>
+                </section>
+        </div>
     </div>
-</div>
+
+    <!-- page end-->
+    </div>
 @endsection

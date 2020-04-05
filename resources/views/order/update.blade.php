@@ -14,17 +14,20 @@
 </style>
 <div class="panel panel-default">
         <div class="panel-heading">
-          @foreach ($orderById as $item)
-              {{ $item->table->name }} -- {{ $item->table->getArea->name }}
-          @endforeach
+        @foreach ($orderById as $order)
+              {{ $order->table->name }} -- {{ $order->table->getArea->name }}
         </div>
         <div class="row w3-res-tb text-center">
+            @if ($order->status == '1')
                 <a href="{{route('order.index')}}">
                     <button class="btn btn-success">Về trang Order</button>
                 </a>
-                <a href="{{route('pay.index',['id' => $idBill])}}">
+                <a href="{{route('pay.index',['id' => $order->id])}}">
                     <button class="btn btn-danger">Thanh toán</button>
                 </a>
+            @else
+
+            @endif
             <hr>
         </div>
         <div class="table-responsive">
@@ -41,10 +44,9 @@
               </tr>
             </thead>
             <tbody>
-                    @foreach ($orderById as $order)
-                        @foreach ($order->orderDetail as $key => $item)
-                                <form action="{{route('order.p_update',['id' => $item->id])}}" method="post">
-                                    @csrf
+                @foreach ($order->orderDetail as $key => $item)
+                        <form action="{{route('order.p_update',['id' => $item->id])}}" method="post">
+                            @csrf
                                 <tr>
                                     <td>{{$key+1}}</td>
                                     <td>
@@ -77,37 +79,44 @@
                                     <td>
                                         <input class="form-control m-bot15" type="text" name="note" value="{{$item->note}}" >
                                     </td>
+                                    @if ($item->status == '-1')
+                                        <td>
+                                            <span style="color:red;">Không đủ NVL thực hiện</span>
+                                        </td>
+                                    @else
                                     <td>
-                                        @if ($item->status == '0')
-                                            <span style="color:red;">Chưa hoàn thành</span>
-                                        @endif
-                                        @if ($item->status == '1')
-                                            <span style="color:purple;"><i class="fa fa-tint" aria-hidden="true"></i> Đang thực hiện</span>
-                                        @endif
-                                        @if ($item->status == '2')
-                                            <span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> Hoàn thành</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ $item->created_at }}
-                                    </td>
-                                    <td>
-                                        @if ($order->created_at == $item->updated_at || $item->status == '0')
+                                            @if ($item->status == '0')
+                                                <span style="color:red;">Chưa hoàn thành</span>
+                                            @endif
+                                            @if ($item->status == '1')
+                                                <span style="color:purple;"><i class="fa fa-tint" aria-hidden="true"></i> Đang thực hiện</span>
+                                            @endif
+                                            @if ($item->status == '2')
+                                                <span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> Hoàn thành</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $item->created_at }}
+                                        </td>
+                                        <td>
+                                            @if (($item->created_at != $item->updated_at))
+                                                -
+                                            @else
                                             <button type="submit" href="" class="active check" ui-toggle-class="">
-                                                <i class="fa fa-check text-success text-active"></i>
-                                            </button>
-                                            <a href="{{route('order.delete',['id' => $item->id])}}" style="padding-left: 9px">
-                                                <i class="fa fa-times text-danger text"></i>
-                                            </a>
-                                        @else
-                                            -
-                                        @endif
+                                                    <i class="fa fa-check text-success text-active"></i>
+                                                </button>
+                                                <a href="{{route('order.delete',['id' => $item->id])}}"
+                                                    onclick="return confirm('Bạn có muốn xóa món này?');" style="padding-left: 9px">
+                                                    <i class="fa fa-times text-danger text"></i>
+                                                </a>
+                                            @endif
+                                        </td>
+                                    @endif
 
-                                    </td>
                                 </tr>
-                            </form>
-                        @endforeach
-                    @endforeach
+                        </form>
+                @endforeach
+        @endforeach
             </tbody>
           </table>
         </div>

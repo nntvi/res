@@ -2,6 +2,7 @@
 namespace App\Repositories\MaterialDetailRepository;
 
 interface IMaterialDetailRepository{
+    function getTypeMaterial();
     function showMaterialDetail();
     function validatorRequestStore($req);
     function addMaterialDetail($request);

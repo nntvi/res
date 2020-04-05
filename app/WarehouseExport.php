@@ -33,15 +33,14 @@ class WarehouseExport extends Model
      * @var array
      */
     protected $fillable = [
-        'code',
-        'id_type',
-        'id_object',
-        'note',
-        'created_by'
+        'id_cook',
+        'id_material_detail',
+        'qty',
+        'unit',
     ];
 
-    public function typeExport()
+    public function cook()
     {
-        return $this->belongsTo('App\TypeExport','id_type','id');
+        return $this->belongsTo('App\CookArea','id_cook','id');
     }
 }

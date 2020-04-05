@@ -33,20 +33,29 @@ class WareHouse extends Model
      * @var array
      */
     protected $fillable = [
-        'code',
-        'id_supplier',
-        'total',
-        'total_price',
-        'created_by'
+        'id_type',
+        'id_material_detail',
+        'qty',
+        'id_unit'
     ];
 
-    public function detailWareHouse()
+    public function detailMaterial()
     {
-        return $this->hasMany('App\WareHouseDetail','code_import','code');
+        return $this->belongsTo('App\MaterialDetail','id_material_detail','id');
     }
 
-    public function supplier()
+    public function typeMaterial()
     {
-       return $this->belongsTo('App\Supplier','id_supplier','id');
+        return $this->belongsTo('App\TypeMaterial','id_type','id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo('App\Unit','id_unit','id');
+    }
+
+    public function import()
+    {
+        return $this->hasMany('App\ImportCouponDetail','id_material_detail','id_material_detail');
     }
 }
