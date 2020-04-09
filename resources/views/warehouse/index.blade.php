@@ -29,29 +29,23 @@
                                 <h4 class="modal-title">Chọn loại xuất</h4>
                             </div>
                             <div class="modal-body">
-                                <form role="form" action="{{ route('exportcoupon.export') }}" method="POST">
+                                <form role="form" action="{{ route('exportcoupon.export') }}"
+                                    method="POST">
                                     @csrf
                                     <div class="row">
                                         <div class="radio">
-                                            <div class="col-xs-3">
+                                            <div class="col-xs-6">
                                                 <label>
                                                     <input type="radio" name="optionsRadios" id="optionsRadios1"
-                                                        value="1" checked="">
+                                                        value="1">
                                                     Xuất Bếp
                                                 </label>
                                             </div>
-                                            <div class="col-xs-3">
+                                            <div class="col-xs-6">
                                                 <label>
                                                     <input type="radio" name="optionsRadios" id="optionsRadios2"
-                                                        value="2" checked="">
+                                                        value="2">
                                                     Xuất Trả hàng
-                                                </label>
-                                            </div>
-                                            <div class="col-xs-3">
-                                                <label>
-                                                    <input type="radio" name="optionsRadios" id="optionsRadios3"
-                                                        value="3" checked="">
-                                                    Xuất Hủy
                                                 </label>
                                             </div>
                                         </div>
@@ -72,6 +66,12 @@
                 <a class="agile-icon" href="{{ route('exportcoupon.index') }}">
                     <i class="fa fa-wpforms">
                     </i> Xem Phiếu Xuất
+                </a>
+            </div>
+            <div class="icon-box col-md-3 col-sm-4">
+                <a class="agile-icon" href="{{ route('exportcoupon.destroywarehouse') }}">
+                    <i class="fa fa-trash-o">
+                    </i> Hủy hàng
                 </a>
             </div>
         </div>
@@ -162,23 +162,15 @@
                     </header>
                     <div class="panel-body">
                         <div>
-                            <table class="table" ui-jq="footable" ui-options="{
-                                              &quot;paging&quot;: {
-                                                &quot;enabled&quot;: true
-                                              },
-                                              &quot;filtering&quot;: {
-                                                &quot;enabled&quot;: true
-                                              },
-                                              &quot;sorting&quot;: {
-                                                &quot;enabled&quot;: true
-                                              }}">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th data-breakpoints="xs">STT</th>
+                                        <th>STT</th>
                                         <th>Tên Nguyên Vật liệu</th>
                                         <th>Số lượng hiện có</th>
-                                        <th data-breakpoints="xs">Đơn vị</th>
-                                        <th data-breakpoints="xs sm md" data-title="DOB">Date of Birth</th>
+                                        <th>Mức tồn</th>
+                                        <th>Đơn vị</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -187,13 +179,79 @@
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $detail->detailMaterial->name }}</td>
                                             <td>{{ $detail->qty }}</td>
+                                            <td>{{ $detail->limit_stock }}</td>
                                             @if($detail->unit == null)
                                                 <td>--- Hàng mới --</td>
                                             @else
                                                 <td>{{ $detail->unit->name }}</td>
                                             @endif
+                                            <td>
+                                                <a href="#updateLimit{{ $detail->id }}" data-toggle="modal">
+                                                    <i class="fa fa-pencil-square-o text-success text-active"></i>
+                                                </a>
+                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"
+                                                    tabindex="-1" id="updateLimit{{ $detail->id }}" class="modal fade"
+                                                    style="display: none;">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button aria-hidden="true" data-dismiss="modal"
+                                                                    class="close" type="button">×</button>
+                                                                <h4 class="modal-title">Cập nhật số lượng tồn</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form role="form"
+                                                                    action="{{ route('warehouse.p_updateLimitStock',['id' => $detail->id]) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <div class="row">
+                                                                        <div class="col-xs-6">
+                                                                            <label>Tên
+                                                                                NVL</label>
+                                                                            <input class="form-control"
+                                                                                value="{{ $detail->detailMaterial->name }}"
+                                                                                disabled>
+                                                                        </div>
+                                                                        <div class="col-xs-6">
+                                                                            <label>Số lượng
+                                                                                hiện có</label>
+                                                                            <input class="form-control"
+                                                                                value="{{ $detail->qty }}" disabled>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="space"></div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-6">
+                                                                            <label>Đơn
+                                                                                vị</label>
+                                                                            <input class="form-control"
+                                                                                value="{{ $detail->unit->name }}"
+                                                                                disabled>
 
-                                            <td></td>
+                                                                        </div>
+                                                                        <div class="col-xs-6">
+                                                                            <label>Mức
+                                                                                tồn</label>
+                                                                            <input type="number" step="0.01" min="0.00"
+                                                                                class="limit form-control"
+                                                                                name="limitStock"
+                                                                                value="{{ $detail->limit_stock }}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="space"></div>
+                                                                    <div class="space"></div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 text-center">
+                                                                            <button type="submit"
+                                                                                class="btn btn-info">Lưu</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

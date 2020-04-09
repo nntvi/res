@@ -29,8 +29,8 @@
         <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
         <script src="{{ asset('js/raphael-min.js') }}"></script>
         <script src="{{ asset('js/morris.js') }}"></script>
-        <script src="{{ asset('js/notify.js') }}"></script>
-        <script src="{{ asset('js/main.js') }}"></script>
+        <script src="{{ asset('js/ajax.js') }}"></script>
+        <script src="{{ asset('js/validate.js') }}"></script>
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
         <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>

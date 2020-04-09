@@ -23,9 +23,14 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
                     ->get();
         return $material;
     }
-    public function getMaterialDetails()
+    public function getMaterialDetails($id)
     {
-        $materialDetails = MaterialDetail::orderBy('name','asc')->get();
+        $actions = MaterialAction::where('id_groupnvl',$id)
+                                ->get('id_material_detail');
+        $materialDetails = MaterialDetail::whereNotIn('id',$actions)
+                                            ->orderBy('name','asc')
+                                            ->with('unit')
+                                            ->get();
         return $materialDetails;
     }
 
@@ -71,7 +76,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     {
         $material = $this->findMaterialById($id);
         $units = $this->getUnit();
-        $materialDetails = $this->getMaterialDetails();
+        $materialDetails = $this->getMaterialDetails($id);
         return view('materialaction.store',compact('material','units','materialDetails'));
     }
 
@@ -91,7 +96,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         return $warehouseCook;
     }
 
-    public function checkMaterialDetailInWarehouse($warehouseCook,$idMaterialDetail)
+    public function checkMaterialDetailInWarehouseCook($warehouseCook,$idMaterialDetail)
     {
         $a = 0;
         $b = 0;
@@ -106,14 +111,20 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         return false;
     }
 
-    public function addWarehouse($cook,$idMaterialDetail)
+    public function addWarehouseCook($cook,$idMaterialDetail,$id_unit)
     {
         $rowCookWarehouse = new WarehouseCook();
         $rowCookWarehouse->cook = $cook;
         $rowCookWarehouse->id_material_detail = $idMaterialDetail;
         $rowCookWarehouse->qty = 0.00;
-        $rowCookWarehouse->id_unit = 0;
+        $rowCookWarehouse->id_unit = $id_unit;
         $rowCookWarehouse->save();
+    }
+    public function getUnitByMaterialDetail($idMaterialDetail)
+    {
+        $idUnit = MaterialDetail::where('id',$idMaterialDetail)
+                                    ->value('id_unit');
+        return $idUnit;
     }
 
     public function addOneByOneMaterialAction($count,$request)
@@ -123,11 +134,11 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
             $materialDetail->id_groupnvl = $request->id_groupnvl;
             $cook = $this->getIdCookByIdMaterial($request->id_groupnvl);
             $materialDetail->id_material_detail = $request->id_material[$i];
-            $materialDetail->id_dvt = $request->id_unit[$i];
+            $materialDetail->id_dvt = $this->getUnitByMaterialDetail($request->id_material[$i]);
             $materialDetail->qty = $request->qty[$i];
             $materialDetail->save();
-            if($this->checkMaterialDetailInWarehouse($this->checkWarehouse($cook),$materialDetail->id_material_detail)){
-                $this->addWarehouse($cook,$materialDetail->id_material_detail);
+            if($this->checkMaterialDetailInWarehouseCook($this->checkWarehouse($cook),$materialDetail->id_material_detail)){
+                $this->addWarehouseCook($cook,$materialDetail->id_material_detail,$materialDetail->id_dvt);
             }
         }
     }

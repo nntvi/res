@@ -19,11 +19,17 @@
                             {{ $cookwarehouse->name }}
                             <span class="tools pull-right">
                                 <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                {{--  <a class="fa fa-cog" href="javascript:;"></a>  --}}
-                                {{--  <a class="fa fa-times" href="javascript:;"></a>  --}}
                              </span>
                         </header>
                         <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12 text-right">
+                                    <a href="{{ route('exportcoupon.destroywarehousecook',['id' => $cookwarehouse->id]) }}" class="btn btn-danger">
+                                        Hủy NVL
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="space"></div>
                                 <div class="table-responsive">
                                         <table class="table table-striped b-t b-light">
                                               <thead>

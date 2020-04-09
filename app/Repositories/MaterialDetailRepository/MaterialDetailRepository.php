@@ -6,6 +6,7 @@ use App\Repositories\MaterialDetailRepository\IMaterialDetailRepository;
 use App\MaterialAction;
 use App\MaterialDetail;
 use App\TypeMaterial;
+use App\Unit;
 use App\WareHouse;
 use App\WarehouseCook;
 
@@ -16,12 +17,17 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $types = TypeMaterial::all();
         return $types;
     }
+    public function getUnit()
+    {
+        $units = Unit::orderBy('name')->get();
+        return $units;
+    }
     public function showMaterialDetail()
     {
         $materialDetails = MaterialDetail::orderBy('id','desc')->with('typeMaterial')->paginate(10);
         $types = $this->getTypeMaterial();
-        //dd($materialDetails);
-        return view('materialdetail.index',compact('materialDetails','types'));
+        $units = $this->getUnit();
+        return view('materialdetail.index',compact('materialDetails','types','units'));
     }
 
     public function validatorRequestStore($req){
@@ -46,13 +52,14 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $materialDetail = new MaterialDetail();
         $materialDetail->name = $request->nameAdd;
         $materialDetail->id_type = $request->idType;
+        $materialDetail->id_unit = $request->idUnit;
         $materialDetail->save();
 
         $warehouse = new WareHouse();
         $warehouse->id_type = $request->idType;
         $warehouse->id_material_detail = $materialDetail->id;
         $warehouse->qty = 0;
-        $warehouse->id_unit = 0;
+        $warehouse->id_unit = $request->idUnit;
         $warehouse->tondauky = 0;
         $warehouse->save();
 

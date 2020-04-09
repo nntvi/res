@@ -9,7 +9,7 @@
             <div class="pannel-body">
                 <div class="position-center">
                     <div class="form">
-                        <form class="panel-body" role="form" onsubmit="return validateForm()"
+                        <form class="panel-body" role="form" onsubmit="return validateFormImportCoupon()"
                             action="{{ route('importcoupon.p_import') }}" method="POST">
                             @csrf
                             <div class="col-md-12">
@@ -68,51 +68,6 @@
                                             function clickToRemove($id) {
                                                 var row = document.getElementById('row' + $id);
                                                 row.remove();
-                                            }
-                                            function validateForm() {
-                                                const code = document.getElementById('codeImportCoupon').value;
-                                                var qty, price;
-                                                const table = document.getElementById('myTable')
-                                                const data = [];
-                                                if(code == null || code == ""){
-                                                    const codeError = "Không để trống mã phiếu nhập \n";
-                                                    data.push(codeError);
-                                                }
-                                                for (var i = 0, row; row = table.rows[i]; i++) {
-                                                    for (var j = 0, col; col = row.cells[j]; j++) {
-                                                      if(j == 2){
-                                                        $('input[type="number"].qty').each(function (index) {
-                                                            if(index == i){
-                                                                if ($(this).val() == null || $(this).val() == "") {
-                                                                    var cot = i+1;
-                                                                    var temp = "Hàng " + cot + " cột " + j + " trống sl nhập \n";
-                                                                    data.push(temp);
-                                                                }
-                                                            }
-                                                        });
-                                                      }
-                                                      if(j == 4){
-                                                        $('input[type="number"].price').each(function (index) {
-                                                            price = ($(this).val());
-                                                            if(index == i){
-                                                                if ($(this).val()  == null || $(this).val()  == "") {
-
-                                                                    var cot = i+1;
-                                                                    var temp = "Hàng " + cot + " cột " + j + " trống giá \n";
-                                                                    data.push(temp);
-                                                                }
-                                                            }
-                                                        });
-                                                      }
-                                                    }
-                                                }
-                                                if(data.length > 0){
-                                                    alert(data);
-                                                    return false;
-                                                }else{
-                                                    return true;
-                                                }
-
                                             }
                                         </script>
                                     </table>

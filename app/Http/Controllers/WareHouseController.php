@@ -23,6 +23,10 @@ class WareHouseController extends Controller
     {
         return $this->warehouseRepository->showIndex();
     }
+    public function updateLimitStock(Request $request, $id)
+    {
+        return $this->warehouseRepository->updateLimitStockWarehouse($request,$id);
+    }
 
     public function report(Request $request)
     {
@@ -33,4 +37,20 @@ class WareHouseController extends Controller
     {
         return $this->warehouseRepository->getDetailReport($id,$dateStart,$dateEnd);
     }
+
+
+    // public function substractMaterial()
+    // {
+
+    // }
+    // public function testExcel()
+    // {
+    //     $res = Excel::toArray(new WareHouseDetailImport, 'test.xlsx');
+    //     //dd($res);
+    //     foreach ($res as $key => $round) {
+    //         foreach ($round as $key => $value) {
+    //             $imp = WareHouseDetail::create($value);
+    //         }
+    //     }
+    // }
 }

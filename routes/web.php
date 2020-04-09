@@ -147,6 +147,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     // WareHouse
     Route::get('/warehouse/index/', 'WareHouseController@index')->name('warehouse.index');
+    Route::post('/warehouse/updateLimitStock/{id}', 'WareHouseController@updateLimitStock')->name('warehouse.p_updateLimitStock');
     Route::get('/reportwarehouse/index/', 'WareHouseController@reportIndex')->name('reportwarehouse.index');
     Route::post('/reportwarehouse/report/', 'WareHouseController@report')
             ->name('reportwarehouse.p_report');
@@ -170,12 +171,15 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/exportcoupon/index/', 'ExportCouponController@index')->name('exportcoupon.index');
     Route::post('/exportcoupon/viewExport/', 'ExportCouponController@viewExport')->name('exportcoupon.export');
     Route::post('/exportcoupon/export/', 'ExportCouponController@export')->name('exportcoupon.p_export');
+    Route::get('/exportcoupon/destroyWarehouse/', 'ExportCouponController@viewDestroyWarehouse')->name('exportcoupon.destroywarehouse');
+    Route::post('/exportcoupon/destroyWarehouse/', 'ExportCouponController@destroyWarehouse')->name('exportcoupon.p_destroywarehouse');
+    Route::get('/exportcoupon/destroyWarehouseCook/{id}', 'ExportCouponController@viewDestroyWarehouseCook')->name('exportcoupon.destroywarehousecook');
+    Route::post('/exportcoupon/destroyWarehouseCook/', 'ExportCouponController@destroyWarehouseCook')->name('exportcoupon.p_destroywarehousecook');
     Route::get('/exportcoupon/detail/{id}', 'ExportCouponController@getDetail')->name('exportcoupon.detail');
     Route::get('/exportcoupon/printdetail/{id}', 'ExportCouponController@printDetail')->name('exportcoupon.print_detail');
 
     // WareHouse Export
     Route::get('/warehouse_export/cook/', 'WareHouseExportController@exportCookIndex')->name('warehouse_exportcook.index');
-
     Route::get('/warehouse_export/viewExport/', 'WareHouseExportController@viewExport')->name('warehouse_export.export');
     Route::post('/warehouse_export/export/', 'WareHouseExportController@export')->name('warehouse_export.p_export');
     Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');

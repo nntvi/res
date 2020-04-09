@@ -9,6 +9,7 @@ use App\MaterialDetail;
 use App\Repositories\AjaxRepository\IAjaxRepository;
 use App\TypeMaterial;
 use App\WareHouse;
+use App\WarehouseCook;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
@@ -72,31 +73,11 @@ class AjaxController extends Controller
         ];
         return response()->json($data);
     }
-    public function getMaterialToExport($idType,$idObject)
+    public function getMaterialToExportSupplier($idObjectSupplier)
     {
-        $data = array();
-        switch ($idType) {
-            case 1:
-                $materailWarehouseCook = $this->ajaxRepository->getMaterialWarehouseCook($idObject);
-                $idMaterialArray = $this->ajaxRepository->getIdMaterialByIdCook($materailWarehouseCook);
-                $materialWarehouse = $this->ajaxRepository->findMaterialInWarehouse($idMaterialArray);
-                $data = [
-                    'idType' => 1,
-                    'materialWarehouseCook' => $materailWarehouseCook,
-                    'materialWarehouse'     => $materialWarehouse
-                ];
-                break;
-            case 2:
-                $type = $this->ajaxRepository->getTypeByIdSupplier($idObject);
-                $data = [
-                    'idType' => 2,
-                    'materialWarehouse' => $this->ajaxRepository->getMaterialInWarehouseByType($type->id_type)
-                ];
-                break;
-            default:
-            break;
-        }
-        return response()->json($data);
+        $type = Supplier::where('id',$idObjectSupplier)->value('id_type');
+        $materialWarehouse = $this->ajaxRepository->getMaterialInWarehouseByType($type);
+        return response()->json($materialWarehouse);
     }
 
     public function getSearchMaterialDetail($name)
@@ -157,5 +138,21 @@ class AjaxController extends Controller
         }
     }
 
+    public function searchMaterialDestroy($name)
+    {
+        $material = WareHouse::with('detailMaterial','unit')
+                            ->whereHas('detailMaterial', function ($query) use($name) {
+                                $query->where('name','LIKE','%'. $name . '%');
+                            })->get();
+        return response()->json($material);
+    }
 
+    public function searchMaterialDestroyCook($id,$name)
+    {
+        $material = WarehouseCook::where('cook',$id)->with('detailMaterial','unit')
+                                    ->whereHas('detailMaterial', function ($query) use($name) {
+                                        $query->where('name','LIKE','%'. $name . '%');
+                                    })->get();
+        return response()->json($material);
+    }
 }

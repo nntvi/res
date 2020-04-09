@@ -26,7 +26,11 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
        $types = $this->getTypes();
         return view('warehouse.index',compact('types'));
     }
-
+    public function updateLimitStockWarehouse($request,$id)
+    {
+        WareHouse::where('id',$id)->update(['limit_stock' => $request->limitStock]);
+        return route('warehouse.index');
+    }
     public function warehouseBetweenTime($dateStart,$dateEnd)
     {
         $s = " 00:00:00";
@@ -125,7 +129,6 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $detailImport = $this->importBetween($dateStart,$dateEnd);
         $detailExport = $this->exportBetween($dateStart,$dateEnd);
         $arrayReport = $this->getReportWarehouse($warehouse,$detailImport,$detailExport);
-        //dd($arrayReport);
         return view('warehouse.report',compact('arrayReport','dateStart','dateEnd'));
     }
 
@@ -137,7 +140,6 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->with('importCoupon.supplier')
                                             ->get();
-        // dd($detailImport);
         return $detailImport;
     }
 
@@ -149,7 +151,6 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->with('exportCoupon.typeExport')
                                             ->get();
-        //dd($detailExport);
         return $detailExport;
     }
 

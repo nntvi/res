@@ -20,7 +20,6 @@ class ExportCouponController extends Controller
     public function viewExport(Request $request)
     {
         return $this->exportcouponRepository->showViewExport($request);
-        //return $this->exportcouponRepository->showViewExport();
     }
 
     public function export(Request $request)
@@ -36,5 +35,24 @@ class ExportCouponController extends Controller
     public function printDetail($id)
     {
         return $this->exportcouponRepository->printDetailExport($id);
+    }
+
+    public function viewDestroyWarehouse()
+    {
+        return view('warehouseexport.exportdestroy');
+    }
+
+    public function destroyWarehouse(Request $request)
+    {
+        return $this->exportcouponRepository->destroyWarehouse($request);
+    }
+
+    public function viewDestroyWarehouseCook($id)
+    {
+        return $this->exportcouponRepository->viewDestroyCook($id);
+    }
+    public function destroyWarehouseCook(Request $request)
+    {
+        return $this->exportcouponRepository->destroyCook($request);
     }
 }

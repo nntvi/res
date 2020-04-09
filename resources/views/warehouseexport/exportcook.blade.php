@@ -8,20 +8,21 @@
             </header>
             <div class="pannel-body">
                     <div class="form">
-                        <form class="panel-body" role="form" action="{{route('exportcoupon.p_export')}}" method="POST">
+                        <form class="panel-body" role="form" onsubmit="return validateFormExportCook()"
+                         action="{{route('exportcoupon.p_export')}}" method="POST">
                             @csrf
                             <div class="col-md-12" style="margin-bottom: 20px">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <label class="control-label">Mã phiếu xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" size="40" class="form-control" name="code" maxlength="200">
-                                        <span class="error-message">{{ $errors->first('code') }}</span></p>
+                                        <input type="text" size="40" class="form-control" name="code" maxlength="200" id="codeExportCook">
                                     </div>
                                     <div class="col-md-3">
+                                        <input name="id_kind" value="1" hidden>
                                         <label class="control-label">Chọn loại bếp<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
-                                        <select class="form-control m-bot15" name="id_kind" id="objectCook">
+                                        <select class="form-control m-bot15" name="type_object" id="objectCook">
                                             @foreach ($cooks as $cook)
                                                 <option value="{{$cook->id}}">{{$cook->name}}</option>
                                             @endforeach
@@ -43,7 +44,7 @@
                                 <div class="col-md-8" id="warehouse">
 
                                 </div>
-                                <script>
+                                <script type="text/javascript">
                                     function clickToRemove($id){
                                         var row = document.getElementById('row'+$id);
                                         row.remove();

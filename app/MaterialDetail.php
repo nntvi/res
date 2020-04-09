@@ -33,12 +33,17 @@ class MaterialDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'id_type',
+        'id_unit'
     ];
 
     public function typeMaterial()
     {
         return $this->belongsTo('App\TypeMaterial','id_type');
     }
-
+    public function unit()
+    {
+        return $this->belongsTo('App\Unit','id_unit');
+    }
 }

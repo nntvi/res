@@ -22,7 +22,7 @@
                                         @else
                                         <small class="list-group-item" style="background: linear-gradient(45deg, #ff8181, transparent);">
                                             <span class="badge badge-danger">{{$material->qty}}
-                                                <small>{{$material->unit->name}}</small>
+                                                {{--  <small>{{$material->unit->name}}</small>  --}}
                                             </span>
                                             <i class="ti ti-bell"></i> {{ $material->detailMaterial->name }}
                                         </small>
