@@ -2,6 +2,7 @@
 namespace App\Repositories\AjaxRepository;
 
 interface IAjaxRepository{
+    function getAllCook();
     function getUnit();
     function getMaterialBySupplier($idSupplier);
     function getMaterialWarehouseCook($idCook);
@@ -18,4 +19,6 @@ interface IAjaxRepository{
     function warehouseBetweenTime($dateStart,$dateEnd);
     function importBetween($dateStart,$dateEnd);
     function exportBetween($dateStart,$dateEnd);
+    function searchMaterialDestroy($name);
+    function searchMaterialDestroyCook($id,$name);
 }

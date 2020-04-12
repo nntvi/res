@@ -37,7 +37,7 @@ class AjaxController extends Controller
     public function getObjectToExport($id)
     {
         if($id == 1){
-            $cooks = CookArea::all();
+            $cooks = $this->ajaxRepository->getAllCook();
             return response()->json($cooks, 200);
         }
         else if($id == 2){
@@ -80,15 +80,6 @@ class AjaxController extends Controller
         return response()->json($materialWarehouse);
     }
 
-    public function getSearchMaterialDetail($name)
-    {
-        $materialDetails = MaterialDetail::where('name','LIKE',"%{$name}%")->get();
-        if(is_null($materialDetails)){
-            return response()->json([ "message" => "Record not found"], 404);
-        }
-        return response()->json($materialDetails,200);
-    }
-
     public function getObjectToReport($idType)
     {
         if($idType == '1'){
@@ -99,7 +90,7 @@ class AjaxController extends Controller
                 ];
             return response()->json($data);
         }else if($idType == '2'){
-            $cooks = CookArea::all();
+            $cooks = $this->ajaxRepository->getAllCook();
             return response()->json($cooks);
         }
     }
@@ -140,19 +131,13 @@ class AjaxController extends Controller
 
     public function searchMaterialDestroy($name)
     {
-        $material = WareHouse::with('detailMaterial','unit')
-                            ->whereHas('detailMaterial', function ($query) use($name) {
-                                $query->where('name','LIKE','%'. $name . '%');
-                            })->get();
+        $material = $this->ajaxRepository->searchMaterialDestroy($name);
         return response()->json($material);
     }
 
     public function searchMaterialDestroyCook($id,$name)
     {
-        $material = WarehouseCook::where('cook',$id)->with('detailMaterial','unit')
-                                    ->whereHas('detailMaterial', function ($query) use($name) {
-                                        $query->where('name','LIKE','%'. $name . '%');
-                                    })->get();
+        $material = $this->ajaxRepository->searchMaterialDestroyCook($id,$name);
         return response()->json($material);
     }
 }

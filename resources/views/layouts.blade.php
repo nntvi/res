@@ -30,6 +30,7 @@
         <script src="{{ asset('js/raphael-min.js') }}"></script>
         <script src="{{ asset('js/morris.js') }}"></script>
         <script src="{{ asset('js/ajax.js') }}"></script>
+        <script src="{{ asset('js/search.js') }}"></script>
         <script src="{{ asset('js/validate.js') }}"></script>
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>

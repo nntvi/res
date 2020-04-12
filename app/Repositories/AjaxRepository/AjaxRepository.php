@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\AjaxRepository;
 
+use App\CookArea;
 use App\Http\Controllers\Controller;
 use App\TypeMaterial;
 use App\Unit;
@@ -9,11 +10,18 @@ use App\WarehouseCook;
 use App\Supplier;
 use App\ImportCouponDetail;
 use App\ExportCouponDetail;
+use App\GroupMenu;
+use App\Permission;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AjaxRepository extends Controller implements IAjaxRepository{
 
+    public function getAllCook()
+    {
+        $cooks = CookArea::get();
+        return $cooks;
+    }
     public function getUnit()
     {
         $units = Unit::orderBy('name')->get();
@@ -145,4 +153,21 @@ class AjaxRepository extends Controller implements IAjaxRepository{
                                             ->get();
         return $detailExport;
     }
+
+    public function searchMaterialDestroy($name)
+    {
+        $material = WareHouse::with('detailMaterial','unit')
+                            ->whereHas('detailMaterial', function ($query) use($name) {
+                                $query->where('name','LIKE','%'. $name . '%');
+                            })->get();
+        return $material;
+    }
+    public function searchMaterialDestroyCook($id,$name){
+        $material = WarehouseCook::where('cook',$id)->with('detailMaterial','unit')
+                                    ->whereHas('detailMaterial', function ($query) use($name) {
+                                        $query->where('name','LIKE','%'. $name . '%');
+                                    })->get();
+        return $material;
+    }
+
 }

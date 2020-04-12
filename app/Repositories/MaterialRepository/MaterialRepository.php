@@ -17,7 +17,7 @@ class MaterialRepository extends Controller implements IMaterialRepository{
     }
     public function showMaterial()
     {
-        $materials = Material::with('groupMenu')->get();
+        $materials = Material::with('groupMenu')->paginate(3);
         $groupMenus = $this->getCategoryDish();
         return view('material.index',compact('materials','groupMenus'));
     }
@@ -49,28 +49,27 @@ class MaterialRepository extends Controller implements IMaterialRepository{
     }
 
     public function validatorRequestUpdate($req){
-        $messeages = [
-            'nameMaterial.required' => 'Không để trống tên nhóm thực đơn',
-            'nameMaterial.min' => 'Tên thực đơn nhiều hơn 3 ký tự',
-            'nameMaterial.max' => 'Tên thực đơn giới hạn 30 ký tự',
-        ];
-        $req->validate(
-            [
-                'nameMaterial' => 'required|min:3|max:30',
-            ],
-            $messeages
-        );
+        $req->validate(['nameMaterial' => 'unique:materials,name'],
+            ['nameMaterial.unique' => 'Tên vừa thay đổi đã tồn tại trong hệ thống']);
     }
 
-    public function updateMaterial($request,$id)
+    public function searchMaterial($request)
     {
-        $material = Material::find($id);
-        $material->name = $request->nameMaterial;
-        $material->id_groupmenu = $request->groupMenu;
-        $material->save();
+        $name = $request->nameSearch;
+        $materials = Material::where('name','LIKE',"%{$name}%")->get();
+        $groupMenus = $this->getCategoryDish();
+        return view('material.search',compact('materials','groupMenus'));
+    }
+    public function updateNameMaterial($request, $id)
+    {
+        Material::where('id',$id)->update(['name' => $request->nameMaterial]);
         return redirect(route('material.index'));
     }
-
+    public function updateGroupMaterial($request, $id)
+    {
+        Material::where('id',$id)->update(['id_groupmenu' => $request->idGroupMenu]);
+        return redirect(route('material.index'));
+    }
     public function deleteMaterial($id)
     {
         $material = Material::find($id)->delete();

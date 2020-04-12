@@ -12,4 +12,8 @@ interface IPermissionRepository{
     function getOldPerDetail($permissiondetails,$peractions);
     function updatePermission($req, $permission);
     function deletePermission($id);
+    function searchMaterial($request);
+    function updateName($request,$id);
+    function validateUpdateName($request);
+    function validateUpdateDetail($req);
 }

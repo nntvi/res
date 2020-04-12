@@ -33,7 +33,8 @@ class Material extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'id_groupmenu'
     ];
 
     public function materialAction()

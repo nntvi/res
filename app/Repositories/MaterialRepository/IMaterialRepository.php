@@ -7,6 +7,8 @@ interface IMaterialRepository{
     function validatorRequestStore($req);
     function addMaterial($request);
     function validatorRequestUpdate($req);
-    function updateMaterial($request,$id);
+    function searchMaterial($request);
     function deleteMaterial($id);
+    function updateNameMaterial($request, $id);
+    function updateGroupMaterial($request, $id);
 }

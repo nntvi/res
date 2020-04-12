@@ -5,33 +5,34 @@
         <div class="panel-heading">
             Chi tiết Nguyên vật liệu
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-8 m-b-xs">
+        <div class="row">
+            <div class="space"></div>
+            <div class="col-sm-8" style="margin-top: 15px">
                 <form enctype="multipart/form-data" role="form"
                     action="{{ route('material_detail.store') }}" method="POST">
                     @csrf
-                    <label for="">Thêm mới NVL: &nbsp;&nbsp;&nbsp;</label>
-                    <input type="text" class="input-sm form-control w-sm inline v-middle" name="nameAdd">
-                    <select class="input-sm form-control w-sm inline v-middle" name="idType">
+                    <label class="col-xs-12 col-sm-2">Thêm mới&nbsp;&nbsp;&nbsp;</label>
+                    <input type="text" class="input-sm form-control w-sm inline v-middle col-xs-12 col-sm-6" name="nameAdd" style="margin-right: 3px;margin-top: 3px">
+                    <select class="input-sm form-control w-sm inline v-middle col-xs-12 col-sm-3" name="idType" style="margin-right: 3px;margin-top: 3px">
                         @foreach($types as $type)
                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                         @endforeach
                     </select>
-                    <select class="input-sm form-control w-sm inline v-middle" name="idUnit">
+                    <select class="input-sm form-control w-sm inline v-middle col-xs-6 col-sm-6" name="idUnit" style="margin-right: 3px;margin-top: 3px">
                             @foreach($units as $unit)
                                 <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                             @endforeach
                         </select>
-                    <input type="submit" class="btn btn-sm btn-info" value="Thêm mới">
+                    <input type="submit" class="btn btn-sm btn-info col-xs-6 col-sm-2" value="Thêm mới" style="margin-top: 3px">
 
                 </form>
                 <span class="error-message">{{ $errors->first('nameAdd') }}</span>
             </div>
 
-            <div class="col-sm-4">
-                <form action="{{ route('material_detail.search') }}" method="POST">
+            <div class="col-sm-4" style="margin-top: 15px;">
+                <form action="{{ route('material_detail.search') }}" method="POST" style="margin-right: 10px;">
                     @csrf
-                    <div class="input-group">
+                    <div class="input-group col-xs-12" style="margin-top: 3px;">
                         <input type="text" class="input-sm form-control" id="nameMaterialDetail" name="nameSearch">
                         <span class="input-group-btn">
                             <input class="btn btn-sm btn-warning" type="submit" value="Tìm kiếm">
@@ -41,6 +42,7 @@
                 </form>
             </div>
         </div>
+        <div class="space"></div>
         <div class="table-responsive">
             <table class="table table-striped b-t b-light">
                 <thead style="background: #ffeeda;">

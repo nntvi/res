@@ -19,19 +19,28 @@ class ToppingController extends Controller
         $groupMenus = $this->toppingRepository->getAllGroupMenu();
         return view('topping.index',compact('groupMenus','toppings'));
     }
-
+    public function search(Request $request)
+    {
+        return $this->toppingRepository->searchTopping($request);
+    }
     public function store(Request $request)
     {
         $this->toppingRepository->validatorRequestStore($request);
         return $this->toppingRepository->addTopping($request);
     }
-
-    public function update(Request $request, $id)
+    public function updateName(Request $request,$id)
     {
-        $this->toppingRepository->validatorRequestUpdate($request);
-        return $this->toppingRepository->updateTopping($request,$id);
+        $this->toppingRepository->validatorRequestUpdateName($request);
+        return $this->toppingRepository->updateNameTopping($request,$id);
     }
-
+    public function updatePrice(Request $request,$id)
+    {
+        return $this->toppingRepository->updatePriceTopping($request,$id);
+    }
+    public function updateGroup(Request $request,$id)
+    {
+        return $this->toppingRepository->updateGroupTopping($request,$id);
+    }
     public function delete($id)
     {
         return $this->toppingRepository->deleteTopping($id);

@@ -6,7 +6,10 @@ interface IToppingRepository{
     function getAllTopping();
     function validatorRequestStore($req);
     function addTopping($request);
-    function updateTopping($request,$id);
-    function validatorRequestUpdate($req);
+    function searchTopping($request);
+    function validatorRequestUpdateName($req);
     function deleteTopping($id);
+    function updateNameTopping($request,$id);
+    function updatePriceTopping($request,$id);
+    function updateGroupTopping($request,$id);
 }

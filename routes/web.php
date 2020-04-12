@@ -24,15 +24,15 @@ Route::get('/', function () {
 
 
 Route::group(['middleware' => ['auth']], function() {
-    //Header
-    Route::get('/announceWarehouseCook/warehousecook', 'AnnounceController@announceWarehousecook')
-            ->name('announce.warehousecook');
 
     // Permission
     Route::get('/permission/index', 'PermissionController@index')->name('permission.index');
+    Route::get('/permission/search', 'PermissionController@search')->name('permission.search');
     Route::post('/permission/store', 'PermissionController@store')->name('permission.p_store');
     Route::get('/permission/viewupdate/{id}','PermissionController@getEdit')->name('permission.update');
-    Route::post('/permission/update/{id}','PermissionController@postEdit')->name('permission.p_update');
+    Route::post('/permission/updateName/{id}','PermissionController@updateName')->name('permission.p_updatename');
+    Route::get('/permission/viewUpdateDetail/{id}','PermissionController@viewUpdateDetail')->name('permission.updatedetail');
+    Route::post('/permission/updateDetail/{id}','PermissionController@updateDetail')->name('permission.p_updatedetail');
     Route::get('/permission/delete/{id}','PermissionController@delete')->name('permission.delete');
 
     // Permission Detail
@@ -70,14 +70,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/groupmenu/index', 'GroupMenuController@index')->name('groupmenu.index');
     Route::get('/groupmenu/viewstore', 'GroupMenuController@viewStore')->name('groupmenu.v_store');
     Route::post('/groupmenu/store', 'GroupMenuController@store')->name('groupmenu.store');
-    Route::post('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
-    Route::post('/groupmenu/update/{id}', 'GroupMenuController@update')->name('groupmenu.update');
+    Route::get('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
+    Route::post('/groupmenu/updatename/{id}', 'GroupMenuController@updateName')->name('groupmenu.updatename');
+    Route::post('/groupmenu/updatecook/{id}', 'GroupMenuController@updateCook')->name('groupmenu.updatecook');
     Route::get('/groupmenu/delete/{id}', 'GroupMenuController@delete')->name('groupmenu.delete');
 
     // Topping
     Route::get('/topping/index', 'ToppingController@index')->name('topping.index');
+    Route::get('/topping/search', 'ToppingController@search')->name('topping.search');
     Route::post('/topping/store', 'ToppingController@store')->name('topping.p_store');
-    Route::post('/topping/update/{id}', 'ToppingController@update')->name('topping.p_update');
+    Route::post('/topping/updatename/{id}', 'ToppingController@updateName')->name('topping.p_updatename');
+    Route::post('/topping/updateprice/{id}', 'ToppingController@updatePrice')->name('topping.p_updateprice');
+    Route::post('/topping/updategroup/{id}', 'ToppingController@updateGroup')->name('topping.p_updategroup');
     Route::get('/topping/delete/{id}', 'ToppingController@delete')->name('topping.delete');
 
     // Supplier
@@ -104,8 +108,10 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Material Group
     Route::get('/material/index', 'MaterialController@index')->name('material.index');
+    Route::get('/material/search', 'MaterialController@search')->name('material.search');
     Route::post('/material/store', 'MaterialController@store')->name('material.store');
-    Route::post('/material/update/{id}', 'MaterialController@update')->name('material.update');
+    Route::post('/material/updatename/{id}', 'MaterialController@updateName')->name('material.updateName');
+    Route::post('/material/updategroup/{id}', 'MaterialController@updateGroup')->name('material.updateGroup');
     Route::get('/material/delete/{id}', 'MaterialController@delete')->name('material.delete');
 
     // Material Action

@@ -262,3 +262,15 @@ function validateFormDestroyCook() {
         return true;
     }
 }
+
+function validateSearchGroupMenu() {
+    const name = document.getElementById('searchGroupMenu').value;
+    if(name == null || name == ""){
+        alert('Tên tìm kiếm rỗng');
+        return false;
+    }
+    return true;
+}
+function validateUpdateGroupMenu() {
+
+}

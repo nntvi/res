@@ -43,11 +43,7 @@
                     </div>
                     <div class="row w3-res-tb">
                         <div class="col-sm-4 m-b-xs">
-                            <select class="input-sm form-control w-sm inline v-middle">
-                                <option value="0">Theo tên</option>
-                                <option value="1">Theo giá</option>
-                            </select>
-                            <button class="btn btn-sm btn-default">Sắp xếp</button>
+                            <a href="{{ route('material.index') }}" class="btn btn-sm btn-info">Trở về</a>
                         </div>
                         <div class="col-sm-4">
                             <span
@@ -180,7 +176,7 @@
                             </div>
                             <div class="col-sm-7 text-right text-center-xs">
                                 <ul class="pagination pagination-sm m-t-none m-b-none">
-                                    {{ $materials->links() }}
+                                    {{--  {{ $materials->links() }}  --}}
                                 </ul>
                             </div>
                         </div>

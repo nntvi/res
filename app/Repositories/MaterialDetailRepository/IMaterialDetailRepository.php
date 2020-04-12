@@ -11,4 +11,5 @@ interface IMaterialDetailRepository{
     function validatorRequestUpdate($req);
     function updateMaterialDetail($request,$id);
     function deleteMaterialDetail($id);
+
 }
