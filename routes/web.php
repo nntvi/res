@@ -24,11 +24,15 @@ Route::get('/', function () {
 
 
 Route::group(['middleware' => ['auth']], function() {
+
     // Permission
     Route::get('/permission/index', 'PermissionController@index')->name('permission.index');
+    Route::get('/permission/search', 'PermissionController@search')->name('permission.search');
     Route::post('/permission/store', 'PermissionController@store')->name('permission.p_store');
     Route::get('/permission/viewupdate/{id}','PermissionController@getEdit')->name('permission.update');
-    Route::post('/permission/update/{id}','PermissionController@postEdit')->name('permission.p_update');
+    Route::post('/permission/updateName/{id}','PermissionController@updateName')->name('permission.p_updatename');
+    Route::get('/permission/viewUpdateDetail/{id}','PermissionController@viewUpdateDetail')->name('permission.updatedetail');
+    Route::post('/permission/updateDetail/{id}','PermissionController@updateDetail')->name('permission.p_updatedetail');
     Route::get('/permission/delete/{id}','PermissionController@delete')->name('permission.delete');
 
     // Permission Detail
@@ -66,14 +70,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/groupmenu/index', 'GroupMenuController@index')->name('groupmenu.index');
     Route::get('/groupmenu/viewstore', 'GroupMenuController@viewStore')->name('groupmenu.v_store');
     Route::post('/groupmenu/store', 'GroupMenuController@store')->name('groupmenu.store');
-    Route::post('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
-    Route::post('/groupmenu/update/{id}', 'GroupMenuController@update')->name('groupmenu.update');
+    Route::get('/groupmenu/search', 'GroupMenuController@search')->name('groupmenu.search');
+    Route::post('/groupmenu/updatename/{id}', 'GroupMenuController@updateName')->name('groupmenu.updatename');
+    Route::post('/groupmenu/updatecook/{id}', 'GroupMenuController@updateCook')->name('groupmenu.updatecook');
     Route::get('/groupmenu/delete/{id}', 'GroupMenuController@delete')->name('groupmenu.delete');
 
     // Topping
     Route::get('/topping/index', 'ToppingController@index')->name('topping.index');
+    Route::get('/topping/search', 'ToppingController@search')->name('topping.search');
     Route::post('/topping/store', 'ToppingController@store')->name('topping.p_store');
-    Route::post('/topping/update/{id}', 'ToppingController@update')->name('topping.p_update');
+    Route::post('/topping/updatename/{id}', 'ToppingController@updateName')->name('topping.p_updatename');
+    Route::post('/topping/updateprice/{id}', 'ToppingController@updatePrice')->name('topping.p_updateprice');
+    Route::post('/topping/updategroup/{id}', 'ToppingController@updateGroup')->name('topping.p_updategroup');
     Route::get('/topping/delete/{id}', 'ToppingController@delete')->name('topping.delete');
 
     // Supplier
@@ -100,8 +108,10 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Material Group
     Route::get('/material/index', 'MaterialController@index')->name('material.index');
+    Route::get('/material/search', 'MaterialController@search')->name('material.search');
     Route::post('/material/store', 'MaterialController@store')->name('material.store');
-    Route::post('/material/update/{id}', 'MaterialController@update')->name('material.update');
+    Route::post('/material/updatename/{id}', 'MaterialController@updateName')->name('material.updateName');
+    Route::post('/material/updategroup/{id}', 'MaterialController@updateGroup')->name('material.updateGroup');
     Route::get('/material/delete/{id}', 'MaterialController@delete')->name('material.delete');
 
     // Material Action
@@ -133,27 +143,61 @@ Route::group(['middleware' => ['auth']], function() {
     // CookingScreen
     Route::get('/cook_screen/index', 'CookScreenController@index')->name('cook_screen.index');
     Route::get('/cook_screen/detail/{id}', 'CookScreenController@getDetail')->name('cook_screen.detail');
-    Route::post('/cook_screen/update/{id}', 'CookScreenController@update')->name('cook_screen.p_update');
+    Route::post('/cook_screen/update/{id}/{idCook}', 'CookScreenController@update')->name('cook_screen.p_update');
+    Route::get('/cook_screen/updateMaterialDetail/{idMaterial}/{idCook}', 'CookScreenController@updateMaterialDetail')
+            ->name('cook_screen.p_updatematerial');
 
     // Pay
     Route::get('/pay/index/{id}', 'PayController@index')->name('pay.index');
     Route::post('/pay/update/{id}', 'PayController@update')->name('pay.p_update');
 
-    // WareHouse Import
+    // WareHouse
     Route::get('/warehouse/index/', 'WareHouseController@index')->name('warehouse.index');
-    Route::get('/warehouse/viewImport/', 'WareHouseController@viewImport')->name('warehouse.import');
-    Route::post('/warehouse/import/', 'WareHouseController@import')->name('warehouse.p_import');
-    Route::get('/warehouse/detail/{code}', 'WareHouseController@getDetail')->name('warehouse.detail');
-    Route::post('/warehouse/detail/{id}', 'WareHouseController@updateDetail')->name('warehouse.p_detail');
-    Route::get('/warehouse/printdetail/{code}', 'WareHouseController@printDetail')->name('warehouse.print_detail');
+    Route::post('/warehouse/updateLimitStock/{id}', 'WareHouseController@updateLimitStock')->name('warehouse.p_updateLimitStock');
+    Route::get('/reportwarehouse/index/', 'WareHouseController@reportIndex')->name('reportwarehouse.index');
+    Route::post('/reportwarehouse/report/', 'WareHouseController@report')
+            ->name('reportwarehouse.p_report');
+    Route::get('/reportwarehouse/reportdetail/{id}/{dateStart}/{dateEnd}', 'WareHouseController@getDetailReport')
+            ->name('reportwarehouse.detail');
+
+    //Warehouse Cook
+    Route::get('/warehousecook/index/', 'WareHouseCookController@index')->name('warehousecook.index');
+    Route::get('/warehousecook/reset/', 'WareHouseCookController@reset')->name('warehousecook.reset');
+    Route::get('/warehousecook/viewImport/', 'WareHouseCookController@viewImport')->name('warehousecook.import');
+
+    // Import Coupon
+    Route::get('/importcoupon/index/', 'ImportCouponController@index')->name('importcoupon.index');
+    Route::get('/importcoupon/viewImport/', 'ImportCouponController@viewImport')->name('importcoupon.import');
+    Route::post('/importcoupon/import/', 'ImportCouponController@import')->name('importcoupon.p_import');
+    Route::get('/importcoupon/detail/{id}', 'ImportCouponController@getDetail')->name('importcoupon.detail');
+    Route::post('/importcoupon/detail/{id}', 'ImportCouponController@updateDetail')->name('importcoupon.p_detail');
+    Route::get('/importcoupon/printdetail/{id}', 'ImportCouponController@printDetail')->name('importcoupon.print_detail');
+
+    // Export Coupon
+    Route::get('/exportcoupon/index/', 'ExportCouponController@index')->name('exportcoupon.index');
+    Route::post('/exportcoupon/viewExport/', 'ExportCouponController@viewExport')->name('exportcoupon.export');
+    Route::post('/exportcoupon/export/', 'ExportCouponController@export')->name('exportcoupon.p_export');
+    Route::get('/exportcoupon/destroyWarehouse/', 'ExportCouponController@viewDestroyWarehouse')->name('exportcoupon.destroywarehouse');
+    Route::post('/exportcoupon/destroyWarehouse/', 'ExportCouponController@destroyWarehouse')->name('exportcoupon.p_destroywarehouse');
+    Route::get('/exportcoupon/destroyWarehouseCook/{id}', 'ExportCouponController@viewDestroyWarehouseCook')->name('exportcoupon.destroywarehousecook');
+    Route::post('/exportcoupon/destroyWarehouseCook/', 'ExportCouponController@destroyWarehouseCook')->name('exportcoupon.p_destroywarehousecook');
+    Route::get('/exportcoupon/detail/{id}', 'ExportCouponController@getDetail')->name('exportcoupon.detail');
+    Route::get('/exportcoupon/printdetail/{id}', 'ExportCouponController@printDetail')->name('exportcoupon.print_detail');
 
     // WareHouse Export
-    Route::get('/warehouse_export/index/', 'WareHouseExportController@index')->name('warehouse_export.index');
+    Route::get('/warehouse_export/cook/', 'WareHouseExportController@exportCookIndex')->name('warehouse_exportcook.index');
     Route::get('/warehouse_export/viewExport/', 'WareHouseExportController@viewExport')->name('warehouse_export.export');
     Route::post('/warehouse_export/export/', 'WareHouseExportController@export')->name('warehouse_export.p_export');
     Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');
     Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');
     Route::get('/warehouse_export/printdetail/{code}', 'WareHouseExportController@printDetail')->name('warehouse_export.detail');
+
+    // Shift
+    Route::get('/shift/index/', 'ShiftController@index')->name('shift.index');
+    Route::post('/shift/store/', 'ShiftController@store')->name('shift.p_store');
+    Route::post('/shift/updateName/{id}', 'ShiftController@updateName')->name('shift.p_updatename');
+    Route::post('/shift/updateTime/{id}', 'ShiftController@updateTime')->name('shift.p_updatetime');
+    Route::get('/shift/delete/{id}', 'ShiftController@delete')->name('shift.delete');
 
     Route::get('/excel/index/', 'WareHouseController@testExcel')->name('excel.index');
 });

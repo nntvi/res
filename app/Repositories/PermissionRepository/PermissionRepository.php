@@ -9,31 +9,48 @@ use App\PermissionAction;
 
 class PermissionRepository extends Controller implements IPermissionRepository
 {
+    public function getAllPermissionDetails()
+    {
+        $permissiondetails = PermissionDetail::all();
+        return $permissiondetails;
+    }
     public function showAllPermission()
     {
-        $permissions = Permission::with('peraction.permissiondetail')->get();
-        $permissiondetails = PermissionDetail::all();
+        $permissions = Permission::with('peraction.permissiondetail')->paginate(6);
+        $permissiondetails = $this->getAllPermissionDetails();
         return view('permission/index',compact('permissions','permissiondetails'));
     }
 
     public function validatorRequestStore($req){
         $messeages = [
-            'name.required' => 'Không để trống tên quyền',
-            'name.min' => 'Tên quyền nhiều hơn 3 ký tự',
-            'name.max' => 'Tên quyền giới hạn 30 ký tự',
             'name.unique' => 'Tên quyền vừa nhập đã tồn tại trong hệ thống',
-            'permissiondetail.required' => 'Vùi lòng chọn ít nhất một hành động cho quyền'
+            'permissiondetail.required' => 'Vui lòng chọn ít nhất một hành động cho quyền'
         ];
 
         $req->validate(
             [
-                'name' => 'required|min:3|max:30|unique:permissions,name',
+                'name' => 'unique:permissions,name',
                 'permissiondetail' => 'required'
             ],
             $messeages
         );
     }
-
+    public function validateUpdateName($request)
+    {
+       $request->validate(['namePermissionUpdate' => 'unique:permissions,name'],
+                            ['namePermissionUpdate.unique' => 'Tên vừa nhập đã tồn tại trong hệ thống']);
+    }
+    public function validateUpdateDetail($req){
+        $req->validate(['permissiondetail' => 'required'],
+                        ['permissiondetail.required' => 'Vui lòng chọn ít nhất một hành động cho quyền']);
+    }
+    public function searchMaterial($request)
+    {
+        $name = $request->nameSearch;
+        $permissions = Permission::where('name','LIKE',"%{$name}%")->with('peraction.permissiondetail')->get();
+        $permissiondetails = $this->getAllPermissionDetails();
+        return view('permission.search',compact('permissions','permissiondetails'));
+    }
     public function addPermission($req)
     {
         $input = $req->all();
@@ -50,7 +67,6 @@ class PermissionRepository extends Controller implements IPermissionRepository
         }
         return redirect(route('permission.index'));
     }
-
     public function getPermissionDetail()
     {
         return $permissiondetails = PermissionDetail::all();
@@ -102,8 +118,6 @@ class PermissionRepository extends Controller implements IPermissionRepository
 
     public function updatePermission($req, $permission)
     {
-        $permission->name = $req->name;
-        $permission->save();
         PermissionAction::where('id_per', $permission->id)->delete();
         $idPermissionDetail = $req->permissiondetail;
 
@@ -117,6 +131,11 @@ class PermissionRepository extends Controller implements IPermissionRepository
         return redirect(route('permission.index'));
     }
 
+    public function updateName($request,$id)
+    {
+        Permission::where('id',$id)->update(['name' => $request->namePermissionUpdate]);
+        return redirect(route('permission.index'));
+    }
     public function deletePermission($id)
     {
         PermissionAction::where('id_per', $id)->delete();

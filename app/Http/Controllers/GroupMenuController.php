@@ -1,10 +1,8 @@
 <?php
-
+namespace App\Validations;
 namespace App\Http\Controllers;
-
 use App\CookArea;
 use Illuminate\Http\Request;
-use App\GroupMenu;
 use App\Repositories\GroupMenuRepository\IGroupMenuRepository;
 
 class GroupMenuController extends Controller
@@ -38,13 +36,17 @@ class GroupMenuController extends Controller
     }
     public function search(Request $request)
     {
-        $this->groupmenuRepository->validatorRequestSearch($request);
         return $this->groupmenuRepository->searchGroupMenu($request);
     }
-    public function update(Request $request, $id)
+    public function updateName(Request $request, $id)
     {
         $this->groupmenuRepository->validatorRequestUpadate($request);
-        return  $this->groupmenuRepository->updateGroupMenu($request,$id);
+        return $this->groupmenuRepository->updateNameGroupMenu($request,$id);
+    }
+    public function updateCook(Request $request, $id)
+    {
+        $this->groupmenuRepository->validatorRequestUpadate($request);
+        return $this->groupmenuRepository->updateCookGroupMenu($request,$id);
     }
     public function delete($id)
     {

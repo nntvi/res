@@ -1,16 +1,25 @@
 <?php
 namespace App\Repositories\MaterialRepository;
 
+use App\GroupMenu;
 use App\Http\Controllers\Controller;
 use App\Repositories\MaterialRepository\IMaterialRepository;
 use App\Material;
+use App\WareHouse;
+use App\WarehouseCook;
 
 class MaterialRepository extends Controller implements IMaterialRepository{
 
+    public function getCategoryDish()
+    {
+        $groupMenu = GroupMenu::all();
+        return $groupMenu;
+    }
     public function showMaterial()
     {
-        $materials = Material::all();
-        return view('material.index',compact('materials'));
+        $materials = Material::with('groupMenu')->paginate(3);
+        $groupMenus = $this->getCategoryDish();
+        return view('material.index',compact('materials','groupMenus'));
     }
 
     public function validatorRequestStore($req){
@@ -19,10 +28,12 @@ class MaterialRepository extends Controller implements IMaterialRepository{
             'name.min' => 'Tên thực đơn nhiều hơn 3 ký tự',
             'name.max' => 'Tên thực đơn giới hạn 30 ký tự',
             'name.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
+            'idGroupMenu.required' => 'Vui lòng chọn danh mục món ăn'
         ];
         $req->validate(
             [
                 'name' => 'required|min:3|max:30|unique:groupmenu,name',
+                'idGroupMenu' => 'required'
             ],
             $messeages
         );
@@ -32,33 +43,33 @@ class MaterialRepository extends Controller implements IMaterialRepository{
     {
         $material = new Material();
         $material->name = $request->name;
+        $material->id_groupmenu = $request->idGroupMenu;
         $material->save();
         return redirect(route('material.index'));
     }
 
     public function validatorRequestUpdate($req){
-        $messeages = [
-            'nameMaterial.required' => 'Không để trống tên nhóm thực đơn',
-            'nameMaterial.min' => 'Tên thực đơn nhiều hơn 3 ký tự',
-            'nameMaterial.max' => 'Tên thực đơn giới hạn 30 ký tự',
-            'nameMaterial.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
-        ];
-        $req->validate(
-            [
-                'nameMaterial' => 'required|min:3|max:30|unique:groupmenu,name',
-            ],
-            $messeages
-        );
+        $req->validate(['nameMaterial' => 'unique:materials,name'],
+            ['nameMaterial.unique' => 'Tên vừa thay đổi đã tồn tại trong hệ thống']);
     }
 
-    public function updateMaterial($request,$id)
+    public function searchMaterial($request)
     {
-        $material = Material::find($id);
-        $material->name = $request->nameMaterial;
-        $material->save();
+        $name = $request->nameSearch;
+        $materials = Material::where('name','LIKE',"%{$name}%")->get();
+        $groupMenus = $this->getCategoryDish();
+        return view('material.search',compact('materials','groupMenus'));
+    }
+    public function updateNameMaterial($request, $id)
+    {
+        Material::where('id',$id)->update(['name' => $request->nameMaterial]);
         return redirect(route('material.index'));
     }
-
+    public function updateGroupMaterial($request, $id)
+    {
+        Material::where('id',$id)->update(['id_groupmenu' => $request->idGroupMenu]);
+        return redirect(route('material.index'));
+    }
     public function deleteMaterial($id)
     {
         $material = Material::find($id)->delete();

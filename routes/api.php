@@ -16,15 +16,35 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+// Get Material By IdSupplier
+Route::get('getMaterialBySupplier/{idSupplier}','AjaxController@getMaterialBySupplier');
 
-// Get Object to Export
-Route::get('getOjbectToExport/{id}','AjaxController@getType');
+// Get Material In Warehouse Cook By IdCook
+Route::get('getMaterialWarehouse/{$idCook}','AjaxController@getMaterialWarehouse');
 
-Route::get('searchMaterialExport/{name}','AjaxController@searchMaterialExport');
+//---------------------------------- Export ------------------------------------------------
+    // Get Object to Export
+Route::get('getOjbectToExport/{id}','AjaxController@getObjectToExport');
+
+    // Get Material to Export Cook
+Route::get('getMaterialToExportCook/{idObjectCook}','AjaxController@getMaterialToExportCook');
+Route::get('getMaterialToExportSupplier/{idObjectSupplier}','AjaxController@getMaterialToExportSupplier');
+
+//--------------------------------- Destroy -------------------------------------------------
+
+    // Get Matrial In Warehouse By IdType to Destroy
+Route::get('getMaterialWarehouseToDestroy/{$idType}','AjaxController@getMaterialWarehouseToDestroy');
+Route::get('searchMaterialDestroy/{name}','AjaxController@searchMaterialDestroy');
+Route::get('searchMaterialDestroyCook/{id}/{name}','AjaxController@searchMaterialDestroyCook');
+
+//--------------------------------- Report -------------------------------------------------
+Route::get('getObjectToReport/{idType}','AjaxController@getObjectToReport');
+
+Route::get('getDateTimeToReport/{id}','AjaxController@getDateTimeToReport');
+
+//------------------------------------ Search -------------------------------------------------
 
 
 
-
-//Route::get('searchMaterialDetail/{name}','AjaxController@getSearchMaterialDetail');
 
 

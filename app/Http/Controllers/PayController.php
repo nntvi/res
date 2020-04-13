@@ -23,10 +23,10 @@ class PayController extends Controller
 
     public function index($id)
     {
-        $this->payRepository->showBill($id);
+        return $this->payRepository->showBill($id);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
         return $this->payRepository->updateStatusOrder($request,$id);
     }

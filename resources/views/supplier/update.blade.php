@@ -1,148 +1,116 @@
 @extends('layouts')
 @section('content')
-<div class="table-agile-info">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Nhà cung cấp
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
-                            <li class="breadcrumb-item"><a href="#">Nhà cung cấp</a></li>
-                            <li class="breadcrumb-item"><a href="#">Chỉnh sửa thông tin</a></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-
-            <div class="portlet box green-meadow" style="border-top:1px solid #2ae0bb">
-                <div class="portlet-title hold-tab">
-                    <div class="caption">
-                        <i class="fa fa-gift"></i>
-                            Thêm mới nhà cung cấp
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <div id="bootstrap_alerts_demo"></div>
-                    <div style="padding: 20px">
-                        <form class="no-margin form form-horizontal" enctype="multipart/form-data"
-                            id="create-timetracker-form" action="{{route('supplier.p_update',['id' => $supplier->id])}}" method="POST">
-                            @csrf
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label" for="title">
-                                        Mã nhà cung cấp:
-                                    </label>
-                                    <div class="col-md-4">
-                                        <input type="text" size="40" class="form-control col-md-7 required"
-                                            name="code" maxlength="30" value="{{$supplier->code}}" disabled>
-                                            <span class="error-message">{{ $errors->first('code') }}</span></p>
-
-                                    </div>
-                                    <label class="col-md-2 control-label" for="title">
-                                        Tên nhà cung cấp:
-                                    </label>
-                                    <div class="col-md-4">
-                                        <input type="text" size="40" class="form-control"
-                                            name="name" maxlength="60" value="{{$supplier->name}}">
-                                            <span class="error-message">{{ $errors->first('name') }}</span></p>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label" for="title">
-                                        Email:
-                                    </label>
-                                    <div class="col-md-4">
-                                        <input type="email" size="40" class="form-control"
-                                            name="email" maxlength="100" value="{{$supplier->email}}" disabled>
-                                            <span class="error-message">{{ $errors->first('email') }}</span></p>
-                                    </div>
-                                    <label class="col-md-2 control-label" for="title">
-                                        Địa chỉ:
-                                    </label>
-                                    <div class="col-md-4">
-                                        <input type="text" size="40" class="form-control"
-                                            name="address" maxlength="150" value="{{$supplier->address}}">
-                                        <span class="error-message">{{ $errors->first('address') }}</span></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label">
-                                        Số điện thoại:
-                                    </label>
-                                    <div class="col-md-4">
-                                        <input type="text" size="40" class="form-control"
-                                            name="phone" id="Account_phone" maxlength="30" value="{{$supplier->phone}}">
-                                            <span class="error-message">{{ $errors->first('phone') }}</span></p>
-                                    </div>
-                                    <label class="col-md-2 control-label">
-                                        Trạng thái:
-                                    </label>
-                                    <div class="col-md-4" style="margin-top: 15px">
-                                        @if ($supplier->status == '0')
-                                        <label style="display:inline">Hoạt động</label>
-                                            <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px">
-                                        <label style="display:inline">Chưa hoạt động</label>
-                                            <input  value="1" id="status2" type="radio" name="status" checked>
-                                        @else
-                                        <label style="display:inline">Hoạt động</label>
-                                            <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px" checked>
-                                        <label style="display:inline">Chưa hoạt động</label>
-                                            <input  value="1" id="status2" type="radio" name="status" >
-                                        @endif
-
-                                    </div>
-                                    <span class="error-message">{{ $errors->first('status') }}</span></p>
-
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                    <div class="form-group">
-                                        <label class="col-md-2 control-label" for="title">
-                                            Mã số thuế:
-                                        </label>
-                                        <div class="col-md-4">
-                                            <input type="text" size="40" class="form-control"
-                                                name="mst" maxlength="100" value="{{$supplier->mst}}">
-                                            <span class="error-message">{{ $errors->first('mst') }}</span></p>
+<div class="form-w3layouts">
+        <!-- page start-->
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            Chỉnh sửa thông tin Nhà cung cấp
+                        </header>
+                        <div class="panel-body">
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-10">
+                                <form role="form" action="{{route('supplier.p_update',['id' => $supplier->id])}}" method="POST">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label>Mã nhà cung cấp</label>
+                                                <input type="text" size="40" class="form-control" name="code" value="{{$supplier->code}}" disabled>
+                                                <span class="error-message">{{ $errors->first('code') }}</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label>Tên nhà cung cấp</label>
+                                                <input type="text" size="40" class="form-control" name="name" value="{{$supplier->name}}">
+                                                <span class="error-message">{{ $errors->first('name') }}</span></p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                        <div class="form-group">
-
-                                                    <label class="col-md-2 control-label" for="title">
-                                                        Ghi chú:
-                                                    </label>
-                                                    <div class="col-md-8">
-                                                        <textarea type="text" size="40" class="form-control" rows="4" value="{{$supplier->note}}"
-                                                            name="note" >
-                                                        </textarea>
-                                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="email" size="40" class="form-control" name="email" maxlength="100" value="{{$supplier->email}}" disabled>
+                                                <span class="error-message">{{ $errors->first('email') }}</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                                <div class="form-group">
+                                                    <input type="text" size="40" class="form-control" name="phone" id="Account_phone" maxlength="30" value="{{$supplier->phone}}">
+                                                    <span class="error-message">{{ $errors->first('phone') }}</span></p>
+                                                </div>
                                         </div>
                                     </div>
-                            <div class="row" style="margin-top: 20px">
-                                    <div class="form-group">
-                                        <div class="col-md-5 col-md-offset-5">
-                                            <input type="submit" id="btn-create " style="width:105px"
-                                                class="btn green-meadow radius" name="yt1" value="Tạo mới">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                                <div class="form-group">
+                                                        <label>Địa chỉ</label>
+                                                        <input type="text" size="40" class="form-control" name="address" maxlength="150" value="{{$supplier->address}}">
+                                                        <span class="error-message">{{ $errors->first('address') }}</span></p>
+                                                </div>
+
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                                <div class="form-group">
+                                                        <label>Mã số thuế</label>
+                                                        <input type="text" size="40" class="form-control" name="mst" maxlength="100" value="{{$supplier->mst}}">
+                                                        <span class="error-message">{{ $errors->first('mst') }}</span></p>
+                                                </div>
+
                                         </div>
                                     </div>
-                                </div>
-                        </form>
-                    </div>
+                                    <div class="row">
+                                            <div class="col-xs-12 col-sm-6">
+                                                <div class="form-group">
+                                                        @if ($supplier->status == '0')
+                                                        <label style="display:inline">Hoạt động</label>
+                                                            <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px">
+                                                        <label style="display:inline">Chưa hoạt động</label>
+                                                            <input  value="1" id="status2" type="radio" name="status" checked>
+                                                        @else
+                                                        <label style="display:inline">Hoạt động</label>
+                                                            <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px" checked>
+                                                        <label style="display:inline">Chưa hoạt động</label>
+                                                            <input  value="1" id="status2" type="radio" name="status" >
+                                                        @endif
+                                                </div>
+                                                <span class="error-message">{{ $errors->first('status') }}</span></p>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-6">
+                                                <div class="form-group">
+                                                    <label style="display:inline">Danh mục cung cấp</label>
+                                                    <select class="form-control m-bot15" name="typeMaterial">
+                                                        <option value="{{$supplier->typeMaterial->id}}">{{$supplier->typeMaterial->name}}</option>
+                                                            @foreach ($types as $type)
+                                                                <option value="{{$type->id}}">{{$type->name}}</option>
+                                                            @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <label style="display:inline">Ghi chú</label>
+                                            <textarea type="text" size="40" class="form-control" rows="2" value="{{$supplier->note}}" name="note"></textarea>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 text-right">
+                                                <div class="space"></div>
+                                                <div class="space"></div>
+                                            <button type="submit" class="btn btn-danger">Chỉnh sửa</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-xs-1"></div>
+                        </div>
+                    </section>
 
-                </div>
             </div>
+
         </div>
-    </div>
+</div>
 @endsection

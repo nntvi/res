@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\SupplierRepository\ISupplierRepository;
-use App\Supplier;
 
 class SupplierController extends Controller
 {
@@ -22,7 +21,8 @@ class SupplierController extends Controller
 
     public function viewStore()
     {
-        return view('supplier.store');
+        $types = $this->supplierRepository->getTypeMarial();
+        return view('supplier.store',compact('types'));
     }
 
     public function store(Request $request)

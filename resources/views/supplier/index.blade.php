@@ -1,107 +1,91 @@
 @extends('layouts')
 @section('content')
-<div class="table-agile-info">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Nhà cung cấp
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
-                            <li class="breadcrumb-item"><a href="#">Nhà cung cấp</a></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 text-right">
-                    <a class="btn green-meadow radius" data-type="1" onclick="return export_customer()"
-                        style="margin-left: 5px">
-                        Xuất danh sách nhà cung cấp</a>
-                    <input type="hidden" id="data-type" value="1">
-                    <a class="btn green-meadow radius" href="{{route('supplier.store')}}">
-                        Tạo mới </a>
-                </div>
-            </div>
-            <div class="portlet box green-meadow" style="margin-top: 10px;">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-coffee"></i>
-                        Nhà cung cấp </div>
+<div class="typo-agile">
+	<h2 class="w3ls_head">Nhà cung cấp</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading">
 
                 </div>
+                <div class="row w3-res-tb">
+                <div class="col-sm-5 m-b-xs">
+                    <a href="{{route('supplier.store')}}">
+                            <button class="btn btn-sm btn-default">Thêm mới</button>
+                    </a>
 
-                <div class="portlet-body">
-                    <div class="row" style="margin: 10px 0px;">
-
-                    </div>
-                    <div class="table-responsive">
-                        <div id="news-grid" class="grid-view">
-
-                            <table class="table table-bordered table-hover data-table">
-                                <thead>
-                                    <tr>
-                                        <th width="3%" id="news-grid_c1">STT</th>
-                                        <th width="15%" id="news-grid_c1">Mã NCC</th>
-                                        <th width="20%" id="news-grid_c1">Tên</th>
-                                        <th width="15%" id="news-grid_c2">Địa chỉ</th>
-                                        <th width="15%" id="news-grid_c3">Số điện thoại</th>
-                                        <th width="15%" id="news-grid_c4">Email</th>
-                                        <th width="15%" id="news-grid_c4">Ghi chú</th>
-                                        <th id="news-grid_c8">Trạng thái</th>
-                                        <th width="7%" id="news-grid_c9">Cập nhật</th>
-                                        <th width="7%" id="news-grid_c10">Xóa</th>
-                                    </tr>
-                                </thead>
-                                    <tbody>
-                                        @foreach ($suppliers as $key => $supplier)
-                                            <form action="" method="POST">
-                                                <tr class="odd">
-                                                    <td>{{ $key + 1 }}</td>
-                                                    <td>{{ $supplier->code }}</td>
-                                                    <td>{{ $supplier->name }}</td>
-                                                    <td>{{ $supplier->address }}</td>
-                                                    <td>{{ $supplier->phone }}</td>
-                                                    <td>{{ $supplier->email }}</td>
-                                                    <td>{{ $supplier->note }}</td>
-                                                    <td>
-                                                        @if ($supplier->status == '0')
-                                                        <a href="" class="update_status btn default btn-xs green radius">
-                                                            Chưa Hoạt động
-                                                        </a>
-                                                        @else
-                                                        <a href=""  class="update_status btn default btn-xs green radius"><i class="fa fa-check"></i>
-                                                            Hoạt động
-                                                        </a>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{route('supplier.update',['id' => $supplier->id])}}" class="btn default btn-xs yellow-crusta radius"><i
-                                                            class="fa fa-edit"> Cập nhật</i>
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{route('supplier.delete',['id' => $supplier->id])}}"
-                                                                    class="btn default btn-xs red radius"
-                                                                    onclick="return confirm('Bạn muốn xóa nhà cung cấp này?')">
-                                                                    <i class="fa fa-trash-o"> Xóa</i>
-                                                                </a>
-                                                    </td>
-                                                </tr>
-                                            </form>
-                                        @endforeach
-                                    </tbody>
-                            </table>
-
-                            <div class="keys" style="display:none"
-                                title="/backend/shop/customer?supplier=1"></div>
-                        </div>
+                </div>
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                    <input type="text" class="input-sm form-control" placeholder="Search">
+                    <span class="input-group-btn">
+                        <button class="btn btn-sm btn-default" type="button">Go!</button>
+                    </span>
                     </div>
                 </div>
-            </div>
-        </div>
+                </div>
 
-    </div>
+                <div class="table-responsive">
+                <table class="table table-striped b-t b-light">
+                    <thead>
+                    <tr style="background: linear-gradient(45deg, #f3bfbf, #0000000d);">
+                            <th >STT</th>
+                            <th >Mã NCC</th>
+                            <th>Tên</th>
+                            <th >Địa chỉ</th>
+                            <th >Số điện thoại</th>
+                            <th >Email</th>
+                            <th >Cung cấp</th>
+                            <th >Trạng thái</th>
+                            <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($suppliers as $key => $supplier)
+                            <tr class="odd">
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $supplier->code }}</td>
+                                    <td style="font-weight:bold">{{ $supplier->name }}</td>
+                                    <td>{{ $supplier->address }}</td>
+                                    <td style="font-weight:bold">{{ $supplier->phone }}</td>
+                                    <td>{{ $supplier->email }}</td>
+                                    <td style="font-weight:bold">{{ $supplier->typeMaterial->name}}</td>
+                                    <td>
+                                        @if ($supplier->status == '0')
+                                            Chưa Hoạt động
+                                        @else
+                                            Hoạt động
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{route('supplier.update',['id' => $supplier->id])}}" class="active" ui-toggle-class=""><i class="fa fa-pencil-square-o text-success text-active"></i></a>
+                                        <a href="{{route('supplier.delete',['id' => $supplier->id])}}" onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i class="fa fa-times text-danger text"></i></a>
+                                    </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </div>
+                <footer class="panel-footer">
+                <div class="row">
+
+                    <div class="col-sm-5 text-center">
+                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+                    </div>
+                    <div class="col-sm-7 text-right text-center-xs">
+                    <ul class="pagination pagination-sm m-t-none m-b-none">
+                        <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
+                        <li><a href="">1</a></li>
+                        <li><a href="">2</a></li>
+                        <li><a href="">3</a></li>
+                        <li><a href="">4</a></li>
+                        <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
+                    </ul>
+                    </div>
+                </div>
+                </footer>
+            </div>
+
+
+</div>
 @endsection

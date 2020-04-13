@@ -100,7 +100,7 @@
                                 <div class="col-md-6">
                                     <label>Số lượng</label>
                                     @foreach ($materialAction as $item)
-                                        <input class="form-control" name="qty" type="number" value="{{$item->qty}}">
+                                        <input class="form-control" name="qty" type="text" value="{{$item->qty}}">
                                     @endforeach
                                     <span class="error-message">{{ $errors->first('capitalPrice') }}</span></p>
                                 </div>

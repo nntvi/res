@@ -33,11 +33,17 @@ class Material extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'id_groupmenu'
     ];
 
     public function materialAction()
     {
         return $this->hasMany('App\MaterialAction','id_groupnvl');
+    }
+
+    public function groupMenu()
+    {
+        return $this->belongsTo('App\GroupMenu','id_groupmenu','id');
     }
 }

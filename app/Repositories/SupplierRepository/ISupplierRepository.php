@@ -2,6 +2,7 @@
 namespace App\Repositories\SupplierRepository;
 
 interface ISupplierRepository{
+    function getTypeMarial();
     function getAllSupplier();
     function validatorRequestStore($req);
     function addSupplier($request);

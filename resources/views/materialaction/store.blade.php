@@ -9,7 +9,8 @@
             <div class="pannel-body">
                 <div class="position-center">
                     <div class="form">
-                        <form class="panel-body" role="form" action="{{route('material_action.p_store',['id' => $material->id])}}" method="POST">
+                        <form class="panel-body" role="form" onsubmit="return validateFormMaterialAction()"
+                        action="{{route('material_action.p_store',['id' => $material->id])}}" method="POST">
                             @csrf
                             <div class="col-md-12">
                                 <div class="row">
@@ -20,7 +21,6 @@
                                         <input type="text" size="40" class="form-control" name="" maxlength="200" value="{{$material->name}}" disabled>
                                         <span class="error-message">{{ $errors->first('name') }}</span></p>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -33,20 +33,17 @@
                                         <button class="btn btn-info" id="addMaterialDetail" type="button">Add</button>
                                     </div>
                                 </div>
-
-
                                 <div class="space"></div>
                                 <div id="material-detail">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th width=45%>Tên NVL</th>
+                                                <th width=65%>Tên NVL / Đơn vị</th>
                                                 <th width=25%>Số lượng</th>
-                                                <th width=25%>Đơn vị tính</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list">
+                                        <tbody class="list" id="bodyMaterialAction">
 
                                         </tbody>
                                     </table>
@@ -61,24 +58,17 @@
                                             'itemId',
                                             { attr: 'value', name: 'id_material' },
                                             { attr: 'value', name: 'qty' },
-                                            { attr: 'value', name: 'id_unit'},
                                         ],
                                         item: `<tr class="id" data-id="">
                                                     <td>
                                                         <select class="device form-control" name="id_material[]">
                                                             @foreach ($materialDetails as $item)
-                                                                <option class="deviceType" value="{{$item->id }}">{{ $item->name }}</option>
+                                                                <option class="deviceType" value="{{$item->id }}">{{ $item->name }} / {{ $item->unit->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td><input type="text" class="qty form-control" value="" name="qty[]"></td>
-                                                    <td>
-                                                        <select class="device form-control" name="id_unit[]">
-                                                            @foreach ($units as $unit)
-                                                                <option class="deviceType" value="{{ $unit->id }}">{{$unit->name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
+                                                    <td><input type="number" step=".01" class="qty form-control" name="qty[]"></td>
+
                                                     <td class="remove">
                                                         <button class="removeItem btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove" style="color:white" aria-hidden="true"></span></button>
                                                     </td>
@@ -95,21 +85,21 @@
                                                 refreshCallbacks();
 
                                                 function refreshCallbacks() {
-                                                // Trigger event for new generated row/object
-                                                removeBtns = $(removeBtns.selector);
-                                                    removeBtns.click(function() {
-                                                        var itemId = $(this).closest('tr').data('id');
-                                                        materialDetailList.remove('id', itemId);
-                                                });
+                                                    // Trigger event for new generated row/object
+                                                    removeBtns = $(removeBtns.selector);
+                                                        removeBtns.click(function() {
+                                                            var itemId = $(this).closest('tr').data('id');
+                                                            materialDetailList.remove('id', itemId);
+                                                    });
 
-                                                // Re-set device of each select
-                                                let deviceOptions = $('.deviceType');
-                                                deviceOptions.each(function() {
-                                                    let parentSelect = $(this).closest('select').data('value');
-                                                    if (parentSelect === this.value) {
-                                                    $(this).attr('selected','selected');
-                                                    }
-                                                });
+                                                    // Re-set device of each select
+                                                    let deviceOptions = $('.deviceType');
+                                                    deviceOptions.each(function() {
+                                                        let parentSelect = $(this).closest('select').data('value');
+                                                        if (parentSelect === this.value) {
+                                                        $(this).attr('selected','selected');
+                                                        }
+                                                    });
                                                 }
 
                                                 // Add new blank row into tables if click button Add
@@ -121,7 +111,8 @@
                                                     qty: "",
                                                 });
                                                 refreshCallbacks();
-                                                });
+                                            });
+
                                 </script>
                             </div>
 

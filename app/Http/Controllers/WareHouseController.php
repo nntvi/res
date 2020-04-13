@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-
+use App\ExportCouponDetail;
+use App\ImportCouponDetail;
 use Illuminate\Http\Request;
 use Excel;
 use App\Imports\WareHouseDetailImport;
-use App\Inventory;
 use App\Repositories\WarehouseRepository\IWarehouseRepository;
+use App\WareHouse;
 
 class WareHouseController extends Controller
 {
@@ -22,33 +23,21 @@ class WareHouseController extends Controller
     {
         return $this->warehouseRepository->showIndex();
     }
-
-    public function viewImport()
+    public function updateLimitStock(Request $request, $id)
     {
-        return $this->warehouseRepository->showViewImport();
+        return $this->warehouseRepository->updateLimitStockWarehouse($request,$id);
     }
 
-    public function import(Request $request)
+    public function report(Request $request)
     {
-        return $this->warehouseRepository->importWarehouse($request);
+        return $this->warehouseRepository->reportWarehouse($request);
     }
 
-    public function getDetail($code)
+    public function getDetailReport($id,$dateStart,$dateEnd)
     {
-        $detailImports = $this->warehouseRepository->getDetailWarehouseByCode($code);
-        $units = $this->warehouseRepository->getUnit();
-        return view('warehouse.detail',compact('detailImports','code','units'));
+        return $this->warehouseRepository->getDetailReport($id,$dateStart,$dateEnd);
     }
 
-    public function updateDetail(Request $request, $id)
-    {
-        return $this->warehouseRepository->updateDetailWarehouse($request,$id);
-    }
-
-    public function printDetail($code)
-    {
-        return $this->warehouseRepository->printDetailByCode($code);
-    }
 
     // public function substractMaterial()
     // {

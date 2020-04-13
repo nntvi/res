@@ -24,17 +24,21 @@
         <link rel="stylesheet" href="{{ asset('css/morris.css') }}" type="text/css" />
         <!-- calendar -->
         <link rel="stylesheet" href="{{ asset('css/monthly.css') }}">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
         <!-- //calendar -->
         <!-- //font-awesome icons -->
         <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
         <script src="{{ asset('js/raphael-min.js') }}"></script>
         <script src="{{ asset('js/morris.js') }}"></script>
-        <script src="{{ asset('js/notify.js') }}"></script>
-        <script src="{{ asset('js/main.js') }}"></script>
+        <script src="{{ asset('js/ajax.js') }}"></script>
+        <script src="{{ asset('js/search.js') }}"></script>
+        <script src="{{ asset('js/validate.js') }}"></script>
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
         <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
         </head>
 
     <body>
@@ -57,70 +61,70 @@
                         <!-- settings start -->
                         <li class="dropdown">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <i class="fa fa-tasks"></i>
-                                <span class="badge bg-success">8</span>
-                            </a>
-                            <ul class="dropdown-menu extended tasks-bar">
-                                <li>
-                                    <p class="">You have 8 pending tasks</p>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="task-info clearfix">
-                                            <div class="desc pull-left">
-                                                <h5>Target Sell</h5>
-                                                <p>25% , Deadline 12 June’13</p>
+                                    <i class="fa fa-tasks"></i>
+                                    <span class="badge bg-success">8</span>
+                                </a>
+                                <ul class="dropdown-menu extended tasks-bar">
+                                    <li>
+                                        <p class="">You have 8 pending tasks</p>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="task-info clearfix">
+                                                <div class="desc pull-left">
+                                                    <h5>Target Sell</h5>
+                                                    <p>25% , Deadline 12 June’13</p>
+                                                </div>
+                                                <span class="notification-pie-chart pull-right" data-percent="45">
+                                                    <span class="percent"></span>
+                                                </span>
                                             </div>
-                                            <span class="notification-pie-chart pull-right" data-percent="45">
-                                                <span class="percent"></span>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="task-info clearfix">
-                                            <div class="desc pull-left">
-                                                <h5>Product Delivery</h5>
-                                                <p>45% , Deadline 12 June’13</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="task-info clearfix">
+                                                <div class="desc pull-left">
+                                                    <h5>Product Delivery</h5>
+                                                    <p>45% , Deadline 12 June’13</p>
+                                                </div>
+                                                <span class="notification-pie-chart pull-right" data-percent="78">
+                                                    <span class="percent"></span>
+                                                </span>
                                             </div>
-                                            <span class="notification-pie-chart pull-right" data-percent="78">
-                                                <span class="percent"></span>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="task-info clearfix">
-                                            <div class="desc pull-left">
-                                                <h5>Payment collection</h5>
-                                                <p>87% , Deadline 12 June’13</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="task-info clearfix">
+                                                <div class="desc pull-left">
+                                                    <h5>Payment collection</h5>
+                                                    <p>87% , Deadline 12 June’13</p>
+                                                </div>
+                                                <span class="notification-pie-chart pull-right" data-percent="60">
+                                                    <span class="percent"></span>
+                                                </span>
                                             </div>
-                                            <span class="notification-pie-chart pull-right" data-percent="60">
-                                                <span class="percent"></span>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="task-info clearfix">
-                                            <div class="desc pull-left">
-                                                <h5>Target Sell</h5>
-                                                <p>33% , Deadline 12 June’13</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="task-info clearfix">
+                                                <div class="desc pull-left">
+                                                    <h5>Target Sell</h5>
+                                                    <p>33% , Deadline 12 June’13</p>
+                                                </div>
+                                                <span class="notification-pie-chart pull-right" data-percent="90">
+                                                    <span class="percent"></span>
+                                                </span>
                                             </div>
-                                            <span class="notification-pie-chart pull-right" data-percent="90">
-                                                <span class="percent"></span>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </li>
+                                        </a>
+                                    </li>
 
-                                <li class="external">
-                                    <a href="#">See All Tasks</a>
-                                </li>
-                            </ul>
+                                    <li class="external">
+                                        <a href="#">See All Tasks</a>
+                                    </li>
+                                </ul>
                         </li>
                         <!-- settings end -->
                         <!-- inbox dropdown start-->
@@ -329,10 +333,8 @@
                                     <span>Kho</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="baocaokho.html">Báo cáo kho</a></li>
-                                    <li><a href="{{route('warehouse.index')}}">Nhập kho</a></li>
-                                    <li><a href="{{route('warehouse_export.index')}}">Xuất kho</a></li>
-                                    <li><a href="danhmuckho.html">Danh mục kho</a></li>
+                                    <li><a href="{{route('warehouse.index')}}">Kho chính</a></li>
+                                    <li><a href="{{ route('warehousecook.index') }}">Kho bếp</a></li>
                                 </ul>
                             </li>
                             <li class="sub-menu">
@@ -372,7 +374,7 @@
                                 </a>
                                 <ul class="sub">
                                     <!-- <li><a href="thielapcuahang.html">Thiết lập cửa hàng</a></li> -->
-                                    <li><a href="thietlapin.html">Thiết lập in</a></li>
+                                    <li><a href="{{ route('shift.index') }}">Thiết lập ca làm việc</a></li>
                                     <li><a href="thietlapthue.html">Thiết lập thuế</a></li>
                                     <li><a href="thietlapvaitro.html">Thiết lập vai trò</a></li>
                                 </ul>

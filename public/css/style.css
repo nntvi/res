@@ -3537,7 +3537,7 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
 span.error-message{
     color: red;
     font-size: 12px;
-    padding: 5px 3px;
+    /* padding: 2px 3px; */
     font-style: italic;
 }
 p.success{
@@ -3545,5 +3545,8 @@ p.success{
     font-size: 15px;
     padding: 18px 20px;
     font-style: italic;
+    font-weight: bold;
+}
+.bold{
     font-weight: bold;
 }

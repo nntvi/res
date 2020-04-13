@@ -56,9 +56,16 @@
                     @csrf
                     <section class="panel">
                             <div class="panel-body">
-                                <button type="submit"  class="btn btn-compose">
-                                    Thanh toán
-                                </button>
+                                @if ($count > 0)
+                                    <button type="submit"  class="btn btn-compose">
+                                        Thanh toán
+                                    </button>
+                                @else
+                                    <a href="{{route('order.update',['id' => $idBillTable->id])}}"  class="btn btn-compose">
+                                        Trở về
+                                    </a>
+                                @endif
+
                                 <hr>
                                 <div class="form-group">
                                    <div class="row">

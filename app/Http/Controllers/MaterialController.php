@@ -20,18 +20,24 @@ class MaterialController extends Controller
         return $this->materialRepository->showMaterial();
     }
 
-
     public function store(Request $request)
     {
         $this->materialRepository->validatorRequestStore($request);
         return $this->materialRepository->addMaterial($request);
     }
-    public function update(Request $request, $id)
+    public function search(Request $request)
+    {
+        return $this->materialRepository->searchMaterial($request);
+    }
+    public function updateName(Request $request, $id)
     {
         $this->materialRepository->validatorRequestUpdate($request);
-        return $this->materialRepository->updateMaterial($request,$id);
+        return $this->materialRepository->updateNameMaterial($request,$id);
     }
-
+    public function updateGroup(Request $request, $id)
+    {
+       return $this->materialRepository->updateGroupMaterial($request,$id);
+    }
     public function delete($id)
     {
         return $this->materialRepository->deleteMaterial($id);

@@ -48,4 +48,9 @@ class GroupMenu extends Model
     {
         return $this->hasMany('App\Topping','id_groupmenu');
     }
+
+    public function material()
+    {
+        return $this->hasMany('App\Material','id_groupmenu');
+    }
 }
