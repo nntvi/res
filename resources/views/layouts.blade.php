@@ -24,6 +24,7 @@
         <link rel="stylesheet" href="{{ asset('css/morris.css') }}" type="text/css" />
         <!-- calendar -->
         <link rel="stylesheet" href="{{ asset('css/monthly.css') }}">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
         <!-- //calendar -->
         <!-- //font-awesome icons -->
         <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
@@ -33,6 +34,7 @@
         <script src="{{ asset('js/search.js') }}"></script>
         <script src="{{ asset('js/validate.js') }}"></script>
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
         <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
@@ -372,7 +374,7 @@
                                 </a>
                                 <ul class="sub">
                                     <!-- <li><a href="thielapcuahang.html">Thiết lập cửa hàng</a></li> -->
-                                    <li><a href="thietlapin.html">Thiết lập in</a></li>
+                                    <li><a href="{{ route('shift.index') }}">Thiết lập ca làm việc</a></li>
                                     <li><a href="thietlapthue.html">Thiết lập thuế</a></li>
                                     <li><a href="thietlapvaitro.html">Thiết lập vai trò</a></li>
                                 </ul>

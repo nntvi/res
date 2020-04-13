@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\SupplierRepository\ISupplierRepository;
-use App\Supplier;
 
 class SupplierController extends Controller
 {

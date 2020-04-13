@@ -130,6 +130,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\ExportCouponRepository\IExportCouponRepository',
             'App\Repositories\ExportCouponRepository\ExportCouponRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\ShiftRepository\IShiftRepository',
+            'App\Repositories\ShiftRepository\ShiftRepository'
+        );
     }
 
     /**

@@ -192,6 +192,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/warehouse_export/detail/{code}', 'WareHouseExportController@getDetail')->name('warehouse_export.detail');
     Route::get('/warehouse_export/printdetail/{code}', 'WareHouseExportController@printDetail')->name('warehouse_export.detail');
 
+    // Shift
+    Route::get('/shift/index/', 'ShiftController@index')->name('shift.index');
+    Route::post('/shift/store/', 'ShiftController@store')->name('shift.p_store');
+    Route::post('/shift/updateName/{id}', 'ShiftController@updateName')->name('shift.p_updatename');
+    Route::post('/shift/updateTime/{id}', 'ShiftController@updateTime')->name('shift.p_updatetime');
+    Route::get('/shift/delete/{id}', 'ShiftController@delete')->name('shift.delete');
+
     Route::get('/excel/index/', 'WareHouseController@testExcel')->name('excel.index');
 });
 
