@@ -24,8 +24,25 @@ class CookScreenController extends Controller
     public function index()
     {
         $result = $this->checkAction->getPermission(auth()->id());
+        $data = array();
         $cooks = $this->cookscreenRepository->getAllCookArea();
-        return view('cookscreen.index',compact('cooks','result'));
+        foreach ($cooks as $cook) {
+            foreach ($result as $rs) {
+                if($cook->id == 1 && $rs->action_code == "COOK_1"){
+                    array_push($data,$cook);
+                    break;
+                }
+                if($cook->id == 2 && $rs->action_code == "COOK_2"){
+                    array_push($data,$cook);
+                    break;
+                }
+                if($cook->id == 3 && $rs->action_code == "COOK_3"){
+                    array_push($data,$cook);
+                    break;
+                }
+            }
+        }
+        return view('cookscreen.index',compact('data'));
     }
 
     public function getDetail($id)
@@ -43,4 +60,5 @@ class CookScreenController extends Controller
         $this->cookscreenRepository->updateStatusWarehouseCook($idMaterial,$idCook);
         return redirect(route('cook_screen.detail',['id' => $idCook]));
     }
+
 }

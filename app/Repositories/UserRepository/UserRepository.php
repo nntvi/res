@@ -8,14 +8,17 @@ use App\UserPermission;
 use App\Http\Controllers\Controller;
 
 use App\Repositories\UserRepository\IUserRepository;
+use App\Shift;
+use App\UserSchedule;
+use App\WeekDays;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class UserRepository  extends Controller implements IUserRepository{
 
     public function getAllUser($arr){
         foreach ($arr as $name) {
-            if($name->action_code == "CREATE_POST"){
-                $users = User::with('userper.permission')->get();
+            if($name->action_code == "VIEW_USER"){
+                $users = User::with('userper.permission')->paginate(7);
                 return view('user/index',compact('users'));
             }
         }
@@ -23,29 +26,25 @@ class UserRepository  extends Controller implements IUserRepository{
     }
 
     public function validatorRequestStore($req){
-        $messeages = [
-            'name.required' => 'Không để trống tên người dùng',
-            'name.min' => 'Tên người dùng nhiều hơn 3 ký tự',
-            'name.max' => 'Tên người dùng giới hạn 30 ký tự',
-            'email.required' => 'Không để trống email',
-            'email.unique' => 'Email đã tồn tại trong hệ thống',
-            'password.required' => 'Không để trống password',
-            'password-confirm.same' => 'Password xác nhận không khớp',
-            'permission.required' => 'Vui lòng chọn quyền cho user'
-        ];
-
         $req->validate(
             [
-                'name' => 'required|min:3|max:30',
-                'email' => 'required|unique:users,email',
-                'password' => 'required',
+                'email' => 'unique:users,email',
                 'password-confirm' => 'same:password',
-                'permission' => 'required'
+                'permission' => 'required',
             ],
-            $messeages
+            [
+                'email.unique' => 'Email đã tồn tại trong hệ thống',
+                'password-confirm.same' => 'Password xác nhận không khớp',
+                'permission.required' => 'Vui lòng chọn quyền cho user',
+            ]
         );
     }
 
+    public function validatorRequestShift($request)
+    {
+        $request->validate(['shift' => 'required'],
+                            ['shift.required' => 'Vui lòng chọn đánh dấu ca làm cho nhân viên']);
+    }
     public function validatorRequestUpdate($req){
         $messeages = [
             'name.required' => 'Không để trống tên người dùng',
@@ -63,41 +62,71 @@ class UserRepository  extends Controller implements IUserRepository{
         );
     }
 
-    public function createUser($request){
-        $user = User::create([  'name' => $request->name,
-                                'email' => $request->email,
-                                'password' => bcrypt($request->password)
-                            ]);
-
+    public function addUserPermission($request,$iduser)
+    {
         $idpermission = $request->permission;
         foreach ($idpermission as $key => $id) {
             $data = [
-                'id_user' => $user->id,
+                'id_user' => $iduser,
                 'id_per' => $id,
             ];
             UserPermission::create($data);
         }
-        return redirect(route('user.index'))->with('success',"Thêm thành công");
     }
 
+    public function createUser($request){
+        $user = User::create([  'name' => $request->name,
+                                'email' => $request->email,
+                                'password' => bcrypt($request->password)]);
+        $this->addUserPermission($request,$user->id);
+        return redirect(route('user.index'));
+    }
+
+    public function countUserScheduleById($idUser)
+    {
+        return UserSchedule::where('id_user',$idUser)->count();
+    }
+
+    public function loopShiftAndWeekday($request)
+    {
+        for ($i=0; $i < count($request->shift); $i++) {
+            $userSchedule = new UserSchedule();
+            $userSchedule->id_user = $request->iduser;
+            $userSchedule->id_shift = substr( $request->shift[$i], 0, 1 );
+            $userSchedule->id_weekday = substr($request->shift[$i], 2, 1);
+            $userSchedule->save();
+        }
+    }
+    public function viewScheduleUser($id)
+    {
+        $user = User::where('id',$id)->with('userSchedule')->first();
+        $weekdays = WeekDays::all();
+        $shifts = Shift::all();
+        $count = $this->countUserScheduleById($id);
+        return view('user.schedule',compact('user','weekdays','shifts','count'));
+    }
+
+    public function updateShiftUser($request,$id)
+    {
+        $count = $this->countUserScheduleById($id);
+        if($count <= 0){
+            $this->loopShiftAndWeekday($request);
+        }else{
+            $userSchedule = UserSchedule::where('id_user',$id)->delete();
+            $this->loopShiftAndWeekday($request);
+        }
+        return redirect(route('user.shift',['id' => $id]));
+    }
     public function viewUpdate($id)
     {
-        // tìm đến id của user cần update
         $user = User::find($id);
-        // lấy hết những nhóm quyền trong permisssions ra
         $permissions = Permission::all();
-        // tìm trong bảng user_per id nào trùng với id cần chỉnh sửa
         $userpers = UserPermission::where('id_user',$id)->get();
-        // tạo mảng chứa những permission đã chọn và chưa chọn
         $data = array();
-        // duyệt từ bảng permission
         foreach ($permissions as  $permission) {
             $check = false;
-            // đi vào bảng user_per để tìm id
             foreach ($userpers as $userper) {
-                // nếu id của permission nào trùng với id ở bảng permissions
                 if($userper->id_per === $permission->id){
-                    // thông báo đã tìm thấy
                     $obj['flag'] = true;
                     $obj['id'] = $permission->id;
                     $obj['name'] = $permission->name;
@@ -118,22 +147,11 @@ class UserRepository  extends Controller implements IUserRepository{
     }
     public function updateUser($request,$id)
     {
-
-        // tìm user cần sửa
         $user = User::find($id);
         $user->name = $request->name;
-        //$user->password = bcrypt($request->password);
-        // lưu lại
-        //dd($user);
         $user->save();
-
-        // ở bảng user_per tìm id_user trùng với id cần sửa
-        // xóa tất cả để cập nhật lại
         UserPermission::where('id_user',$id)->delete();
-
-        // lấy những id của permission vừa click
         $idPermission = $request->permission;
-
         foreach ($idPermission as $key => $value) {
             $data = [
                 'id_user' => $user->id,
@@ -169,11 +187,17 @@ class UserRepository  extends Controller implements IUserRepository{
         $user->save();
         return redirect(route('user.index'))->with('success','Đổi password thành công');
     }
+
+    public function searchUser($request)
+    {
+        $name = $request->nameSearch;
+        $users = User::where('name','LIKE',"%{$name}%")
+                        ->with('userper.permission')->get();
+        return view('user.search',compact('users'));
+    }
     public function deleteUser($id)
     {
-        // Tìm trong bảng user_per xóa trước
         UserPermission::where('id_user',$id)->delete();
-        // Tìm id ở bảng user
         User::where('id',$id)->delete();
         return redirect(route('user.index'));
     }

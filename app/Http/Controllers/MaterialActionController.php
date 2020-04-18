@@ -37,16 +37,15 @@ class MaterialActionController extends Controller
         return $this->materialActionRepository->showMoreDetailById($id);
     }
 
-    public function viewUpdate($id)
-    {
-        return $this->materialActionRepository->showViewUpdateMaterialAction($id);
-    }
-
     public function update(Request $request, $id)
     {
         return $this->materialActionRepository->updateMaterialAction($request,$id);
     }
 
+    public function search(Request $request)
+    {
+       return $this->materialActionRepository->searchMaterialAction($request);
+    }
     public function delete($id)
     {
         return $this->materialActionRepository->deleteMaterialAction($id);

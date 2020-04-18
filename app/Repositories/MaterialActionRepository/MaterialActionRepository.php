@@ -20,7 +20,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     {
         $material = Material::where('id',$id)
                     ->with('materialAction.materialDetail','materialAction.unit')
-                    ->get();
+                    ->first();
         return $material;
     }
     public function getMaterialDetails($id)
@@ -152,26 +152,27 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
 
     public function showMoreDetailById($id)
     {
-        $materials = $this->getMaterialById($id);
-        return view('materialaction.detail',compact('materials'));
-    }
-
-    public function showViewUpdateMaterialAction($id)
-    {
-        $materialAction = $this->findMaterialActionById($id);
-        $units = $this->getUnit();
-        return view('materialaction.update',compact('materialAction','units'));
+        $material = $this->getMaterialById($id);
+        return view('materialaction.detail',compact('material'));
     }
 
     public function updateMaterialAction($request,$id)
     {
-        $mat_detail = $this->findRowMaterialAction($id);
-        $mat_detail->id_dvt = $request->id_dvt;
-        $mat_detail->qty = $request->qty;
-        $mat_detail->save();
-        return redirect(route('material_action.detail',['id' => $mat_detail->id_groupnvl]));
+        MaterialAction::where('id',$id)->update(['qty' => $request->qty ]);
+        $idGroupNVL = MaterialAction::find($id)->value('id_groupnvl');
+        return redirect(route('material_action.detail',['id' => $idGroupNVL]));
     }
 
+    public function searchMaterialAction($request)
+    {
+        $name = $request->nameSearch;
+        $materials = Material::with('materialAction.materialDetail')
+                                ->whereHas('materialAction', function ($query) use($name)
+                                {
+                                    $query->where('name','LIKE','%'. $name . '%');
+                                })->get();
+        return view('materialaction.search',compact('materials'));
+    }
     public function deleteMaterialAction($id)
     {
         $mat_detail = $this->findRowMaterialAction($id);

@@ -12,7 +12,7 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
 
     public function getAllCookArea()
     {
-        $cooks = CookArea::all();
+        $cooks = CookArea::where('status','1')->get();
         return $cooks;
     }
     public function getDateNow()

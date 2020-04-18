@@ -41,15 +41,19 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/per_detail/viewupdate/{id}','PermissionDetailController@getEdit')->name('perdetail.update');
     Route::post('/per_detail/update/{id}','PermissionDetailController@postEdit')->name('perdetail.p_update');
     Route::get('/per_detail/delete/{id}','PermissionDetailController@delete')->name('perdetail.delete');
+    Route::get('/per_detail/search/','PermissionDetailController@search')->name('perdetail.search');
 
     // UserPermsision
     Route::get('/user/index', 'UserController@index')->name('user.index');
     Route::get('/user/store', 'UserController@viewstore')->name('user.store');
     Route::post('/user/store', 'UserController@store')->name('user.p_store');
+    Route::get('/user/viewShift/{id}', 'UserController@viewShift')->name('user.shift');
+    Route::get('/user/updateshift/{id}', 'UserController@updateShift')->name('user.p_shift');
     Route::get('/user/update/{id}', 'UserController@viewUpdate')->name('user.update');
     Route::post('/user/update/{id}', 'UserController@update')->name('user.p_update');
     Route::post('/user/update_password/{id}','UserController@updatePassword')->name('user.p_updatepassword');
     Route::get('/user/delete/{id}', 'UserController@delete')->name('user.delete');
+    Route::get('/user/search/', 'UserController@search')->name('user.search');
 
     // Area
     Route::get('/area/index', 'AreaController@index')->name('area.index');
@@ -119,16 +123,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/material_action/viewStore/{id}', 'MaterialActionController@viewStore')->name('material_action.store');
     Route::post('/material_action/store/{id}', 'MaterialActionController@store')->name('material_action.p_store');
     Route::get('/material_action/moreDetail/{id}', 'MaterialActionController@showMoreDetail')->name('material_action.detail');
-    Route::get('/material_action/update/{id}', 'MaterialActionController@viewUpdate')->name('material_action.update');
     Route::post('/material_action/update/{id}', 'MaterialActionController@update')->name('material_action.p_update');
     Route::get('/material_action/delete/{id}', 'MaterialActionController@delete')->name('material_action.delete');
+    Route::post('/material_action/search/', 'MaterialActionController@search')->name('material_action.search');
 
     // Material Detail
     Route::get('/material_detail/index', 'MaterialDetailController@index')->name('material_detail.index');
     Route::post('/material_detail/store', 'MaterialDetailController@store')->name('material_detail.store');
-    Route::post('/material_detail/update/{id}', 'MaterialDetailController@update')->name('material_detail.update');
+    Route::post('/material_detail/updateName/{id}', 'MaterialDetailController@updateName')->name('material_detail.p_updatename');
+    Route::post('/material_detail/updateType/{id}', 'MaterialDetailController@updateType')->name('material_detail.p_updatetype');
     Route::get('/material_detail/delete/{id}', 'MaterialDetailController@delete')->name('material_detail.delete');
-    Route::post('/material_detail/search', 'MaterialDetailController@search')->name('material_detail.search');
+    Route::get('/material_detail/search', 'MaterialDetailController@search')->name('material_detail.search');
 
     // Order
     Route::get('/order/index', 'OrderController@showTable')->name('order.index');

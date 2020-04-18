@@ -6,4 +6,7 @@ interface IPermissionDetailRepository{
     function convertActionCode($str);
     function deleteDetail($id);
     function validatorRequestStore($req);
+    function storePermissionDetail($request);
+    function updatePermissionDetail($request, $id);
+    function searchPermissionDetail($request);
 }

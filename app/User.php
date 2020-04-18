@@ -46,8 +46,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     public $timestamps = true;
+
     public function userper()
     {
         return $this->hasMany('App\UserPermission','id_user');
+    }
+
+    public function userSchedule()
+    {
+        return $this->hasMany('App\UserSchedule','id_user');
     }
 }

@@ -13,13 +13,14 @@
                     <div class="row">
                         <div class="col-xs-12 col-md-12 col-sm-12">
                             <label class="control-label"
-                                for="">Nhập tên quyền<span style="color: #ff0000"></span></label>
+                                for="">Tên chức vụ<span style="color: #ff0000"></span></label>
                                 <input type="text" class="form-control" name="name" style="margin-top: 5px;" required min="3" max="30">
                                 <span class="error-message">{{ $errors->first('name') }}</span></p>
                         </div>
                         <div class="col-xs-12 col-md-12 col-sm-12">
+                            <div class="space"></div>
                             <label class="control-label"
-                                for="">Chi tiết quyền<span style="color: #ff0000"> *</span>
+                                for="">Đảm nhiệm hoạt động<span style="color: #ff0000"> *</span>
                             </label>
                             <hr>
                             <div class="cover-role-body" id="filters">
@@ -40,10 +41,9 @@
         <div class="col-sm-9 mail-w3agile">
                 <div class="panel panel-default">
                         <div class="panel-heading">
-                          Danh sách quyền
+                            Danh sách chức vụ
                         </div>
                         <div class="row w3-res-tb">
-
                                 <div class="col-sm-5">
                                     <form action="{{ route('permission.search') }}" method="GET">
                                         @csrf
@@ -65,7 +65,7 @@
                                         <tr>
                                             <th scope="col">STT</th>
                                             <th scope="col">Name</th>
-                                            <th scope="col">Chi tiết </th>
+                                            <th scope="col">Các hoạt động có thể truy cập</th>
                                             <th scope="col">Cập nhật</th>
                                             <th scope="col">Xóa</th>
                                         </tr>

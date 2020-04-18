@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Helper\ICheckAction;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepository\IUserRepository;
+use App\Shift;
+use App\WeekDays;
 
 class UserController extends Controller
 {
@@ -23,24 +25,32 @@ class UserController extends Controller
     public function index()
     {
         $result = $this->checkAction->getPermission(auth()->id());
-        //dd($result);
         return $this->userRepository->getAllUser($result);
     }
 
     public function viewstore()
     {
         $permissions = Permission::all();
+        $shifts = Shift::all();
         return view('user/store',compact('permissions'));
     }
 
-    // Thêm người dùng và quyền tương xứng
     public function store(Request $request)
     {
-
         $this->userRepository->validatorRequestStore($request);
         return $this->userRepository->createUser($request);
     }
 
+    public function viewShift($id)
+    {
+        return $this->userRepository->viewScheduleUser($id);
+    }
+
+    public function updateShift(Request $request, $id)
+    {
+        $this->userRepository->validatorRequestShift($request);
+        return $this->userRepository->updateShiftUser($request,$id);
+    }
     public function viewUpdate($id)
     {
 
@@ -57,6 +67,12 @@ class UserController extends Controller
         $this->userRepository->validatorRequestUpdatePassword($request);
         return $this->userRepository->updatePasswordUser($request,$id);
     }
+
+    public function search(Request $request)
+    {
+        return $this->userRepository->searchUser($request);
+    }
+
     public function delete($id)
     {
         return $this->userRepository->deleteUser($id);

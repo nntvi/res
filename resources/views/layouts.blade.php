@@ -24,7 +24,7 @@
         <link rel="stylesheet" href="{{ asset('css/morris.css') }}" type="text/css" />
         <!-- calendar -->
         <link rel="stylesheet" href="{{ asset('css/monthly.css') }}">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
         <!-- //calendar -->
         <!-- //font-awesome icons -->
         <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
@@ -34,7 +34,8 @@
         <script src="{{ asset('js/search.js') }}"></script>
         <script src="{{ asset('js/validate.js') }}"></script>
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/i18n/defaults-*.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
         <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
@@ -299,9 +300,9 @@
                                         <span>Phân quyền</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="{{ route('permission.index')}}">Permission</a></li>
-                                    <li><a href="{{ route('perdetail.index') }}">Permission Details</a></li>
-                                    <li><a href="{{ route('user.index') }}">Users</a></li>
+                                    <li><a href="{{ route('permission.index')}}">Chức vụ</a></li>
+                                    <li><a href="{{ route('perdetail.index') }}">Quyền hoạt động</a></li>
+                                    <li><a href="{{ route('user.index') }}">Nhân viên</a></li>
                                     </ul>
                             </li>
                             <li class="sub-menu">

@@ -6,6 +6,7 @@ use App\Repositories\PermissionRepository\IPermisionRepository;
 use App\Permission;
 use App\PermissionDetail;
 use App\PermissionAction;
+use App\UserPermission;
 
 class PermissionRepository extends Controller implements IPermissionRepository
 {
@@ -139,7 +140,8 @@ class PermissionRepository extends Controller implements IPermissionRepository
     public function deletePermission($id)
     {
         PermissionAction::where('id_per', $id)->delete();
-        $permission = Permission::find($id)->delete();
+        Permission::find($id)->delete();
+        UserPermission::where('id_per',$id)->delete();
         return redirect(route('permission.index'));
     }
 }

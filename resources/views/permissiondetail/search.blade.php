@@ -7,6 +7,9 @@
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
+                <a href="{{ route('perdetail.index') }}">
+                    <button class="btn btn-sm btn-info">Trở về</button>
+                </a>
                 <a href="#myModal-1" data-toggle="modal">
                     <button class="btn btn-sm btn-warning">Thêm mới hoạt động</button>
                 </a>
@@ -133,17 +136,7 @@
                 </tbody>
             </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
 
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-7 items</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    {{ $permissionDetails->links() }}
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
 @endsection

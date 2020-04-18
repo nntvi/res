@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MaterialDetail extends Model
+class UserSchedule extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'material_details';
+    protected $table = 'user_schedule';
 
     /**
      * The primary key associated with the table.
@@ -25,7 +25,7 @@ class MaterialDetail extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -33,21 +33,21 @@ class MaterialDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'id_type',
-        'id_unit'
+        'id_user','id_weekday','id_shift'
     ];
 
-    public function typeMaterial()
+    public function user()
     {
-        return $this->belongsTo('App\TypeMaterial','id_type');
+        return $this->belongsTo('App\User','id_user');
     }
-    public function unit()
+
+    public function weekday()
     {
-        return $this->belongsTo('App\Unit','id_unit');
+        return $this->belongsTo('App\Weekdays','id_weekday');
     }
-    public function warehouse()
+
+    public function shift()
     {
-        return $this->hasMany('App\Warehouse','id_material_detail','id');
+        return $this->belongsTo('App\Shift','id_shift');
     }
 }

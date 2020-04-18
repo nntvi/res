@@ -33,9 +33,17 @@ class MaterialDetailController extends Controller
         return $this->materialDetailRepository->updateMaterialDetail($request,$id);
     }
 
+    public function updateName(Request $request,$id)
+    {
+        $this->materialDetailRepository->validatorRequestUpdate($request);
+        return  $this->materialDetailRepository->updateNameMaterialDetail($request,$id);
+    }
+    public function updateType(Request $request,$id)
+    {
+        return $this->materialDetailRepository->updateTypeMaterialDetail($request,$id);
+    }
     public function search(Request $request)
     {
-        $this->materialDetailRepository->validatorRequestSearch($request);
         return $this->materialDetailRepository->searchMaterialDetail($request);
     }
 

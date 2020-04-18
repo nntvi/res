@@ -7,8 +7,11 @@
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
+                <a href="{{ route('user.index') }}">
+                    <button class="btn btn-sm btn-default">Trở về</button>
+                </a>
                 <a href="{{ route('user.store') }}">
-                    <button class="btn btn-sm btn-success">Thêm mới</button>
+                    <button class="btn btn-sm btn-danger">Thêm mới</button>
                 </a>
             </div>
             <div class="col-sm-5">
@@ -126,19 +129,7 @@
                 </tbody>
             </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
 
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-7 users</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{-- {{ $users->links() }} --}}
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
 @endsection

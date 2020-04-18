@@ -7,20 +7,17 @@
         </div>
         <div class="row w3-res-tb">
                 <div class="col-sm-4 m-b-xs">
-
+                    <a href="{{ route('material_action.index') }}" class="btn btn-sm btn-default">Trở về</a>
                 </div>
                 <div class="col-sm-3">
                 </div>
                 <div class="col-sm-5">
-                    <form action="{{ route('material_action.search') }}" method="post">
-                        @csrf
-                        <div class="input-group">
-                        <input type="text" class="input-sm form-control" name="nameSearch" required>
-                        <span class="input-group-btn">
-                            <button class="btn btn-sm btn-danger" type="submit">Search!</button>
-                        </span>
-                        </div>
-                    </form>
+                    <div class="input-group">
+                    <input type="text" class="input-sm form-control" placeholder="Search">
+                    <span class="input-group-btn">
+                        <button class="btn btn-sm btn-danger" type="button">Search!</button>
+                    </span>
+                    </div>
                 </div>
                 </div>
         <div>
