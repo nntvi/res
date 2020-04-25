@@ -68,4 +68,10 @@ class AreaRepository extends Controller implements IAreaRepository{
         $area = Area::find($id)->delete();
         return redirect(route('area.index'));
     }
+
+    public function collection()
+    {
+        return Area::orderBy('name', 'asc')->get();
+    }
+
 }

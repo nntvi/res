@@ -24,6 +24,7 @@ class ExportCouponController extends Controller
 
     public function export(Request $request)
     {
+        $this->exportcouponRepository->validateExport($request);
         return $this->exportcouponRepository->exportMaterial($request);
     }
 

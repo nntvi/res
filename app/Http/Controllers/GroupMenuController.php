@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\CookArea;
 use Illuminate\Http\Request;
 use App\Repositories\GroupMenuRepository\IGroupMenuRepository;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GroupMenuExport;
 
 class GroupMenuController extends Controller
 {
@@ -51,5 +53,10 @@ class GroupMenuController extends Controller
     public function delete($id)
     {
         return $this->groupmenuRepository->deleteGroupMenu($id);
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new GroupMenuExport,'groupmenu.xlsx');
     }
 }

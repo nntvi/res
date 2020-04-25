@@ -21,7 +21,7 @@
                                         <input type="text" size="40" class="form-control" name="code" maxlength="200"
                                             id="codeImportCoupon">
                                         <span
-                                            class="error-message">{{ $errors->first('name') }}</span>
+                                            class="error-message">{{ $errors->first('code') }}</span>
                                         </p>
                                     </div>
                                     <div class="col-md-6">
@@ -39,6 +39,7 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-xs-12">
+                                        <div class="space"></div>
                                         <label class="control-label">Ghi chú</label>
                                         <div class="space"></div>
                                         <textarea type="text" size="40" class="form-control" rows="3" name="note">

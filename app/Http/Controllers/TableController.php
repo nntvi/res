@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Area;
-use App\Table;
 use Illuminate\Http\Request;
 use App\Repositories\TableRepository\ITableRepository;
+use App\Exports\TableExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TableController extends Controller
 {
@@ -21,30 +20,34 @@ class TableController extends Controller
        return $this->tableRepository->getAllTable();
     }
 
-    public function viewStore()
-    {
-        return $this->tableRepository->viewAddTable();
-    }
-
     public function store(Request $request)
     {
         $this->tableRepository->validatorRequestStore($request);
         return $this->tableRepository->addTable($request);
     }
 
-    public function viewUpdate($id)
-    {
-        return $this->tableRepository->viewUpdateTable($id);
-    }
-
-    public function update(Request $request,$id)
+    public function updateName(Request $request,$id)
     {
         $this->tableRepository->validatorRequestStore($request);
-        return $this->tableRepository->updateTable($request,$id);
+        return $this->tableRepository->updateNameTable($request,$id);
     }
 
+    public function updateArea(Request $request,$id)
+    {
+        return $this->tableRepository->updateArea($request,$id);
+    }
+
+    public function search(Request $request)
+    {
+        return $this->tableRepository->searchTable($request);
+    }
     public function delete($id)
     {
         return $this->tableRepository->deleteTable($id);
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new TableExport,'table.xlsx');
     }
 }

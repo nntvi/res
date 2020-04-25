@@ -135,6 +135,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\ShiftRepository\IShiftRepository',
             'App\Repositories\ShiftRepository\ShiftRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\SalaryRepository\ISalaryRepository',
+            'App\Repositories\SalaryRepository\SalaryRepository'
+        );
     }
 
     /**

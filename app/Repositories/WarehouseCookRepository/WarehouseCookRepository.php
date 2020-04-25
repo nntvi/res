@@ -43,7 +43,8 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
 
     public function getCookWarehouse()
     {
-        $cookWarehouse = CookArea::with('warehouseCook.detailMaterial','warehouseCook.unit')->get();
+        $cookWarehouse = CookArea::with('warehouseCook.detailMaterial','warehouseCook.unit')
+                                    ->where('status','1')->get();
         return $cookWarehouse;
     }
 

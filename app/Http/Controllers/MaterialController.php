@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Material;
 use Illuminate\Http\Request;
 use App\Repositories\MaterialRepository\IMaterialRepository;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MaterialExport;
 
 class MaterialController extends Controller
 {
@@ -41,5 +43,10 @@ class MaterialController extends Controller
     public function delete($id)
     {
         return $this->materialRepository->deleteMaterial($id);
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new MaterialExport,'material.xlsx');
     }
 }

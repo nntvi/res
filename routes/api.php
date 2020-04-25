@@ -42,9 +42,9 @@ Route::get('getObjectToReport/{idType}','AjaxController@getObjectToReport');
 
 Route::get('getDateTimeToReport/{id}','AjaxController@getDateTimeToReport');
 
-//------------------------------------ Search -------------------------------------------------
+//------------------------------------ Get Capital Price -------------------------------------------------
 
-
+Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
 
 
 

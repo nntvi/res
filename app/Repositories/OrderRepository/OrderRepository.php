@@ -10,9 +10,14 @@ use App\Table;
 use Carbon\Carbon;
 use App\Order;
 use App\OrderDetailTable;
+use App\Topping;
 use App\WarehouseCook;
 
 class OrderRepository extends Controller implements IOrderRepository{
+    public function validatorOrder($request)
+    {
+       $request->validate(['idDish' => 'required'],['idDish.required' => 'Vui lòng chọn ít nhất 1 món ăn']);
+    }
     public function getArea()
     {
         $areas = Area::with('containTable')->get();
@@ -30,11 +35,13 @@ class OrderRepository extends Controller implements IOrderRepository{
                         ->with('table.getArea')->get();
         return $idOrders;
     }
+
     public function getDishes()
     {
-        $groupmenus = GroupMenu::with('dishes','topping')->get();
+        $groupmenus = GroupMenu::with('dishes')->get();
         return $groupmenus;
     }
+
     public function getIdTableActive($date)
     {
         $activeTables= Order::whereBetween('created_at',
@@ -43,11 +50,50 @@ class OrderRepository extends Controller implements IOrderRepository{
                             ->where('status', '1')->get('id_table');
         return $activeTables;
     }
+
     public function getTableIsNotActive($activeTables)
     {
         $inActiveTables = Table::whereNotIn('id', $activeTables)->get();
         return $inActiveTables;
     }
+
+    public function getOnlyIdMaterialAction($idGroupNVL)
+    {
+        $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)
+                                            ->orderBy('id_material_detail')
+                                            ->get('id_material_detail');
+        return $idMaterialDetails;
+    }
+
+    public function getMaterialAction($idGroupNVL)
+    {
+        $materialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)->get();
+        return $materialDetails;
+    }
+
+    public function findIdGroupNVL($idDish)
+    {
+        $idGroupNVL = Dishes::where('id',$idDish)->first('id_groupnvl');
+        return $idGroupNVL->id_groupnvl;
+    }
+
+    public function findIdCook($idDish)
+    {
+        $idCook = Dishes::where('id',$idDish)
+                            ->with('material.groupMenu.cookArea')
+                            ->first();
+        return $idCook->material->groupMenu->cookArea->id;
+    }
+
+    public function findInWarehouseCook($idCook,$idMaterialDetails)
+    {
+        $detailWarehouse = WarehouseCook::where('cook',$idCook)
+                                        ->whereIn('id_material_detail',$idMaterialDetails)
+                                        ->orderBy('id_material_detail')
+                                        ->get();
+        return $detailWarehouse;
+    }
+
     public function showTableInDay()
     {
         $areas = $this->getArea();
@@ -74,39 +120,6 @@ class OrderRepository extends Controller implements IOrderRepository{
         return $orderTable->id;
     }
 
-    public function findIdGroupNVL($idDish)
-    {
-        $idGroupNVL = Dishes::where('id',$idDish)->first('id_groupnvl');
-        return $idGroupNVL->id_groupnvl;
-    }
-
-    public function getOnlyIdMaterialAction($idGroupNVL)
-    {
-        $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)
-                                            ->orderBy('id_material_detail')
-                                            ->get('id_material_detail');
-        return $idMaterialDetails;
-    }
-    public function getMaterialAction($idGroupNVL)
-    {
-        $materialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)->get();
-        return $materialDetails;
-    }
-    public function findIdCook($idDish)
-    {
-        $idCook = Dishes::where('id',$idDish)
-                            ->with('material.groupMenu.cookArea')
-                            ->first();
-        return $idCook->material->groupMenu->cookArea->id;
-    }
-    public function findInWarehouseCook($idCook,$idMaterialDetails)
-    {
-        $detailWarehouse = WarehouseCook::where('cook',$idCook)
-                                        ->whereIn('id_material_detail',$idMaterialDetails)
-                                        ->orderBy('id_material_detail')
-                                        ->get();
-        return $detailWarehouse;
-    }
     public function compare($materialInWarehouseCooks,$materialInActions)
     {
         $a = 0;
@@ -165,6 +178,7 @@ class OrderRepository extends Controller implements IOrderRepository{
             }
         }
     }
+
     public function orderTablePost($request)
     {
         $idOrderTable = $this->saveOrder($request);

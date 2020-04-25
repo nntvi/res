@@ -8,6 +8,7 @@ use App\UserPermission;
 use App\Http\Controllers\Controller;
 
 use App\Repositories\UserRepository\IUserRepository;
+use App\Salary;
 use App\Shift;
 use App\UserSchedule;
 use App\WeekDays;

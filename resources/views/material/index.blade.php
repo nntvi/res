@@ -43,11 +43,9 @@
                     </div>
                     <div class="row w3-res-tb">
                         <div class="col-sm-4 m-b-xs">
-                            <select class="input-sm form-control w-sm inline v-middle">
-                                <option value="0">Theo tên</option>
-                                <option value="1">Theo giá</option>
-                            </select>
-                            <button class="btn btn-sm btn-default">Sắp xếp</button>
+                            <a href="{{ route('material.exportexcel')}}" class="btn btn-sm btn-default">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                            </a>
                         </div>
                         <div class="col-sm-4">
                             <span

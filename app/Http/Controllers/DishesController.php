@@ -6,6 +6,8 @@ use App\Dishes;
 use App\Repositories\DishRepository\IDishRepository;
 use App\Unit;
 use Illuminate\Http\Request;
+use App\Exports\DishExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DishesController extends Controller
 {
@@ -19,9 +21,9 @@ class DishesController extends Controller
     public function index()
     {
         $groupmenus = $this->dishesRepository->getGroupMenu();
-        $dishes = Dishes::with('groupMenu.cookArea','unit')->get();
-
-        return view('dishes.index',compact('dishes','groupmenus'));
+        $dishes = Dishes::with('groupNVL.groupMenu.cookArea','unit')->paginate(10);
+        $units = $this->dishesRepository->getUnit();
+        return view('dishes.index',compact('dishes','groupmenus','units'));
     }
     public function viewStore()
     {
@@ -38,31 +40,38 @@ class DishesController extends Controller
         return $this->dishesRepository->addDish($request);
     }
 
-    public function viewUpdate($id)
+    public function updateImage(Request $request,$id)
     {
-        $dish = $this->dishesRepository->showUpdateDish($id);
-        $groupmenus = $this->dishesRepository->getGroupMenu();
-        $units = $this->dishesRepository->getUnit();
-        $materials = $this->dishesRepository->getMaterial();
-        return view('dishes.update',compact('dish','groupmenus','units','materials'));
+        $this->dishesRepository->validateImage($request);
+        return $this->dishesRepository->updateImageDish($request,$id);
     }
 
-    public function update(Request $request, $id)
+    public function updateSalePrice(Request $request,$id)
     {
-        // $this->dishesRepository->validatorRequestUpdate($request);
-        return $this->dishesRepository->updateDish($request,$id);
+        return $this->dishesRepository->updateSalePriceDish($request,$id);
     }
 
+    public function updateUnit(Request $request,$id)
+    {
+        return $this->dishesRepository->updateUnitDish($request,$id);
+    }
+
+    public function updateStatus(Request $request,$id)
+    {
+        return $this->dishesRepository->updateStatusDish($request,$id);
+    }
     public function search(Request $request)
     {
-        $this->dishesRepository->validatorRequestSearch($request);
-        $dishes = $this->dishesRepository->searchDish($request);
-        $groupmenus = $this->dishesRepository->getGroupMenu();
-        return view('dishes.search',compact('dishes','groupmenus'));
+        return $this->dishesRepository->searchDish($request);
     }
 
     public function delete($id)
     {
         return $this->dishesRepository->deleteDish($id);
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new DishExport,'dishes.xlsx');
     }
 }

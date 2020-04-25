@@ -6,6 +6,7 @@ use App\Material;
 use App\Unit;
 use App\MaterialDetail;
 use App\MaterialAction;
+use App\SettingPrice;
 use App\WarehouseCook;
 
 class MaterialActionRepository extends Controller implements IMaterialActionRepository{
@@ -25,14 +26,14 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     }
     public function getMaterialDetails($id)
     {
-        $actions = MaterialAction::where('id_groupnvl',$id)
-                                ->get('id_material_detail');
+        $actions = MaterialAction::where('id_groupnvl',$id)->get('id_material_detail');
         $materialDetails = MaterialDetail::whereNotIn('id',$actions)
                                             ->orderBy('name','asc')
                                             ->with('unit')
                                             ->get();
         return $materialDetails;
     }
+
 
     public function getUnit()
     {
@@ -82,8 +83,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
 
     public function getIdCookByIdMaterial($id_groupnvl)
     {
-        $material = Material::where('id',$id_groupnvl)
-                        ->with('groupMenu')->get();
+        $material = Material::where('id',$id_groupnvl)->with('groupMenu')->get();
         foreach ($material as $value) {
                 $idCook = $value->groupMenu->id_cook;
         }
@@ -118,12 +118,12 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         $rowCookWarehouse->id_material_detail = $idMaterialDetail;
         $rowCookWarehouse->qty = 0.00;
         $rowCookWarehouse->id_unit = $id_unit;
+        $rowCookWarehouse->status = '0';
         $rowCookWarehouse->save();
     }
     public function getUnitByMaterialDetail($idMaterialDetail)
     {
-        $idUnit = MaterialDetail::where('id',$idMaterialDetail)
-                                    ->value('id_unit');
+        $idUnit = MaterialDetail::where('id',$idMaterialDetail)->value('id_unit');
         return $idUnit;
     }
 
@@ -136,6 +136,8 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
             $materialDetail->id_material_detail = $request->id_material[$i];
             $materialDetail->id_dvt = $this->getUnitByMaterialDetail($request->id_material[$i]);
             $materialDetail->qty = $request->qty[$i];
+            $tempPrice = SettingPrice::where('id_material_detail',$request->id_material[$i])->value('price');
+            $materialDetail->price = $tempPrice;
             $materialDetail->save();
             if($this->checkMaterialDetailInWarehouseCook($this->checkWarehouse($cook),$materialDetail->id_material_detail)){
                 $this->addWarehouseCook($cook,$materialDetail->id_material_detail,$materialDetail->id_dvt);

@@ -390,4 +390,47 @@ $(document).ready(function () {
         }
     });
 
+    // get capital Price
+    $("#idMaterial").change(function () {
+        const idMaterial = $(this).val();
+        $.ajax({
+            url: 'api/getCapitalPrice/' + idMaterial, //Trang xử lý
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                $('input#capitalPriceHidden').empty();
+                $("#capitalPrice").empty();
+                $("#salePrice").empty();
+                    $('input#capitalPriceHidden').val(data.capitalPrice);
+                    $('input#capitalPrice').val(data.capitalPrice);
+                    $('input#salePrice').val(data.salePrice);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+    });
+
+    // capitalPrice
+    $("#clickUpdatePrice").click(function () {
+        const idMaterial = document.getElementById('idMaterialUpdatePrice').value;
+        $.ajax({
+            url: 'api/getCapitalPrice/' + idMaterial, //Trang xử lý
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                $('#newCapitalPriceHidden').empty();
+                $("#newCapitalUpdate").empty();
+                $("#newSalePriceUpdate").empty();
+                    $('input#newCapitalPriceHidden').val(data.capitalPrice);
+                    $('input#newCapitalUpdate').val(data.capitalPrice);
+                    $('input#newSalePriceUpdate').val(data.salePrice);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+    });
 });

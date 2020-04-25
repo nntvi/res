@@ -64,6 +64,9 @@
                         </div>
                     </div>
                 </div>
+                <a href="{{ route('material_detail.exportexcel') }}" class="btn btn-sm btn-default">
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                </a>
             </div>
             <div class="col-sm-5">
                 @if($errors->any())

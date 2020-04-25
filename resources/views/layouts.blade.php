@@ -288,7 +288,7 @@
                                 <ul class="sub">
                                     <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
                                     <li><a href="{{route('dishes.index')}}">Đồ uống - Món ăn</a></li>
-                                    <li><a href="{{route('topping.index')}}">Topping, ghi chú món</a></li>
+                                    {{--  <li><a href="{{route('topping.index')}}">Topping, ghi chú món</a></li>  --}}
                                     <li><a href="{{route('material.index')}}">Nhóm công thức từng món</a></li>
                                     <li><a href="{{route('material_detail.index')}}">Nguyên vật liệu</a></li>
                                     <li><a href="{{route('material_action.index')}}">Chi tiết NVL từng món</a></li>
@@ -344,8 +344,8 @@
                                         <span>Giao dịch</span>
                                     </a>
                                     <ul class="sub">
-                                        <li><a href="">Danh sách đơn hàng</a></li>
-                                        <li><a href="">Nhập hàng</a></li>
+                                        <li><a href="{{ route('importcoupon.index') }}">Danh sách phiếu nhập</a></li>
+                                        <li><a href="{{ route('exportcoupon.index') }}">Danh sách phiếu xuất</a></li>
                                         <li><a href="">Trả hàng nhà cung cấp</a></li>
                                         <li><a href="">Giao dịch khác(hủy,tặng)</a></li>
                                     </ul>
@@ -374,10 +374,9 @@
                                     <span>Thiết lập</span>
                                 </a>
                                 <ul class="sub">
-                                    <!-- <li><a href="thielapcuahang.html">Thiết lập cửa hàng</a></li> -->
                                     <li><a href="{{ route('shift.index') }}">Thiết lập ca làm việc</a></li>
-                                    <li><a href="thietlapthue.html">Thiết lập thuế</a></li>
-                                    <li><a href="thietlapvaitro.html">Thiết lập vai trò</a></li>
+                                    <li><a href="{{ route('salary.index') }}">Thiết lập tiền lương</a></li>
+                                    <li><a href="">Giá nguyên vật liệu</a></li>
                                 </ul>
                             </li>
                             <!-- <li class="sub-menu">

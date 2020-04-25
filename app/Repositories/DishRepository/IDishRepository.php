@@ -6,12 +6,14 @@ interface IDishRepository{
     function getUnit();
     function getMaterialDetail();
     function addDish($request);
-    function showUpdateDish($id);
-    function updateDish($request, $id);
     function searchDish($request);
     function validatorRequestStore($req);
     function deleteDish($id);
-    function validatorRequestUpdate($req);
     function validatorRequestSearch($req);
     function getMaterial();
+    function updateImageDish($request,$id);
+    function validateImage($request);
+    function updateSalePriceDish($request,$id);
+    function updateUnitDish($request,$id);
+    function updateStatusDish($request,$id);
 }

@@ -26,6 +26,7 @@ class ImportCouponController extends Controller
 
     public function import(Request $request)
     {
+        $this->importcouponRepository->validateCreatImportCoupon($request);
         return $this->importcouponRepository->import($request);
     }
 

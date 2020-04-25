@@ -30,7 +30,7 @@
                             </div>
                             <div class="modal-body">
                                 <form role="form" action="{{ route('exportcoupon.export') }}"
-                                    method="POST">
+                                    method="GET">
                                     @csrf
                                     <div class="row">
                                         <div class="radio">
@@ -175,84 +175,170 @@
                                 </thead>
                                 <tbody>
                                     @foreach($type->warehouse as $key => $detail)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td>{{ $detail->detailMaterial->name }}</td>
-                                            <td>{{ $detail->qty }}</td>
-                                            <td>{{ $detail->limit_stock }}</td>
-                                            @if($detail->unit == null)
-                                                <td>--- Hàng mới --</td>
-                                            @else
-                                                <td>{{ $detail->unit->name }}</td>
-                                            @endif
-                                            <td>
-                                                <a href="#updateLimit{{ $detail->id }}" data-toggle="modal">
-                                                    <i class="fa fa-pencil-square-o text-success text-active"></i>
-                                                </a>
-                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"
-                                                    tabindex="-1" id="updateLimit{{ $detail->id }}" class="modal fade"
-                                                    style="display: none;">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button aria-hidden="true" data-dismiss="modal"
-                                                                    class="close" type="button">×</button>
-                                                                <h4 class="modal-title">Cập nhật số lượng tồn</h4>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form role="form"
-                                                                    action="{{ route('warehouse.p_updateLimitStock',['id' => $detail->id]) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    <div class="row">
-                                                                        <div class="col-xs-6">
-                                                                            <label>Tên
-                                                                                NVL</label>
-                                                                            <input class="form-control"
-                                                                                value="{{ $detail->detailMaterial->name }}"
-                                                                                disabled>
+                                        @if($detail->limit_stock == $detail->qty)
+                                            <tr style="background:palegoldenrod">
+                                                <td>{{ $key+1 }}</td>
+                                                <td>{{ $detail->detailMaterial->name }}</td>
+                                                <td style="color:red">{{ $detail->qty }}</td>
+                                                <td style="color:red">{{ $detail->limit_stock }}</td>
+                                                @if($detail->unit == null)
+                                                    <td>--- Hàng mới --</td>
+                                                @else
+                                                    <td>{{ $detail->unit->name }}</td>
+                                                @endif
+                                                <td>
+                                                    <a href="#updateLimit{{ $detail->id }}" data-toggle="modal">
+                                                        <i class="fa fa-pencil-square-o text-success text-active"></i>
+                                                    </a>
+                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"
+                                                        tabindex="-1" id="updateLimit{{ $detail->id }}"
+                                                        class="modal fade" style="display: none;">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button aria-hidden="true" data-dismiss="modal"
+                                                                        class="close" type="button">×</button>
+                                                                    <h4 class="modal-title">Cập nhật số lượng tồn</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form role="form"
+                                                                        action="{{ route('warehouse.p_updateLimitStock',['id' => $detail->id]) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <div class="row">
+                                                                            <div class="col-xs-6">
+                                                                                <label>Tên
+                                                                                    NVL</label>
+                                                                                <input class="form-control"
+                                                                                    value="{{ $detail->detailMaterial->name }}"
+                                                                                    disabled>
+                                                                            </div>
+                                                                            <div class="col-xs-6">
+                                                                                <label>Số lượng
+                                                                                    hiện có</label>
+                                                                                <input class="form-control"
+                                                                                    value="{{ $detail->qty }}"
+                                                                                    disabled>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-xs-6">
-                                                                            <label>Số lượng
-                                                                                hiện có</label>
-                                                                            <input class="form-control"
-                                                                                value="{{ $detail->qty }}" disabled>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="space"></div>
-                                                                    <div class="row">
-                                                                        <div class="col-xs-6">
-                                                                            <label>Đơn
-                                                                                vị</label>
-                                                                            <input class="form-control"
-                                                                                value="{{ $detail->unit->name }}"
-                                                                                disabled>
+                                                                        <div class="space"></div>
+                                                                        <div class="row">
+                                                                            <div class="col-xs-6">
+                                                                                <label>Đơn
+                                                                                    vị</label>
+                                                                                <input class="form-control"
+                                                                                    value="{{ $detail->unit->name }}"
+                                                                                    disabled>
 
+                                                                            </div>
+                                                                            <div class="col-xs-6">
+                                                                                <label>Mức
+                                                                                    tồn</label>
+                                                                                <input type="number" step="0.01"
+                                                                                    min="0.00"
+                                                                                    class="limit form-control"
+                                                                                    name="limitStock"
+                                                                                    value="{{ $detail->limit_stock }}">
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-xs-6">
-                                                                            <label>Mức
-                                                                                tồn</label>
-                                                                            <input type="number" step="0.01" min="0.00"
-                                                                                class="limit form-control"
-                                                                                name="limitStock"
-                                                                                value="{{ $detail->limit_stock }}">
+                                                                        <div class="space"></div>
+                                                                        <div class="space"></div>
+                                                                        <div class="row">
+                                                                            <div class="col-xs-12 text-center">
+                                                                                <button type="submit"
+                                                                                    class="btn btn-info">Lưu</button>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="space"></div>
-                                                                    <div class="space"></div>
-                                                                    <div class="row">
-                                                                        <div class="col-xs-12 text-center">
-                                                                            <button type="submit"
-                                                                                class="btn btn-info">Lưu</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
+                                                                    </form>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td>{{ $key+1 }}</td>
+                                                <td>{{ $detail->detailMaterial->name }}</td>
+                                                <td>{{ $detail->qty }}</td>
+                                                <td>{{ $detail->limit_stock }}</td>
+                                                @if($detail->unit == null)
+                                                    <td>--- Hàng mới --</td>
+                                                @else
+                                                    <td>{{ $detail->unit->name }}</td>
+                                                @endif
+                                                <td>
+                                                    <a href="#updateLimit{{ $detail->id }}" data-toggle="modal">
+                                                        <i class="fa fa-pencil-square-o text-success text-active"></i>
+                                                    </a>
+                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"
+                                                        tabindex="-1" id="updateLimit{{ $detail->id }}"
+                                                        class="modal fade" style="display: none;">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button aria-hidden="true" data-dismiss="modal"
+                                                                        class="close" type="button">×</button>
+                                                                    <h4 class="modal-title">Cập nhật số lượng tồn</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form role="form"
+                                                                        action="{{ route('warehouse.p_updateLimitStock',['id' => $detail->id]) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <div class="row">
+                                                                            <div class="col-xs-6">
+                                                                                <label>Tên
+                                                                                    NVL</label>
+                                                                                <input class="form-control"
+                                                                                    value="{{ $detail->detailMaterial->name }}"
+                                                                                    disabled>
+                                                                            </div>
+                                                                            <div class="col-xs-6">
+                                                                                <label>Số lượng
+                                                                                    hiện có</label>
+                                                                                <input class="form-control"
+                                                                                    value="{{ $detail->qty }}"
+                                                                                    disabled>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="space"></div>
+                                                                        <div class="row">
+                                                                            <div class="col-xs-6">
+                                                                                <label>Đơn
+                                                                                    vị</label>
+                                                                                <input class="form-control"
+                                                                                    value="{{ $detail->unit->name }}"
+                                                                                    disabled>
+
+                                                                            </div>
+                                                                            <div class="col-xs-6">
+                                                                                <label>Mức
+                                                                                    tồn</label>
+                                                                                <input type="number" step="0.01"
+                                                                                    min="0.00"
+                                                                                    class="limit form-control"
+                                                                                    name="limitStock"
+                                                                                    value="{{ $detail->limit_stock }}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="space"></div>
+                                                                        <div class="space"></div>
+                                                                        <div class="row">
+                                                                            <div class="col-xs-12 text-center">
+                                                                                <button type="submit"
+                                                                                    class="btn btn-info">Lưu</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+
                                     @endforeach
                                 </tbody>
                             </table>

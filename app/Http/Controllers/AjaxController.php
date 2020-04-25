@@ -140,4 +140,10 @@ class AjaxController extends Controller
         $material = $this->ajaxRepository->searchMaterialDestroyCook($id,$name);
         return response()->json($material);
     }
+
+    public function getCapitalPrice($idMaterial)
+    {
+        $data = $this->ajaxRepository->getCapitalPriceByIdMaterial($idMaterial);
+        return response()->json($data);
+    }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\AreaRepository\IAreaRepository;
 use App\Area;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AreaExport;
 
 class AreaController extends Controller
 {
@@ -38,5 +40,10 @@ class AreaController extends Controller
     public function delete($id)
     {
         return $this->areaRepository->deleteArea($id);
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new AreaExport,'area.xlsx');
     }
 }

@@ -29,7 +29,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
     public function updateLimitStockWarehouse($request,$id)
     {
         WareHouse::where('id',$id)->update(['limit_stock' => $request->limitStock]);
-        return route('warehouse.index');
+        return redirect(route('warehouse.index'));
     }
     public function warehouseBetweenTime($dateStart,$dateEnd)
     {
@@ -121,6 +121,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         }
         return $data;
     }
+
     public function reportWarehouse($request)
     {
         $dateStart = $request->dateStart;

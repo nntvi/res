@@ -9,7 +9,7 @@
             <div class="row w3-res-tb">
                 <div class="col-sm-5 m-b-xs">
                     <a href="#myModal-1" data-toggle="modal">
-                        <button class="btn btn-sm btn-success">Thêm mới</button>
+                        <button class="btn btn-sm btn-success"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Thêm mới</button>
                     </a>
                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1"
                         class="modal fade" style="display: none;">
@@ -43,21 +43,18 @@
                             </div>
                         </div>
                     </div>
-                    <a href="">
-                        <button type="submit" class="btn default btn-sm red radius">
-                            <i class="fa fa-trash-o" onclick="return confirm('Bạn muốn xóa dữ liệu này?')"> Xóa danh sách</i>
-                        </button>
+                    <a href="{{ route('area.exportexcel') }}" class="btn btn-sm btn-warning">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
                     </a>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                         @if($errors->any())
                         @foreach($errors->all() as $error)
                             <span class="error-message">{{ $error }}</span></p>
                         @endforeach
                     @endif
                 </div>
-                <div class="col-sm-3 text-right">
-
+                <div class="col-sm-4 text-right">
                 </div>
                 <div>
                     <table class="table" ui-jq="footable" ui-options="{

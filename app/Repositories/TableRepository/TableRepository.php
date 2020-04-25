@@ -7,37 +7,29 @@ use App\Area;
 use App\Table;
 
 class TableRepository extends Controller implements ITableRepository{
+
+    public function getAllArea()
+    {
+        $areas = Area::all();
+        return $areas;
+    }
     public function getAllTable()
     {
         $tables = Table::with('getArea')->paginate(8);
-        $areas = Area::all();
+        $areas = $this->getAllArea();
         return view('table/index',compact('tables','areas'));
     }
 
-    public function viewAddTable()
-    {
-        $areas = Area::all();
-        return view('table/store',compact('areas'));
-    }
-
     public function validatorRequestStore($req){
-        $messeages = [
-            'codeTable.required' => 'Không để trống mã bàn',
-            'codeTable.min' => 'Mã bàn nhiều hơn 3 ký tự',
-            'codeTable.max' => 'Mã bàn giới hạn 15 ký tự',
-            'codeTable.unique' => 'Mã bàn đã tồn tại trong hệ thống',
-
-            'nameTable.required' => 'Không để trống tên bàn',
-            'nameTable.min' => 'Mã bàn nhiều hơn 3 ký tự',
-            'nameTable.max' => 'Mã bàn giới hạn 10 ký tự',
-        ];
-
         $req->validate(
             [
-                'codeTable' => 'required|min:3|max:15|unique:tables,code',
-                'nameTable' => 'required|min:3|max:10',
+                'codeTable' => 'unique:tables,code',
+                'nameTable' => 'unique:tables,name',
             ],
-            $messeages
+            [
+                'codeTable.unique' => 'Mã bàn đã tồn tại trong hệ thống',
+                'nameTable.unique' => 'Tên bàn đã tồn tại trong hệ thống',
+            ]
         );
     }
 
@@ -51,22 +43,27 @@ class TableRepository extends Controller implements ITableRepository{
         return redirect(route('table.index'));
     }
 
-    public function viewUpdateTable($id)
+    public function updateNameTable($request,$id)
     {
-        $table = Table::find($id);
-        $areas = Area::all();
-        return view('table.update',compact('table','areas'));
-    }
-
-    public function updateTable($request, $id)
-    {
-        $table = Table::find($id);
-        $table->name = $request->nameTable;
-        $table->id_area = $request->idArea;
-        $table->save();
+        Table::where('id',$id)->update(['name' => $request->nameTable]);
         return redirect(route('table.index'));
     }
 
+    public function updateArea($request,$id)
+    {
+        Table::where('id',$id)->update(['id_area' => $request->idArea]);
+        return redirect(route('table.index'));
+    }
+
+    public function searchTable($request)
+    {
+        $search = $request->nameSearch;
+        $tables = Table::where('name','LIKE',"%{$search}%")
+                        ->orwhere('code','LIKE',"{$search}")
+                        ->get();
+        $areas = $this->getAllArea();
+        return view('table.search',compact('tables','areas'));
+    }
     public function deleteTable($id)
     {
         Table::find($id)->delete();

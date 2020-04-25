@@ -8,7 +8,8 @@
             </header>
             <div class="pannel-body">
                     <div class="form">
-                        <form class="panel-body" role="form" action="{{route('exportcoupon.p_export')}}" method="POST">
+                        <form class="panel-body" role="form" onsubmit="return validateFormExportCook()"
+                        action="{{route('exportcoupon.p_export')}}" method="POST">
                             @csrf
                             <div class="col-md-12" style="margin-bottom: 20px">
                                 <div class="row">

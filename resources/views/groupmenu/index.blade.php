@@ -52,6 +52,10 @@
                         </div>
                     </div>
                 </div>
+                <a href="{{ route('groupmenu.exportexcel')}}" class="btn btn-sm btn-warning">
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                </a>
+
             </div>
             <div class="col-sm-5">
                 @if ($errors->any())
@@ -94,8 +98,11 @@
                                     {{ $groupmenu->name }}
                                 </td>
                                 <td class="text-center">
-                                    {{ $groupmenu->cookArea->name }}
-
+                                    @if ($groupmenu->id_cook == '0')
+                                        Chưa chọn bếp
+                                    @else
+                                        {{ $groupmenu->cookArea->name }}
+                                    @endif
                                 </td>
                                 <td width="15%">
                                     <a href="#myModal{{ $groupmenu->id }}" data-toggle="modal"

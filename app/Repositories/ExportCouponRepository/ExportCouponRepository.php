@@ -5,6 +5,7 @@ use App\CookArea;
 use App\ExportCoupon;
 use App\ExportCouponDetail;
 use App\Http\Controllers\Controller;
+use App\SettingPrice;
 use App\Supplier;
 use App\TypeExport;
 use App\WareHouse;
@@ -19,10 +20,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
 
     public function getExportCoupons()
     {
-        $exportCoupons = ExportCoupon::with('typeExport',
-                                            'detailExportCoupon.cook',
-                                            'detailExportCoupon.supplier')
-                                        ->get();
+        $exportCoupons = ExportCoupon::with('typeExport','detailExportCoupon.cook','detailExportCoupon.supplier')->get();
         return $exportCoupons;
     }
 
@@ -53,6 +51,10 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         return $detailExportCoupon;
     }
 
+    public function validateExport($request)
+    {
+        $request->validate(['code' => 'unique:export_coupons,code'],['code.unique' => 'Mã phiếu xuất đã bị trùng']);
+    }
     public function countMaterialExport($request)
     {
         $count = count($request->qty);
@@ -78,6 +80,25 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         }
     }
 
+    // public function settingPrice($request,$i)
+    // {
+    //     $remain = 0;
+    //     $tempsltontruoc = SettingPrice::where('id_material_detail',$request->idMaterial[$i])->value('sltontruoc');
+    //     if($request->qty[$i] > $tempsltontruoc){
+    //         $remain = $request->qty[$i] - $tempsltontruoc ;
+    //         SettingPrice::where('id_material_detail',$request->idMaterial[$i])->update(['sltontruoc' => 0.00 ]);
+    //         if($remain > 0){
+    //             $tempslnhapsau = SettingPrice::where('id_material_detail',$request->idMaterial[$i])->value('slnhapsau');
+    //             SettingPrice::where('id_material_detail',$request->idMaterial[$i])->update(['slnhapsau' => $tempslnhapsau - $remain ]);
+    //         }
+    //     }
+    //     else if($request->qty[$i] = $tempsltontruoc){
+    //         SettingPrice::where('id_material_detail',$request->idMaterial[$i])->update(['sltontruoc' => 0.00 ]);
+    //     }
+    //     else if($request->qty[$i] < $tempsltontruoc){
+    //          SettingPrice::where('id_material_detail',$request->idMaterial[$i])->update(['sltontruoc' => $tempsltontruoc - $request->qty[$i] ]);
+    //     }
+    // }
     public function addDetailExportCoupon($request,$count)
     {
         for ($i=0; $i < $count; $i++) {
@@ -87,6 +108,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
             $detailExportCoupon->id_material_detail = $request->idMaterial[$i];
             $detailExportCoupon->qty = $request->qty[$i];
             $detailExportCoupon->id_unit = $request->id_unit[$i];
+            //$this->settingPrice($request,$i);
             $this->checkTypeExport($request->id_kind,$request,$i);
             $detailExportCoupon->save();
         }
@@ -122,7 +144,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
     {
         $type = $request->optionsRadios;
         if($type == '1'){
-            $cooks = CookArea::all();
+            $cooks = CookArea::where('status','1')->get();
             return view('warehouseexport.exportcook',compact('cooks'));
         }
         else if($type == '2'){

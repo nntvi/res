@@ -2,6 +2,7 @@
 namespace App\Repositories\MaterialDetailRepository;
 
 use App\Http\Controllers\Controller;
+use App\SettingPrice;
 use App\Repositories\MaterialDetailRepository\IMaterialDetailRepository;
 use App\MaterialAction;
 use App\MaterialDetail;
@@ -46,7 +47,27 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         );
     }
 
+    public function addNVLToWarehouse($request,$idMaterialDetail)
+    {
+        $warehouse = new WareHouse();
+        $warehouse->id_type = $request->idType;
+        $warehouse->id_material_detail = $idMaterialDetail;
+        $warehouse->qty = 0;
+        $warehouse->id_unit = $request->idUnit;
+        $warehouse->tondauky = 0;
+        $warehouse->save();
+    }
 
+    public function addNVLToSettingPrice($idMaterialDetail)
+    {
+        $settingPrice = new SettingPrice();
+        $settingPrice->id_material_detail = $idMaterialDetail;
+        $settingPrice->sltontruoc = 0;
+        $settingPrice->giatontruoc = 0;
+        $settingPrice->slnhapsau = 0;
+        $settingPrice->gianhapsau = 0;
+        $settingPrice->save();
+    }
     public function addMaterialDetail($request)
     {
         $materialDetail = new MaterialDetail();
@@ -54,15 +75,8 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $materialDetail->id_type = $request->idType;
         $materialDetail->id_unit = $request->idUnit;
         $materialDetail->save();
-
-        $warehouse = new WareHouse();
-        $warehouse->id_type = $request->idType;
-        $warehouse->id_material_detail = $materialDetail->id;
-        $warehouse->qty = 0;
-        $warehouse->id_unit = $request->idUnit;
-        $warehouse->tondauky = 0;
-        $warehouse->save();
-
+        $this->addNVLToWarehouse($request,$materialDetail->id);
+        $this->addNVLToSettingPrice($materialDetail->id);
         return redirect(route('material_detail.index'));
     }
 

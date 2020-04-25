@@ -6,6 +6,7 @@ use App\Repositories\PermissionRepository\IPermisionRepository;
 use App\Permission;
 use App\PermissionDetail;
 use App\PermissionAction;
+use App\Salary;
 use App\UserPermission;
 
 class PermissionRepository extends Controller implements IPermissionRepository
@@ -52,10 +53,17 @@ class PermissionRepository extends Controller implements IPermissionRepository
         $permissiondetails = $this->getAllPermissionDetails();
         return view('permission.search',compact('permissions','permissiondetails'));
     }
+
+    public function addPositionToSalary($idPosition)
+    {
+        $salary = new Salary();
+        $salary->id_position = $idPosition;
+        $salary->save();
+    }
     public function addPermission($req)
     {
-        $input = $req->all();
         $permission = Permission::create(['name'=> $req->name]);
+        $this->addPositionToSalary($permission->id);
         $idPermissionDetail = $req->permissiondetail;
 
         // lấy từng chi tiết gắn với id tương xứng để thêm vào bảng action
@@ -142,6 +150,7 @@ class PermissionRepository extends Controller implements IPermissionRepository
         PermissionAction::where('id_per', $id)->delete();
         Permission::find($id)->delete();
         UserPermission::where('id_per',$id)->delete();
+        Salary::where('id_position',$id)->delete();
         return redirect(route('permission.index'));
     }
 }

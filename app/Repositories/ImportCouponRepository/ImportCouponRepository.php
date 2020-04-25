@@ -4,8 +4,10 @@ namespace App\Repositories\ImportCouponRepository;
 use App\Http\Controllers\Controller;
 use App\ImportCoupon;
 use App\ImportCouponDetail;
+use App\MaterialAction;
 use App\Supplier;
 use App\MaterialDetail;
+use App\SettingPrice;
 use App\TypeMaterial;
 use App\Unit;
 use App\WareHouse;
@@ -42,6 +44,11 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         return $types;
     }
 
+    public function validateCreatImportCoupon($request)
+    {
+        $request->validate(['code' => 'unique:import_coupons,code'],
+                            ['code.unique' => "Mã phiếu nhập bị trùng"]);
+    }
     public function showIndex()
     {
         $listImports = $this->getListImport();
@@ -105,6 +112,40 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         $oldQty = WareHouse::where('id',$request->id[$i])->value('qty');
         return $oldQty;
     }
+    public function calculatePrice($sltontruoc,$giatontruoc,$slnhapsau,$gianhapsau)
+    {
+        $price = round(($gianhapsau * $slnhapsau + $giatontruoc * $sltontruoc) / ($slnhapsau + $sltontruoc));
+        return $price;
+    }
+
+    public function updatePriceInMaterialAction($idMaterialDetail,$price)
+    {
+        MaterialAction::where('id_material_detail',$idMaterialDetail)->update(['price' => $price]);
+    }
+    public function settingPrice($request,$i,$oldQty)
+    {
+        $id_material_detail = Warehouse::where('id',$request->id[$i])->value('id_material_detail');
+        $settingPrice = SettingPrice::where('id_material_detail',$id_material_detail)->first();
+        if($settingPrice->sltontruoc == 0 && $settingPrice->giatontruoc == 0
+                && $settingPrice->slnhapsau == 0 && $settingPrice->gianhapsau == 0){
+            $settingPrice->slnhapsau = $request->qty[$i];
+            $settingPrice->gianhapsau = $request->price[$i] / $request->qty[$i];
+            $settingPrice->price = $this->calculatePrice($settingPrice->sltontruoc,$settingPrice->giatontruoc,
+                                                        $settingPrice->slnhapsau,$settingPrice->gianhapsau);
+            $settingPrice->save();
+            $this->updatePriceInMaterialAction($id_material_detail,$settingPrice->price);
+        }
+        else {
+            $settingPrice->sltontruoc = $oldQty;
+            $settingPrice->giatontruoc = $settingPrice->gianhapsau;
+            $settingPrice->slnhapsau = $request->qty[$i];
+            $settingPrice->gianhapsau = $request->price[$i] / $request->qty[$i] ;
+            $settingPrice->price = $this->calculatePrice($settingPrice->sltontruoc,$settingPrice->giatontruoc,
+                                                            $settingPrice->slnhapsau,$settingPrice->gianhapsau);
+            $settingPrice->save();
+            $this->updatePriceInMaterialAction($id_material_detail,$settingPrice->price);
+        }
+    }
     public function import($request)
     {
         $count = $this->countMaterialImport($request);
@@ -112,8 +153,8 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
             $oldQty = $this->getOldQty($i,$request);
             $material = WareHouse::where('id',$request->id[$i])
                                     ->update([  'qty' => $oldQty + $request->qty[$i],
-                                                'id_unit' => $request->id_unit[$i],
-                                    ]);
+                                                'id_unit' => $request->id_unit[$i] ]);
+            $this->settingPrice($request,$i,$oldQty);
             $importcouponDetail = $this->createImportCouponDetail($request,$i);
         }
         $this->createImportCoupon($request);

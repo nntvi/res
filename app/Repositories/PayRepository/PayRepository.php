@@ -53,6 +53,8 @@ class PayRepository extends Controller implements IPayRepository{
     {
         $bill = Order::find($id);
         $bill->total_price = $request->total;
+        $bill->receive_cash = $request->receiveCash;
+        $bill->excess_cash = $request->excessCash;
         $bill->note = $request->note;
         $bill->status = '0';
         $bill->save();

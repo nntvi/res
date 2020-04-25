@@ -2,6 +2,7 @@
 namespace App\Repositories\ExportCouponRepository;
 
 interface IExportCouponRepository{
+    function validateExport($request);
     function showViewExport($request);
     function exportMaterial($request);
     function showIndex();

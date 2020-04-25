@@ -21,4 +21,5 @@ interface IAjaxRepository{
     function exportBetween($dateStart,$dateEnd);
     function searchMaterialDestroy($name);
     function searchMaterialDestroyCook($id,$name);
+    function getCapitalPriceByIdMaterial($idMaterial);
 }

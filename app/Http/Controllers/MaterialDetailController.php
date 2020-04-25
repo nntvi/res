@@ -6,7 +6,8 @@ use App\MaterialAction;
 use App\MaterialDetail;
 use App\Repositories\MaterialDetailRepository\IMaterialDetailRepository;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MaterialDetailExport;
 class MaterialDetailController extends Controller
 {
     private $materialDetailRepository;
@@ -52,5 +53,8 @@ class MaterialDetailController extends Controller
         return $this->materialDetailRepository->deleteMaterialDetail($id);
     }
 
-
+    public function exportExcel()
+    {
+        return Excel::download(new MaterialDetailExport,'nvl.xlsx');
+    }
 }

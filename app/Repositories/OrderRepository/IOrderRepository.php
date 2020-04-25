@@ -8,4 +8,5 @@ interface IOrderRepository{
     function orderTable();
     function orderTablePost($request);
     function addMoreDish($request,$idOrderTable);
+    function validatorOrder($request);
 }

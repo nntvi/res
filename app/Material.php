@@ -46,4 +46,9 @@ class Material extends Model
     {
         return $this->belongsTo('App\GroupMenu','id_groupmenu','id');
     }
+
+    public function dish()
+    {
+        return $this->belongsTo('App\Dishes','id_groupnvl');
+    }
 }
