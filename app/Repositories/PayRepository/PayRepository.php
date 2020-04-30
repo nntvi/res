@@ -4,6 +4,8 @@ namespace App\Repositories\PayRepository;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\OrderDetailTable;
+use App\Shift;
+use Carbon\Carbon;
 
 class PayRepository extends Controller implements IPayRepository{
 
@@ -19,8 +21,7 @@ class PayRepository extends Controller implements IPayRepository{
                                 ->where('id_bill',$id)
                                 ->whereIn('status',['1','2'])
                                 ->groupBy('id_dish')
-                                ->with('dish')
-                                ->get();
+                                ->with('dish')->get();
         return $bill;
     }
 
@@ -49,6 +50,14 @@ class PayRepository extends Controller implements IPayRepository{
         return view('pay.index',compact('idBillTable','bill','totalPrice','count'));
     }
 
+    public function checkShift($timeUpdate)
+    {
+        $idShift = Shift::where([
+            ['hour_start', '<=', $timeUpdate],
+            ['hour_end', '>=', $timeUpdate],
+        ])->value('id');
+        return $idShift;
+    }
     public function updateStatusOrder($request,$id)
     {
         $bill = Order::find($id);
@@ -57,11 +66,17 @@ class PayRepository extends Controller implements IPayRepository{
         $bill->excess_cash = $request->excessCash;
         $bill->note = $request->note;
         $bill->status = '0';
+        $bill->created_by = auth()->user()->id;
+        $timeUpdate = Carbon::now('Asia/Ho_Chi_Minh');
+        $bill->id_shift = $this->checkShift($timeUpdate);
         $bill->save();
+        return redirect(route('order.update',['id' => $id]));
+    }
 
+    public function printBill($id)
+    {
         $total = $this->findOrder($id);
         $billPayment = $this->createBill($id);
-
         return view('pay.print',compact('billPayment','total'));
     }
 }

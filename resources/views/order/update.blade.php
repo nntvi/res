@@ -26,7 +26,12 @@
                     <button class="btn btn-danger">Thanh toán</button>
                 </a>
             @else
-
+                <a href="{{route('order.index')}}">
+                    <button class="btn btn-success">Về trang Order</button>
+                </a>
+                <a href="{{ route('pay.print',['id' => $order->id]) }}">
+                    <button class="btn btn-default"><i class="fa fa-print" aria-hidden="true"></i> In hóa đơn</button>
+                </a>
             @endif
             <hr>
         </div>

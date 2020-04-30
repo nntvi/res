@@ -67,7 +67,7 @@
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td><input type="number" step=".01" class="qty form-control" name="qty[]"></td>
+                                                    <td><input type="number" step=".0001" class="qty form-control" name="qty[]"></td>
 
                                                     <td class="remove">
                                                         <button class="removeItem btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove" style="color:white" aria-hidden="true"></span></button>

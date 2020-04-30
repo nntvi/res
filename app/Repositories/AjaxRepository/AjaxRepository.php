@@ -113,14 +113,9 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $warehouse = WareHouse::whereBetween('updated_at',
-                                    [
-                                        $dateStart . $s ,
-                                        $dateEnd . $e
-                                    ])
+        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
                                     ->with('detailMaterial','typeMaterial','unit')
-                                    ->orderBy('id_material_detail')
-                                    ->get();
+                                    ->orderBy('id_material_detail')->get();
         return $warehouse;
     }
     public function importBetween($dateStart,$dateEnd)
@@ -128,14 +123,9 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $s = " 00:00:00";
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
-                                            ->whereBetween('created_at',
-                                            [
-                                                $dateStart . $s,
-                                                $dateEnd . $e
-                                            ])
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')
-                                            ->get();
+                                            ->orderBy('id_material_detail')->get();
         return $detailImport;
     }
 
@@ -144,14 +134,9 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $s = " 00:00:00";
         $e = " 23:59:59";
         $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
-                                            ->whereBetween('created_at',
-                                            [
-                                                $dateStart . $s,
-                                                $dateEnd . $e
-                                            ])
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')
-                                            ->get();
+                                            ->orderBy('id_material_detail')->get();
         return $detailExport;
     }
 

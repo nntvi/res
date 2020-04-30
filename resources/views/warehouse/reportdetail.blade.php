@@ -68,6 +68,9 @@
                                 @endif
                             </span>
                         </div>
+                        <div class="col-md-2 bold">
+                            Đơn vị : <span>{{ $warehouse->unit->name }}</span>
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <table class="table table-bordered table-hover table-resposive">

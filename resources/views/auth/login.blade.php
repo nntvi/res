@@ -24,7 +24,9 @@
 
                                 <div class="clearfix"></div>
                                 <input type="submit" value="Sign In" name="login">
-
+                                @if (session('fail'))
+                                    {{ session('fail') }}
+                                @endif
                             </form>
 
                     </div>

@@ -66,6 +66,7 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $settingPrice->giatontruoc = 0;
         $settingPrice->slnhapsau = 0;
         $settingPrice->gianhapsau = 0;
+        $settingPrice->price = 0;
         $settingPrice->save();
     }
     public function addMaterialDetail($request)

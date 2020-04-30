@@ -140,6 +140,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\SalaryRepository\ISalaryRepository',
             'App\Repositories\SalaryRepository\SalaryRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\ReportRepository\IReportRepository',
+            'App\Repositories\ReportRepository\ReportRepository'
+        );
     }
 
     /**

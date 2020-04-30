@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\CookArea;
+use App\GroupMenu;
 use App\Supplier;
-
+use App\Order;
 use App\MaterialDetail;
 use App\Repositories\AjaxRepository\IAjaxRepository;
 use App\TypeMaterial;
@@ -145,5 +146,11 @@ class AjaxController extends Controller
     {
         $data = $this->ajaxRepository->getCapitalPriceByIdMaterial($idMaterial);
         return response()->json($data);
+    }
+
+    public function searchGroupMenu($name)
+    {
+       $data = GroupMenu::where('name','LIKE',"%{$name}%")->get();
+       return response()->json($data);
     }
 }

@@ -161,7 +161,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
                                     ->where('id_material_detail',$id)
-                                    ->with('detailMaterial')
+                                    ->with('detailMaterial','unit')
                                     ->first();
         return $warehouse;
     }

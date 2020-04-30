@@ -37,7 +37,10 @@ class Order extends Model
         'status',
         'total_price',
         'note',
-        'created_by'
+        'receive_cash',
+        'excess_cash',
+        'created_by',
+        'id_shift'
     ];
 
     public function orderDetail()
@@ -50,4 +53,13 @@ class Order extends Model
         return $this->belongsTo('App\Table','id_table');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\User','created_by');
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo('App\Shift','id_shift');
+    }
 }

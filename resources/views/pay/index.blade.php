@@ -87,7 +87,7 @@
                                     <label for="">Tiền khách đưa: </label>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 form-group">
-                                    <input type="text" class="form-control receive" name="receiveCash">
+                                    <input type="text" class="form-control receive" name="receiveCash" required>
                                 </div>
                             </div>
 

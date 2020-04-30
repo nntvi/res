@@ -65,17 +65,17 @@
                 @endif
             </div>
             <div class="col-sm-4">
-                <form action="{{ route('groupmenu.search') }}" method="GET"
+                {{-- <form action="{{ route('groupmenu.search') }}" method="GET"
                     onsubmit="return validateSearchGroupMenu()">
-                    @csrf
+                    @csrf --}}
                     <div class="input-group">
                         <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch"
                             id="searchGroupMenu">
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-info" type="button">Tìm kiếm</button>
+                            <button class="btn btn-sm btn-info" id="btngroupmenuSearch">Tìm kiếm</button>
                         </span>
                     </div>
-                </form>
+                {{-- </form> --}}
             </div>
         </div>
         <div class="table-responsive">

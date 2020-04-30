@@ -112,7 +112,9 @@
                                                 @else
                                                 <div class="action">
                                                         <div class="col-sm-6 col-xs-12 card-body">
-                                                            <h5 class="card-title">Đã thanh toán</h5>                                                        </div>
+                                                            <h5 class="card-title">Đã thanh toán </h5>
+
+                                                        </div>
                                                         <div class="col-sm-6 col-xs-12 detail">
                                                             <a href="{{route('order.update',['id' => $order->id])}}">Xem chi tiết</a>
                                                         </div>

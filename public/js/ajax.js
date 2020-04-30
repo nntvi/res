@@ -143,7 +143,7 @@ $(document).ready(function () {
                             '<td>' +
                             'Hết hàng';
                     } else {
-                        tableWarehouse += '<td><input type="number" step="0.01" class="qty form-control" value="" name="qty[]"></td>' +
+                        tableWarehouse += '<td><input type="number" step="0.01" class="qty form-control" value="" name="qty[]" required></td>' +
                             '<td>' +
                             '<input value="' + detail.unit.id + '" name="id_unit[]" hidden></input>' +
                             '<input class="form-control" value="' + detail.unit.name + '" disabled></input>';
@@ -433,4 +433,48 @@ $(document).ready(function () {
             }
         });
     });
+
+    $("#btngroupmenuSearch").click(function () {
+        const name = document.getElementById('searchGroupMenu').value;
+        $.ajax({
+            url: 'api/getSearchGroupMenu/' + name, //Trang xử lý
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                $('#tableGroupMenu').empty();
+                data.forEach(function (item) {
+                let row =
+                                            `<tr>
+                                            <td>
+                                            <form role="form" action="http://localhost/res/public/groupmenu/updatename/`+ item.id +`" method="GET">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label>Tên cũ</label>
+                                                    <input type="text" class="form-control"
+                                                        value="" disabled>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Action Name <span style="color: #ff0000">
+                                                            *</span></label>
+                                                    <input type="text" size="40" class="form-control"
+                                                        required="required" name="nameGroupMenu" maxlength="255"
+                                                        value="">
+                                                </div>
+                                                <button type="submit" class="btn btn-default">Lưu</button>
+                                            </form>
+                                            </td>
+                                            </tr>`
+
+                    $('#tableGroupMenu').append(row);
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+
+    });
+
 });
+

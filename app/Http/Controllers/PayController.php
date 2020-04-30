@@ -26,6 +26,10 @@ class PayController extends Controller
         return $this->payRepository->showBill($id);
     }
 
+    public function print($id)
+    {
+        return $this->payRepository->printBill($id);
+    }
     public function update(Request $request,$id)
     {
         return $this->payRepository->updateStatusOrder($request,$id);

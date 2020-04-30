@@ -275,9 +275,9 @@
                     <div class="leftside-navigation">
                         <ul class="sidebar-menu" id="nav-accordion">
                             <li>
-                                <a href="tongquan.html">
+                                <a href="{{ route('customer.index') }}">
                                     <i class="fa fa-bullhorn"></i>
-                                        <span>Tổng quan</span>
+                                        <span>Nhà hàng</span>
                                 </a>
                             </li>
                             <li class="sub-menu">
@@ -356,15 +356,11 @@
                                     <span>Báo cáo</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="theodonhang.html">Theo đơn hàng</a></li>
+                                    <li><a href="{{ route('report.order') }}">Theo đơn hàng</a></li>
+                                    <li><a href="{{ route('report.table') }}">Theo bàn</a></li>
+                                    <li><a href="{{ route('report.dish') }}">Theo món</a></li>
                                     <li><a href="thuchi.html">Thu chi</li></a>
-                                    <li><a href="theoban.html">Theo bàn</a></li>
-                                    <li><a href="theokhachhang.html">Theo khách hàng</a></li>
-                                    <li><a href="theonhom.html">Doanh thu theo nhóm</a></li>
-                                    <li><a href="banchay.html">Mặt hàng bán chạy</a></li>
                                     <li><a href="loinhuan.html">Lợi nhuận</a></li>
-                                    <li><a href="khachtratruoc.html">Khách hàng trả trước</a></li>
-                                    <li><a href="congnokhach.html">Công nợ khách hàng</a></li>
                                     <li><a href="congnoncc.html">Công nợ nhà cung cấp</a></li>
                                 </ul>
                             </li>
@@ -379,33 +375,6 @@
                                     <li><a href="">Giá nguyên vật liệu</a></li>
                                 </ul>
                             </li>
-                            <!-- <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class=" fa fa-bar-chart-o"></i>
-                                    <span>Maps</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="google_map.html">Google Map</a></li>
-                                    <li><a href="vector_map.html">Vector Map</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-glass"></i>
-                                    <span>Extra</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="gallery.html">Gallery</a></li>
-                                    <li><a href="404.html">404 Error</a></li>
-                                    <li><a href="registration.html">Registration</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="login.html">
-                                    <i class="fa fa-user"></i>
-                                    <span>Login Page</span>
-                                </a>
-                            </li> -->
                         </ul>
                     </div>
                     <!-- sidebar menu end-->
@@ -416,6 +385,7 @@
 
             <section id="main-content">
                 <section class="wrapper">
+                    @yield('headerreport')
                     @yield('content')
                 </section>
                 <!-- footer -->

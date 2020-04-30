@@ -57,4 +57,5 @@ class Dishes extends Model
     {
        return $this->belongsTo('App\GroupMenu','id_groupmenu');
     }
+
 }
