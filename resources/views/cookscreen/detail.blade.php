@@ -72,6 +72,11 @@
                                                             <td>
                                                                 <label style="display:inline; color: red;">Không đủ NVL</label>
                                                             </td>
+                                                        @endif
+                                                        @if ($dish->status == '-2')
+                                                            <td>
+                                                                <label style="display:inline; color: red;">Món đã hủy chọn</label>
+                                                            </td>
                                                         @else
                                                             <td>
                                                                 @if ($dish->status == '0')

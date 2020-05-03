@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CookArea;
 use App\GroupMenu;
+use App\ImportCoupon;
 use App\Supplier;
 use App\Order;
 use App\MaterialDetail;
@@ -32,36 +33,9 @@ class AjaxController extends Controller
             'materials' => $materials,
             'units' => $units,
         ];
-        return response()->json($data, 200);
+        return response()->json($data);
     }
 
-    public function getObjectToExport($id)
-    {
-        if($id == 1){
-            $cooks = $this->ajaxRepository->getAllCook();
-            return response()->json($cooks, 200);
-        }
-        else if($id == 2){
-            $suppliers = Supplier::all();
-            return response()->json($suppliers, 200);
-        }
-        else if($id == 3){
-            $data = array();
-            $data = [
-                'id' => 3,
-                'name' => 'Hủy'
-            ];
-            return response()->json($data, 200);
-        }
-    }
-
-    public function getMaterialWarehouseToDestroy($idType)
-    {
-        $materialWarehouse = WareHouse::where('id_type',$idType)
-                                        ->with('detailMaterial','unit')
-                                        ->get();
-        return $materialWarehouse;
-    }
     public function getMaterialToExportCook($idObjectCook)
     {
         $data = array();
@@ -79,55 +53,6 @@ class AjaxController extends Controller
         $type = Supplier::where('id',$idObjectSupplier)->value('id_type');
         $materialWarehouse = $this->ajaxRepository->getMaterialInWarehouseByType($type);
         return response()->json($materialWarehouse);
-    }
-
-    public function getObjectToReport($idType)
-    {
-        if($idType == '1'){
-            $data = array();
-                $data = [
-                    'idData' => 4,
-                    'name' => 'Kho chính'
-                ];
-            return response()->json($data);
-        }else if($idType == '2'){
-            $cooks = $this->ajaxRepository->getAllCook();
-            return response()->json($cooks);
-        }
-    }
-    public function getDateTimeToReport($id)
-    {
-        if($id == '1'){
-            $data = array();
-            $data = [
-                'dateStart' => $this->ajaxRepository->getDateNow() . ' 00:00:00' ,
-                'dateEnd' => $this->ajaxRepository->getDateNow() . ' 23:59:59' ,
-            ];
-            return response()->json($data);
-        }else if($id == '2'){
-            $data = array();
-            $data = [
-                'dateStart' => $this->ajaxRepository->getDateNow(),
-                'dateEnd' => $this->ajaxRepository->getWeek()
-            ];
-            return response()->json($data);
-        }
-        else if($id == '3'){
-            $data = array();
-            $data = [
-                'dateStart' => $this->ajaxRepository->getDateNow(),
-                'dateEnd' => $this->ajaxRepository->getMonth()
-            ];
-            return response()->json($data);
-        }
-        else if($id == '4'){
-            $data = array();
-            $data = [
-                'dateStart' => $this->ajaxRepository->getDateNow(),
-                'dateEnd' => $this->ajaxRepository->getYear()
-            ];
-            return response()->json($data);
-        }
     }
 
     public function searchMaterialDestroy($name)
@@ -148,9 +73,88 @@ class AjaxController extends Controller
         return response()->json($data);
     }
 
-    public function searchGroupMenu($name)
+    public function getDateTimeToReport($id)
     {
-       $data = GroupMenu::where('name','LIKE',"%{$name}%")->get();
-       return response()->json($data);
+        $data = array();
+        switch ($id) {
+            case 0:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 00:00:00' ,
+                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 23:59:59' ,
+                ];
+                break;
+            case 1:
+                $data = [
+                    'dateStart' => Carbon::yesterday('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 00:00:00' ,
+                    'dateEnd' => Carbon::yesterday('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 23:59:59' ,
+                ];
+                break;
+            case 2:
+                $data = [
+                    'dateStart' => $date = Carbon::now('Asia/Ho_Chi_Minh')->startOfWeek()->format('Y-m-d'),
+                    'dateEnd' => $date = Carbon::now('Asia/Ho_Chi_Minh')->endOfWeek()->format('Y-m-d'),
+                ];
+                break;
+            case 3:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->subWeek()->startOfWeek()->format('Y-m-d'),
+                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->subWeek()->endOfWeek()->format('Y-m-d'),
+                ];
+                break;
+            case 4:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->startOfMonth()->format('Y-m-d'),
+                    'dateEnd' => Carbon::now()->endOfMonth()->format('Y-m-d'),
+                ];
+                break;
+            case 5:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->startOfMonth()->format('Y-m-d'),
+                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->endOfMonth()->format('Y-m-d'),
+                ];
+                break;
+            case 6:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->firstOfQuarter()->format('Y-m-d'),
+                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->lastOfQuarter()->format('Y-m-d'),
+                ];
+                break;
+            case 7:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->subQuarter()->firstOfQuarter()->format('Y-m-d'),
+                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->subQuarter()->lastOfQuarter()->format('Y-m-d'),
+                ];
+                break;
+            case 8:
+                $data = [
+                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->format('Y-m-d'),
+                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->lastOfYear()->format('Y-m-d'),
+                ];
+                break;
+            default:
+        }
+        return response()->json($data);
+    }
+
+    public function showOverview($dateStart,$dateEnd)
+    {
+        $totalRevenue = $this->ajaxRepository->getRevenue($dateStart,$dateEnd);
+        $qtyBill = $this->ajaxRepository->countBill($dateStart,$dateEnd);
+        $qtyPaidBill = $this->ajaxRepository->countPaidBill($dateStart,$dateEnd);
+        $qtyServingBill = $this->ajaxRepository->countServingBill($dateStart,$dateEnd);
+        $data[] = array(
+            'total' => $totalRevenue,
+            'bill' => $qtyBill,
+            'paid' => $qtyPaidBill,
+            'serving' => $qtyServingBill
+        );
+        return response()->json($data);
+    }
+
+    public function getUnPaidImport($idSupplier)
+    {
+        $imports = ImportCoupon::where('status','0')
+                                ->where('id_supplier',$idSupplier)->with('supplier')->get();
+        return response()->json($imports);
     }
 }

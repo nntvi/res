@@ -52,6 +52,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
     public function showIndex()
     {
         $listImports = $this->getListImport();
+        //dd($listImports);
         return view('importcoupon.index',compact('listImports'));
     }
 
@@ -103,6 +104,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         $importCoupon->code = $request->code;
         $importCoupon->id_supplier = $request->idSupplier;
         $importCoupon->total = $total;
+        $importCoupon->status = '0';
         $importCoupon->note = $request->note;
         $importCoupon->save();
     }

@@ -83,14 +83,9 @@ function validateFormImportCoupon() {
 // bắt lỗi form xuất bếp
 function validateFormExportCook() {
     let data = [];
-    //const code = document.getElementById('codeExportCook').value;
     var oldQty, qty;
     let table = document.getElementById('bodyWarehouseExportCook');
     var tempOldQty;
-    // if (code == null || code == "") {
-    //     const codeError = "Không để trống mã phiếu xuất \n";
-    //     data.push(codeError);
-    // }
     for (var i = 0, row; row = table.rows[i]; i++) {
         for (var j = 0, col; col = row.cells[j]; j++) {
             if (j == 1) {
@@ -104,11 +99,12 @@ function validateFormExportCook() {
                 $('input[type="number"].qty').each(function (index) {
                     if (index == i) {
                         var cot = i + 1;
-                            if (tempOldQty < $(this).val()) {
-                                //console.log(tempOldQty + ' - ' + $(this).val());
-                                let compareInput = "Hàng " + cot + " cột " + j + " sl xuất > sl có \n";
-                                data.push(compareInput);
-                            }
+                        var a = $(this).val();
+                        if (tempOldQty < $a) {
+                            console.log(tempOldQty + ' - ' + $(this).val());
+                            let compareInput = "Hàng " + cot + " cột " + j + " sl xuất > sl có \n";
+                            data.push(compareInput);
+                        }
                     }
                 });
             }

@@ -72,8 +72,9 @@ class OrderController extends Controller
 
     public function deleteDish($id)
     {
-        $idBill = OrderDetailTable::find($id)->first('id_bill');
+        $idBill = OrderDetailTable::find($id)->value('id_bill');
         OrderDetailTable::find($id)->delete();
-        return redirect(route('order.update',['id' => $idBill->id_bill]));
+        return redirect(route('order.update',['id' => $idBill]));
     }
+
 }

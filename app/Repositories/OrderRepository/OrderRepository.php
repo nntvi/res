@@ -116,6 +116,7 @@ class OrderRepository extends Controller implements IOrderRepository{
         $orderTable = new Order();
         $orderTable->id_table = $request->idTable;
         $orderTable->status = '1'; // đang order, chưa thanh toán
+        $orderTable->created_by = auth()->user()->id;
         $orderTable->save();
         return $orderTable->id;
     }

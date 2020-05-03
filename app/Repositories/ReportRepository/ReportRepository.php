@@ -69,4 +69,31 @@ class ReportRepository extends Controller implements IReportRepository{
         $listGroupMenu = GroupMenu::all();
         return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','idGroupMenu','listGroupMenu'));
     }
+
+    public function getToTalRevenueInYear()
+    {
+        $firstYear = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->format('Y-m');
+        $lastYear = $dec = Carbon::now('Asia/Ho_Chi_Minh')->lastOfYear()->format('Y-m');
+        $totalRevenue = Order::selectRaw('sum(total_price) as total')
+                                ->whereBetween('created_at',[$firstYear,$lastYear])->value('total');
+        return $totalRevenue;
+    }
+    public function getMonthInYear()
+    {
+        $jan = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->format('Y-m');
+        $freb = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(1)->format('Y-m');
+        $mar = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(2)->format('Y-m');
+        $apr = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(3)->format('Y-m');
+        $may = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(4)->format('Y-m');
+        $jun = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(5)->format('Y-m');
+        $jul = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(6)->format('Y-m');
+        $aug = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(7)->format('Y-m');
+        $sep = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(8)->format('Y-m');
+        $oct = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(9)->format('Y-m');
+        $nov = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(10)->format('Y-m');
+        $dec = Carbon::now('Asia/Ho_Chi_Minh')->lastOfYear()->format('Y-m');
+        $months = array();
+        array_push($months,$jan,$freb,$mar,$apr,$may,$jun,$jul,$aug,$sep,$nov,$dec);
+        return $months;
+    }
 }

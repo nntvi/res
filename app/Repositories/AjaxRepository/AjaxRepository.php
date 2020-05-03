@@ -12,6 +12,8 @@ use App\ImportCouponDetail;
 use App\ExportCouponDetail;
 use App\GroupMenu;
 use App\MaterialAction;
+use App\Order;
+use App\OrderDetailTable;
 use App\Permission;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -85,30 +87,6 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         return $materials;
     }
 
-    public function getDateNow()
-    {
-        $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-        return $date;
-    }
-
-    public function getWeek()
-    {
-        $week = Carbon::now('Asia/Ho_Chi_Minh')->addWeek()->toDateString();
-        return $week;
-    }
-
-    public function getMonth()
-    {
-        $month = Carbon::now('Asia/Ho_Chi_Minh')->addMonth()->toDateString();
-        return $month;
-    }
-
-    public function getYear()
-    {
-        $year = Carbon::now('Asia/Ho_Chi_Minh')->addYear()->toDateString();
-        return $year;
-    }
-
     public function warehouseBetweenTime($dateStart,$dateEnd)
     {
         $s = " 00:00:00";
@@ -170,5 +148,36 @@ class AjaxRepository extends Controller implements IAjaxRepository{
             'salePrice' => $salePrice
         ];
         return $data;
+    }
+
+    public function getRevenue($dateStart,$dateEnd)
+    {
+        $totalRevenue = Order::selectRaw('sum(total_price) as total')
+                                        ->whereBetween('created_at',[$dateStart,$dateEnd])
+                                        ->value('total');
+        return $totalRevenue;
+    }
+
+    public function countBill($dateStart,$dateEnd)
+    {
+        $qtyBill = Order::selectRaw('count(status) as qtyBill')
+                        ->whereBetween('created_at',[$dateStart,$dateEnd])
+                        ->value('qtyBill');
+        return $qtyBill;
+    }
+    public function countPaidBill($dateStart,$dateEnd)
+    {
+        $qtyPaidBill = Order::selectRaw('count(status) as qtyPaid')->where('status','0')
+                                ->whereBetween('created_at',[$dateStart,$dateEnd])
+                                ->value('qtyPaid');
+        return $qtyPaidBill;
+    }
+
+    public function countServingBill($dateStart,$dateEnd)
+    {
+        $qtyServingBill = Order::selectRaw('count(status) as qtyServing')->where('status','1')
+                            ->whereBetween('created_at',[$dateStart,$dateEnd])
+                            ->value('qtyServing');
+        return $qtyServingBill;
     }
 }

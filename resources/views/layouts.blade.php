@@ -276,13 +276,19 @@
                         <ul class="sidebar-menu" id="nav-accordion">
                             <li>
                                 <a href="{{ route('customer.index') }}">
-                                    <i class="fa fa-bullhorn"></i>
-                                        <span>Nhà hàng</span>
+                                    <i class="fa fa-home"></i>
+                                        <span>GIao diện khách hàng</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('overview.index') }}">
+                                    <i class="fa fa-cubes"></i>
+                                        <span>Tổng quan</span>
                                 </a>
                             </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
-                                    <i class="fa fa-book"></i>
+                                    <i class="fa fa-cube"></i>
                                         <span>Hàng hóa</span>
                                 </a>
                                 <ul class="sub">
@@ -296,7 +302,7 @@
                             </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
-                                    <i class="fa fa-th"></i>
+                                    <i class="fa fa-users"></i>
                                         <span>Phân quyền</span>
                                 </a>
                                 <ul class="sub">
@@ -307,7 +313,7 @@
                             </li>
                             <li class="sub-menu">
                                     <a href="javascript:;">
-                                        <i class="fa fa-book"></i>
+                                        <i class="fa fa-building-o"></i>
                                             <span>Nhà hàng</span>
                                     </a>
                                     <ul class="sub">
@@ -320,7 +326,7 @@
                                 </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
-                                    <i class="fa fa-th"></i>
+                                    <i class="fa fa-user"></i>
                                     <span>Đối tác</span>
                                 </a>
                                 <ul class="sub">
@@ -330,7 +336,7 @@
                             </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
-                                    <i class="fa fa-tasks"></i>
+                                    <i class="fa fa-database"></i>
                                     <span>Kho</span>
                                 </a>
                                 <ul class="sub">
@@ -340,19 +346,17 @@
                             </li>
                             <li class="sub-menu">
                                     <a href="javascript:;">
-                                        <i class="fa fa-tasks"></i>
-                                        <span>Giao dịch</span>
+                                        <i class="fa fa-usd"></i>
+                                        <span>Sổ quỹ</span>
                                     </a>
                                     <ul class="sub">
-                                        <li><a href="{{ route('importcoupon.index') }}">Danh sách phiếu nhập</a></li>
-                                        <li><a href="{{ route('exportcoupon.index') }}">Danh sách phiếu xuất</a></li>
-                                        <li><a href="">Trả hàng nhà cung cấp</a></li>
-                                        <li><a href="">Giao dịch khác(hủy,tặng)</a></li>
+                                        <li><a href="{{ route('receiptvoucher.index') }}">Phiếu Thu</a></li>
+                                        <li><a href="{{ route('paymentvoucher.index') }}">Phiếu Chi</a></li>
                                     </ul>
                                 </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
-                                    <i class="fa fa-envelope"></i>
+                                    <i class="fa fa-book"></i>
                                     <span>Báo cáo</span>
                                 </a>
                                 <ul class="sub">
@@ -366,13 +370,12 @@
                             </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
-                                    <i class=" fa fa-bar-chart-o"></i>
+                                    <i class="fa fa-cogs"></i>
                                     <span>Thiết lập</span>
                                 </a>
                                 <ul class="sub">
                                     <li><a href="{{ route('shift.index') }}">Thiết lập ca làm việc</a></li>
                                     <li><a href="{{ route('salary.index') }}">Thiết lập tiền lương</a></li>
-                                    <li><a href="">Giá nguyên vật liệu</a></li>
                                 </ul>
                             </li>
                         </ul>

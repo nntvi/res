@@ -265,13 +265,32 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Salary
     Route::group(['prefix' => 'salary'], function() {
-        Route::get('index/', 'SalaryController@index')->name('salary.index');
+        Route::get('index', 'SalaryController@index')->name('salary.index');
         Route::post('update/{id}', 'SalaryController@update')->name('salary.p_update');
         Route::get('export/', 'WareHouseController@testExcel')->name('excel.index');
     });
 
+    // Receipt Voucher
+    Route::group(['prefix' => 'receiptvoucher'], function() {
+        Route::get('index', 'ReceiptVoucherController@index')->name('receiptvoucher.index');
+
+    });
+
+    // Payment Voucher
+    Route::group(['prefix' => 'payment'], function() {
+        Route::get('index', 'PaymentVoucherController@index')->name('paymentvoucher.index');
+        Route::get('object', 'PaymentVoucherController@chooseObject')->name('paymentvoucher.p_object');
+        Route::get('storeother', 'PaymentVoucherController@storeOther')->name('paymentvoucher.storeother');
+
+    });
+
     // Report
     Route::group(['prefix' => 'report'], function() {
+
+        Route::group(['prefix' => 'overview'], function() {
+            Route::get('index', 'ReportController@overview')->name('overview.index');
+        });
+
         Route::group(['prefix' => 'order'], function() {
             Route::get('view', 'ReportController@viewReportOrder')->name('report.order');
             Route::post('post', 'ReportController@reportOrder')->name('report.p_order');
@@ -291,6 +310,35 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('export/{dateStart}/{dateEnd}/{idGroupMenu}','ReportController@exportDishReport')->name('report.exportdish');
         });
 
+    });
+
+    // Ajax
+
+    Route::group(['prefix' => 'ajax'], function() {
+
+        Route::group(['prefix' => 'getMaterial'], function() {
+
+            Route::get('bySupplier/{idSupplier}','AjaxController@getMaterialBySupplier');
+
+            Route::group(['prefix' => 'export'], function() {
+                Route::get('cook/{idObjectCook}','AjaxController@getMaterialToExportCook');
+                Route::get('supplier/{idObjectSupplier}','AjaxController@getMaterialToExportSupplier');
+            });
+
+            Route::group(['prefix' => 'destroy'], function() {
+                Route::get('warehouse/{name}','AjaxController@searchMaterialDestroy');
+                Route::get('cook/{id}/{name}','AjaxController@searchMaterialDestroyCook');
+
+            });
+        });
+
+        Route::group(['prefix' => 'report'], function() {
+            Route::get('getDateTime/{id}','AjaxController@getDateTimeToReport');
+            Route::get('overview/{dateStart}/{dateEnd}','AjaxController@showOverview');
+        });
+
+        Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
+        Route::get('getImportCoupon/{idSupplier}','AjaxController@getUnPaidImport');
     });
 
 });

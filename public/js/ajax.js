@@ -4,12 +4,12 @@ $(document).ready(function () {
         var idSupplier = $(this).val();
         //console.log(id);
         $.ajax({
-            url: 'api/getMaterialBySupplier/' + idSupplier, //Trang xử lý
+            url: 'ajax/getMaterial/bySupplier/' + idSupplier,
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
                 //console.log(data);
-                data.materials.forEach(function (material) {
+                data.materials.map(function (material) {
                     // console.log(material);
                     $('.list').empty();
                     //console.log(material.type_material.material_detail);
@@ -55,36 +55,11 @@ $(document).ready(function () {
         });
     });
 
-    // ajax get object by id_type_export to export
-    $("#type_object").change(function () {
-        var id = $(this).val();
-        // console.log(id);
-        $.ajax({
-            url: 'api/getOjbectToExport/' + id, //Trang xử lý
-            method: 'GET',
-            dataType: 'JSON',
-            success: function (data) {
-                $("#object").empty();
-                //console.log(data);
-                data.forEach(function (c) {
-                    $('#object').append($('<option>', {
-                        value: c.id,
-                        text: c.name
-                    }));
-                });
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    });
-
     // export by ObjectCook
     $("#objectCook").change(function () {
         const objectCook = $(this).val();
         $.ajax({
-            url: 'api/getMaterialToExportCook/' + objectCook, //Trang xử lý
+            url: 'ajax/getMaterial/export/cook/' + objectCook, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
@@ -101,7 +76,7 @@ $(document).ready(function () {
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
-                data.materialWarehouseCook.forEach(function (c) {
+                data.materialWarehouseCook.map(function (c) {
                     tableWarehouseCook += '<tr>' +
                         '<td>' + c.detail_material.name + '</td>' +
                         '<td><span class="badge">' + c.qty + '</span></td>' +
@@ -128,7 +103,7 @@ $(document).ready(function () {
                     '</tr>' +
                     '</thead>' +
                     '<tbody id="bodyWarehouseExportCook">';
-                data.materialWarehouse.forEach(function (detail) {
+                data.materialWarehouse.map(function (detail) {
                     tableWarehouse +=
                         '<tr id="row' + detail.id + '">' +
                         '<td>' +
@@ -175,7 +150,7 @@ $(document).ready(function () {
     $("#objectSupplier").change(function () {
         const objectSupplier = $(this).val();
         $.ajax({
-            url: 'api/getMaterialToExportSupplier/' + objectSupplier, //Trang xử lý
+            url: 'ajax/getMaterial/export/supplier/' + objectSupplier, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
@@ -193,7 +168,7 @@ $(document).ready(function () {
                                 '</tr>' +
                             '</thead>' +
                             '<tbody id="bodyExportSupplier">';
-                data.forEach(function (detail) {
+                data.map(function (detail) {
                     tableWarehouse +=
                         '<tr id="row' + detail.id + '">' +
                             '<td>' +
@@ -232,67 +207,17 @@ $(document).ready(function () {
             }
         });
     });
-    // ajax get object by id_type_report to report
-    $("#typeReport").change(function () {
-        var idType = $(this).val();
-        //console.log(idType);
-        $.ajax({
-            url: 'api/getObjectToReport/' + idType, //Trang xử lý
-            method: 'GET',
-            dataType: 'JSON',
-            success: function (data) {
-                //console.log(data);
-                $("#objectReport").empty();
-                if (data.idData == null) {
-                    data.forEach(function (c) {
-                        $('#objectReport').append($('<option>', {
-                            value: c.id,
-                            text: c.name
-                        }));
-                    })
-                } else if (data.idData == 4) {
-                    $('#objectReport').append($('<option>', {
-                        value: data.idData,
-                        text: data.name
-                    }));
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    });
 
     // get time to report
     $("#timeReport").change(function () {
         var idTypeDateTime = $(this).val();
         $.ajax({
-            url: 'api/getDateTimeToReport/' + idTypeDateTime, //Trang xử lý
+            url: 'ajax/report/getDateTime/' + idTypeDateTime, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                if (idTypeDateTime == 1) {
-                    var a = document.getElementById("dateStart");
-                    a.setAttribute('value', data.dateStart);
-                    var b = document.getElementById("dateEnd");
-                    b.setAttribute('value', data.dateEnd);
-                } else if (idTypeDateTime == 2) {
-                    var a = document.getElementById("dateStart");
-                    a.setAttribute('value', data.dateStart);
-                    var b = document.getElementById("dateEnd");
-                    b.setAttribute('value', data.dateEnd);
-                } else if (idTypeDateTime == 3) {
-                    var a = document.getElementById("dateStart");
-                    a.setAttribute('value', data.dateStart);
-                    var b = document.getElementById("dateEnd");
-                    b.setAttribute('value', data.dateEnd);
-                } else if (idTypeDateTime == 4) {
-                    var a = document.getElementById("dateStart");
-                    a.setAttribute('value', data.dateStart);
-                    var b = document.getElementById("dateEnd");
-                    b.setAttribute('value', data.dateEnd);
-                }
+                $('#dateStart').val(data.dateStart);
+                $('#dateEnd').val(data.dateEnd);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -305,7 +230,7 @@ $(document).ready(function () {
     $("#searchMaterial").click(function() {
         const name = document.getElementById('nameMaterial').value;
         $.ajax({
-            url: 'api/searchMaterialDestroy/' + name, //Trang xử lý
+            url: 'ajax/getMaterial/destroy/warehouse/' + name, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function(data) {
@@ -313,7 +238,7 @@ $(document).ready(function () {
                     alert("Không có sp này");
                 }
                 else{
-                    data.forEach(function (detail) {
+                    data.map(function (detail) {
                        let row = '<tr id="row'+ detail.id +'">' +
                                     '<td><input name="idMaterial[]" value="' + detail.detail_material.id + '" hidden>'+ detail.detail_material.name + '</td>' +
                                     '<td><input type="number" name="oldQty[]" class="oldQty form-control" value="' + detail.qty + '" disabled></td>' +
@@ -347,7 +272,7 @@ $(document).ready(function () {
         }
         else{
             $.ajax({
-                url: 'api/searchMaterialDestroyCook/' + idCook + '/' + nameMaterial, //Trang xử lý
+                url: 'ajax/getMaterial/destroy/cook/' + idCook + '/' + nameMaterial, //Trang xử lý
                 method: 'GET',
                 dataType: 'JSON',
                 success: function(data) {
@@ -358,7 +283,7 @@ $(document).ready(function () {
                         alert("Không có sp vừa nhập trong bếp này");
                     }
                     else{
-                        data.forEach(function (detail) {
+                        data.map(function (detail) {
                            let row = '<tr id="row'+ detail.id +'">' +
                                         '<td><input name="idMaterial[]" value="' + detail.detail_material.id + '" hidden>'+ detail.detail_material.name + '</td>' +
                                         '<td><input type="number" name="oldQty[]" class="oldQty form-control" value="' + detail.qty + '" disabled></td>' +
@@ -394,7 +319,7 @@ $(document).ready(function () {
     $("#idMaterial").change(function () {
         const idMaterial = $(this).val();
         $.ajax({
-            url: 'api/getCapitalPrice/' + idMaterial, //Trang xử lý
+            url: 'ajax/getCapitalPrice/' + idMaterial, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
@@ -416,7 +341,7 @@ $(document).ready(function () {
     $("#clickUpdatePrice").click(function () {
         const idMaterial = document.getElementById('idMaterialUpdatePrice').value;
         $.ajax({
-            url: 'api/getCapitalPrice/' + idMaterial, //Trang xử lý
+            url: 'ajax/getCapitalPrice/' + idMaterial, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
@@ -434,46 +359,49 @@ $(document).ready(function () {
         });
     });
 
-    $("#btngroupmenuSearch").click(function () {
-        const name = document.getElementById('searchGroupMenu').value;
+    // overView
+    $("#btnOverview").click(function () {
+        let dateStart = document.getElementById('dateStart').value;
+        let dateEnd = document.getElementById('dateEnd').value;
         $.ajax({
-            url: 'api/getSearchGroupMenu/' + name, //Trang xử lý
+            url: 'ajax/report/overview/' + dateStart + '/' + dateEnd,
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                $('#tableGroupMenu').empty();
-                data.forEach(function (item) {
-                let row =
-                                            `<tr>
-                                            <td>
-                                            <form role="form" action="http://localhost/res/public/groupmenu/updatename/`+ item.id +`" method="GET">
-                                                @csrf
-                                                <div class="form-group">
-                                                    <label>Tên cũ</label>
-                                                    <input type="text" class="form-control"
-                                                        value="" disabled>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Action Name <span style="color: #ff0000">
-                                                            *</span></label>
-                                                    <input type="text" size="40" class="form-control"
-                                                        required="required" name="nameGroupMenu" maxlength="255"
-                                                        value="">
-                                                </div>
-                                                <button type="submit" class="btn btn-default">Lưu</button>
-                                            </form>
-                                            </td>
-                                            </tr>`
-
-                    $('#tableGroupMenu').append(row);
+                console.log(data);
+                data.map(function(item){
+                    $("span#revenue").text(item.total + ' đ');
+                    $("span#bill").text(item.bill);
+                    $("span.servingBill").text(item.serving);
+                    $("span.paidBill").text(item.paid);
                 });
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
             }
         });
+    });
 
+    $("#supplierPayment").change(function () {
+        let idSupplier = $(this).val();
+        $.ajax({
+            url: 'ajax/getImportCoupon/' + idSupplier ,
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (imports) {
+                imports.map(function (coupon) {
+                    let row =   '<tr id="row'+ coupon.id +'">'+
+                                    '<td>'+ coupon.created_at +'</td>'+
+                                    '<td>'+ coupon.code +'</td>'+
+                                    '<td>'+ coupon.total +'</td>'+
+                                    '<td><input type"number" class="form-control" name="payCash[]" required value="'+ coupon.total +'"></td>'+
+                                    '<td>'+
+                                        '<span class="input-group-btn" onclick="clickToRemove(' + coupon.id + ')">' +
+                                            '<button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>' +
+                                        '</span>'
+                                    '</td>'+
+                                '</tr>';
+                    $("#tablePayment").append(row);
+                })
+            }
+        });
     });
 
 });

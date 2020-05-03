@@ -20,6 +20,11 @@ class ReportController extends Controller
         $this->reportRepository = $reportRepository;
     }
 
+    public function overview()
+    {
+
+        return view('overview.index');
+    }
     public function viewReportOrder()
     {
         return view('report.order');

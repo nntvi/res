@@ -35,6 +35,7 @@
                     <th>Tổng tiền</th>
                     <th>Nhà cung cấp</th>
                     <th>Ghi chú</th>
+                    <th>Trạng thái</th>
                     <th>Ngày tạo</th>
                     <th>Chi tiết</th>
                 </tr>
@@ -47,6 +48,13 @@
                         <td>{{ number_format($import->total) . ' đ'}}</td>
                          <td>{{$import->supplier->name}}</td>
                         <td>{{$import->note}}</td>
+                        <td>
+                            @if ($import->status == "0")
+                                Chưa thanh toán
+                            @else
+                                Đã thanh toán
+                            @endif
+                        </td>
                         <td>{{$import->created_at}}</td>
                         <td><a href="{{route('importcoupon.detail',['id' => $import->id])}}">Xem chi tiết</a></td>
                     </tr>
