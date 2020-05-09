@@ -10,7 +10,7 @@
                             </div>
                             <div class="list-group list-group-alternate">
                                     @foreach ($materials as $material)
-                                        @if ($material->status == '1')
+                                        @if ($material->status == "1")
                                         <a href="{{route('cook_screen.p_updatematerial',[   'idMaterial' => $material->detailMaterial->id,
                                                                                             'idCook' => $cook->id ])}}"
                                             class="list-group-item" onclick="return confirm('Bạn có chắc muốn nhập thêm [ {{ $material->detailMaterial->name }} ] ?')">

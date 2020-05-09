@@ -10,22 +10,10 @@
 	<link rel="stylesheet" href="{{ asset('customerInterface/css/grid.css ')}}">
 	<link rel="stylesheet" href="{{ asset('customerInterface/css/style.css') }}">
 	<link rel="stylesheet" href="{{ asset('customerInterface/css/rd-mailform.css') }}">
+    <script src="{{ asset('customerInterface/js/validate.js') }}"></script>
+    <script src="{{ asset('customerInterface/js/jquery.js') }}"></script>
+    <script src="https://js.pusher.com/6.0/pusher.min.js"></script>
 
-	<script src="{{ asset('customerInterface/js/jquery.js') }}"></script>
-	<script src="{{ asset('customerInterface/js/jquery-migrate-1.2.1.js') }}"></script>
-
-	<!--[if lt IE 9]>
-	{{-- <html class="lt-ie9"> --}}
-	{{-- <div style=' clear: both; text-align:center; position: relative;'>
-		<a href="http://windows.microsoft.com/en-US/internet-explorer/..">
-			<img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820"
-					 alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."/>
-		</a>
-	</div> --}}
-	<script src="{{ asset('customerInterface/js/html5shiv.js') }}"></script>
-	<![endif]-->
-
-	<script src="{{ asset('customerInterface/js/device.min.js') }}"></script>
 </head>
 
 <body>
@@ -47,38 +35,29 @@
 				<div class="row">
 					<div class="preffix_4 grid_4">
 						<!-- RD Mailform -->
-						<form class='rd-mailform' method="post" action="bat/rd-mailform.php">
+						<form class='rd-mailform' method="post" action="{{ route('booking.store') }}" onsubmit="return validateBooking()">
+                            @csrf
 							<!-- RD Mailform Type -->
 							<input type="hidden" name="form-type" value="contact"/>
 							<!-- END RD Mailform Type -->
 							<fieldset>
 								<label data-add-placeholder>
-									<input type="text"
-										   name="name"
-										   placeholder="Full name"
-										   data-constraints="@NotEmpty @LettersOnly"/>
+									<input type="text" name="name" placeholder="Full name" required>
 								</label>
 
-								<label data-add-placeholder data-add-icon>
-									<input type="date"
-										   name="date"
-										   data-placeholder="Date"
-										   data-constraints="@Date"
-											/>
+                                <label data-add-placeholder data-add-icon>
+									<input type="date" name="date" id="date"  required >
+                                </label>
+
+                                <label data-add-placeholder data-add-icon>
+                                    <input type="time" name="time" id="time" min="08:00" max="21:00" required>
+                                </label>
+								<label data-add-placeholder>
+									<input type="email"  name="email" placeholder="E-mail"  required>
 								</label>
 
 								<label data-add-placeholder>
-									<input type="text"
-										   name="email"
-										   placeholder="E-mail"
-										   data-constraints="@NotEmpty @Email"/>
-								</label>
-
-								<label data-add-placeholder>
-									<input type="text"
-										   name="phone"
-										   placeholder="Phone"
-										   data-constraints="@Phone"/>
+									<input type="phone" id="phone"  name="phone" placeholder="Phone"  required>
 								</label>
 
 								<div class="mfControls btn-group">
@@ -189,7 +168,7 @@
 
 		<section class="well">
 			<div class="container">
-				<h2>What's Hot?</h2>
+				<h2>Whats Hot?</h2>
 				<div class="row">
 					<div class="grid_6 left">
 						<h4>Adipisicing elit sed do</h4>
@@ -238,7 +217,6 @@
 	</footer>
 </div>
 
-<script src="js/script.js"></script>
-<!-- coded by nyan -->
+<script src="{{ asset('customerInterface/js/script.js') }}"></script>
 </body>
 </html>

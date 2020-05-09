@@ -106,34 +106,56 @@
             </div>
 
         </div>
-        <div class="chart_agile_bottom">
-            <div id="graph11" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                <div class="morris-hover morris-default-style" style="left: 8.6875px; top: 242px;">
+
+    </div>
+</div>
+<div class="space"></div>
+<div class="chart_agile">
+    <div class="col-md-6 chart_agile_left">
+        <div class="chart_agile_top">
+            <div class="chart_agile_bottom">
+                <h3 class="hdg">Doanh thu theo từng tháng</h3>
+                <div id="graph11" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 
                 </div>
+                <script>
+                    Morris.Line({
+                        element: 'graph11',
+                        data: @json($allRevenue),
+                        xkey: 'month',
+                        ykeys: ['value'],
+                        labels: ['Doanh thu'],
+                        units: ' đ',
+                        lineColors: ['deeppink'],
+                    });
+
+                </script>
+
             </div>
-            <script>
-
-                Morris.Line({
-                    element: 'graph11',
-                    data: [
-                        { date: '04-02-2014', value: 3 },
-                        { date: '04-03-2014', value: 10 },
-                        { date: '04-04-2014', value: 5 },
-                        { date: '04-05-2014', value: 17 },
-                        { date: '04-06-2014', value: 6 }
-                    ],
-                    xkey: 'date',
-                    ykeys: ['value'],
-                    labels: ['Doanh thu'],
-                    units: 'đ'
-                });
-
-            </script>
-
         </div>
     </div>
+    <div class="col-md-6 floatcharts_w3layouts_left">
+        <div class="floatcharts_w3layouts_top">
+            <div class="floatcharts_w3layouts_bottom">
+                <h3 class="hdg">Số lượng khách theo giờ</h3>
+                <div id="graph7" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 
+                </div>
+                <script>
+                    // This crosses a DST boundary in the UK.
+                    Morris.Area({
+                        element: 'graph7',
+                        data: @json($qtyCustomer),
+                        xkey: 'timeStart',
+                        ykeys: ['value'],
+                        lineColors: ['skyblue'],
+                    });
+
+                </script>
+
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection

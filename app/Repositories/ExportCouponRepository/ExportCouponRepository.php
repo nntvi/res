@@ -67,7 +67,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $exportCoupon->code = $request->code;
         $exportCoupon->id_type = $request->id_kind;
         $exportCoupon->note = $request->note;
-        $exportCoupon->save();
+        //$exportCoupon->save();
     }
 
     public function checkTypeExport($type,$request,$i)
@@ -109,8 +109,8 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
             $detailExportCoupon->qty = $request->qty[$i];
             $detailExportCoupon->id_unit = $request->id_unit[$i];
             //$this->settingPrice($request,$i);
-            $this->checkTypeExport($request->id_kind,$request,$i);
-            $detailExportCoupon->save();
+            //$this->checkTypeExport($request->id_kind,$request,$i);
+            //$detailExportCoupon->save();
         }
     }
 
@@ -191,7 +191,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
             $detailExportCoupon->id_unit = $request->id_unit[$i];
             $this->checkTypeExport($request->id_kind,$request,$i);
             $this->substractQtyWarehouseCook($request->idMaterial[$i],$request->type_object,$request->qty[$i]);
-            $detailExportCoupon->save();
+            //$detailExportCoupon->save();
         }
     }
     public function destroyCook($request)

@@ -18,13 +18,7 @@ use App\Http\Controllers\ReportController;
 
 Auth::routes(['register' => false]);
 
-Route::get('/', function () {
-    return view('layouts');
-});
-
-
 Route::group(['middleware' => ['auth']], function() {
-    // customer Interface
     Route::get('/customer/index', 'CustomerController@index')->name('customer.index');
 
     // Permission
@@ -189,6 +183,10 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('deletedish/{id}','OrderController@deleteDish')->name('order.delete');
     });
 
+    // Bill
+    Route::group(['prefix' => 'bill'], function () {
+        Route::get('index', 'OrderController@showBill')->name('bill.index');
+    });
     // CookingScreen
     Route::group(['prefix' => 'cook_screen'], function() {
         Route::get('index', 'CookScreenController@index')->name('cook_screen.index');
@@ -312,38 +310,13 @@ Route::group(['middleware' => ['auth']], function() {
 
     });
 
-    // Ajax
-
-    Route::group(['prefix' => 'ajax'], function() {
-
-        Route::group(['prefix' => 'getMaterial'], function() {
-
-            Route::get('bySupplier/{idSupplier}','AjaxController@getMaterialBySupplier');
-
-            Route::group(['prefix' => 'export'], function() {
-                Route::get('cook/{idObjectCook}','AjaxController@getMaterialToExportCook');
-                Route::get('supplier/{idObjectSupplier}','AjaxController@getMaterialToExportSupplier');
-            });
-
-            Route::group(['prefix' => 'destroy'], function() {
-                Route::get('warehouse/{name}','AjaxController@searchMaterialDestroy');
-                Route::get('cook/{id}/{name}','AjaxController@searchMaterialDestroyCook');
-
-            });
-        });
-
-        Route::group(['prefix' => 'report'], function() {
-            Route::get('getDateTime/{id}','AjaxController@getDateTimeToReport');
-            Route::get('overview/{dateStart}/{dateEnd}','AjaxController@showOverview');
-        });
-
-        Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
-        Route::get('getImportCoupon/{idSupplier}','AjaxController@getUnPaidImport');
+    // Booking
+    Route::group(['prefix' => 'booking'], function () {
+        Route::get('index', 'BookingController@index')->name('booking.index');
+        Route::post('store', 'BookingController@store')->name('booking.store');
+        Route::get('search', 'BookingController@search')->name('booking.search');
     });
 
+    // Ajax
+    include "ajax.php";
 });
-
-
-
-
-Route::get('/home', 'HomeController@index')->name('home');

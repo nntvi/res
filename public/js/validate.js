@@ -32,7 +32,6 @@ function validateFormMaterialAction() {
 // bắt lỗi form nhập kho chính
 function validateFormImportCoupon() {
     const code = document.getElementById('codeImportCoupon').value;
-    var qty, price;
     let table = document.getElementById('myTable');
     let data = [];
     if (code == null || code == "") {
@@ -82,35 +81,40 @@ function validateFormImportCoupon() {
 }
 // bắt lỗi form xuất bếp
 function validateFormExportCook() {
-    let data = [];
-    var oldQty, qty;
-    let table = document.getElementById('bodyWarehouseExportCook');
-    var tempOldQty;
-    for (var i = 0, row; row = table.rows[i]; i++) {
-        for (var j = 0, col; col = row.cells[j]; j++) {
-            if (j == 1) {
-                $('input[type="number"].oldQty').each(function (index) {
-                    if (index == i) {
-                        tempOldQty = $(this).val();
-                    }
-                });
-            }
-            if (j == 2) {
-                $('input[type="number"].qty').each(function (index) {
-                    if (index == i) {
-                        var cot = i + 1;
-                        var a = $(this).val();
-                        if (tempOldQty < $a) {
-                            console.log(tempOldQty + ' - ' + $(this).val());
-                            let compareInput = "Hàng " + cot + " cột " + j + " sl xuất > sl có \n";
-                            data.push(compareInput);
+    var data = [];
+    var code = document.getElementById('codeExportCook').value;
+    var table = document.getElementById('bodyWarehouseExportCook');
+    if(code.length == null || code.length == ""){
+        data.push("Không để trống mã phiếu xuất \n");
+    }
+    if(table.rows.length != 0){
+        for (var i = 0, row; row = table.rows[i]; i++) {
+            let tempOldQty;
+            for (var j = 0, col; col = row.cells[j]; j++) {
+                if (j == 1) {
+                    $('input[type="number"].oldQty').each(function (index) {
+                        if (index == i) {
+                            tempOldQty = parseFloat($(this).val());
                         }
-                    }
-                });
+                    });
+                }
+                if (j == 2) {
+                    $('input[type="number"].qty').each(function (index) {
+                        if (index == i) {
+                            var hang = i + 1;
+                            if (parseFloat( tempOldQty ) < parseFloat( $(this).val())) {
+                                let compareInput = "Hàng " + hang + " cột " + (j+1) + " sl xuất > sl trong kho \n";
+                                data.push(compareInput);
+                                data.push(tempOldQty + '<' + $(this).val() + '\n');
+                            }
+                        }
+                    });
+                }
             }
         }
+    }else{
+        data.push("Chưa có NVL nào để xuất");
     }
-
     if (data.length > 0) {
         alert(data);
         return false;
@@ -133,7 +137,7 @@ function validateFormExportSupplier() {
             if (j == 1) {
                 $('input[type="number"].oldQty').each(function (index) {
                     if (index == i) {
-                        tempOldQty = $(this).val();
+                        tempOldQty = parseFloat($(this).val());
                     }
                 });
             }
@@ -178,7 +182,7 @@ function validateFormDestroyWarehouse() {
                 if (j == 1) {
                     $('input[type="number"].oldQty').each(function (index) {
                         if (index == i) {
-                            tempOldQty = $(this).val();
+                            tempOldQty = parseFloat($(this).val());
                         }
                     });
                 }
@@ -189,7 +193,7 @@ function validateFormDestroyWarehouse() {
                             if ($(this).val() == null || $(this).val() == "") {
                                 let emptyInput = "Hàng " + cot + " cột " + j + " trống sl xuất \n";
                                 data.push(emptyInput);
-                            } else if ($(this).val() > tempOldQty){
+                            } else if (parseFloat($(this).val()) > tempOldQty){
                                 let compareInput = "Hàng " + cot + " cột " + j + " sl xuất > sl có \n";
                                 data.push(compareInput);
                             }
@@ -225,7 +229,7 @@ function validateFormDestroyCook() {
                 if (j == 1) {
                     $('input[type="number"].oldQty').each(function (index) {
                         if (index == i) {
-                            tempOldQty = $(this).val();
+                            tempOldQty = parseFloat($(this).val());
                         }
                     });
                 }
@@ -236,7 +240,7 @@ function validateFormDestroyCook() {
                             if ($(this).val() == null || $(this).val() == "") {
                                 let emptyInput = "Hàng " + cot + " cột " + j + " trống sl xuất \n";
                                 data.push(emptyInput);
-                            } else if ($(this).val() > tempOldQty){
+                            } else if (parseFloat($(this).val()) > tempOldQty){
                                 let compareInput = "Hàng " + cot + " cột " + j + " sl xuất > sl có \n";
                                 data.push(compareInput);
                             }

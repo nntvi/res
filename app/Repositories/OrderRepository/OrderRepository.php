@@ -1,17 +1,18 @@
 <?php
 namespace App\Repositories\OrderRepository;
 
-use App\Http\Controllers\Controller;
 use App\Area;
-use App\Dishes;
-use App\GroupMenu;
-use App\MaterialAction;
-use App\Table;
-use Carbon\Carbon;
 use App\Order;
-use App\OrderDetailTable;
+use App\Table;
+use App\Dishes;
 use App\Topping;
+use App\GroupMenu;
+use Carbon\Carbon;
+use Pusher\Pusher;
 use App\WarehouseCook;
+use App\MaterialAction;
+use App\OrderDetailTable;
+use App\Http\Controllers\Controller;
 
 class OrderRepository extends Controller implements IOrderRepository{
     public function validatorOrder($request)
@@ -44,9 +45,7 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function getIdTableActive($date)
     {
-        $activeTables= Order::whereBetween('created_at',
-                                         [$date . ' 00:00:00',
-                                          $date . ' 23:59:59'])
+        $activeTables= Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])
                             ->where('status', '1')->get('id_table');
         return $activeTables;
     }
@@ -79,9 +78,7 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function findIdCook($idDish)
     {
-        $idCook = Dishes::where('id',$idDish)
-                            ->with('material.groupMenu.cookArea')
-                            ->first();
+        $idCook = Dishes::where('id',$idDish)->with('material.groupMenu.cookArea')->first();
         return $idCook->material->groupMenu->cookArea->id;
     }
 
@@ -89,8 +86,7 @@ class OrderRepository extends Controller implements IOrderRepository{
     {
         $detailWarehouse = WarehouseCook::where('cook',$idCook)
                                         ->whereIn('id_material_detail',$idMaterialDetails)
-                                        ->orderBy('id_material_detail')
-                                        ->get();
+                                        ->orderBy('id_material_detail')->get();
         return $detailWarehouse;
     }
 
@@ -135,12 +131,9 @@ class OrderRepository extends Controller implements IOrderRepository{
                 }
             }
         }
-        if($a == $b)
-            return true;
-        else
-            return false;
+        return $a == $b ? true : false ;
     }
-    public function addOrderTableTrue($idDish,$idOrderTable)
+    public function addOrderTableTrue($idDish,$idOrderTable,$idCook)
     {
         $price = Dishes::where('id',$idDish)->first();
             $data = [
@@ -151,8 +144,9 @@ class OrderRepository extends Controller implements IOrderRepository{
                 'status' => '0'
             ];
         OrderDetailTable::create($data);
+        $this->notifyNewDishForCook($idCook,$idDish);
     }
-    public function addOrderTableFalse($idDish,$idOrderTable)
+    public function addOrderTableFalse($idDish,$idOrderTable,$idCook)
     {
         $price = Dishes::where('id',$idDish)->first();
             $data = [
@@ -163,6 +157,24 @@ class OrderRepository extends Controller implements IOrderRepository{
                 'status' => '-1'
             ];
         OrderDetailTable::create($data);
+        $this->notifyNewDishForCook($idCook,$idDish);
+    }
+
+    public function notifyNewDishForCook($idCook,$idDish)
+    {
+        $options = array(
+            'cluster' => 'ap1',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            'cc6422348edc9fbaff00',
+            '54d59c765665f5bc6194',
+            '994181',
+            $options
+        );
+        $data['idCook'] = $idCook;
+        $data['nameDish'] = Dishes::where('id',$idDish)->value('name');
+        $pusher->trigger('NotifyCook', 'notify-cook', $data);
     }
     public function addDishesOrder($idDishes,$idOrderTable)
     {
@@ -173,9 +185,9 @@ class OrderRepository extends Controller implements IOrderRepository{
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
             if($this->compare($materialInWarehouseCooks,$materialInActions)){
-                $this->addOrderTableTrue($idDish,$idOrderTable);
+                $this->addOrderTableTrue($idDish,$idOrderTable,$idCook);
             }else{
-                $this->addOrderTableFalse($idDish,$idOrderTable);
+                $this->addOrderTableFalse($idDish,$idOrderTable,$idCook);
             }
         }
     }
@@ -205,33 +217,4 @@ class OrderRepository extends Controller implements IOrderRepository{
         }
         return redirect(route('order.update',['id' => $idOrderTable]));
     }
-    // public function calculateMaterial($idDish)
-    // {
-    //     $idGroupNVL = $this->findIdGroupNVL($idDish);
-    //     $idCook = $this->findIdCook($idDish);
-    //     $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL);
-    //     $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
-    //     $materialInActions = $this->getMaterialAction($idGroupNVL);
-    //     $count = 0;
-    //     $sum = 0;
-    //     $data = array();
-
-    //     $countIdMaterialDetails = count($this->getOnlyIdMaterialAction($idGroupNVL));
-
-    //     foreach ($materialInWarehouseCooks as $key => $matCook) {
-    //         $data[$key] = $matCook->qty;
-    //         foreach ($materialInActions as $matAction) {
-    //             if($matCook->id_material_detail == $matAction->id_material_detail){
-    //                 if($matCook->qty - $matAction->qty >= 0){
-    //                     $data[$key] = $matCook->qty - $matAction->qty;
-    //                     $sum++;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     if($sum == $countIdMaterialDetails){
-    //         $count++;
-    //     }
-    // }
 }

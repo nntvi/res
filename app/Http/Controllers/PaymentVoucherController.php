@@ -12,7 +12,7 @@ class PaymentVoucherController extends Controller
 {
     public function index()
     {
-        $vouchers = PaymentVoucher::
+        //$vouchers = PaymentVoucher::
         return view('paymentvoucher.index');
     }
 

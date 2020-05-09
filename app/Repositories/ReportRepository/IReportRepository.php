@@ -6,5 +6,8 @@ interface IReportRepository{
     function reportTable($request);
     function reportDish($request);
     function getToTalRevenueInYear();
-    function getMonthInYear();
+    function getRevenueByMonth($startMonth,$endMonth);
+    function getAllRevenue();
+    function getAllQtyCustomer();
+    function createChartDishByTime($dateStart,$dateEnd);
 }

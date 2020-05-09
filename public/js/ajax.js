@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $('.pagination').addClass('pagination-sm');
     // ajax get material by id_supplierto import
     $("#idSupplier").change(function () {
         var idSupplier = $(this).val();

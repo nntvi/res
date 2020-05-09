@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Booking;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Helper\ICheckAction',
             'App\Helper\CheckAction'
+        );
+
+        $this->app->bind(
+            'App\Helper\IGetDateTime',
+            'App\Helper\GetDateTime'
         );
 
         $this->app->bind(
@@ -145,6 +153,12 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\ReportRepository\IReportRepository',
             'App\Repositories\ReportRepository\ReportRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\BookingRepository\IBookingRepository',
+            'App\Repositories\BookingRepository\BookingRepository'
+        );
+
     }
 
     /**
@@ -154,6 +168,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // $now = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        // $bookTables = Booking::whereBetween('date',[$now . ' 00:00:00', $now . ' 23:59:59'])
+        //                         ->where('status','0')->get(); // bàn chưa đặt trong ngày
+
     }
 }

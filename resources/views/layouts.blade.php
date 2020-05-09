@@ -1,497 +1,154 @@
-<!DOCTYPE html>
-    <head>
-        <title>Visitors an Admin Panel Category Bootstrap Responsive Website Template | Home :: w3layouts</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="keywords" content="Visitors Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
-    Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
-        <base href="{{ asset('')}}">
-        <script
-            type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-        <!-- bootstrap-css -->
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-        <!-- //bootstrap-css -->
-        <!-- Custom CSS -->
-        <link href="{{ asset('css/style.css') }}" rel='stylesheet' type='text/css' />
-        <link href="{{ asset('css/style-responsive.css') }}" rel="stylesheet" />
-        <!-- font CSS -->
-        <link
-            href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'
-            rel='stylesheet' type='text/css'>
-        <!-- font-awesome icons -->
-        <link rel="stylesheet" href="{{ asset('css/font.css' )}}" type="text/css" />
-        <link href="{{ asset('css/font-awesome.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset('css/morris.css') }}" type="text/css" />
-        <!-- calendar -->
-        <link rel="stylesheet" href="{{ asset('css/monthly.css') }}">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
-        <!-- //calendar -->
-        <!-- //font-awesome icons -->
-        <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
-        <script src="{{ asset('js/raphael-min.js') }}"></script>
-        <script src="{{ asset('js/morris.js') }}"></script>
-        <script src="{{ asset('js/ajax.js') }}"></script>
-        <script src="{{ asset('js/search.js') }}"></script>
-        <script src="{{ asset('js/validate.js') }}"></script>
-        <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/i18n/defaults-*.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-        <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-        </head>
-
-    <body>
-        <section id="container">
-            <!--header start-->
-            <header class="header fixed-top clearfix">
-                <!--logo start-->
-                <div class="brand">
-                    <a href="index.html" class="logo">
-                       RESTAUR_T
-                    </a>
-                    <div class="sidebar-toggle-box">
-                        <div class="fa fa-bars"></div>
-                    </div>
-                </div>
-                <!--logo end-->
-                <div class="nav notify-row" id="top_menu">
-                    <!--  notification start -->
-                    <ul class="nav top-menu">
-                        <!-- settings start -->
-                        <li class="dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                    <i class="fa fa-tasks"></i>
-                                    <span class="badge bg-success">8</span>
-                                </a>
-                                <ul class="dropdown-menu extended tasks-bar">
-                                    <li>
-                                        <p class="">You have 8 pending tasks</p>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="task-info clearfix">
-                                                <div class="desc pull-left">
-                                                    <h5>Target Sell</h5>
-                                                    <p>25% , Deadline 12 June’13</p>
-                                                </div>
-                                                <span class="notification-pie-chart pull-right" data-percent="45">
-                                                    <span class="percent"></span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="task-info clearfix">
-                                                <div class="desc pull-left">
-                                                    <h5>Product Delivery</h5>
-                                                    <p>45% , Deadline 12 June’13</p>
-                                                </div>
-                                                <span class="notification-pie-chart pull-right" data-percent="78">
-                                                    <span class="percent"></span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="task-info clearfix">
-                                                <div class="desc pull-left">
-                                                    <h5>Payment collection</h5>
-                                                    <p>87% , Deadline 12 June’13</p>
-                                                </div>
-                                                <span class="notification-pie-chart pull-right" data-percent="60">
-                                                    <span class="percent"></span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="task-info clearfix">
-                                                <div class="desc pull-left">
-                                                    <h5>Target Sell</h5>
-                                                    <p>33% , Deadline 12 June’13</p>
-                                                </div>
-                                                <span class="notification-pie-chart pull-right" data-percent="90">
-                                                    <span class="percent"></span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li class="external">
-                                        <a href="#">See All Tasks</a>
-                                    </li>
-                                </ul>
-                        </li>
-                        <!-- settings end -->
-                        <!-- inbox dropdown start-->
-                        <li id="header_inbox_bar" class="dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <i class="fa fa-envelope-o"></i>
-                                <span class="badge bg-important">4</span>
-                            </a>
-                            <ul class="dropdown-menu extended inbox">
-                                <li>
-                                    <p class="red">You have 4 Mails</p>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="photo"><img alt="avatar" src="images/3.png"></span>
-                                        <span class="subject">
-                                            <span class="from">Jonathan Smith</span>
-                                            <span class="time">Just now</span>
-                                        </span>
-                                        <span class="message">
-                                            Hello, this is an example msg.
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="photo"><img alt="avatar" src="images/1.png"></span>
-                                        <span class="subject">
-                                            <span class="from">Jane Doe</span>
-                                            <span class="time">2 min ago</span>
-                                        </span>
-                                        <span class="message">
-                                            Nice admin template
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="photo"><img alt="avatar" src="images/3.png"></span>
-                                        <span class="subject">
-                                            <span class="from">Tasi sam</span>
-                                            <span class="time">2 days ago</span>
-                                        </span>
-                                        <span class="message">
-                                            This is an example msg.
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="photo"><img alt="avatar" src="images/2.png"></span>
-                                        <span class="subject">
-                                            <span class="from">Mr. Perfect</span>
-                                            <span class="time">2 hour ago</span>
-                                        </span>
-                                        <span class="message">
-                                            Hi there, its a test
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">See all messages</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- inbox dropdown end -->
-                        <!-- notification dropdown start-->
-                        <li id="header_notification_bar" class="dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-
-                                <i class="fa fa-bell-o"></i>
-                                <span class="badge bg-warning">3</span>
-                            </a>
-                            <ul class="dropdown-menu extended notification">
-                                <li>
-                                    <p>Notifications</p>
-                                </li>
-                                <li>
-                                    <div class="alert alert-info clearfix">
-                                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                                        <div class="noti-info">
-                                            <a href="#"> Server #1 overloaded.</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="alert alert-danger clearfix">
-                                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                                        <div class="noti-info">
-                                            <a href="#"> Server #2 overloaded.</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="alert alert-success clearfix">
-                                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                                        <div class="noti-info">
-                                            <a href="#"> Server #3 overloaded.</a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                            </ul>
-                        </li>
-                        <!-- notification dropdown end -->
-                    </ul>
-                    <!--  notification end -->
-                </div>
-                <div class="top-nav clearfix">
-                    <!--search & user info start-->
-                    <ul class="nav pull-right top-menu">
-                        <li>
-                            <input type="text" class="form-control search" placeholder=" Search">
-                        </li>
-                        <!-- user login dropdown start-->
-                        <li class="dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <img alt="" src="images/2.png">
-                                <span class="username">{{auth()->user()->name}}</span>
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu extended logout">
-                                <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
-                                <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
-                                <li><a  href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                                  document.getElementById('logout-form').submit();">
-                                     {{ __('Logout') }}
-                                     <i class="fa fa-key"></i></a></li>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                            </ul>
-                        </li>
-                        <!-- user login dropdown end -->
-
-                    </ul>
-                    <!--search & user info end-->
-                </div>
-            </header>
-            <!--header end-->
-            <!--sidebar start-->
-            <aside>
-                <div id="sidebar" class="nav-collapse">
-                    <!-- sidebar menu start-->
-                    <div class="leftside-navigation">
-                        <ul class="sidebar-menu" id="nav-accordion">
-                            <li>
-                                <a href="{{ route('customer.index') }}">
-                                    <i class="fa fa-home"></i>
-                                        <span>GIao diện khách hàng</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('overview.index') }}">
-                                    <i class="fa fa-cubes"></i>
-                                        <span>Tổng quan</span>
-                                </a>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-cube"></i>
-                                        <span>Hàng hóa</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="{{route('groupmenu.index')}}">Nhóm thực đơn</a></li>
-                                    <li><a href="{{route('dishes.index')}}">Đồ uống - Món ăn</a></li>
-                                    {{--  <li><a href="{{route('topping.index')}}">Topping, ghi chú món</a></li>  --}}
-                                    <li><a href="{{route('material.index')}}">Nhóm công thức từng món</a></li>
-                                    <li><a href="{{route('material_detail.index')}}">Nguyên vật liệu</a></li>
-                                    <li><a href="{{route('material_action.index')}}">Chi tiết NVL từng món</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-users"></i>
-                                        <span>Phân quyền</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="{{ route('permission.index')}}">Chức vụ</a></li>
-                                    <li><a href="{{ route('perdetail.index') }}">Quyền hoạt động</a></li>
-                                    <li><a href="{{ route('user.index') }}">Nhân viên</a></li>
-                                    </ul>
-                            </li>
-                            <li class="sub-menu">
-                                    <a href="javascript:;">
-                                        <i class="fa fa-building-o"></i>
-                                            <span>Nhà hàng</span>
-                                    </a>
-                                    <ul class="sub">
-                                        <li><a href="{{route('order.index')}}">Màn hình order</a></li>
-                                        <li><a href="{{route('cook_screen.index')}}">Màn hình khu vực bếp</a></li>
-                                        <li><a href="{{route('area.index')}}">Khu vực</a></li>
-                                        <li><a href="{{route('table.index')}}">Phòng bàn</a></li>
-                                        <li><a href="{{route('cook.index')}}">Bếp</a></li>
-                                    </ul>
-                                </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-user"></i>
-                                    <span>Đối tác</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="khachhang.html">Khách hàng</a></li>
-                                    <li><a href="{{route('supplier.index')}}">Nhà cung cấp</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-database"></i>
-                                    <span>Kho</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="{{route('warehouse.index')}}">Kho chính</a></li>
-                                    <li><a href="{{ route('warehousecook.index') }}">Kho bếp</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                    <a href="javascript:;">
-                                        <i class="fa fa-usd"></i>
-                                        <span>Sổ quỹ</span>
-                                    </a>
-                                    <ul class="sub">
-                                        <li><a href="{{ route('receiptvoucher.index') }}">Phiếu Thu</a></li>
-                                        <li><a href="{{ route('paymentvoucher.index') }}">Phiếu Chi</a></li>
-                                    </ul>
-                                </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-book"></i>
-                                    <span>Báo cáo</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="{{ route('report.order') }}">Theo đơn hàng</a></li>
-                                    <li><a href="{{ route('report.table') }}">Theo bàn</a></li>
-                                    <li><a href="{{ route('report.dish') }}">Theo món</a></li>
-                                    <li><a href="thuchi.html">Thu chi</li></a>
-                                    <li><a href="loinhuan.html">Lợi nhuận</a></li>
-                                    <li><a href="congnoncc.html">Công nợ nhà cung cấp</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-cogs"></i>
-                                    <span>Thiết lập</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="{{ route('shift.index') }}">Thiết lập ca làm việc</a></li>
-                                    <li><a href="{{ route('salary.index') }}">Thiết lập tiền lương</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- sidebar menu end-->
-                </div>
-            </aside>
-            <!--sidebar end-->
-            <!--main content start-->
-
+@include('header')
+<body>
+    <input type="text" id="roleCook" value="{{ auth()->user()->checkCook() }}" hidden>
+    <input type="text" id="viewWarehouseCook" value="{{ auth()->user()->viewWarehouseCook() }}" hidden>
+    <input type="text" id="viewBooking" value="{{ auth()->user()->viewBooking() }}" hidden>
+    <section id="container">
+        @include('headerbar')
+        @include('sidebar')
+        <!--main content start-->
             <section id="main-content">
                 <section class="wrapper">
-                    @yield('headerreport')
                     @yield('content')
                 </section>
                 <!-- footer -->
 
                 <!-- / footer -->
             </section>
-            <!--main content end-->
-        </section>
-        <script src="{{ asset('js/bootstrap.js') }}"></script>
-        <script src="{{ asset('js/jquery.dcjqaccordion.2.7.js') }}"></script>
-        <script src="{{ asset('js/scripts.js') }}"></script>
-        <script src="{{ asset('js/jquery.slimscroll.js') }}"></script>
-        <script src="{{ asset('js/jquery.nicescroll.js') }}"></script>
-        <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
-        <script src="{{ asset('js/jquery.scrollTo.js')}}"></script>
-        <!-- morris JavaScript -->
-        <script>
-            $(document).ready(function () {
-                //BOX BUTTON SHOW AND CLOSE
-                jQuery('.small-graph-box').hover(function () {
-                    jQuery(this).find('.box-button').fadeIn('fast');
-                }, function () {
-                    jQuery(this).find('.box-button').fadeOut('fast');
-                });
-                jQuery('.small-graph-box .box-close').click(function () {
-                    jQuery(this).closest('.small-graph-box').fadeOut(200);
-                    return false;
-                });
+        <!--main content end-->
+    </section>
+    <script type="text/javascript">
+        const roleViewWarehouseCook = JSON.parse(document.getElementById('viewWarehouseCook').value);
+        var notificationsWrapper   = $('.notificationOutOfStockCook');
+        var notificationsToggle    = notificationsWrapper.find('a[data-toggle]');
+        var notificationsCountElem = notificationsToggle.find('i[data-count]');
+        var notificationsCount     = parseInt(notificationsCountElem.data('count'));
+        var notifications          = notificationsWrapper.find('ul.dropdown-menu.tasks-bar');
 
-                //CHARTS
-                function gd(year, day, month) {
-                    return new Date(year, month - 1, day).getTime();
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('cc6422348edc9fbaff00', {
+            cluster: 'ap1'
+        });
+
+        let channel2 = pusher.subscribe('NotifyOutOfStock');
+        channel2.bind('need-import-cook', function(data){
+            var existingNotifications = notifications.html();
+                if(roleViewWarehouseCook.length > 0){
+                    alert(JSON.stringify(data));
+                    var newNotifications =
+                    `<li>
+                        <a href="{{ route('warehouse.index') }}">
+                            <audio autoplay >
+                                <source src="{{ asset('audio/bip.mp3') }}">
+                            </audio>
+                            <div class="task-info clearfix">
+                                <div class="desc pull-left">
+                                    <h5>Bếp ` + data.idCook + `</h5>
+                                    <p>Cần nhập thêm ` + data.material +`</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>`;
+                    notifications.html(newNotifications);
+                    notifications.html(existingNotifications + newNotifications);
+                    notificationsCount += 1;
+                    notificationsCountElem.attr('data-count', notificationsCount);
+                    notificationsWrapper.find('.notif-count').text(notificationsCount);
+                    notificationsWrapper.show();
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        const roleCook = JSON.parse(document.getElementById('roleCook').value);
+        var notifyWrapper = $('.notificationNewDishForCook');
+        var notifyToggle = notifyWrapper.find('a[data-toggle]');
+        var notifyCountElem = notifyToggle.find('i[data-count]');
+        var notifyCount = parseInt(notifyCountElem.data('count'));
+        var listNotificationsNewDish = notifyWrapper.find('ul.dropdown-menu.notificationNewDish');
+
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('cc6422348edc9fbaff00', {
+            cluster: 'ap1'
+        });
+
+        let channel = pusher.subscribe('NotifyCook');
+        channel.bind('notify-cook', function(data){
+            var existingNotifications = listNotificationsNewDish.html();
+            if(roleCook.length > 0){
+                let color = "";
+                if(data.idCook == 1){
+                    color = "alert-danger";
+                }else if(data.idCook == 2){
+                    color = "alert-success";
+                }else{
+                    color = "alert-info";
                 }
+                var newNotifications =
+                `<li>
+                    <audio autoplay> <source src="{{ asset('audio/tingting.mp3') }}"></audio>
+                    <div class="alert `+ color +` clearfix">
+                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                            <div class="noti-info">`;
+                                if(data.idCook == 1){
+                                    newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 1]) }}"> Bếp `+ data.idCook +` có món mới: `+ data.nameDish +`</a>`;
+                                }else if(data.idCook == 2){
+                                    newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 2]) }}"> Bếp `+ data.idCook +` có món mới: `+ data.nameDish +`</a>`;
+                                }else{
+                                    newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 3]) }}"> Bếp `+ data.idCook +` có món mới: `+ data.nameDish +`</a>`;
+                                }
+                        newNotifications +=`</div>
+                    </div>
+                </li>`;
+                listNotificationsNewDish.html(newNotifications);
+                listNotificationsNewDish.html(existingNotifications + newNotifications);
+                notifyCount += 1;
+                notifyCountElem.attr('data-count',notifyCount);
+                notifyWrapper.find('.notify-count-new-dish').text(notifyCount);
+                notifyWrapper.show();
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        const roleViewBooking = JSON.parse(document.getElementById('viewBooking').value);
+        var notificationWrapperBooking = $('.notificationBooking');
+        var notificationToggleBooking = notificationWrapperBooking.find('a[data-toggle]');
+        var notificationCountElemBooking = notificationToggleBooking.find('i[data-count]');
+        var notificationCountBooking = parseInt(notificationCountElemBooking.data('count'));
+        var notificationsBooking = notificationWrapperBooking.find('ul.dropdown-menu.inbox');
 
-                graphArea2 = Morris.Area({
-                    element: 'hero-area',
-                    padding: 10,
-                    behaveLikeLine: true,
-                    gridEnabled: false,
-                    gridLineColor: '#dddddd',
-                    axes: true,
-                    resize: true,
-                    smooth: true,
-                    pointSize: 0,
-                    lineWidth: 0,
-                    fillOpacity: 0.85,
-                    data: [
-                        { period: '2015 Q1', iphone: 2668, ipad: null, itouch: 2649 },
-                        { period: '2015 Q2', iphone: 15780, ipad: 13799, itouch: 12051 },
-                        { period: '2015 Q3', iphone: 12920, ipad: 10975, itouch: 9910 },
-                        { period: '2015 Q4', iphone: 8770, ipad: 6600, itouch: 6695 },
-                        { period: '2016 Q1', iphone: 10820, ipad: 10924, itouch: 12300 },
-                        { period: '2016 Q2', iphone: 9680, ipad: 9010, itouch: 7891 },
-                        { period: '2016 Q3', iphone: 4830, ipad: 3805, itouch: 1598 },
-                        { period: '2016 Q4', iphone: 15083, ipad: 8977, itouch: 5185 },
-                        { period: '2017 Q1', iphone: 10697, ipad: 4470, itouch: 2038 },
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('cc6422348edc9fbaff00', {
+            cluster: 'ap1'
+        });
+        let channel3 = pusher.subscribe('Booking');
 
-                    ],
-                    lineColors: ['#eb6f6f', '#926383', '#eb6f6f'],
-                    xkey: 'period',
-                    redraw: true,
-                    ykeys: ['iphone', 'ipad', 'itouch'],
-                    labels: ['All Visitors', 'Returning Visitors', 'Unique Visitors'],
-                    pointSize: 2,
-                    hideHover: 'auto',
-                    resize: true
-                });
+        channel3.bind('book-table', function(data){
+            if(roleViewBooking.length > 0){
+                var titleNotificationBooking = notificationsBooking.find('.title-notify-booking').html();
+                var seeAllNotificationBooking = notificationsBooking.find('.see-all-booking').html();
 
-
-            });
-        </script>
-        <!-- calendar -->
-        <script type="text/javascript" src="{{ asset('js/monthly.js') }}"></script>
-        <script type="text/javascript">
-            $(window).load(function () {
-
-                $('#mycalendar').monthly({
-                    mode: 'event',
-
-                });
-
-                $('#mycalendar2').monthly({
-                    mode: 'picker',
-                    target: '#mytarget',
-                    setWidth: '250px',
-                    startHidden: true,
-                    showTrigger: '#mytarget',
-                    stylePast: true,
-                    disablePast: true
-                });
-
-                switch (window.location.protocol) {
-                    case 'http:':
-                    case 'https:':
-                        // running on a server, should be good.
-                        break;
-                    case 'file:':
-                        alert('Just a heads-up, events will not work when run locally.');
-                }
-
-            });
-        </script>
-        <!-- //calendar -->
-    </body>
-
-    </html>
+                var avatar = Math.floor(Math.random() * (71 - 20 + 1)) + 20;
+                var newNotifications =
+                    `<li>
+                        <audio autoplay><source src="{{ asset('audio/ting.mp3') }}"></audio>
+                        <a href="{{ route('booking.index') }}">
+                            <span class="photo"><img alt="avatar" src="https://api.adorable.io/avatars/71/`+avatar+`.png"></span>
+                            <span class="subject">
+                                <span class="from">` + data.email + `</span>
+                                <span class="time">` + data.time +`</span>
+                            </span>
+                            <span class="message">
+                                Đặt bàn vào ngày `+ data.dateBooking +`
+                            </span>
+                        </a>
+                    </li>`;
+                notificationsBooking.html(newNotifications);
+                notificationsBooking.html(titleNotificationBooking + newNotifications + seeAllNotificationBooking);
+                notificationCountBooking += 1;
+                notificationCountElemBooking.attr('data-count',notificationCountBooking);
+                notificationWrapperBooking.find('.notif-count-booking').text(notificationCountBooking);
+                notificationWrapperBooking.show();
+            }
+        });
+    </script>
+@include('footer')

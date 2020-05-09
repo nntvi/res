@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\ReportRepository;
 
+use App\Helper\IGetDateTime;
 use App\GroupMenu;
 use App\Http\Controllers\Controller;
 use App\Order;
@@ -9,6 +10,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ReportRepository extends Controller implements IReportRepository{
+
+    private $getDateTime;
+
+    public function __construct(IGetDateTime $getDateTime)
+    {
+        $this->getDateTime = $getDateTime;
+    }
 
     public function getTimeNow()
     {
@@ -41,6 +49,22 @@ class ReportRepository extends Controller implements IReportRepository{
         return view('report.p_table',compact('results','dateStart','dateEnd','dateCreate','status'));
     }
 
+    public function createChartDishByTime($dateStart,$dateEnd)
+    {
+        $dishes = OrderDetailTable::selectRaw('id_dish, sum(qty) as total')
+                                    ->whereBetween('created_at',[$dateStart,$dateEnd])
+                                    ->groupBy('id_dish')->with('dish')->get();
+        $qtyDishes = array();
+        foreach ($dishes as $key => $dish) {
+            $obj = array(
+                'nameDish' => $dish->dish->name,
+                'qty' => $dish->total
+            );
+            array_push($qtyDishes,$obj);
+        }
+        return $qtyDishes;
+    }
+
     public function reportDish($request)
     {
         $dateCreate = $this->getTimeNow();
@@ -67,33 +91,87 @@ class ReportRepository extends Controller implements IReportRepository{
                         })->get();
         }
         $listGroupMenu = GroupMenu::all();
-        return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','idGroupMenu','listGroupMenu'));
+        $dataChart = $this->createChartDishByTime($dateStart,$dateEnd);
+        return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','idGroupMenu','listGroupMenu','dataChart'));
     }
 
     public function getToTalRevenueInYear()
     {
-        $firstYear = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->format('Y-m');
-        $lastYear = $dec = Carbon::now('Asia/Ho_Chi_Minh')->lastOfYear()->format('Y-m');
+        $firstYear = $this->getDateTime->getFirstOfJan();
+        $lastYear = $this->getDateTime->getEndOfDec();
         $totalRevenue = Order::selectRaw('sum(total_price) as total')
                                 ->whereBetween('created_at',[$firstYear,$lastYear])->value('total');
         return $totalRevenue;
     }
-    public function getMonthInYear()
+
+    public function getRevenueByMonth($startMonth,$endMonth)
     {
-        $jan = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->format('Y-m');
-        $freb = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(1)->format('Y-m');
-        $mar = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(2)->format('Y-m');
-        $apr = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(3)->format('Y-m');
-        $may = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(4)->format('Y-m');
-        $jun = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(5)->format('Y-m');
-        $jul = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(6)->format('Y-m');
-        $aug = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(7)->format('Y-m');
-        $sep = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(8)->format('Y-m');
-        $oct = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(9)->format('Y-m');
-        $nov = Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->addMonth(10)->format('Y-m');
-        $dec = Carbon::now('Asia/Ho_Chi_Minh')->lastOfYear()->format('Y-m');
-        $months = array();
-        array_push($months,$jan,$freb,$mar,$apr,$may,$jun,$jul,$aug,$sep,$nov,$dec);
-        return $months;
+        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$startMonth,$endMonth])->value('total');
+        return $revenue == null ? 0 : (integer) $revenue;
     }
+
+    public function createObjToPushRevenue($dateStart,$dateEnd)
+    {
+        $obj = array(
+            'month' => $dateStart,
+            'value' => $this->getRevenueByMonth($dateStart,$dateEnd),
+        );
+        return $obj;
+    }
+
+    public function getAllRevenue()
+    {
+        $data = array();
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfJan(),$this->getDateTime->getEndOfJan()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfFreb(),$this->getDateTime->getEndOfFreb()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfMar(),$this->getDateTime->getEndOfMar()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfApr(),$this->getDateTime->getEndOfApr()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfMay(),$this->getDateTime->getEndOfMay()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfJun(),$this->getDateTime->getEndOfJun()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfJul(),$this->getDateTime->getEndOfJul()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfAug(),$this->getDateTime->getEndOfAug()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfSep(),$this->getDateTime->getEndOfSep()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfOct(),$this->getDateTime->getEndOfOct()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfNov(),$this->getDateTime->getEndOfNov()));
+        array_push($data,$this->createObjToPushRevenue($this->getDateTime->getFirstOfDec(),$this->getDateTime->getEndOfDec()));
+        return $data;
+    }
+
+    public function getQtyCustomerByTime($timeStart,$timeEnd)
+    {
+        $qtyCustomers = Order::selectRaw('count(id) as qty')->whereBetween('time_created',[$timeStart,$timeEnd])->value('qty');
+        return $qtyCustomers == null ? 0 : $qtyCustomers;
+    }
+
+    public function createObjToPushQtyCustomer($timeStart,$timeEnd)
+    {
+        $obj = array(
+            'timeStart' => "2020-01-01 " . $timeStart,
+            'value' => $this->getQtyCustomerByTime($timeStart,$timeEnd),
+        );
+        return $obj;
+    }
+
+    public function getAllQtyCustomer()
+    {
+        $data = array();
+        array_push($data,$this->createObjToPushQtyCustomer('08:00:00','08:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('09:00:00','09:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('10:00:00','10:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('11:00:00','11:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('12:00:00','12:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('13:00:00','13:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('14:00:00','14:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('15:00:00','15:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('16:00:00','16:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('17:00:00','17:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('18:00:00','18:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('19:00:00','19:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('20:00:00','20:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('21:00:00','21:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer('22:00:00','22:59:59'));
+        return $data;
+    }
+
+
 }

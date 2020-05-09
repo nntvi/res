@@ -43,9 +43,7 @@ class OrderController extends Controller
 
     public function viewUpdate($id)
     {
-        $orderById = Order::where('id',$id)
-                            ->with('orderDetail.dish','table.getArea')
-                            ->get();
+        $orderById = Order::where('id',$id)->with('orderDetail.dish','table.getArea')->get();
         return view('order.update',compact('orderById'));
     }
 
@@ -77,4 +75,8 @@ class OrderController extends Controller
         return redirect(route('order.update',['id' => $idBill]));
     }
 
+    public function showBill()
+    {
+
+    }
 }

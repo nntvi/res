@@ -1,13 +1,16 @@
 <?php
 namespace App\Repositories\CookScreenRepository;
 
-use App\Http\Controllers\Controller;
+use App\Dishes;
 use App\CookArea;
 use Carbon\Carbon;
-use App\OrderDetailTable;
+use Pusher\Pusher;
 use App\WarehouseCook;
-use App\Dishes;
 use App\MaterialAction;
+use App\OrderDetailTable;
+use App\Http\Controllers\Controller;
+use App\MaterialDetail;
+
 class CookScreenRepository extends Controller implements ICookScreenRepository{
 
     public function getAllCookArea()
@@ -65,6 +68,19 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         WarehouseCook::where('cook',$idCook)
                         ->where('id_material_detail',$idMaterial)
                         ->update(['status' => '0']);
+        $data['idCook'] = (integer) $idCook;
+        $data['material'] = MaterialDetail::where('id',$idMaterial)->value('name');
+        $options = array(
+            'cluster' => 'ap1',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            'cc6422348edc9fbaff00',
+            '54d59c765665f5bc6194',
+            '994181',
+            $options
+        );
+        $pusher->trigger('NotifyOutOfStock', 'need-import-cook', $data);
     }
     public function findIdGroupNVL($idDish)
     {

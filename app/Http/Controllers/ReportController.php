@@ -22,8 +22,11 @@ class ReportController extends Controller
 
     public function overview()
     {
-
-        return view('overview.index');
+        $allRevenue = $this->reportRepository->getAllRevenue();
+        $qtyCustomer = $this->reportRepository->getAllQtyCustomer();
+        //dd($qtyCustomer);
+        //$qtyDishes = $this->reportRepository->getQtyAllDishSaled();
+        return view('overview.index',compact('allRevenue','qtyCustomer'));
     }
     public function viewReportOrder()
     {

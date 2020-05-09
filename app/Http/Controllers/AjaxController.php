@@ -8,6 +8,7 @@ use App\ImportCoupon;
 use App\Supplier;
 use App\Order;
 use App\MaterialDetail;
+use App\OrderDetailTable;
 use App\Repositories\AjaxRepository\IAjaxRepository;
 use App\TypeMaterial;
 use App\WareHouse;
@@ -134,6 +135,22 @@ class AjaxController extends Controller
             default:
         }
         return response()->json($data);
+    }
+
+    public function getDataChartBestSeller($timeStart,$timeEnd)
+    {
+        $dishes = OrderDetailTable::selectRaw('id_dish, sum(qty) as total')
+                                    ->whereBetween('created_at',[$timeStart,$timeEnd])
+                                    ->groupBy('id_dish')->with('dish')->get();
+        $qtyDishes = array();
+        foreach ($dishes as $key => $dish) {
+            $obj = array(
+                'nameDish' => $dish->dish->name,
+                'qty' => $dish->total
+            );
+            array_push($qtyDishes,$obj);
+        }
+        return response()->json($qtyDishes);
     }
 
     public function showOverview($dateStart,$dateEnd)

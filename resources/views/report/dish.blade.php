@@ -1,5 +1,5 @@
 @extends('layouts')
-@section('headerreport')
+@section('content')
 <div class="table-agile-info">
     <div class="panel panel-default">
         <div class="panel-heading" style="margin-bottom: 30px;">
@@ -14,10 +14,10 @@
                             <label for="cname" class="control-label col-lg-3"> Chọn: </label>
                             <div class="col-lg-9">
                                 <select class="form-control m-bot15" id="timeReport">
-                                    <option value="1">Theo ngày</option>
+                                    <option value="0">Theo ngày</option>
                                     <option value="2">Theo tuần</option>
-                                    <option value="3">Theo tháng</option>
-                                    <option value="4">Theo năm</option>
+                                    <option value="4">Theo tháng</option>
+                                    <option value="8">Theo năm</option>
                                 </select>
                             </div>
                         </div>
