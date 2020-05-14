@@ -2,8 +2,10 @@
 namespace App\Helper;
 
 interface IGetDateTime{
+    function getYesterday();
     function getNow();
     function getFirstOfYear();
+    function getLastOfYear();
     function getFirstOfJan();
     function getEndOfJan();
     function getFirstOfFreb();
@@ -28,4 +30,16 @@ interface IGetDateTime{
     function getEndOfNov();
     function getFirstOfDec();
     function getEndOfDec();
+    function getStartOfWeek();
+    function getEndOfWeek();
+    function getStartOfPreWeek();
+    function getEndOfPreWeek();
+    function getStartOfMonth();
+    function getEndOfMonth();
+    function getStartOfPreMonth();
+    function getEndOfPreMonth();
+    function getStartOfQuarter();
+    function getEndOfQuarter();
+    function getStartOfPreQuarter();
+    function getEndOfPreQuarter();
 }

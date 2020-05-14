@@ -35,7 +35,7 @@ class ReportOrderExport implements FromCollection, WithHeadings
                 '3' => $order->total_price,
                 '4' => $order->receive_cash,
                 '5' => $order->excess_cash,
-                '6' => $order->user->name,
+                '6' => $order->payer,
                 '7' => $order->shift->name,
                 '8' => $order->updated_at,
                 '9' => $order->status == "0" ? "Đã thanh toán" : "Chưa thanh toán",

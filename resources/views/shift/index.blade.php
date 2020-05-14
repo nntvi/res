@@ -33,10 +33,9 @@
                                                     name="hourStart" id="hourStart" required>
                                             </div>
                                             <div class="col-xs-6">
-                                                    <label>Giờ kết thúc</label>
-                                                    <input type="time" class="form-control"
-                                                        name="hourEnd" required>
-                                                </div>
+                                                <label>Giờ kết thúc</label>
+                                                <input type="time" class="form-control" name="hourEnd" required>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="space"></div>
@@ -74,7 +73,7 @@
                             <th>Tên ca làm việc</th>
                             <th class="text-center">Giờ bắt đầu</th>
                             <th class="text-center">Giờ kết thúc</th>
-                            <th class="text-center">Cập nhật</th>
+                            <th>Cập nhật</th>
                             <th>Xóa</th>
                         </tr>
                     </thead>
@@ -83,17 +82,8 @@
                             <tr>
                                 <td>{{ $key+1 }}</td>
                                 <td>
-                                    {{ $shift->name }}
-                                </td>
-                                <td class="text-center">
-                                    {{ $shift->hour_start }}
-                                </td>
-                                <td class="text-center">
-                                    {{ $shift->hour_end }}
-                                </td>
-                                <td class="text-center">
-                                    <a href="#myModal{{ $shift->id }}" data-toggle="modal" class="btn-sm btn-success">
-                                        Sửa tên
+                                    <a href="#myModal{{ $shift->id }}" data-toggle="modal">
+                                        <i class="fa fa-pencil-square-o text-info" aria-hidden="true"></i>
                                     </a>
                                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
                                         id="myModal{{ $shift->id }}" class="modal fade" style="display: none;">
@@ -107,25 +97,39 @@
                                                 <div class="modal-body">
                                                     <form role="form" action="{{ route('shift.p_updatename',['id' => $shift->id]) }}" method="POST">
                                                         @csrf
-                                                        <div class="form-group">
-                                                            <label>Tên cũ</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $shift->name }}" disabled>
+                                                        <div class="form-group row">
+                                                            <div class="col-xs-6">
+                                                                <label>Tên hiện tại</label>
+                                                                <input type="text" class="form-control" value="{{ $shift->name }}" disabled>
+                                                            </div>
+                                                            <div class="col-xs-6">
+                                                                <label>Tên mới <span style="color: #ff0000">
+                                                                            *</span></label>
+                                                                <input type="text" size="40" class="form-control"
+                                                                        required="required" name="nameShift" maxlength="255"
+                                                                        value="{{ $shift->name }}">
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>Tên mới <span style="color: #ff0000">
-                                                                    *</span></label>
-                                                            <input type="text" size="40" class="form-control"
-                                                                required="required" name="nameShift" maxlength="255"
-                                                                value="{{ $shift->name }}">
+                                                        <div class="form-group row">
+                                                            <div class="space"></div>
+                                                            <div class="col-xs-12 text-center">
+                                                                <button type="submit" class="btn btn-info">Lưu</button>
+                                                            </div>
                                                         </div>
-                                                        <button type="submit" class="btn btn-info">Lưu</button>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    &nbsp;
+                                    {{ $shift->name }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $shift->hour_start }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $shift->hour_end }}
+                                </td>
+                                <td>
                                     <a href="#myModal-1{{ $shift->id }}" data-toggle="modal"
                                         class="btn-sm btn-warning">
                                         Sửa thời gian
@@ -140,12 +144,14 @@
                                                     <h4 class="modal-title">Sửa thời gian</h4>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form role="form" action="{{ route('shift.p_updatetime',['id' => $shift->id]) }}" method="POST">
+                                                    <form role="form"
+                                                        action="{{ route('shift.p_updatetime',['id' => $shift->id]) }}"
+                                                        method="POST">
                                                         @csrf
                                                         <div class="form-group">
                                                             <label>Tên ca</label>
                                                             <input type="text" class="form-control"
-                                                                    value="{{ $shift->name }}" disabled>
+                                                                value="{{ $shift->name }}" disabled>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Thời gian bắt đầu</label>
@@ -169,7 +175,7 @@
                                     <a href="{{ route('shift.delete',['id' => $shift->id]) }}"
                                         class="btn default btn-xs red radius"
                                         onclick="return confirm('Bạn có chắc muốn xóa dữ liệu này?')">
-                                        <i class="fa fa-trash-o"> Xóa</i>
+                                        <i class="fa fa-trash-o"></i>
                                     </a>
                                 </td>
                             </tr>

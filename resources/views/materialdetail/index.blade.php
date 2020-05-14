@@ -8,7 +8,7 @@
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="#myModal" data-toggle="modal">
-                    <button class="btn btn-sm btn-danger">Thêm mới</button>
+                    <button class="btn btn-sm btn-success">Thêm mới</button>
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
                     class="modal fade" style="display: none;">
@@ -81,7 +81,7 @@
                     <div class="input-group">
                         <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch" required>
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-info" type="button">Tìm kiếm</button>
+                            <button type="submit" class="btn btn-sm btn-default" type="button">Tìm kiếm</button>
                         </span>
                     </div>
                 </form>
@@ -89,7 +89,7 @@
         </div>
         <div class="table-responsive">
             <table class="table table-striped b-t b-light">
-                <thead style="background: #ffeeda;">
+                <thead>
                     <tr>
                     <tr>
                         <th>STT</th>
@@ -198,7 +198,7 @@
                                     class="btn btn-warning btn-xs radius">
                                     <i class="fa fa-trash-o"
                                         onclick="return confirm('Khi click xóa, NVL trong kho chính và kho bếp cũng được xóa, bạn đã chắc chắn?')">
-                                        Xóa</i>
+                                    </i>
 
                                 </a>
                             </td>

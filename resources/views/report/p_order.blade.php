@@ -120,7 +120,7 @@
                                 <td>{{ number_format($order->total_price) . ' đ' }}</td>
                                 <td>{{ number_format($order->receive_cash) . ' đ' }}</td>
                                 <td>{{ number_format($order->excess_cash) . ' đ' }}</td>
-                                <td>{{ $order->user->name }}</td>
+                                <td>{{ $order->payer }}</td>
                                 <td>{{ $order->shift->name }}</td>
                                 <td>{{ $order->updated_at }}</td>
                                 <td>

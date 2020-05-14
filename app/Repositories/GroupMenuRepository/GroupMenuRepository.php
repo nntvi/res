@@ -96,31 +96,55 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
             $warehousecook = new WarehouseCook();
             $warehousecook->cook = $cookChange;
             $warehousecook->id_material_detail = $item->id_material_detail;
-            $warehousecook->qty = $item->qty;
             $warehousecook->id_unit = $item->id_unit;
+            $warehousecook->qty = 0;
+            $warehousecook->status = 0; // = 1 còn NVL ; = 0 báo động cần nhập
             $warehousecook->save();
+        }
+    }
+    public function moveMaterialDetailsChangeCook($arrMaterialDetailsInNewCook,$cookChange,$idOldCook)
+    {
+        foreach ($arrMaterialDetailsInNewCook as $key => $item) {
+            $qtyOldCook = WarehouseCook::where('cook',$idOldCook)->where('id_material_detail',$item->id_material_detail)->value('qty');
+            $qtyNewCook = WarehouseCook::where('cook',$cookChange)->where('id_material_detail',$item->id_material_detail)->value('qty');
+            WarehouseCook::where('cook',$cookChange)->where('id_material_detail',$item->id_material_detail)
+                            ->update(['qty' => $qtyNewCook + $qtyOldCook]);
+            WarehouseCook::where('cook',$idOldCook)->where('id_material_detail',$item->id_material_detail)
+                            ->update(['qty' => 0]);
         }
     }
     public function updateCookGroupMenu($request, $id)
     {
-        $arrayIdMaterials = Material::where('id_groupmenu',$id)->get('id'); // lấy id những món thuộc group vừa thay đổi
+        $arrayIdMaterials = Material::where('id_groupmenu',$id)->get('id'); // lấy id những món thuộc group vừa thay đổi bếp
         $arrayIdDetailMaterials = $this->getMaterialDetailsByMaterial($arrayIdMaterials); // id nvl tạo nên những món thuộc group đó
         $cookChange = $request->idCook; // bếp mới mà user muốn thay đổi
-        $idOldCook = GroupMenu::where('id',$id)->value('id_cook'); // lấy ra bếp đã đảm nhiệm group đó
+        $idOldCook = GroupMenu::where('id',$id)->value('id_cook'); // lấy ra bếp đã đảm nhiệm group vừa muốn thay đổi đó
         // lấy ra những nvl trong bếp mới(bếp muốn thay đổi)
         $nvlInNewCook = WarehouseCook::where('cook',$cookChange)->get('id_material_detail');
         // lấy ra những nvl tạo nên group đó mà ko có trong bếp mới
-        $arrayMaterialDetails = WarehouseCook::where('cook',$idOldCook)
+        $arrMaterialDetailsNotInNewCook = WarehouseCook::where('cook',$idOldCook)
                                                 ->whereIn('id_material_detail',$arrayIdDetailMaterials)
                                                 ->whereNotIn('id_material_detail',$nvlInNewCook)->get();
-        $this->addMaterialDetailsChangeCook($arrayMaterialDetails,$cookChange);
+        // lấy ra những nvl tạo nên group đó đã có trong bếp mới
+        $arrMaterialDetailsInNewCook = WarehouseCook::where('cook',$idOldCook)->whereIn('id_material_detail',$arrayIdDetailMaterials)
+                                                        ->whereIn('id_material_detail',$nvlInNewCook)->get();
+        if($request->move == null){
+            $this->addMaterialDetailsChangeCook($arrMaterialDetailsNotInNewCook,$cookChange);
+        }else{
+            $this->addMaterialDetailsChangeCook($arrMaterialDetailsNotInNewCook,$cookChange);
+            $this->moveMaterialDetailsChangeCook($arrMaterialDetailsInNewCook,$cookChange,$idOldCook);
+        }
         GroupMenu::where('id',$id)->update(['id_cook' => $request->idCook]);
         return redirect(route('groupmenu.index'));
     }
     public function deleteGroupMenu($id)
     {
-        $groupmenu = GroupMenu::find($id)->delete();
-        $dishes = Dishes::where('id_groupmenu',$id)->delete();
+        GroupMenu::find($id)->delete();
+        Dishes::where('id_groupmenu',$id)->delete();
+        // lấy ra những món thuộc groupmenu này trong material
+        $arrNameDish = Material::where('id_groupmenu',$id)->get('id');
+        MaterialAction::whereIn('id_groupnvl',$arrNameDish)->delete();
+        Material::where('id_groupmenu',$id)->delete();
         return redirect(route('groupmenu.index'));
     }
 }

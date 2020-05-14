@@ -882,7 +882,7 @@ span.panel-title{
     color: #45a2c9;
 }
 .alert {
-    padding: 16.8px !important;
+    /* padding: 16.8px !important; */
 }
 /*-- graphs --*/
 .area-grids{
@@ -1577,8 +1577,8 @@ h3.title {
 	font-size: 13px;
 }
 .alert {
-	padding: 10px;
-	margin-bottom: 10px;
+	/* padding: 10px;
+	margin-bottom: 10px; */
 }
 ul.pagination li a {
 	font-size: 14px;
@@ -2475,7 +2475,7 @@ h4 input[type="checkbox"] {
 }
 /*--//placeholder-color--*/
 .alert {
-    margin-bottom: 23px !important;
+    /* margin-bottom: 23px !important; */
 }
 div#chartContainer1,div#chartContainer2,div#chartContainer3,div#chartContainer4 {
     width: 100%;

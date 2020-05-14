@@ -3,7 +3,7 @@
 <div class="table-agile-info">
     <div class="row">
         <div class="col-xs-12">
-            <a href="{{ route('material_action.index') }}" class="btn btn-default btn-sm  radius">
+            <a href="{{ route('material.index') }}" class="btn btn-default btn-sm  radius">
                 Trở về
             </a>
         </div>

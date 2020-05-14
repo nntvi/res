@@ -112,7 +112,8 @@ class OrderRepository extends Controller implements IOrderRepository{
         $orderTable = new Order();
         $orderTable->id_table = $request->idTable;
         $orderTable->status = '1'; // đang order, chưa thanh toán
-        $orderTable->created_by = auth()->user()->id;
+        $orderTable->created_by = auth()->user()->name;
+        $orderTable->time_created = Carbon::now('Asia/Ho_Chi_Minh')->format('H:m:s');
         $orderTable->save();
         return $orderTable->id;
     }
@@ -210,9 +211,9 @@ class OrderRepository extends Controller implements IOrderRepository{
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
             if($this->compare($materialInWarehouseCooks,$materialInActions)){
-                $this->addOrderTableTrue($idDish,$idOrderTable);
+                $this->addOrderTableTrue($idDish,$idOrderTable,$idCook);
             }else{
-                $this->addOrderTableFalse($idDish,$idOrderTable);
+                $this->addOrderTableFalse($idDish,$idOrderTable,$idCook);
             }
         }
         return redirect(route('order.update',['id' => $idOrderTable]));

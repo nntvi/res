@@ -34,28 +34,26 @@
                                     @csrf
                                     <div class="row">
                                         <div class="radio">
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-5">
                                                 <label>
                                                     <input type="radio" name="optionsRadios" id="optionsRadios1"
                                                         value="1">
                                                     Xuất Bếp
                                                 </label>
                                             </div>
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-5">
                                                 <label>
                                                     <input type="radio" name="optionsRadios" id="optionsRadios2"
                                                         value="2">
                                                     Xuất Trả hàng
                                                 </label>
                                             </div>
+                                            <div class="col-xs-2" style="margin-top: -10px">
+                                                <button type="submit" class="btn btn-info">Chọn</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="space"></div>
-                                        <div class="col-xs-12 position-center">
-                                            <button type="submit" class="btn btn-default">Chọn</button>
-                                        </div>
-                                    </div>
+                                    <div class="space"></div>
                                 </form>
                             </div>
                         </div>

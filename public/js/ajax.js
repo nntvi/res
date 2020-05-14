@@ -154,52 +154,66 @@ $(document).ready(function () {
             url: 'ajax/getMaterial/export/supplier/' + objectSupplier, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
-            success: function (data) {
-                $('#warehouse').empty();
+            success: function (importCoupons) {
+                $('#importCoupons').empty();
+                importCoupons.map(function (x) {
+                    let option = `<option value="`+ x.code +`">Mã phiếu: `+ x.code +` - Ngày nhập: `+ x.created_at +`</option>`;
+                    $('#importCoupons').append(option);
+                })
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+    });
+
+    // get materials by ImportCoupon to Export
+    $("#importCoupons").change(function () {
+        const codeCoupon = $(this).val();
+        console.log(codeCoupon);
+
+        $.ajax({
+            url: 'ajax/material/' + codeCoupon, //Trang xử lý
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (materials) {
+                $('#tableMaterialExportSupplier').empty();
                 $('#submit').empty();
-                let tableWarehouse = '<h4 class="hdg">Danh sách NVL thuộc NSX vừa chọn</h4>' +
+                let tableMaterialExportSupplier = '<h4 class="hdg">Danh sách NVL thuộc Phiếu nhập vừa chọn</h4>' +
                         '<table class="table table-bordered">' +
                             '<thead>' +
                                 '<tr>' +
-                                '<th width=25%>Tên mặt hàng</th>' +
-                                '<th width=15%>Sl trong kho</th>' +
-                                '<th width=22%>Sl cần xuất</th>' +
-                                '<th width=17%>Đơn vị tính</th>' +
-                                '<th width=2%></th>' +
+                                '<th>Tên mặt hàng</th>' +
+                                '<th>Sl nhập</th>' +
+                                '<th>Sl xuất trả</th>' +
+                                '<th>Đơn vị tính</th>' +
+                                '<th>Giá</th>' +
+                                '<th></th>' +
                                 '</tr>' +
                             '</thead>' +
                             '<tbody id="bodyExportSupplier">';
-                data.map(function (detail) {
-                    tableWarehouse +=
-                        '<tr id="row' + detail.id + '">' +
-                            '<td>' +
-                            '<input name="id[]" value="' + detail.id + '" hidden>' +
-                            '<input name="idMaterial[]" value="' + detail.detail_material.id + '" hidden>' +
-                            detail.detail_material.name +
-                            '</td>' +
-                            '<td><input type="number" name="oldQty[]" class="oldQty form-control" value="' + detail.qty + '" disabled></td>' +
-                            '<td><input type="number" step="0.01" class="qty form-control" value="" name="qty[]"></td>' +
-                            '<td>';
-                                if (detail.id_unit == 0) {
-                                    tableWarehouse += 'Hết hàng';
-                                } else {
-                                    tableWarehouse += '<input value="' + detail.unit.id + '" name="id_unit[]" hidden></input>' +
-                                        '<input class="form-control" value="' + detail.unit.name + '" disabled></input>';
-                                }
-                    tableWarehouse += '</td>' +
-                            '<td>' +
-                            '<span class="input-group-btn" onclick="clickToRemove(' + detail.id + ')">' +
-                            '<button class="btn btn-danger" type="button">' +
-                            '<i class="fa fa-times" aria-hidden="true"></i>' +
-                            '</button>' +
-                            '</span>' +
-                            '</td>' +
-                        '</tr>';
-                })
+                materials.map(function (detail) {
+                    tableMaterialExportSupplier += '<tr id="row'+ detail.id +'">' +
+                                    '<td><input name="idMaterial[]" value="' + detail.material_detail.id + '" hidden>'+ detail.material_detail.name + '</td>' +
+                                    '<td><input type="hidden" name="oldQty[]" class="oldQty form-control" value="' + detail.qty + '">' + detail.qty + '</td>' +
+                                    '<td><input type="number" step="0.01" min="0.01" class="qty form-control" name="qty[]" required></td>' +
+                                    '<td><input name="id_unit[]" value="' + detail.unit.id + '" hidden>' + detail.unit.name + '</td>'+
+                                    '<td><input name="price[]" value="' + detail.price + '" hidden>' + detail.price +'</td>'+
+                                    '<td>' +
+                                        '<span class="input-group-btn" onclick="clickToRemove(' + detail.id + ')">' +
+                                        '<button class="btn btn-danger" type="button">' +
+                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                        '</button>' +
+                                        '</span>' +
+                                    '</td>' +
+                                '</tr>';
+                });
                 '</tbody>' +
                 '</table>';
-                $('#warehouse').append(tableWarehouse);
+                $('#tableMaterialExportSupplier').append(tableMaterialExportSupplier);
                 $('#submit').append('<button type="submit" class="btn green-meadow radius">Tạo phiếu</button>');
+                console.log(materials);
 
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -369,7 +383,6 @@ $(document).ready(function () {
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                console.log(data);
                 data.map(function(item){
                     $("span#revenue").text(item.total + ' đ');
                     $("span#bill").text(item.bill);

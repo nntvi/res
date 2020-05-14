@@ -28,15 +28,15 @@ class CookScreenController extends Controller
         $cooks = $this->cookscreenRepository->getAllCookArea();
         foreach ($cooks as $cook) {
             foreach ($result as $rs) {
-                if($cook->id == 1 && $rs->action_code == "COOK_1"){
+                if($cook->id == 1 && $rs == "VIEW_COOK1"){
                     array_push($data,$cook);
                     break;
                 }
-                if($cook->id == 2 && $rs->action_code == "COOK_2"){
+                if($cook->id == 2 && $rs == "VIEW_COOK2"){
                     array_push($data,$cook);
                     break;
                 }
-                if($cook->id == 3 && $rs->action_code == "COOK_3"){
+                if($cook->id == 3 && $rs == "VIEW_COOK3"){
                     array_push($data,$cook);
                     break;
                 }

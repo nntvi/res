@@ -19,23 +19,18 @@ class MaterialRepository extends Controller implements IMaterialRepository{
     }
     public function showMaterial()
     {
-        $materials = Material::with('groupMenu')->paginate(8);
+        $materials = Material::with('groupMenu','materialAction.materialDetail')->orderBy('id','desc')->paginate(8);
         $groupMenus = $this->getCategoryDish();
         return view('material.index',compact('materials','groupMenus'));
     }
 
     public function validatorRequestStore($req){
         $messeages = [
-            'name.required' => 'Không để trống tên nhóm thực đơn',
-            'name.min' => 'Tên thực đơn nhiều hơn 3 ký tự',
-            'name.max' => 'Tên thực đơn giới hạn 30 ký tự',
             'name.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
-            'idGroupMenu.required' => 'Vui lòng chọn danh mục món ăn'
         ];
         $req->validate(
             [
-                'name' => 'required|min:3|max:30|unique:groupmenu,name',
-                'idGroupMenu' => 'required'
+                'name' => 'unique:materials,name',
             ],
             $messeages
         );

@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserPermission extends Model
+class Position extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'userper';
+    protected $table = 'position';
 
     /**
      * The primary key associated with the table.
@@ -25,25 +25,19 @@ class UserPermission extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-
-      /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'id_per_detail', 'id_user'
+        'position','salary'
     ];
 
-    public function permissionDetail()
+    public function userPosition()
     {
-        return $this->belongsTo('App\PermissionDetail','id_per_detail','id');
+        return $this->hasMany('App\UserPosition','id_position','id');
     }
 }

@@ -13,21 +13,12 @@ use Carbon\Carbon;
 class CheckAction implements ICheckAction {
 
     public function getPermission( $id ) {
-        $idpermissions = UserPermission::where( 'id_user', $id )->get( 'id_per' ); // list Id Per
-
-        $permissions = Permission::whereIn( 'id', $idpermissions )->get(); // list Per
-
+        $idperdetails = UserPermission::where( 'id_user', $id )->get( 'id_per_detail' ); // list Id Per detai
+        $permissionDetails = PermissionDetail::whereIn( 'id', $idperdetails )->get(); // list Per
         $result = array();
-        foreach ( $permissions as $permission ) {
-            $peractions = $permission->peraction;
-            if ($peractions) {
-                foreach ( $peractions as $peraction ) {
-                    $per_detail = PermissionDetail::where('id', $peraction->id_per_detail )->first('action_code');
-                    array_push( $result, $per_detail);
-                }
-            }
+        foreach ( $permissionDetails as $perDetail ) {
+            array_push( $result, $perDetail->action_code);
         }
         return $result;
     }
-
 }

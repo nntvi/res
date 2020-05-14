@@ -34,10 +34,10 @@
         channel2.bind('need-import-cook', function(data){
             var existingNotifications = notifications.html();
                 if(roleViewWarehouseCook.length > 0){
-                    alert(JSON.stringify(data));
+                    //alert(JSON.stringify(data));
                     var newNotifications =
                     `<li>
-                        <a href="{{ route('warehouse.index') }}">
+                        <a href="{{ route('warehousecook.index') }}">
                             <audio autoplay >
                                 <source src="{{ asset('audio/bip.mp3') }}">
                             </audio>

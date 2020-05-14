@@ -228,7 +228,7 @@
                                                                                                     Ngày tạo : <span> {{ $info->created_at }}</span>
                                                                                                 </div>
                                                                                                 <div class="col-md-6 bold">
-                                                                                                    Loại phiếu : <span> Nhập mua </span>
+                                                                                                    Loại phiếu : <span> Xuất </span>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div class="col-md-12"

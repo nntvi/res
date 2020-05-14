@@ -5,6 +5,7 @@ interface IExportCouponRepository{
     function validateExport($request);
     function showViewExport($request);
     function exportMaterial($request);
+    function exportSupplier($request);
     function showIndex();
     function getDetailExport($id);
     function printDetailExport($id);

@@ -5,7 +5,10 @@ use Carbon\Carbon;
 use App\Helper\IGetDateTime;
 
 class GetDateTime implements IGetDateTime{
-
+    public function getYesterday()
+    {
+        return Carbon::yesterday('Asia/Ho_Chi_Minh')->format('Y-m-d');
+    }
     public function getNow()
     {
         return Carbon::now('Asia/Ho_Chi_Minh');
@@ -113,6 +116,56 @@ class GetDateTime implements IGetDateTime{
     public function getEndOfDec()
     {
         return $this->getLastOfYear()->endOfMonth()->format('Y-m-d');
+    }
+
+    /* -------- Time -------- */
+    public function getStartOfWeek()
+    {
+        return $this->getNow()->startOfWeek()->format('Y-m-d');
+    }
+    public function getEndOfWeek()
+    {
+        return $this->getNow()->endOfWeek()->format('Y-m-d');
+    }
+    public function getStartOfPreWeek()
+    {
+        return $this->getNow()->subWeek()->startOfWeek()->format('Y-m-d');
+    }
+    public function getEndOfPreWeek()
+    {
+        return $this->getNow()->subWeek()->endOfWeek()->format('Y-m-d');
+    }
+    public function getStartOfMonth()
+    {
+        return $this->getNow()->startOfMonth()->format('Y-m-d');
+    }
+    public function getEndOfMonth()
+    {
+        return $this->getNow()->endOfMonth()->format('Y-m-d');
+    }
+    public function getStartOfPreMonth()
+    {
+        return $this->getNow()->subMonth()->startOfMonth()->format('Y-m-d');
+    }
+    public function getEndOfPreMonth()
+    {
+        return $this->getNow()->subMonth()->endOfMonth()->format('Y-m-d');
+    }
+    public function getStartOfQuarter()
+    {
+        return $this->getNow()->firstOfQuarter()->format('Y-m-d');
+    }
+    public function getEndOfQuarter()
+    {
+        return $this->getNow()->lastOfQuarter()->format('Y-m-d');
+    }
+    public function getStartOfPreQuarter()
+    {
+        return $this->getNow()->subQuarter()->firstOfQuarter()->format('Y-m-d');
+    }
+    public function getEndOfPreQuarter()
+    {
+        return $this->getNow()->subQuarter()->lastOfQuarter()->format('Y-m-d');
     }
 
 }

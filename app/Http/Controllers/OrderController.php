@@ -77,6 +77,34 @@ class OrderController extends Controller
 
     public function showBill()
     {
+        $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('created_at','asc')->paginate(5);
+        return view('bill.index',compact('bills'));
+    }
 
+    public function filterBill(Request $request)
+    {
+        $type = $request->typeFilter;
+        switch ($type) {
+            case 0:
+                $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('created_at','asc')->paginate(5);
+                return view('bill.arrange',compact('bills'));
+                break;
+            case 1:
+                $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('total_price','asc')->paginate(5);
+                return view('bill.arrange',compact('bills'));
+                break;
+            case 2:
+                $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('id_shift','asc')->paginate(5);
+                return view('bill.arrange',compact('bills'));
+                break;
+            default:
+        }
+    }
+
+    public function searchBill(Request $request)
+    {
+        $search = $request->searchBill;
+        $bills = Order::where('id','LIKE',"%{$search}%")->with('table','user','shift','orderDetail.dish')->paginate(10);
+        return view('bill.search',compact('bills'));
     }
 }

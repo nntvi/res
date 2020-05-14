@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\WarehouseCookRepository\IWarehouseCookRepository;
+use App\WarehouseCook;
 use Illuminate\Http\Request;
+use App\Repositories\WarehouseCookRepository\IWarehouseCookRepository;
 
 class WarehouseCookController extends Controller
 {

@@ -2,14 +2,14 @@
 
 @section('content')
 <div class="form-w3layouts">
-    <div class="box_content">
+    {{-- <div class="box_content">
         <div class="icon-box col-md-3 col-sm-4">
             <a class="agile-icon" href="{{route('warehousecook.reset')}}"
             onclick="return confirm('Bạn có thật sự muốn reset kho bếp?')">
                 <i class="fa fa-undo"></i> Reset Kho Bếp
             </a>
         </div>
-    </div>
+    </div> --}}
         <!-- page start-->
         @foreach ($cookWarehouse as $cookwarehouse)
         <div class="row">

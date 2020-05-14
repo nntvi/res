@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Salary extends Model
+class UserPosition extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'salary';
+    protected $table = 'user_position';
 
     /**
      * The primary key associated with the table.
@@ -32,12 +32,18 @@ class Salary extends Model
      *
      * @var array
      */
+
+      /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'id_position','salary'
+        'id_user', 'id_position'
     ];
 
-    public function permission()
+    public function position()
     {
-        return $this->belongsTo('App\Permission','id_position','id');
+        return $this->belongsTo('App\Position','id_position','id');
     }
 }

@@ -49,11 +49,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('index', 'UserController@index')->name('user.index');
         Route::get('store', 'UserController@viewstore')->name('user.store');
         Route::post('store', 'UserController@store')->name('user.p_store');
+        Route::post('update_username/{id}', 'UserController@updateUsername')->name('user.p_updateusername');
         Route::get('viewShift/{id}', 'UserController@viewShift')->name('user.shift');
         Route::get('updateshift/{id}', 'UserController@updateShift')->name('user.p_shift');
-        Route::get('update/{id}', 'UserController@viewUpdate')->name('user.update');
-        Route::post('update/{id}', 'UserController@update')->name('user.p_update');
         Route::post('update_password/{id}','UserController@updatePassword')->name('user.p_updatepassword');
+        Route::get('viewUpdateRole/{id}', 'UserController@viewUpdateRole')->name('user.updaterole');
+        Route::post('updateRole/{id}', 'UserController@updateRole')->name('user.p_updaterole');
+        Route::post('updatePosition/{id}', 'UserController@updatePosition')->name('user.p_updateposition');
         Route::get('delete/{id}', 'UserController@delete')->name('user.delete');
         Route::get('search/', 'UserController@search')->name('user.search');
     });
@@ -186,6 +188,8 @@ Route::group(['middleware' => ['auth']], function() {
     // Bill
     Route::group(['prefix' => 'bill'], function () {
         Route::get('index', 'OrderController@showBill')->name('bill.index');
+        Route::get('filter', 'OrderController@filterBill')->name('bill.filter');
+        Route::get('search', 'OrderController@searchBill')->name('bill.search');
     });
     // CookingScreen
     Route::group(['prefix' => 'cook_screen'], function() {
@@ -234,6 +238,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('index/', 'ExportCouponController@index')->name('exportcoupon.index');
         Route::get('viewExport/', 'ExportCouponController@viewExport')->name('exportcoupon.export');
         Route::post('export/', 'ExportCouponController@export')->name('exportcoupon.p_export');
+        Route::post('exportSupplier/', 'ExportCouponController@exportSupplier')->name('exportcoupon.p_exportSupplier');
         Route::get('destroyWarehouse/', 'ExportCouponController@viewDestroyWarehouse')->name('exportcoupon.destroywarehouse');
         Route::post('destroyWarehouse/', 'ExportCouponController@destroyWarehouse')->name('exportcoupon.p_destroywarehouse');
         Route::get('destroyWarehouseCook/{id}', 'ExportCouponController@viewDestroyWarehouseCook')->name('exportcoupon.destroywarehousecook');
@@ -261,11 +266,14 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/delete/{id}', 'ShiftController@delete')->name('shift.delete');
     });
 
-    // Salary
-    Route::group(['prefix' => 'salary'], function() {
-        Route::get('index', 'SalaryController@index')->name('salary.index');
-        Route::post('update/{id}', 'SalaryController@update')->name('salary.p_update');
-        Route::get('export/', 'WareHouseController@testExcel')->name('excel.index');
+    // Position
+    Route::group(['prefix' => 'postion'], function() {
+        Route::get('index', 'PositionController@index')->name('position.index');
+        Route::post('store', 'PositionController@store')->name('position.p_store');
+        Route::post('updatename/{id}', 'PositionController@updateName')->name('position.p_updatename');
+        Route::post('updatesalary/{id}', 'PositionController@updateSalary')->name('position.p_updatesalary');
+        Route::get('delete/{id}', 'PositionController@delete')->name('position.delete');
+        //Route::get('export/', 'WareHouseController@testExcel')->name('excel.index');
     });
 
     // Receipt Voucher

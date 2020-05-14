@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Booking;
+use App\WarehouseCook;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -145,8 +146,8 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            'App\Repositories\SalaryRepository\ISalaryRepository',
-            'App\Repositories\SalaryRepository\SalaryRepository'
+            'App\Repositories\PositionRepository\IPositionRepository',
+            'App\Repositories\PositionRepository\PositionRepository'
         );
 
         $this->app->bind(

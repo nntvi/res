@@ -8,7 +8,7 @@
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="#myModal-1" data-toggle="modal">
-                    <button class="btn btn-sm btn-danger">Thêm mới</button>
+                    <button class="btn btn-sm btn-success">Thêm mới</button>
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1"
                     class="modal fade" style="display: none;">
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('groupmenu.exportexcel')}}" class="btn btn-sm btn-warning">
+                <a href="{{ route('groupmenu.exportexcel')}}" class="btn btn-sm btn-default">
                     <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
                 </a>
 
@@ -65,29 +65,26 @@
                 @endif
             </div>
             <div class="col-sm-4">
-                {{-- <form action="{{ route('groupmenu.search') }}" method="GET"
-                    onsubmit="return validateSearchGroupMenu()">
-                    @csrf --}}
+                <form action="{{ route('groupmenu.search') }}" method="GET">
+                    @csrf
                     <div class="input-group">
-                        <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch"
-                            id="searchGroupMenu">
+                        <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch" required>
                         <span class="input-group-btn">
-                            <button class="btn btn-sm btn-info" id="btngroupmenuSearch">Tìm kiếm</button>
+                            <button class="btn btn-sm btn-default" type="submit">Tìm kiếm</button>
                         </span>
                     </div>
-                {{-- </form> --}}
+                </form>
             </div>
         </div>
         <div class="table-responsive">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead style="background: lightyellow;">
+                <table class="table table-hover">
+                    <thead>
                         <tr>
                             <th>STT</th>
                             <th>Tên nhóm thực đơn</th>
-                            <th class="text-center">Thuộc bếp</th>
-                            <th class="text-center">Cập nhật</th>
-                            <th>Xóa</th>
+                            <th>Thuộc bếp</th>
+                            <th class="text-right">Xóa</th>
                         </tr>
                     </thead>
                     <tbody id="tableGroupMenu">
@@ -95,21 +92,10 @@
                             <tr>
                                 <td>{{ $key+1 }}</td>
                                 <td>
-                                    {{ $groupmenu->name }}
-                                </td>
-                                <td class="text-center">
-                                    @if ($groupmenu->id_cook == '0')
-                                        Chưa chọn bếp
-                                    @else
-                                        {{ $groupmenu->cookArea->name }}
-                                    @endif
-                                </td>
-                                <td width="15%">
-                                    <a href="#myModal{{ $groupmenu->id }}" data-toggle="modal"
-                                        class="btn-sm btn-success">
-                                        Sửa tên
+                                    <a href="#myModal{{ $groupmenu->id }}" data-toggle="modal">
+                                        <i class="fa fa-pencil-square-o text-success" aria-hidden="true"></i>
                                     </a>
-                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
                                         id="myModal{{ $groupmenu->id }}" class="modal fade" style="display: none;">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -122,7 +108,7 @@
                                                     <form role="form" action="{{ route('groupmenu.updatename',['id' => $groupmenu->id ]) }}" method="POST">
                                                         @csrf
                                                         <div class="form-group">
-                                                            <label>Tên cũ</label>
+                                                            <label>Tên hiện tại</label>
                                                             <input type="text" class="form-control"
                                                                 value="{{ $groupmenu->name }}" disabled>
                                                         </div>
@@ -139,11 +125,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    &nbsp;
-                                    <a href="#myModal-1{{ $groupmenu->id }}" data-toggle="modal" class="btn-sm btn-warning">
-                                        Sửa bếp
-                                    </a>
-                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                    {{ $groupmenu->name }}
+                                </td>
+                                <td>
+                                    @if ($groupmenu->id_cook == '0')
+                                        Chưa chọn bếp
+                                    @else
+                                        <a href="#myModal-1{{ $groupmenu->id }}" data-toggle="modal">
+                                            <i class="fa fa-pencil-square-o text-info" aria-hidden="true"></i>
+                                        </a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
                                         id="myModal-1{{ $groupmenu->id }}" class="modal fade">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -155,32 +146,53 @@
                                                 <div class="modal-body">
                                                         <form role="form" action="{{ route('groupmenu.updatecook',['id' => $groupmenu->id]) }}" method="POST">
                                                                 @csrf
-                                                                <div class="form-group">
-                                                                    <label>Tên nhóm thực đơn</label>
-                                                                    <input type="text" class="form-control" value="{{ $groupmenu->name }}" disabled>
+                                                                <div class="form-group row">
+                                                                    <div class="col-xs-12 col-sm-6">
+                                                                        <label>Tên nhóm thực đơn</label>
+                                                                        <input type="text" class="form-control" value="{{ $groupmenu->name }}" disabled>
+                                                                    </div>
+                                                                    <div class="col-xs-12 col-sm-6">
+                                                                        <label>Bếp hiện tại</label>
+                                                                        <input type="text" class="form-control" value="{{ $groupmenu->cookArea->name }}" disabled>
+
+                                                                    </div>
                                                                 </div>
+                                                                <div class="space"></div>
                                                                 <div class="form-group">
-                                                                    @foreach ($cook_active as $item)
-                                                                        <label style="display:inline">{{$item->name}}</label>
-                                                                        @if ($groupmenu->id_cook == $item->id)
-                                                                            <input value="{{$item->id}}"  type="radio" name="idCook" style="margin-right: 20px" checked>
-                                                                        @else
-                                                                            <input value="{{$item->id}}"  type="radio" name="idCook" style="margin-right: 20px">
-                                                                        @endif
-                                                                    @endforeach
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-6">
+                                                                            <label style="color:black">Bếp thay đổi: </label>&nbsp;&nbsp;
+                                                                            @foreach ($cook_active as $item)
+                                                                                @if ($item->id != $groupmenu->cookArea->id)
+                                                                                    <label style="display:inline">{{$item->name}}</label>
+                                                                                    <input value="{{$item->id}}"  type="radio" name="idCook" style="margin-right: 20px" checked>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-6">
+                                                                            <input type="checkbox" name="move" value="1"> Chuyển tất cả NVL ở bếp cũ sang bếp mới
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                <button type="submit" class="btn btn-default text-center">Lưu</button>
+                                                                <hr>
+                                                                <div class="form-group row">
+                                                                    <div class="col-xs-12 text-center">
+                                                                        <button type="submit" class="btn btn-success text-center">Lưu</button>
+                                                                    </div>
+                                                                </div>
                                                             </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                        {{ $groupmenu->cookArea->name }}
+                                    @endif
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <a href="{{ route('groupmenu.delete',['id' => $groupmenu->id]) }}"
                                         class="btn default btn-xs red radius"
                                         onclick="return confirm('Bạn muốn xóa dữ liệu này?')">
-                                        <i class="fa fa-trash-o"> Xóa</i>
+                                        <i class="fa fa-trash-o"></i>
                                     </a>
                                 </td>
                             </tr>

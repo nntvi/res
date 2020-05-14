@@ -8,10 +8,11 @@
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="{{ route('user.store') }}">
-                    <button class="btn btn-sm btn-success">Thêm mới</button>
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
                 </a>
             </div>
             <div class="col-sm-5">
+                <span class="error-message">{{ $errors->first('name') }}</span></p>
                 <span class="error-message">{{ $errors->first('password') }}</span></p>
                 <span class="error-message">{{ $errors->first('password-confirm') }}</span></p>
             </div>
@@ -21,7 +22,7 @@
                     <div class="input-group">
                         <input type="text" class="input-sm form-control" name="nameSearch" required>
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-info" type="button">Search!</button>
+                            <button type="submit" class="btn btn-sm btn-default" type="button">Search!</button>
                         </span>
                     </div>
                 </form>
@@ -31,12 +32,14 @@
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr style="
-                            background: #f1efef;">
-                        <th scope="col">STT</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Chức vụ</th>
-                        <th>Ca làm việc</th>
+                            background: #fafafa;">
+                        <th>STT</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Chức vụ</th>
+                        <th>Lương tháng</th>
+                        <th>Hoạt động</th>
+                        <th>Ca</th>
                         <th width="5%"></th>
                     </tr>
                 </thead>
@@ -44,23 +47,112 @@
                     @foreach($users as $key => $user)
                         <tr>
                             <th>{{ $key + 1 }}</th>
-                            <td>{{ $user->name }}</td>
+                            <td>
+                                <a href="#myModal{{ $user->id }}" data-toggle="modal">
+                                    <i class="fa fa-pencil-square text-info" aria-hidden="true"></i>
+                                </a>
+                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                    id="myModal{{ $user->id }}" class="modal fade" style="display: none;">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                    type="button">×</button>
+                                                <h4 class="modal-title">Đổi username</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form role="form"
+                                                    action="{{ route('user.p_updateusername',['id' => $user->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <div class="form-group">
+                                                        <label>Tên hiện tại</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $user->name }}" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tên mới</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $user->name }}" name="name" required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-default">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ $user->name }}
+                            </td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @foreach($user->userper as $key => $userper)
-                                    {{ $userper->permission->name }}
-                                    {{ count($user->userper) != $key+1 ? ',' : '' }}
-                                @endforeach
+                                <a href="#position{{ $user->id }}" data-toggle="modal">
+                                    <i class="fa fa-pencil-square-o text-warning" aria-hidden="true"></i>
+                                </a>
+                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                    id="position{{ $user->id }}" class="modal fade" style="display: none;">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                    type="button">×</button>
+                                                <h4 class="modal-title">Thay đổi chức vụ</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form role="form"
+                                                    action="{{ route('user.p_updateposition',['id' => $user->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <div class="form-group">
+                                                        <label>Chức vụ hiện tại</label>
+                                                        @if($user->position == null )
+                                                            <input type="text" class="form-control"
+                                                            value="Chưa có chức vụ" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control"
+                                                            value="{{ $user->position->name }}" disabled>
+                                                        @endif
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Chức vụ mới</label>
+                                                        <select name="position" id="" class="form-control">
+                                                            @foreach ($positions as $position)
+                                                                <option value="{{ $position->id }}">{{ $position->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-default">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if($user->position == null )
+                                    Chưa có chức vụ
+                                @else
+                                    {{ $user->position->name }}
+                                @endif
+                            </td>
+                            <td>
+                                @if($user->position == null )
+                                    Chưa có chức vụ
+                                @else
+                                    {{ number_format($user->position->salary) . ' đ/tháng' }}
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('user.updaterole',['id' => $user->id]) }}"
+                                    class="btn btn-xs btn-success">
+                                    <i class="fa fa-eye" aria-hidden="true"></i> Quyền truy cập
+                                </a>
                             </td>
                             <td>
                                 <a
-                                    href="{{ route('user.shift',['id' => $user->id]) }}">Xem
-                                    ca làm việc</a>
+                                    href="{{ route('user.shift',['id' => $user->id]) }}">
+                                    <i class="fa fa-calendar text-info" aria-hidden="true"></i>
+                                </a>
                             </td>
                             <td>
-                                <a href="{{ route('user.update', ['id' => $user->id]) }}"
-                                    class="active" ui-toggle-class=""><i
-                                        class="fa fa-pencil-square-o text-success text-active"></i></a>
                                 @if(auth()->id() == $user->id)
 
                                 @else
@@ -130,11 +222,11 @@
             <div class="row">
 
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-7 users</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-5 users</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{-- {{ $users->links() }} --}}
+                        {{ $users->links() }}
                     </ul>
                 </div>
             </div>

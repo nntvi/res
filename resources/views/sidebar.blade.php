@@ -23,14 +23,14 @@
                     </a>
                     <ul class="sub">
                         <li><a href="{{ route('groupmenu.index') }}">Nhóm thực đơn</a></li>
+                        <li><a href="{{ route('material.index') }}">Tên món và công thức</a></li>
+                        <li><a href="{{ route('material_detail.index') }}">Nguyên vật liệu</a></li>
                         <li><a href="{{ route('dishes.index') }}">Đồ uống - Món ăn</a></li>
                         {{-- <li><a href="{{route('topping.index') }}">Topping,
-                        ghi chú món</a>
-                </li> --}}
-                <li><a href="{{ route('material.index') }}">Nhóm công thức từng món</a></li>
-                <li><a href="{{ route('material_detail.index') }}">Nguyên vật liệu</a></li>
-                <li><a href="{{ route('material_action.index') }}">Chi tiết NVL từng món</a>
-                </li>
+                            ghi chú món</a>
+                        </li> --}}
+                        {{-- <li><a href="{{ route('material_action.index') }}">Chi tiết NVL từng món</a>
+                        </li> --}}
             </ul>
             </li>
             <li class="sub-menu">
@@ -39,7 +39,7 @@
                     <span>Phân quyền</span>
                 </a>
                 <ul class="sub">
-                    <li><a href="{{ route('permission.index') }}">Chức vụ</a></li>
+                    <li><a href="{{ route('permission.index') }}">Nhóm quyền</a></li>
                     <li><a href="{{ route('perdetail.index') }}">Quyền hoạt động</a></li>
                     <li><a href="{{ route('user.index') }}">Nhân viên</a></li>
                 </ul>
@@ -108,8 +108,8 @@
                     <span>Thiết lập</span>
                 </a>
                 <ul class="sub">
-                    <li><a href="{{ route('shift.index') }}">Thiết lập ca làm việc</a></li>
-                    <li><a href="{{ route('salary.index') }}">Thiết lập tiền lương</a></li>
+                    <li><a href="{{ route('shift.index') }}">Ca làm việc</a></li>
+                    <li><a href="{{ route('position.index') }}">Chức vụ và tiền lương</a></li>
                 </ul>
             </li>
             </ul>

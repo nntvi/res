@@ -18,7 +18,7 @@ class PermissionRepository extends Controller implements IPermissionRepository
     }
     public function showAllPermission()
     {
-        $permissions = Permission::with('peraction.permissiondetail')->paginate(6);
+        $permissions = Permission::with('peraction.permissiondetail')->paginate(10);
         $permissiondetails = $this->getAllPermissionDetails();
         return view('permission/index',compact('permissions','permissiondetails'));
     }
@@ -26,13 +26,10 @@ class PermissionRepository extends Controller implements IPermissionRepository
     public function validatorRequestStore($req){
         $messeages = [
             'name.unique' => 'Tên quyền vừa nhập đã tồn tại trong hệ thống',
-            'permissiondetail.required' => 'Vui lòng chọn ít nhất một hành động cho quyền'
         ];
-
         $req->validate(
             [
                 'name' => 'unique:permissions,name',
-                'permissiondetail' => 'required'
             ],
             $messeages
         );
@@ -60,20 +57,40 @@ class PermissionRepository extends Controller implements IPermissionRepository
         $salary->id_position = $idPosition;
         $salary->save();
     }
+
+    public function convertActionCode($str)
+    {
+        $s = strtoupper($str);
+        $s = str_replace(' ','_',$s);
+        return $s;
+    }
+
+    public function add($data,$idPermission)
+    {
+        for ($i=0; $i < count($data); $i++) {
+            $actionCode = $this->convertActionCode($data[$i]);
+            $temp = PermissionDetail::create(['name' => $data[$i],'action_code' => $actionCode]);
+            PermissionAction::create(['id_per' => $idPermission, 'id_per_detail' => $temp->id]);
+        }
+    }
+    public function createPermissionDetail($namePermission)
+    {
+        $arrNameDetailPermission = array();
+        $newDetailView = "View " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailView);
+        $newDetailCreate = "Create " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailCreate);
+        $newDetailDelete = "Delete " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailDelete);
+        $newDetailEdit = "Edit " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailEdit);
+        return $arrNameDetailPermission;
+    }
     public function addPermission($req)
     {
         $permission = Permission::create(['name'=> $req->name]);
-        $this->addPositionToSalary($permission->id);
-        $idPermissionDetail = $req->permissiondetail;
-
-        // lấy từng chi tiết gắn với id tương xứng để thêm vào bảng action
-        foreach ($idPermissionDetail as $key => $id) {
-            $data = [
-                'id_per' => $permission->id,
-                'id_per_detail' => $id
-            ];
-            PermissionAction::create($data); // thêm vào bảng per_action
-        }
+        $arrPerDetail = $this->createPermissionDetail($req->name);
+        $this->add($arrPerDetail,$permission->id);
         return redirect(route('permission.index'));
     }
     public function getPermissionDetail()
@@ -143,6 +160,14 @@ class PermissionRepository extends Controller implements IPermissionRepository
     public function updateName($request,$id)
     {
         Permission::where('id',$id)->update(['name' => $request->namePermissionUpdate]);
+        $nameDetailPerUpdate = $this->createPermissionDetail($request->namePermissionUpdate);
+        $perAction = PermissionAction::where('id_per',$id)->get();
+        foreach ($perAction as $key => $item) {
+            PermissionDetail::where('id',$item->id_per_detail)
+                            ->update(['name' => $nameDetailPerUpdate[$key],
+                                        'action_code' => $this->convertActionCode($nameDetailPerUpdate[$key])
+                            ]);
+        }
         return redirect(route('permission.index'));
     }
     public function deletePermission($id)

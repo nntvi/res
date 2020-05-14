@@ -27,13 +27,9 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     public function getMaterialDetails($id)
     {
         $actions = MaterialAction::where('id_groupnvl',$id)->get('id_material_detail');
-        $materialDetails = MaterialDetail::whereNotIn('id',$actions)
-                                            ->orderBy('name','asc')
-                                            ->with('unit')
-                                            ->get();
+        $materialDetails = MaterialDetail::whereNotIn('id',$actions)->orderBy('name','asc')->with('unit')->get();
         return $materialDetails;
     }
-
 
     public function getUnit()
     {
@@ -49,9 +45,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
 
     public function findMaterialActionById($id)
     {
-        $materialAction = MaterialAction::where('id',$id)
-                        ->with('materialDetail','unit','material')
-                        ->get();
+        $materialAction = MaterialAction::where('id',$id)->with('materialDetail','unit','material')->get();
         return $materialAction;
     }
 
@@ -73,12 +67,19 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         return view('materialaction.index',compact('materials'));
     }
 
+    public function getMaterialAction($id)
+    {
+        $ingredients = MaterialAction::where('id_groupnvl',$id)->with('materialDetail','unit')->get();
+        return $ingredients;
+    }
     public function viewStoreMaterialAction($id)
     {
         $material = $this->findMaterialById($id);
         $units = $this->getUnit();
         $materialDetails = $this->getMaterialDetails($id);
-        return view('materialaction.store',compact('material','units','materialDetails'));
+        $ingredients = $this->getMaterialAction($id);
+        //dd(count($ingredients));
+        return view('materialaction.store',compact('material','units','materialDetails','ingredients'));
     }
 
     public function getIdCookByIdMaterial($id_groupnvl)

@@ -5,6 +5,7 @@ namespace App;
 use App\Permission;
 use App\UserPermission;
 use App\PermissionDetail;
+use App\WarehouseCook;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -50,7 +51,7 @@ class User extends Authenticatable
     ];
     public $timestamps = true;
 
-    public function userper()
+    public function userPer()
     {
         return $this->hasMany('App\UserPermission','id_user');
     }
@@ -60,21 +61,18 @@ class User extends Authenticatable
         return $this->hasMany('App\UserSchedule','id_user');
     }
 
+    public function position()
+    {
+        return $this->belongsTo('App\Position','id_position');
+    }
+
     public function getActionCode($idUser)
     {
-        $idpermissions = UserPermission::where( 'id_user', $idUser )->get( 'id_per' ); // list Id Per
-
-        $permissions = Permission::whereIn( 'id', $idpermissions )->get(); // list Per
-
+        $idperdetails = UserPermission::where( 'id_user', $idUser )->get( 'id_per_detail' ); // list Id Per detai
+        $permissionDetails = PermissionDetail::whereIn( 'id', $idperdetails )->get(); // list Per
         $result = array();
-        foreach ( $permissions as $permission ) {
-            $peractions = $permission->peraction;
-            if ($peractions) {
-                foreach ( $peractions as $peraction ) {
-                    $per_detail = PermissionDetail::where('id', $peraction->id_per_detail )->first('action_code');
-                    array_push( $result, $per_detail);
-                }
-            }
+        foreach ( $permissionDetails as $perDetail ) {
+            array_push( $result, $perDetail->action_code);
         }
         return $result;
     }
@@ -82,7 +80,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleCook = array();
         foreach ($result as $key => $value) {
-            if($value->action_code == "COOK_1" || $value->action_code == "COOK_2" || $value->action_code == "COOK_3"){
+            if($value == "VIEW_COOK1" || $value == "VIEW_COOK2" || $value == "VIEW_COOK3"){
                 array_push($roleCook,$value);
             }
         }
@@ -94,7 +92,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleImportMaterialCook = array();
         foreach ($result as $key => $value) {
-           if($value->action_code == "FULL"){
+           if($value == "VIEW_WHCOOK"){
                array_push($roleImportMaterialCook,$value);
            }
         }
@@ -106,10 +104,16 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleViewBooking = array();
         foreach ($result as $key => $value) {
-            if($value->action_code == "VIEW_BOOKING"){
+            if($value == "VIEW_BOOKING"){
                 array_push($roleViewBooking,$value);
             }
         }
         return json_encode($roleViewBooking);
+    }
+
+    public function notifyQtyOfCook()
+    {
+        $count = WarehouseCook::selectRaw('count(status) as qty')->where('status','0')->value('qty');
+        return $count;
     }
 }

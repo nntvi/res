@@ -7,6 +7,7 @@ use App\User;
 use App\UserPermission;
 use Illuminate\Http\Request;
 use App\Helper\ICheckAction;
+use App\Position;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepository\IUserRepository;
 use App\Shift;
@@ -30,9 +31,9 @@ class UserController extends Controller
 
     public function viewstore()
     {
-        $permissions = Permission::all();
-        $shifts = Shift::all();
-        return view('user/store',compact('permissions'));
+        $permissions = Permission::with('peraction.permissiondetail')->orderBy('name','asc')->get();
+        $positions = Position::orderBy('name','asc')->get();
+        return view('user/store',compact('permissions','positions'));
     }
 
     public function store(Request $request)
@@ -41,6 +42,11 @@ class UserController extends Controller
         return $this->userRepository->createUser($request);
     }
 
+    public function updateUsername(Request $request,$id)
+    {
+        $this->userRepository->validateRequestUpdateUsername($request);
+        return $this->userRepository->updateUserName($request,$id);
+    }
     public function viewShift($id)
     {
         return $this->userRepository->viewScheduleUser($id);
@@ -51,16 +57,14 @@ class UserController extends Controller
         $this->userRepository->validatorRequestShift($request);
         return $this->userRepository->updateShiftUser($request,$id);
     }
-    public function viewUpdate($id)
+    public function viewUpdateRole($id)
     {
-
-        return $this->userRepository->viewUpdate($id);
+        return $this->userRepository->viewUpdateRole($id);
     }
-
-    public function update(Request $request,$id)
+    public function updateRole(Request $request, $id)
     {
-        $this->userRepository->validatorRequestUpdate($request);
-        return $this->userRepository->updateUser($request,$id);
+        $this->userRepository->validatorUpdateRole($request);
+        return $this->userRepository->updateRole($request,$id);
     }
     public function updatePassword(Request $request, $id)
     {
@@ -68,6 +72,10 @@ class UserController extends Controller
         return $this->userRepository->updatePasswordUser($request,$id);
     }
 
+    public function updatePosition(Request $request,$id)
+    {
+        return $this->userRepository->updatePositionUser($request,$id);
+    }
     public function search(Request $request)
     {
         return $this->userRepository->searchUser($request);

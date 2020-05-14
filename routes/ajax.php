@@ -1,6 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'ajax'], function() {
+    Route::get('material/{codeCoupon}','AjaxController@getMaterialByImportCoupon');
 
     Route::group(['prefix' => 'getMaterial'], function() {
 
@@ -8,7 +9,7 @@ Route::group(['prefix' => 'ajax'], function() {
 
         Route::group(['prefix' => 'export'], function() {
             Route::get('cook/{idObjectCook}','AjaxController@getMaterialToExportCook');
-            Route::get('supplier/{idObjectSupplier}','AjaxController@getMaterialToExportSupplier');
+            Route::get('supplier/{idSupplier}','AjaxController@getImportCouponByIdSupplier');
         });
 
         Route::group(['prefix' => 'destroy'], function() {
@@ -26,6 +27,7 @@ Route::group(['prefix' => 'ajax'], function() {
 
     Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
     Route::get('getImportCoupon/{idSupplier}','AjaxController@getUnPaidImport');
+
 });
 
 ?>

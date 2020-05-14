@@ -28,6 +28,10 @@ class ExportCouponController extends Controller
         return $this->exportcouponRepository->exportMaterial($request);
     }
 
+    public function exportSupplier(Request $request)
+    {
+        return $this->exportcouponRepository->exportSupplier($request);
+    }
     public function getDetail($id)
     {
         return $this->exportcouponRepository->getDetailExport($id);

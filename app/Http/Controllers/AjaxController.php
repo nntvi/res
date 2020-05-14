@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\CookArea;
 use App\GroupMenu;
+use App\Helper\IGetDateTime;
 use App\ImportCoupon;
+use App\ImportCouponDetail;
 use App\Supplier;
 use App\Order;
 use App\MaterialDetail;
@@ -20,10 +22,11 @@ use Illuminate\Http\Request;
 class AjaxController extends Controller
 {
     private $ajaxRepository;
-
-    public function __construct(IAjaxRepository $ajaxRepository)
+    private $getDateTime;
+    public function __construct(IAjaxRepository $ajaxRepository,IGetDateTime $getDateTime)
     {
         $this->ajaxRepository = $ajaxRepository;
+        $this->getDateTime = $getDateTime;
     }
 
     public function getMaterialBySupplier($idSupplier)
@@ -49,13 +52,19 @@ class AjaxController extends Controller
         ];
         return response()->json($data);
     }
-    public function getMaterialToExportSupplier($idObjectSupplier)
+
+    public function getImportCouponByIdSupplier($idSupplier)
     {
-        $type = Supplier::where('id',$idObjectSupplier)->value('id_type');
-        $materialWarehouse = $this->ajaxRepository->getMaterialInWarehouseByType($type);
-        return response()->json($materialWarehouse);
+        $importCoupons = ImportCoupon::where('id_supplier',$idSupplier)->get();
+        return response()->json($importCoupons);
     }
 
+    public function getMaterialByImportCoupon($codeCoupon)
+    {
+        $materials = ImportCouponDetail::where('code_import',$codeCoupon)
+                                        ->with('materialDetail','unit')->get();
+        return response()->json($materials);
+    }
     public function searchMaterialDestroy($name)
     {
         $material = $this->ajaxRepository->searchMaterialDestroy($name);
@@ -80,56 +89,56 @@ class AjaxController extends Controller
         switch ($id) {
             case 0:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 00:00:00' ,
-                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 23:59:59' ,
+                    'dateStart' => $this->getDateTime->getNow()->format('Y-m-d') . ' 00:00:00' ,
+                    'dateEnd' => $this->getDateTime->getNow()->format('Y-m-d') . ' 23:59:59' ,
                 ];
                 break;
             case 1:
                 $data = [
-                    'dateStart' => Carbon::yesterday('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 00:00:00' ,
-                    'dateEnd' => Carbon::yesterday('Asia/Ho_Chi_Minh')->format('Y-m-d') . ' 23:59:59' ,
+                    'dateStart' => $this->getDateTime->getYesterday() . ' 00:00:00' ,
+                    'dateEnd' => $this->getDateTime->getYesterday() . ' 23:59:59' ,
                 ];
                 break;
             case 2:
                 $data = [
-                    'dateStart' => $date = Carbon::now('Asia/Ho_Chi_Minh')->startOfWeek()->format('Y-m-d'),
-                    'dateEnd' => $date = Carbon::now('Asia/Ho_Chi_Minh')->endOfWeek()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getStartOfWeek(),
+                    'dateEnd' => $this->getDateTime->getEndOfWeek(),
                 ];
                 break;
             case 3:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->subWeek()->startOfWeek()->format('Y-m-d'),
-                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->subWeek()->endOfWeek()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getStartOfPreWeek(),
+                    'dateEnd' => $date = $this->getDateTime->getEndOfPreWeek(),
                 ];
                 break;
             case 4:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->startOfMonth()->format('Y-m-d'),
-                    'dateEnd' => Carbon::now()->endOfMonth()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getStartOfMonth(),
+                    'dateEnd' => $this->getDateTime->getEndOfMonth(),
                 ];
                 break;
             case 5:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->startOfMonth()->format('Y-m-d'),
-                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->endOfMonth()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getStartOfPreMonth(),
+                    'dateEnd' => $this->getDateTime->getEndOfPreMonth(),
                 ];
                 break;
             case 6:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->firstOfQuarter()->format('Y-m-d'),
-                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->lastOfQuarter()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getStartOfQuarter(),
+                    'dateEnd' => $this->getDateTime->getEndOfQuarter(),
                 ];
                 break;
             case 7:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->subQuarter()->firstOfQuarter()->format('Y-m-d'),
-                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->subQuarter()->lastOfQuarter()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getStartOfPreQuarter(),
+                    'dateEnd' => $this->getDateTime->getEndOfPreQuarter(),
                 ];
                 break;
             case 8:
                 $data = [
-                    'dateStart' => Carbon::now('Asia/Ho_Chi_Minh')->firstOfYear()->format('Y-m-d'),
-                    'dateEnd' => Carbon::now('Asia/Ho_Chi_Minh')->lastOfYear()->format('Y-m-d'),
+                    'dateStart' => $this->getDateTime->getFirstOfYear(),
+                    'dateEnd' => $this->getDateTime->getLastOfYear(),
                 ];
                 break;
             default:
@@ -174,4 +183,5 @@ class AjaxController extends Controller
                                 ->where('id_supplier',$idSupplier)->with('supplier')->get();
         return response()->json($imports);
     }
+
 }
