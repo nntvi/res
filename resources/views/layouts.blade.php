@@ -17,7 +17,7 @@
             </section>
         <!--main content end-->
     </section>
-    <script type="text/javascript">
+    <script>
         const roleViewWarehouseCook = JSON.parse(document.getElementById('viewWarehouseCook').value);
         var notificationsWrapper   = $('.notificationOutOfStockCook');
         var notificationsToggle    = notificationsWrapper.find('a[data-toggle]');
@@ -58,7 +58,7 @@
             }
         });
     </script>
-    <script type="text/javascript">
+    <script>
         const roleCook = JSON.parse(document.getElementById('roleCook').value);
         var notifyWrapper = $('.notificationNewDishForCook');
         var notifyToggle = notifyWrapper.find('a[data-toggle]');
@@ -73,6 +73,7 @@
 
         let channel = pusher.subscribe('NotifyCook');
         channel.bind('notify-cook', function(data){
+            //alert(JSON.stringify(data));
             var existingNotifications = listNotificationsNewDish.html();
             if(roleCook.length > 0){
                 let color = "";

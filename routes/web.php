@@ -18,8 +18,8 @@ use App\Http\Controllers\ReportController;
 
 Auth::routes(['register' => false]);
 
+Route::get('/customer/index', 'CustomerController@index')->name('customer.index');
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/customer/index', 'CustomerController@index')->name('customer.index');
 
     // Permission
     Route::group(['prefix' => 'permission'], function() {
@@ -214,6 +214,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('reportView', 'WareHouseController@reportIndex')->name('reportwarehouse.index');
         Route::post('report', 'WareHouseController@report')->name('reportwarehouse.p_report');
         Route::get('reportdetail/{id}/{dateStart}/{dateEnd}', 'WareHouseController@getDetailReport')->name('reportwarehouse.detail');
+        Route::get('export/{dateStart}/{dateEnd}', 'WareHouseController@exportExcel')->name('warehouse.exportexcel');
     });
 
     //Warehouse Cook
@@ -325,6 +326,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('search', 'BookingController@search')->name('booking.search');
     });
 
+    // Method Math
+    Route::group(['prefix' => 'method'], function () {
+        Route::get('index','MethodController@index')->name('method.index');
+        Route::get('storeText','MethodController@viewStoreText')->name('method.storeText');
+        Route::post('storeText','MethodController@storeText')->name('method.p_storeText');
+        Route::get('update/{id}','MethodController@update')->name('method.update');
+    });
     // Ajax
     include "ajax.php";
 });

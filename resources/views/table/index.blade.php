@@ -7,7 +7,7 @@
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-5 m-b-xs">
-                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-success">
+                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
                     Thêm mới
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
@@ -57,9 +57,9 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('table.exportexcel') }}" class="btn btn-sm btn-warning">
+                {{-- <a href="{{ route('table.exportexcel') }}" class="btn btn-sm btn-warning">
                     <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                </a>
+                </a> --}}
             </div>
             <div class="col-sm-3">
                 @if($errors->any())

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\ExportCouponDetail;
+use App\Exports\ReportWarehouse;
 use App\ImportCouponDetail;
 use Illuminate\Http\Request;
-use Excel;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\WareHouseDetailImport;
 use App\Repositories\WarehouseRepository\IWarehouseRepository;
 use App\WareHouse;
@@ -38,6 +39,10 @@ class WareHouseController extends Controller
         return $this->warehouseRepository->getDetailReport($id,$dateStart,$dateEnd);
     }
 
+    public function exportExcel($dateStart,$dateEnd)
+    {
+        return Excel::download(new ReportWarehouse($dateStart,$dateEnd),'reportwarehouse.xlsx');
+    }
 
     // public function substractMaterial()
     // {

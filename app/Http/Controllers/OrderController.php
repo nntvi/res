@@ -37,7 +37,7 @@ class OrderController extends Controller
 
     public function orderTablePost(Request $request)
     {
-        $this->orderRepository->validatorOrder($request);
+        //$this->orderRepository->validatorOrder($request);
         return $this->orderRepository->orderTablePost($request);
     }
 

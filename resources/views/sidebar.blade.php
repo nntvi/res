@@ -110,6 +110,7 @@
                 <ul class="sub">
                     <li><a href="{{ route('shift.index') }}">Ca làm việc</a></li>
                     <li><a href="{{ route('position.index') }}">Chức vụ và tiền lương</a></li>
+                    <li><a href="{{ route('method.index') }}">Hệ số giá bán</a></li>
                 </ul>
             </li>
             </ul>

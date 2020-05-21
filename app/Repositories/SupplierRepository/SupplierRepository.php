@@ -16,7 +16,7 @@ class SupplierRepository extends Controller implements ISupplierRepository{
 
     public function getAllSupplier()
     {
-        $suppliers = Supplier::with('typeMaterial')->get();
+        $suppliers = Supplier::with('typeMaterial')->paginate(5);
         return view('supplier.index',compact('suppliers'));
     }
 
@@ -40,8 +40,7 @@ class SupplierRepository extends Controller implements ISupplierRepository{
             'email.unique' => 'Email nhà cung cấp đã tồn tại trong hệ thống',
 
             'phone.required' => 'Không để trống số điẹn thoại ncc',
-            'phone.min' => 'Số điện thoại gồm 10 chữ số',
-            'phone.max' => 'Số điện thoại không vượt quá 10 chữ số',
+            'phone.regex' => 'Số điện thoại không có thực',
 
             'mst.required' => 'Không để trống số mã số thuế',
             'mst.min' => 'Mã số thuế gồm không nhỏ hơn 10 chữ số',
@@ -56,7 +55,7 @@ class SupplierRepository extends Controller implements ISupplierRepository{
                 'name' => 'required|min:3|max:70|unique:suppliers,name',
                 'email' => 'required|unique:suppliers,email',
                 'address' => 'required|min:10|max:100',
-                'phone' => 'required|min:10|max:10',
+                'phone' => 'required|regex:/(0)[0-9]{9}/',
                 'mst' => 'required|min:10|max:20',
                 'status' => 'required'
             ],

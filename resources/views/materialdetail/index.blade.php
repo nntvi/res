@@ -47,6 +47,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Thiết lập mức tồn kho cho NVL này</label>
+                                        <input type="number" class="form-control" name="limit" min="1"  required="">
+                                    </div>
                                     <div class="space"></div>
                                     <div class="alert alert-danger" role="alert">
                                         <strong>Lưu ý!</strong> Đơn vị của NVL sẽ không chỉnh sửa được sau khi thêm, vui

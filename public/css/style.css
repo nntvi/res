@@ -39,7 +39,8 @@ body a:hover{
 }
 	/*sidebar navigation*/
 #sidebar {
-    width:240px;
+    margin-top: 55px;
+    width:215px;
     height:100%;
     position:fixed;
     background:rgba(52, 48, 48, 0.78);
@@ -101,13 +102,9 @@ body a:hover{
     display:inline;
 }
 ul.sidebar-menu,ul.sidebar-menu li ul.sub {
-    margin:-2px 0 0;
     padding:0;
 }
-ul.sidebar-menu {
-    padding-top:80px;
 
-}
 #sidebar>ul>li>ul.sub {
     display:none;
 }
@@ -195,7 +192,7 @@ ul.sidebar-menu li a.active i {
 }
 /*main content*/
 #main-content {
-    margin-left:240px;
+    margin-left:215px;
     -webkit-transition:all .3s ease-in-out;
     -moz-transition:all .3s ease-in-out;
     -o-transition:all .3s ease-in-out;
@@ -234,22 +231,22 @@ ul.sidebar-menu li a.active i {
 }
 .wrapper {
     display:inline-block;
-    margin-top:80px;
-    padding:15px;
+    margin-top:52px;
+    padding:15px 6px;
     width:100%;
 }
 .brand {
     background:#8b5c7e;
     float:left;
-    width:240px;
-    height:80px;
+    width:215px;
+    height:55px;
     position:relative;
 }
 a.logo {
-    font-size:32px;
+    font-size:30px;
     color:#fff;
     float:left;
-    margin:20px 0 0 25px;
+    margin:8px 0 0 25px;
     text-transform:uppercase;
 }
 a.logo:hover,a.logo:focus {
@@ -265,7 +262,7 @@ a.logo span {
 }
 .notify-row {
     float:left;
-    margin-top:23px;
+    margin-top:14px;
     margin-left:25px;
 }
 ul.top-menu {
@@ -294,8 +291,8 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
 }
 .notify-row .badge {
     position:absolute;
-    right:-10px;
-    top:-10px;
+    right:-9px;
+    top:-8px;
     z-index:100;
 }
 .dropdown-menu.extended {
@@ -431,7 +428,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     font-size:11px;
 }
 .top-nav {
-    margin-top:20px;
+    margin-top:11px;
 }
 .top-nav img {
     border-radius:50%;
@@ -599,7 +596,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
 /*--sidebar toggle---*/
 .sidebar-toggle-box {
     float:left;
-    margin-top:23px;
+    margin-top:13px;
     margin-left:-15px;
     background:#8b5c7e;
     border-radius:50%;
@@ -1252,8 +1249,8 @@ h3.agileits-icons-title {
 }
 .bs-glyphicons li {
     float: left;
-    width: 18%;
-    height: 115px;
+    width: 8%;
+    height: 75px;
     padding: 10px;
     line-height: 1.4;
     text-align: center;
@@ -1265,7 +1262,7 @@ h3.agileits-icons-title {
 .bs-glyphicons .glyphicon {
     margin-top: 5px;
     margin-bottom: 10px;
-    font-size: 24px;
+    font-size: 17px;
 	color: #282a2b;
 }
 .glyphicon {
@@ -1611,35 +1608,35 @@ ul.bs-glyphicons-list {
 }
 .agile-grid{
 	background: #eef9f0;
-    padding: 2em;
+    padding: 1em;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 .wthree-font-awesome{
 	background: #eef9f0;
-    padding: 2em;
+    padding: 1em;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 .w3layouts-glyphicon{
 	background: #eef9f0;
-    padding: 2em;
+    padding: 1em;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 .table-agile-info{
 	background: #eef9f0;
-    padding: 2em;
+    padding: 1em;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 .form-w3layouts{
 	background: #eef9f0;
-    padding: 2em;
+    padding: 1em;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
@@ -2566,7 +2563,7 @@ div#graph10,div#graph11 {
 }
 .alert {
     margin-bottom: 13px !important;
-    padding: 12.8px !important;
+    /* padding: 12.8px !important; */
 }
 div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#graph9,div#graph10,div#graph11 {
   width: 260px ! important;

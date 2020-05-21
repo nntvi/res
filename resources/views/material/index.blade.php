@@ -7,7 +7,7 @@
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-4 m-b-xs">
-                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-danger">
+                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
                     Thêm mới
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"

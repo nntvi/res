@@ -76,11 +76,12 @@ class User extends Authenticatable
         }
         return $result;
     }
+
     public function checkCook() {
         $result = $this->getActionCode($this->id);
         $roleCook = array();
         foreach ($result as $key => $value) {
-            if($value == "VIEW_COOK1" || $value == "VIEW_COOK2" || $value == "VIEW_COOK3"){
+            if($value == "VIEW_COOK1" || $value == "VIEW_COOK2" || $value == "VIEW_COOK3" || $value == "VIEW_FULL"){
                 array_push($roleCook,$value);
             }
         }
@@ -92,7 +93,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleImportMaterialCook = array();
         foreach ($result as $key => $value) {
-           if($value == "VIEW_WHCOOK"){
+           if($value == "VIEW_WHCOOK" || "VIEW_FULL"){
                array_push($roleImportMaterialCook,$value);
            }
         }
@@ -104,7 +105,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleViewBooking = array();
         foreach ($result as $key => $value) {
-            if($value == "VIEW_BOOKING"){
+            if($value == "VIEW_BOOKING" || $value == "VIEW_FULL"){
                 array_push($roleViewBooking,$value);
             }
         }
@@ -114,6 +115,18 @@ class User extends Authenticatable
     public function notifyQtyOfCook()
     {
         $count = WarehouseCook::selectRaw('count(status) as qty')->where('status','0')->value('qty');
+        return $count;
+    }
+
+    public function notifyQtyWarehouse()
+    {
+        $count = 0;
+        $materials = Warehouse::all();
+        foreach ($materials as $key => $material) {
+            if($material->qty - $material->limit_stock <= 0){
+                $count++;
+            }
+        }
         return $count;
     }
 }

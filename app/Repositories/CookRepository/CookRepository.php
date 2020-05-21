@@ -25,6 +25,7 @@ class CookRepository extends Controller implements ICookRepository{
         $groupmenus = GroupMenu::where('id_cook',$idcook)->get();
         return $groupmenus;
     }
+
     public function updateCook($request, $id)
     {
         $cook = $this->findCookById($id);

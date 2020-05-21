@@ -8,7 +8,7 @@
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="#myModal-1" data-toggle="modal">
-                    <button class="btn btn-sm btn-success">Thêm mới</button>
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1"
                     class="modal fade" style="display: none;">
@@ -52,9 +52,9 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('groupmenu.exportexcel')}}" class="btn btn-sm btn-default">
+                {{-- <a href="{{ route('groupmenu.exportexcel')}}" class="btn btn-sm btn-default">
                     <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                </a>
+                </a> --}}
 
             </div>
             <div class="col-sm-5">

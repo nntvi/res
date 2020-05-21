@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderDetailTable extends Model
+class Method extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'detail_order_table';
+    protected $table = 'equation';
 
     /**
      * The primary key associated with the table.
@@ -33,20 +33,11 @@ class OrderDetailTable extends Model
      * @var array
      */
     protected $fillable = [
-        'id_bill',
-        'id_dish',
-        'qty',
-        'status',
-        'price'
+        'textTuso',
+        'textMauso',
+        'tuso',
+        'mauso',
+        'result',
+        'status'
     ];
-
-    public function dish()
-    {
-        return $this->belongsTo('App\Dishes','id_dish');
-    }
-
-    public function order()
-    {
-        return $this->belongsTo('App\Order','id_bill');
-    }
 }

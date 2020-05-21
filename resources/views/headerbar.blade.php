@@ -1,6 +1,8 @@
 <!--header start-->
 <style>
-
+.badge{
+    padding: 2px 6px;
+}
 @-webkit-keyframes my {
     0% { color: red; }
     50% { color: #450a0a;  }
@@ -22,14 +24,41 @@
     100% { color: red;  }
 }
 .test {
-    font-size:14px;
+    font-size:13.5px;
     font-weight:bold;
     -webkit-animation: my 700ms infinite;
     -moz-animation: my 700ms infinite;
     -o-animation: my 700ms infinite;
     animation: my 700ms infinite;
 }
-
+.test1 {
+    font-size:13.5px;
+    font-weight:bold;
+    -webkit-animation: my1 700ms infinite;
+    -moz-animation: my1 700ms infinite;
+    -o-animation: my1 700ms infinite;
+    animation: my1 700ms infinite;
+}
+@-webkit-keyframes my1 {
+    0% { color: black; }
+    50% { text-decoration: underline;  }
+    100% { color: black;  }
+}
+@-moz-keyframes my1 {
+    0% { color: black;  }
+    50% { text-decoration: underline;  }
+    100% { color: black;  }
+}
+@-o-keyframes my1 {
+    0% { color: black; }
+    50% { text-decoration: underline; }
+    100% { color: black;  }
+}
+@keyframes my1 {
+    0% { color: black;  }
+    50% { text-decoration: underline;  }
+    100% { color: black;  }
+}
 </style>
 <header class="header fixed-top clearfix">
     <!--logo start-->
@@ -98,17 +127,44 @@
     <div class="top-nav clearfix">
         <!--search & user info start-->
         <ul class="nav pull-right top-menu">
-            <li>
-                {{-- <input type="text" class="form-control search" placeholder=" Search"> --}}
+            <li class="notificationWhCook">
+                @if (auth()->user()->notifyQtyWarehouse() != null)
+                    <div class="alert alert-success" role="alert" style="margin-bottom: 0px; padding: 5px 5px">
+                        <strong class="test1">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết </strong>
+                    </div>
+                @else
+
+                @endif
+            </li>
+            <li class="notificationWhCook">
                 @if (auth()->user()->notifyQtyOfCook() != null)
-                    <div class="alert alert-warning" role="alert" style="margin-bottom: 0px">
+                    <div class="alert alert-warning" role="alert" style="margin-bottom: 0px; padding: 5px 5px">
                         <strong class="test"> Có {{ auth()->user()->notifyQtyOfCook() }} NVL cần nhập gấp cho bếp </strong>
                     </div>
                 @else
 
                 @endif
-
             </li>
+            {{--  <script type="text/javascript">
+                var notificationsWrapper   = $('.top-menu');
+                var notifications          = notificationsWrapper.find('li.notificationWhCook');
+
+                Pusher.logToConsole = true;
+                var pusher = new Pusher('cc6422348edc9fbaff00', {
+                    cluster: 'ap1'
+                });
+
+                let channel5 = pusher.subscribe('NotifyOutOfStock');
+                channel5.bind('need-import-cook', function(data){
+                        console.log(data.cook);
+                        var newNotifications =
+                                `<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+                                    <strong class="test"> Có `+ data.cook +` NVL cần nhập gấp cho bếp </strong>
+                                </div>`;
+                        notifications.html(newNotifications);
+                        notificationsWrapper.show();
+                });
+            </script>  --}}
             <!-- user login dropdown start-->
             <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">

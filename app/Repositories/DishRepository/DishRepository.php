@@ -12,7 +12,6 @@ class DishRepository extends Controller implements IDishRepository{
     public function getGroupMenu()
     {
         $groupmenus = GroupMenu::all();
-        $units = Unit::all();
         return $groupmenus;
     }
 
@@ -23,7 +22,8 @@ class DishRepository extends Controller implements IDishRepository{
     }
     public function getMaterial()
     {
-        $materials = Material::all();
+        $idOldMaterials = Dishes::get('id_groupnvl');
+        $materials = Material::whereNotIn('id',$idOldMaterials)->get();
         return $materials;
     }
     public function getMaterialDetail()

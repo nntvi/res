@@ -150,7 +150,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     {
         $count = $this->countMaterialRequest($request);
         $this->addOneByOneMaterialAction($count,$request);
-        return redirect(route('material_action.index'));
+        return redirect(route('material.index'));
     }
 
     public function showMoreDetailById($id)

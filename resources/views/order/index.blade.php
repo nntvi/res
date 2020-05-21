@@ -1,135 +1,163 @@
 @extends('layouts')
-@section('content')
 <style>
-    .bill{
-        border: 2px solid black;
-        background: aquamarine;
-        font-size: 14px;
-        width: 24%;
-        margin-right: 10px;
-        margin-top: 13px;
-    }
-    .text-muted{
-        background: black;
-        color: white;
-        margin: 0px -15px;
-    }
-    .card-header{
-        padding: 5px 0px;
-        font-weight: bolder;
-    }
-    .card-body{
-        color: red;
-    }
-    .action{
-        margin: 10px -15px 0px -15px;
-    }
-    .add{
-        border-right: 1.5px solid black;
-    }
-    .add:hover{
-        background: #ffec40eb;
-    }
-    .add, .detail{
-        border-top: 1.5px solid black;
-        padding: 3px 0px;
-        background: khaki;
-        font-weight: 500;
+    .card {
+        border: 3px solid #d7d7d7;
+        text-align: center;
+        padding: 5px;
+        line-height: 29px;
+        border-radius: 5px;
+        background: rgba(149, 149, 149, 0.09);
         cursor: pointer;
-        transition: 0.4s;
     }
-    .add a, .detail a{
-        text-decoration: none;
-        color: black;
+
+    .content-order {
+        height: 400px;
+        overflow: auto;
     }
-    .detail{
-        background: #5f7e8d;
+    .card-text{
+        font-size: 13.5px;
     }
-    .detail:hover{
-        background: beige;
+    button .btn-number{
+        border-radius: 50%;
     }
-    .detail a{
-        color:white;
-        font-weight: 400;
+    .form-control.input-number{
+        border: none;
+        border-bottom: 1px solid #000;
+        background: 0 0;
     }
-    .detail a:hover{
-        color: brown;
-        font-weight: bold;
+    span.input-group-btn span{
+        color:whitesmoke;
+    }
+    .input-group{
+        margin-bottom: 0px!important;
     }
 </style>
-		<div class="w3layouts-glyphicon">
-            <div class="grid_3 grid_4">
-                    <h2 class="w3ls_head">Orders</h2>
-                    <div class="row">
-                        <a href="{{route('order.order')}}" class="btn green-meadow radius col-xs-12">Tạo order</a>
-                        </div>
-                    @foreach ($areas as $area)
-                    <h3 class="page-header icon-subheading">{{$area->name}}</h3>
-                        <div class="row">
-                            @foreach ($idOrders as $order)
-                                @if ($order->table->getArea->id == $area->id)
-                                    @if ($order->status == '1')
-                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 bill">
-                                                <div class="card text-center">
-                                                    <div class="card-footer text-muted">
-                                                        {{$order->created_at}}
-                                                    </div>
-                                                    <div class="card-header">
-                                                        {{$order->table->name}}
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">Đang có khách</h5>
-                                                    </div>
-                                                    <div class="action">
-                                                        <div class="col-sm-6 col-xs-12 add">
-                                                            <a href="{{route('order.addmore',['id' => $order->id])}}">Thêm món</a>
-                                                        </div>
-                                                        <div class="col-sm-6 col-xs-12 detail">
-                                                            <a href="{{route('order.update',['id' => $order->id])}}">Xem chi tiết</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
+@section('content')
+<div class="form-w3layouts">
+    <!-- page start-->
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    Chọn bàn &nbsp;
+                    <span class="tools">
+                        <a class="fa fa-chevron-down" href="javascript:;"></a>
+                    </span>
+                </header>
+                <div class="panel-body">
+                    @foreach($tables  as $table)
+                        @php
+                            $temp = false
+                        @endphp
+                        @foreach($activeTables as $activeTable)
+                            @if($activeTable->id_table == $table->id)
+                                <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 m-b-xs" style="padding-right: 0px">
+                                    <div class="card" data-id="{{ $table->id }}" data-status="1"
+                                        style="background: rgba(254, 48, 48, 0.55);border: 3px solid #ff6d6d;">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ $table->name }}</h6>
+                                            <p class="card-text" >Có</p>
                                         </div>
-                                    @else
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 bill" style="background: burlywood">
-                                            <div class="card text-center">
-                                                <div class="card-footer text-muted">
-                                                    {{$order->created_at}}
-                                                </div>
-                                                <div class="card-header">
-                                                    {{$order->table->name}}
-                                                </div>
-
-                                                @if ($order->status == '1')
-                                                    <div class="action">
-                                                        <div class="col-sm-6 col-xs-12 add">
-                                                            <a href="{{route('order.addmore',['id' => $order->id])}}">Thêm món</a>
-                                                        </div>
-                                                        <div class="col-sm-6 col-xs-12 detail">
-                                                            <a href="{{route('order.update',['id' => $order->id])}}">Xem chi tiết</a>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                <div class="action">
-                                                        <div class="col-sm-6 col-xs-12 card-body">
-                                                            <h5 class="card-title">Đã thanh toán </h5>
-
-                                                        </div>
-                                                        <div class="col-sm-6 col-xs-12 detail">
-                                                            <a href="{{route('order.update',['id' => $order->id])}}">Xem chi tiết</a>
-                                                        </div>
-                                                    </div>
-                                                @endif
-
-                                            </div>
                                     </div>
-                                    @endif
-                                @endif
-                            @endforeach
-                        </div>
+                                </div>
+                                @php
+                                    $temp = true
+                                @endphp
+                                @break
+                            @endif
+                        @endforeach
+                        @if($temp == false)
+                            <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 m-b-xs" style="padding-right: 0px">
+                                <div class="card" data-id="{{ $table->id }}" data-status="0">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ $table->name }}</h6>
+                                        <p class="card-text">Trống</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @endforeach
-                    <div class="space"></div>
-                <div class="clearfix"></div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div data-collapsed="0" class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Gọi món
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-5 form-group " id="tableOrder">
+
+
+                        </div>
+                        <div class="col-md-7 form-group">
+                            <ul class="nav nav-tabs">
+                                @foreach($groupmenus as $groupmenu)
+                                    <li><a data-toggle="tab" href="#{{ $groupmenu->id }}">{{ $groupmenu->name }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <div class="space"></div>
+                            <div class="tab-content">
+                                @foreach($groupmenus as $groupmenu)
+                                    <div id="{{ $groupmenu->id }}" class="tab-pane fade in ">
+                                        @foreach($groupmenu->dishes as $dish)
+                                            <div class="card col-xs-4 col-sm-2 m-b-xs cardDish" style="margin-right: 5px">
+                                                <img class="card-img-top" style="width:100%; height: 60px"
+                                                    src="img/{{ $dish->image }}">
+                                                <div class="card-body row">
+                                                    <div class="space"></div>
+                                                    <h5 class="card-title col-xs-12" data-dish="{{ $dish->id }}">{{ $dish->name }}</h5>
+                                                    <p class="card-text col-xs-12">{{ $dish->sale_price }}</p>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+                            </div>
+                            <script>
+                                $('ul.nav-tabs li:first-child').addClass('active');
+                                $('.tab-content div:first-child').addClass('active');
+                                function clickToRemove($id){
+                                    var row = document.getElementById('row' + $id);
+                                    row.remove();
+                                }
+                                function clickToPlus($id){
+                                    var sl = document.getElementById('count'+$id).value;
+                                    if(sl < 20){
+                                        sl++;
+                                        document.getElementById('count' + $id).value = sl;
+                                        document.getElementById('qty' + $id).value = sl;
+                                    }else if(sl == 20){
+                                        document.getElementById('count' + $id).value = 20;
+                                        document.getElementById('qty' + $id).value = 20;
+                                    }
+                                }
+                                function clickToMinus($id){
+                                    var sl = document.getElementById('count'+$id).value;
+                                    if(sl > 1){
+                                        sl--;
+                                        document.getElementById('count' + $id).value = sl;
+                                        document.getElementById('qty' + $id).value = sl;
+                                    }else if(sl == 1){
+                                        document.getElementById('count' + $id).value = 1;
+                                        document.getElementById('qty' + $id).value = 1;
+                                    }
+                                }
+                            </script>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-		</div>
-@endsection
+        </div>
+        <!-- page end-->
+
+    </div>
+    @endsection

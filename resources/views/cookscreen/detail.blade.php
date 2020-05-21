@@ -39,7 +39,7 @@
                                     <table class="table table-striped b-t b-light">
                                     <thead>
                                         <tr>
-                                        <th data-breakpoints="xs">STT</th>
+                                        <th data-breakpoints="xs">Bàn</th>
                                         <th>Tên món</th>
                                         <th>Sl</th>
                                         <th>Ghi chú</th>
@@ -55,7 +55,7 @@
                                                     @csrf
                                                     <input type="text" name="idCook" value="{{$cook->id}}" hidden>
                                                     <tr data-expanded="true">
-                                                        <td>{{$key+1}}</td>
+                                                        <td>{{ $dish->order->table->name }}</td>
                                                         <td>{{ $dish->dish->name }}</td>
                                                         <td class="text-center">
                                                             {{$dish->qty}}
@@ -80,22 +80,59 @@
                                                         @else
                                                             <td>
                                                                 @if ($dish->status == '0')
-                                                                    <input value="1" type="radio" name="status">
+                                                                    <input value="1" type="radio" name="status" checked>
                                                                     <label style="display:inline; color: red;">Đang thực hiện</label>
                                                                 @endif
                                                                 @if ($dish->status == '1')
-                                                                    <input value="2" type="radio" name="status">
+                                                                    <input value="2" type="radio" name="status" checked>
                                                                     <label style="display:inline; color: red;">Hoàn thành</label>
                                                                 @endif
                                                                 @if($dish->status == '2')
-                                                                    <label style="display:inline; color: darkgreen;">
+                                                                    <label style="display:inline; color: darkgreen;" >
                                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                                         Đã Hoàn thành
                                                                     </label>
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <a href="{{route('material_action.detail',['id' => $dish->dish->id_groupnvl])}}">Xem CT</a>
+                                                                <a href="#myModal{{ $dish->dish->id }}" data-toggle="modal" >
+                                                                    <i class="fa fa-eye text-info" aria-hidden="true"></i>
+                                                                </a>
+                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal{{ $dish->dish->id }}" class="modal fade" style="display: none;">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                <h4 class="modal-title">Công thức món {{ $dish->dish->name }}</h4>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="bs-docs-example">
+                                                                                    <table class="table table-bordered">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>#</th>
+                                                                                                <th>Tên NVL</th>
+                                                                                                <th>Số lượng</th>
+                                                                                                <th>Đơn vị</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            @foreach ($dish->dish->groupNVL->materialAction as $key => $item)
+                                                                                                <tr>
+                                                                                                    <td>{{ $key + 1 }}</td>
+                                                                                                    <td>{{ $item->materialDetail->name }}</td>
+                                                                                                    <td>{{ $item->qty }}</td>
+                                                                                                    <td>{{ $item->unit->name }}</td>
+                                                                                                </tr>
+                                                                                            @endforeach
+
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </td>
                                                             <td>
                                                                 @if ($dish->status == '0')

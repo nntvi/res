@@ -67,8 +67,8 @@ class PayRepository extends Controller implements IPayRepository{
         $bill->note = $request->note;
         $bill->status = '0';
         $bill->payer = auth()->user()->name;
-        $timeUpdate = Carbon::now('Asia/Ho_Chi_Minh');
-        $bill->id_shift = $this->checkShift($timeUpdate);
+        //$timeUpdate = Carbon::now('Asia/Ho_Chi_Minh');
+        //$bill->id_shift = $this->checkShift($timeUpdate);
         $bill->save();
         return redirect(route('order.update',['id' => $id]));
     }

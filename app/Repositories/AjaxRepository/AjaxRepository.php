@@ -12,6 +12,7 @@ use App\ImportCouponDetail;
 use App\ExportCouponDetail;
 use App\GroupMenu;
 use App\MaterialAction;
+use App\Method;
 use App\Order;
 use App\OrderDetailTable;
 use App\Permission;
@@ -134,6 +135,16 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         return $material;
     }
 
+    public function getEquation()
+    {
+        $heSo = Method::where('status','1')->first('result');
+        if($heSo == null){
+            return (35/100);
+        }else{
+            return $heSo;
+        }
+    }
+
     public function getCapitalPriceByIdMaterial($idMaterial)
     {
         $arrayActions = MaterialAction::where('id_groupnvl',$idMaterial)->get();
@@ -142,7 +153,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         foreach ($arrayActions as $key => $action) {
             $capitalPrice += $action->qty * $action->price;
         }
-        $salePrice = round($capitalPrice + ($capitalPrice * 35/100));
+        $salePrice = round(($capitalPrice / (float) $this->getEquation()));
         $data = [
             'capitalPrice' => $capitalPrice,
             'salePrice' => $salePrice

@@ -260,3 +260,26 @@ function validateFormDestroyCook() {
         return true;
     }
 }
+
+function saveOrder() {
+    let tableOrder = document.getElementById('tableOrder');
+    let data = [];
+    if(tableOrder.rows.length == 0){
+        alert("Vui lòng chọn món cho bàn");
+        return false;
+        //data.push("Vui lòng chọn món cho bàn");
+    }else{
+        for (let i = 0,row; row = tableOrder.rows[i]; i++) {
+            for (let j = 0, col; col = row.cells[j]; j++){
+                if(j == 1){
+                    if(col[j].is('input')){
+                        alert("Yes");
+                        return false;
+                    }
+                }
+            }
+        }
+        alert('No');
+        return false;
+    }
+}

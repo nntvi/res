@@ -20,7 +20,7 @@ class UserRepository  extends Controller implements IUserRepository{
 
     public function getAllUser($arr){
         foreach ($arr as $name) {
-            if($name == "VIEW_USER"){
+            if($name == "VIEW_USER" || $name = "VIEW_FULL"){
                 $users = User::with('userper.permissionDetail','position')->paginate(5);
                 $positions = Position::orderBy('name','asc')->get();
                 return view('user/index',compact('users','positions'));

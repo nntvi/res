@@ -418,5 +418,172 @@ $(document).ready(function () {
         });
     });
 
+    // get tuso mauso
+    $(".card").click(function () { // chọn bàn
+        const idTable = $(this).attr('data-id'); // lấy id bàn đó
+        const nameTableOrder = $(this).find('h6.card-title').text(); // lấy cả tên
+        var statusTable = $(this).attr('data-status'); // lấy status có khách or not
+        if(statusTable == "0"){ // ko có khách
+            $('#tableOrder').empty();
+            var order = `<form id="orderForm">
+                            <div class="panel panel-default">
+                                <div class="panel-heading nameTableOrder" style="background: #ff00003b!important">
+                                    ` + nameTableOrder +`
+                                </div>
+                                <input type="hidden" name="idTableOrder" value="`+ idTable +`">
+                                <div class="content-order">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Món</th>
+                                                <th width="27%" class="text-center">Số lượng</th>
+                                                <th>Ghi chú</th>
+                                                <th>Giá</th>
+                                                <th style="width:3px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableOrder">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row activities">
+                                    <div class="col-xs-12">
+                                        <button id="submitNewOrder" class="btn btn-success" style="width:100%">Lưu</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>`;
+            $('#tableOrder').append(order);
+            $('.card.cardDish').click(function () {
+                var idDish = $(this).find('h5[data-dish]').data('dish'); // id dish
+                var nameDish = $(this).find('.card-title').text();
+                var priceDish = $(this).find('.card-text').text();
+                let row =   `<tr id="row`+ idDish +`" data-row="`+ idDish +`">
+                                <td><input type="hidden" class="idDish" name="idDish[]" value="`+ idDish +`">`+ nameDish+`</td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-btn" onclick="clickToMinus(`+ idDish +`)">
+                                            <button type="button" class="btn btn-xs btn-danger btn-number">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </span>
+                                        <input type="text" name="qty[]" class="form-control input-number qty" value="1" id="count`+ idDish +`">
+                                        <span class="input-group-btn btn-xs" onclick="clickToPlus(`+ idDish +`)">
+                                            <button type="button" class="btn btn-xs btn-success btn-number">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="note[]" class="form-control qty"></td>
+                                <td>`+ priceDish +`</td>
+                                <td style="width:5px; cursor:pointer">
+                                    <a  onclick="clickToRemove(`+ idDish +`)">
+                                        <i class="fa fa-times text-danger text"></i>
+                                    </a>
+                                </td>
+                            </tr>`
+                $('tbody#tableOrder').append(row);
+            });
+            $('#orderForm').submit(function(){
+                var arrDishes = $("input[name='idDish[]']").map(function(){return $(this).val();}).get();
+                var arrQties = $("input[name='qty[]']").map(function(){return $(this).val();}).get();
+                var arrNotes = $("input[name='note[]']").map(function(){return $(this).val();}).get();
+                $.ajax({
+                  url: "",
+                  type:"POST",
+                  data:{
+                    "_token": "{{ csrf_token() }}",
+
+                  },
+                  success:function(response){
+                    console.log(response);
+                  },
+                 });
+            });
+        }
+        else if(statusTable == "1"){
+            $('div.nameTableOrder').text(nameTableOrder);
+            $('#idTableOrder').val(idTable);
+            $.ajax({
+                url: 'ajax/orderTable/' + idTable ,
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (dishes) {
+                    $('#tableOrder').empty();
+                    dishes.map(function (dish) {
+                        var row =   `<tr>
+                                <td>`+ dish.dish.name+`</td>
+                                <td class="text-center">`+ dish.qty +`</td>
+                                <td>`;
+                                    if (dish.note == null) {
+                                        row += `-`;
+                                    } else {
+                                        row += dish.note;
+                                    }
+                        row += `</td>
+                                <td>`+ dish.price +`</td>
+                                <td>`;
+                                    if(dish.status == '-1'){
+                                        row += `<i class="fa fa-pause text-danger" aria-hidden="true"></i>`;
+                                    }
+                                    else if(dish.status == '0'){ // chưa thực hiện
+                                        row += `<i class="fa fa-battery-empty text-warning" aria-hidden="true"></i>`;
+                                    }else if(dish.status == '1'){
+                                        row += `<i class="fa fa-battery-half text-info" aria-hidden="true"></i>`;
+                                    }else if(dish.status == '2'){
+                                        row += `<i class="fa fa-battery-full text-success" aria-hidden="true"></i>`;
+                                    }
+                        row += `</td>
+                            </tr>`
+                        $('#tableOrder').append(row);
+                    })
+                }
+            });
+            $('.card.cardDish').click(function () {
+                var idDish = $(this).find('h5[data-dish]').data('dish'); // id dish
+                // let table = document.getElementById('tableOrder');
+                // if(table.rows.length != 0){
+                //     for(var i = 0, row; row = table.rows[i]; i++){
+                //         console.log((row).find('tr').attr('data-row'));
+
+
+                //     }
+                // }
+                var nameDish = $(this).find('.card-title').text();
+                var priceDish = $(this).find('.card-text').text();
+                let row =   `<tr id="row`+ idDish +`" data-row="`+ idDish +`">
+                                <td><input type="hidden" name="idDish[]" value="`+ idDish +`">`+ nameDish+`</td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-btn" onclick="clickToMinus(`+ idDish +`)">
+                                            <button type="button" class="btn btn-xs btn-danger btn-number">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </span>
+                                        <input type="text" name="qty[]" class="form-control input-number" value="1" id="count`+ idDish +`">
+                                        <span class="input-group-btn btn-xs" onclick="clickToPlus(`+ idDish +`)">
+                                            <button type="button" class="btn btn-xs btn-success btn-number">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="note[]" class="form-control"></td>
+                                <td>`+ priceDish +`</td>
+                                <td style="width:5px; cursor:pointer">
+                                    <a  onclick="clickToRemove(`+ idDish +`)">
+                                        <i class="fa fa-times text-danger text"></i>
+                                    </a>
+                                </td>
+                            </tr>`
+                $('#tableOrder').append(row);
+            });
+        }
+    });
+
+
+
 });
 

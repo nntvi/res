@@ -3,6 +3,7 @@ namespace App\Repositories\OrderRepository;
 
 use App\Area;
 use App\Order;
+use App\Shift;
 use App\Table;
 use App\Dishes;
 use App\Topping;
@@ -15,6 +16,7 @@ use App\OrderDetailTable;
 use App\Http\Controllers\Controller;
 
 class OrderRepository extends Controller implements IOrderRepository{
+
     public function validatorOrder($request)
     {
        $request->validate(['idDish' => 'required'],['idDish.required' => 'Vui lòng chọn ít nhất 1 món ăn']);
@@ -92,12 +94,27 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function showTableInDay()
     {
-        $areas = $this->getArea();
-        $date = $this->getDateNow();
-        $idOrders = $this->getOrders($date);
-        return view('order.index',compact('areas','idOrders'));
+        $tables = Table::get();
+        $activeTables = $this->getIdTableActive($this->getDateNow());
+        $groupmenus = $this->getDishes();
+        return view('order.index',compact('tables','activeTables','groupmenus'));
     }
 
+    public function generate_string($input, $strength) {
+        $input_length = strlen($input);
+        $random_string = '';
+        for($i = 0; $i < $strength; $i++) {
+            $random_character = $input[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
+        return $random_string;
+    }
+    public function createCodeBill()
+    {
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $code = $this->generate_string($permitted_chars,7);
+        return $code;
+    }
     public function orderTable()
     {
         $date = $this->getDateNow();
@@ -107,13 +124,24 @@ class OrderRepository extends Controller implements IOrderRepository{
         return view('order.orderTable',compact('groupmenus','inActiveTables'));
     }
 
+    public function checkShift($timeUpdate)
+    {
+        $idShift = Shift::where([
+            ['hour_start', '<=', $timeUpdate],
+            ['hour_end', '>=', $timeUpdate],
+        ])->value('id');
+        return $idShift;
+    }
+
     public function saveOrder($request)
     {
         $orderTable = new Order();
-        $orderTable->id_table = $request->idTable;
+        $orderTable->code = $this->createCodeBill();
+        $orderTable->id_table = $request->idTableOrder;
         $orderTable->status = '1'; // đang order, chưa thanh toán
         $orderTable->created_by = auth()->user()->name;
         $orderTable->time_created = Carbon::now('Asia/Ho_Chi_Minh')->format('H:m:s');
+        $orderTable->id_shift = $this->checkShift(Carbon::now('Asia/Ho_Chi_Minh')->format('H:m:s'));
         $orderTable->save();
         return $orderTable->id;
     }
@@ -134,31 +162,36 @@ class OrderRepository extends Controller implements IOrderRepository{
         }
         return $a == $b ? true : false ;
     }
-    public function addOrderTableTrue($idDish,$idOrderTable,$idCook)
+    public function getSalePriceOfDish($idDish)
     {
-        $price = Dishes::where('id',$idDish)->first();
-            $data = [
-                'id_bill' => $idOrderTable,
-                'qty' => 1,
-                'id_dish' => $idDish,
-                'price' => $price->sale_price,
-                'status' => '0'
-            ];
-        OrderDetailTable::create($data);
-        $this->notifyNewDishForCook($idCook,$idDish);
+        $price = Dishes::where('id',$idDish)->value('sale_price');
+        return $price;
     }
-    public function addOrderTableFalse($idDish,$idOrderTable,$idCook)
+    public function addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request)
     {
-        $price = Dishes::where('id',$idDish)->first();
-            $data = [
-                'id_bill' => $idOrderTable,
-                'qty' => 1,
-                'id_dish' => $idDish,
-                'price' => $price->sale_price,
-                'status' => '-1'
-            ];
-        OrderDetailTable::create($data);
-        $this->notifyNewDishForCook($idCook,$idDish);
+        $price = $this->getSalePriceOfDish($idDish);
+        $orderDetail = new OrderDetailTable();
+        $orderDetail->id_bill = $idOrderTable;
+        $orderDetail->id_dish = $idDish;
+        $orderDetail->qty = $request->qty[$key];
+        $orderDetail->price = $price;
+        $orderDetail->note = $request->note[$key];
+        $orderDetail->status = '0';
+        $orderDetail->save();
+        //$this->notifyNewDishForCook($idCook,$idDish);
+    }
+    public function addOrderTableFalse($idDish,$idOrderTable,$idCook,$key,$request)
+    {
+        $price = $this->getSalePriceOfDish($idDish);
+        $orderDetail = new OrderDetailTable();
+        $orderDetail->id_bill = $idOrderTable;
+        $orderDetail->id_dish = $idDish;
+        $orderDetail->qty = $request->qty[$key];
+        $orderDetail->price = $price;
+        $orderDetail->note = $request->note[$key];
+        $orderDetail->status = '-1';
+        $orderDetail->save();
+        //$this->notifyNewDishForCook($idCook,$idDish);
     }
 
     public function notifyNewDishForCook($idCook,$idDish)
@@ -177,8 +210,9 @@ class OrderRepository extends Controller implements IOrderRepository{
         $data['nameDish'] = Dishes::where('id',$idDish)->value('name');
         $pusher->trigger('NotifyCook', 'notify-cook', $data);
     }
-    public function addDishesOrder($idDishes,$idOrderTable)
+    public function addDishesOrder($request,$idOrderTable)
     {
+        $idDishes = $request->idDish;
         foreach ($idDishes as $key => $idDish) {
             $idGroupNVL = $this->findIdGroupNVL($idDish);
             $idCook = $this->findIdCook($idDish);
@@ -186,9 +220,9 @@ class OrderRepository extends Controller implements IOrderRepository{
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
             if($this->compare($materialInWarehouseCooks,$materialInActions)){
-                $this->addOrderTableTrue($idDish,$idOrderTable,$idCook);
+                $this->addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request);
             }else{
-                $this->addOrderTableFalse($idDish,$idOrderTable,$idCook);
+                $this->addOrderTableFalse($idDish,$idOrderTable,$idCook,$key,$request);
             }
         }
     }
@@ -197,8 +231,8 @@ class OrderRepository extends Controller implements IOrderRepository{
     {
         $idOrderTable = $this->saveOrder($request);
         $idDishes = $request->idDish;
-        $this->addDishesOrder($idDishes,$idOrderTable);
-        return redirect(route('order.update',['id' => $idOrderTable]));
+        $this->addDishesOrder($request,$idOrderTable);
+        return redirect(route('order.index'));
     }
 
     public function addMoreDish($request,$idOrderTable)
@@ -210,11 +244,11 @@ class OrderRepository extends Controller implements IOrderRepository{
             $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL);
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
-            if($this->compare($materialInWarehouseCooks,$materialInActions)){
-                $this->addOrderTableTrue($idDish,$idOrderTable,$idCook);
-            }else{
-                $this->addOrderTableFalse($idDish,$idOrderTable,$idCook);
-            }
+            // if($this->compare($materialInWarehouseCooks,$materialInActions)){
+            //     $this->addOrderTableTrue($idDish,$idOrderTable,$idCook);
+            // }else{
+            //     $this->addOrderTableFalse($idDish,$idOrderTable,$idCook);
+            // }
         }
         return redirect(route('order.update',['id' => $idOrderTable]));
     }

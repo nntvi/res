@@ -179,6 +179,8 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                @else
+                                        -
                                 @endif
                                 @if($exportCoupon != null)
                                     @foreach($exportCoupon as $item)
@@ -276,6 +278,8 @@
                                                 </td>
                                         </tr>
                                     @endforeach
+                                @else
+                                        -
                                 @endif
                             </tbody>
                         </table>

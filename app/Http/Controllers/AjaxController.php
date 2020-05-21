@@ -23,6 +23,7 @@ class AjaxController extends Controller
 {
     private $ajaxRepository;
     private $getDateTime;
+
     public function __construct(IAjaxRepository $ajaxRepository,IGetDateTime $getDateTime)
     {
         $this->ajaxRepository = $ajaxRepository;
@@ -65,6 +66,7 @@ class AjaxController extends Controller
                                         ->with('materialDetail','unit')->get();
         return response()->json($materials);
     }
+
     public function searchMaterialDestroy($name)
     {
         $material = $this->ajaxRepository->searchMaterialDestroy($name);
@@ -184,4 +186,21 @@ class AjaxController extends Controller
         return response()->json($imports);
     }
 
+    public function searchSupplier($search)
+    {
+        $results = Supplier::where('name','LIKE',"%{$search}%")->get();
+        return response()->json($results);
+    }
+
+    public function getDishOrderTable($idTable)
+    {
+        $idOrder = Order::where('id_table',$idTable)->where('status','1')->value('id');
+        $dish = OrderDetailTable::where('id_bill',$idOrder)->with('dish')->get();
+        return response()->json($dish);
+    }
+
+    public function order()
+    {
+
+    }
 }

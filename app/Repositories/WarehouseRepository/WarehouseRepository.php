@@ -18,12 +18,16 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
 
     public function getTypes()
     {
-        $types = TypeMaterial::all();
+        $types = TypeMaterial::with('warehouse')->get();
+                // ->whereHas('warehouse', function ($query)
+                // {
+                //     $query->select('(warehouse.limit_stock - warehouse.qty) as x')->orderBy('x','asc');
+                // })->get();
         return $types;
     }
     public function showIndex()
     {
-       $types = $this->getTypes();
+        $types = $this->getTypes();
         return view('warehouse.index',compact('types'));
     }
     public function updateLimitStockWarehouse($request,$id)
@@ -139,7 +143,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::where('id_material_detail',$id)
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->with('importCoupon.supplier')
+                                            // ->with('importCoupon.supplier')
                                             ->get();
         return $detailImport;
     }
@@ -261,7 +265,6 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $tondauky = $this->checkTonDauKy($warehouse,$detailImportById,$detailExportById);
         $infoImports = $this->getInfoImport($dateStart,$dateEnd);
         $infoExports = $this->getInfoExport($dateStart,$dateEnd);
-        //dd($infoExports);
         return view('warehouse.reportdetail',compact('detailImport','detailExport',
                                                     'warehouse','detailImportById',
                                                     'detailExportById','tondauky',

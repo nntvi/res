@@ -54,7 +54,7 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $warehouse->id_material_detail = $idMaterialDetail;
         $warehouse->qty = 0;
         $warehouse->id_unit = $request->idUnit;
-        $warehouse->tondauky = 0;
+        $warehouse->limit_stock = $request->limit;
         $warehouse->save();
     }
 

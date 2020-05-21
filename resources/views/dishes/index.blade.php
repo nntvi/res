@@ -7,7 +7,7 @@
         </div>
         <div class="row w3-res-tb">
                 <div class="col-sm-5 m-b-xs">
-                    <a href="{{ route('dishes.store') }}" class="btn btn-sm btn-success">Thêm mới</a>
+                    <a href="{{ route('dishes.store') }}" class="btn btn-sm btn-default">Thêm mới</a>
                     <a href="{{ route('dishes.exportexcel') }}" class="btn btn-sm btn-warning">
                         <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
                     </a>
@@ -39,7 +39,6 @@
                         <th>Giá bán</th>
                         <th>Đơn vị tính</th>
                         <th>Trạng thái</th>
-                        <th style="width:30px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -246,11 +245,11 @@
                                     Hiện
                                 @endif
                             </td>
-                            <td>
+                            {{-- <td>
                                 <a href="{{ route('dishes.delete',['id' => $dish->id]) }}"
                                     onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i
                                         class="fa fa-times text-danger text"></i></a>
-                            </td>
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>

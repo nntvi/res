@@ -100,6 +100,7 @@
                                         <div class="col-xs-12 col-sm-6 text-right">
                                                 <div class="space"></div>
                                                 <div class="space"></div>
+                                            <a href="{{ route('supplier.index') }}" class="btn btn-default">Trở về</a>
                                             <button type="submit" class="btn btn-danger">Chỉnh sửa</button>
                                         </div>
                                     </div>

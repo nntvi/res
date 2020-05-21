@@ -154,8 +154,6 @@
                         {{ $type->name }}
                         <span class="tools pull-right">
                             <a class="fa fa-chevron-down" href="javascript:;"></a>
-                            {{-- <a class="fa fa-cog" href="javascript:;"></a> --}}
-                            {{-- <a class="fa fa-times" href="javascript:;"></a> --}}
                         </span>
                     </header>
                     <div class="panel-body">
@@ -173,8 +171,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach($type->warehouse as $key => $detail)
-                                        @if($detail->limit_stock == $detail->qty)
-                                            <tr style="background:palegoldenrod">
+                                        @if($detail->limit_stock >= $detail->qty)
+                                            <tr style="background: #fff79f;">
                                                 <td>{{ $key+1 }}</td>
                                                 <td>{{ $detail->detailMaterial->name }}</td>
                                                 <td style="color:red">{{ $detail->qty }}</td>
