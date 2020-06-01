@@ -21,6 +21,12 @@ Auth::routes(['register' => false]);
 Route::get('/customer/index', 'CustomerController@index')->name('customer.index');
 Route::group(['middleware' => ['auth']], function() {
 
+    // New day
+    Route::group(['prefix' => 'day'], function () {
+        Route::get('open', 'DayController@open')->name('day.open');
+        Route::get('close', 'DayController@close')->name('day.close');
+    });
+
     // Permission
     Route::group(['prefix' => 'permission'], function() {
         Route::get('index', 'PermissionController@index')->name('permission.index');
@@ -66,7 +72,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('store', 'AreaController@store')->name('area.p_store');
         Route::post('update/{id}', 'AreaController@update')->name('area.update');
         Route::get('delete/{id}', 'AreaController@delete')->name('area.delete');
-        Route::get('export', 'AreaController@exportExcel')->name('area.exportexcel');
         Route::get('import', 'AreaController@importExcel')->name('area.importexcel');
         Route::get('deleteall', 'AreaController@deleteAll')->name('area.deleteall');
     });
@@ -80,8 +85,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('updateArea/{id}', 'TableController@updateArea')->name('table.p_updatearea');
         Route::get('search/', 'TableController@search')->name('table.search');
         Route::get('delete/{id}', 'TableController@delete')->name('table.delete');
-        Route::get('export', 'TableController@exportExcel')->name('table.exportexcel');
-
     });
 
     // Group Menu
@@ -177,7 +180,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'order'], function() {
         Route::get('index', 'OrderController@showTable')->name('order.index');
         Route::get('orderTable', 'OrderController@orderTable')->name('order.order');
-        Route::post('tempOrder','OrderController@orderTablePost')->name('order.temporder');
+        //Route::post('tempOrder','OrderController@orderTablePost')->name('order.temporder');
         Route::get('viewUpdate/{id}', 'OrderController@viewUpdate')->name('order.update');
         Route::post('update/{id}','OrderController@update')->name('order.p_update');
         Route::get('addmoredish/{id}','OrderController@viewaddMoreDish')->name('order.addmore');
@@ -205,6 +208,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('index/{id}', 'PayController@index')->name('pay.index');
         Route::get('print/{id}', 'PayController@print')->name('pay.print');
         Route::post('update/{id}', 'PayController@update')->name('pay.p_update');
+        Route::get('bill/{id}', 'PayController@showBill')->name('pay.bill');
     });
 
     // WareHouse
@@ -219,9 +223,11 @@ Route::group(['middleware' => ['auth']], function() {
 
     //Warehouse Cook
     Route::group(['prefix' => 'warehousecook'], function() {
-        Route::get('index/', 'WareHouseCookController@index')->name('warehousecook.index');
-        Route::get('reset/', 'WareHouseCookController@reset')->name('warehousecook.reset');
-        Route::get('viewImport/', 'WareHouseCookController@viewImport')->name('warehousecook.import');
+        Route::get('index', 'WareHouseCookController@index')->name('warehousecook.index');
+        Route::get('reset', 'WareHouseCookController@reset')->name('warehousecook.reset');
+        Route::get('viewImport', 'WareHouseCookController@viewImport')->name('warehousecook.import');
+        Route::post('report', 'WareHouseCookController@report')->name('warehousecook.report');
+        Route::get('exportExcel/{cook}/{dateStart}/{dateEnd}', 'WareHouseCookController@exportExcel')->name('warehousecook.exportexcel');
     });
 
     // Import Coupon
@@ -277,18 +283,13 @@ Route::group(['middleware' => ['auth']], function() {
         //Route::get('export/', 'WareHouseController@testExcel')->name('excel.index');
     });
 
-    // Receipt Voucher
-    Route::group(['prefix' => 'receiptvoucher'], function() {
-        Route::get('index', 'ReceiptVoucherController@index')->name('receiptvoucher.index');
+    Route::group(['prefix' => 'voucher'], function () {
+        Route::get('index', 'VoucherController@index')->name('voucher.index');
 
-    });
-
-    // Payment Voucher
-    Route::group(['prefix' => 'payment'], function() {
-        Route::get('index', 'PaymentVoucherController@index')->name('paymentvoucher.index');
-        Route::get('object', 'PaymentVoucherController@chooseObject')->name('paymentvoucher.p_object');
-        Route::get('storeother', 'PaymentVoucherController@storeOther')->name('paymentvoucher.storeother');
-
+        Route::group(['prefix' => 'payment'], function () {
+            Route::get('object', 'VoucherController@chooseObject')->name('voucher.payment');
+            Route::get('store', 'VoucherController@storePayment')->name('voucher.storepayment');
+        });
     });
 
     // Report

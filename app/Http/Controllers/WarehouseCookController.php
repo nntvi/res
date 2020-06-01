@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportWarehouseCook;
 use App\WarehouseCook;
 use Illuminate\Http\Request;
 use App\Repositories\WarehouseCookRepository\IWarehouseCookRepository;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WarehouseCookController extends Controller
 {
@@ -25,4 +27,13 @@ class WarehouseCookController extends Controller
         return $this->warehousecookRepository->resetWarehouseCook();
     }
 
+    public function report(Request $request)
+    {
+        return $this->warehousecookRepository->reportWarehouseCook($request);
+    }
+
+    public function exportExcel($cook,$dateStart,$dateEnd)
+    {
+        return Excel::download(new ReportWarehouseCook($cook,$dateStart,$dateEnd),'reportwhcook.xlsx');
+    }
 }

@@ -14,11 +14,6 @@ use App\WareHouse;
 use App\WarehouseCook;
 
 class ImportCouponRepository extends Controller implements IImportCouponRepository{
-    public function getListImport()
-    {
-        $listImports = ImportCoupon::with('supplier')->get();
-        return $listImports;
-    }
 
     public function getSuppliers()
     {
@@ -46,13 +41,11 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
 
     public function validateCreatImportCoupon($request)
     {
-        $request->validate(['code' => 'unique:import_coupons,code'],
-                            ['code.unique' => "Mã phiếu nhập bị trùng"]);
+        $request->validate(['code' => 'unique:import_coupons,code'],['code.unique' => "Mã phiếu nhập bị trùng"]);
     }
     public function showIndex()
     {
-        $listImports = $this->getListImport();
-        //dd($listImports);
+        $listImports = ImportCoupon::with('supplier','detailImportCoupon')->paginate(8);
         return view('importcoupon.index',compact('listImports'));
     }
 
@@ -104,8 +97,9 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         $importCoupon->code = $request->code;
         $importCoupon->id_supplier = $request->idSupplier;
         $importCoupon->total = $total;
-        $importCoupon->status = '0';
+        $importCoupon->status = '0'; // chưa thanh toán
         $importCoupon->note = $request->note;
+        $importCoupon->created_by = auth()->user()->name;
         $importCoupon->save();
     }
 
@@ -185,7 +179,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         $sum = $this->getTotalDetailImportCoupon($allDetailByCode);
         $import = ImportCoupon::where('code',$code->code_import)->update(['total' => $sum]);
         $idImport = ImportCoupon::where('code',$code->code_import)->first('id');
-        return redirect(route('importcoupon.detail',['id' => $idImport]));
+        return redirect(route('importcoupon.index'))->withSuccess('Cập nhật thành công');
     }
 
     public function findImportCouponByCode($code)

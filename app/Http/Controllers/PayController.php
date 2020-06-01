@@ -35,6 +35,10 @@ class PayController extends Controller
         return $this->payRepository->updateStatusOrder($request,$id);
     }
 
+    public function showBill($id)
+    {
+        return $this->payRepository->printBill($id);
+    }
     // public function substract($idDishes)
     // {
     //     foreach ($idDishes as $key => $idDish) {

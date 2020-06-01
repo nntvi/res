@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\ReportRepository;
 
+use App\Dishes;
 use App\Helper\IGetDateTime;
 use App\GroupMenu;
 use App\Http\Controllers\Controller;
@@ -23,6 +24,22 @@ class ReportRepository extends Controller implements IReportRepository{
         $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->toDayDateTimeString();
         return $timeNow;
     }
+    public function createFooterOrderReport($orders)
+    {
+        $total = 0; $totalReceive = 0; $totalExcess = 0; $footerOrderReport = array();
+        foreach ($orders as $key => $order) {
+            $total += $order->total_price;
+            $totalReceive += $order->receive_cash;
+            $totalExcess += $order->excess_cash;
+        }
+        $temp = [
+            'total' => $total,
+            'totalReceive' => $totalReceive,
+            'totalExcess' => $totalExcess
+        ];
+        array_push($footerOrderReport,$temp);
+        return $footerOrderReport;
+    }
     public function reportOrder($request)
     {
         $s = " 00:00:00";
@@ -32,7 +49,8 @@ class ReportRepository extends Controller implements IReportRepository{
         $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
                         ->with('table.getArea','user','shift')->get();
         $dateCreate = $this->getTimeNow();
-        return view('report.p_order',compact('orders','dateStart','dateEnd','dateCreate'));
+        $footer = $this->createFooterOrderReport($orders);
+        return view('report.p_order',compact('orders','dateStart','dateEnd','dateCreate','footer'));
     }
 
     public function reportTable($request)
@@ -42,57 +60,127 @@ class ReportRepository extends Controller implements IReportRepository{
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
         $status = $request->statusTable;
-        $results = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
-                        ->where('status', $status)
+        if($status == '2'){
+            $results = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
                         ->with('table.getArea','orderDetail.dish')->get();
+        }else{
+            $results = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
+                        ->where('status', $status)->with('table.getArea','orderDetail.dish')->get();
+        }
         $dateCreate = $this->getTimeNow();
         return view('report.p_table',compact('results','dateStart','dateEnd','dateCreate','status'));
     }
 
-    public function createChartDishByTime($dateStart,$dateEnd)
+    public function getTotalQtyDishToReport($results)
     {
-        $dishes = OrderDetailTable::selectRaw('id_dish, sum(qty) as total')
-                                    ->whereBetween('created_at',[$dateStart,$dateEnd])
-                                    ->groupBy('id_dish')->with('dish')->get();
-        $qtyDishes = array();
-        foreach ($dishes as $key => $dish) {
-            $obj = array(
-                'nameDish' => $dish->dish->name,
-                'qty' => $dish->total
-            );
-            array_push($qtyDishes,$obj);
+        $totalQty = 0;
+        foreach ($results as $key => $result) {
+            $totalQty += $result['qty'];
         }
-        return $qtyDishes;
+        return $totalQty;
+    }
+    public function createFooterTotal($results)
+    {
+        $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;
+        foreach ($results as $key => $result) {
+            $totalCapitalPrice += $result['capital'];
+            $totalSalePrice += $result['sale'];
+            $totalInterest += $result['interest'];
+        }
+        $footerReportDish = array();
+        $temp = [
+            'qty' => $this->getTotalQtyDishToReport($results),
+            'totalCapital' => $totalCapitalPrice,
+            'totalSale' => $totalSalePrice,
+            'totalInterest' => $totalInterest
+        ];
+        array_push($footerReportDish,$temp);
+        return $footerReportDish;
+    }
+
+    public function createArrayChartBestSeller($results)
+    {
+        $totalQty = $this->getTotalQtyDishToReport($results);
+        $arrChartBestSeller = array();
+        foreach ($results as $key => $result) {
+            $temp = [
+                'value' => round((($result['qty'] * 100) / $totalQty),2),
+                'label' => $result['name'],
+            ];
+            array_push($arrChartBestSeller,$temp);
+            unset($temp);
+        }
+        return $arrChartBestSeller;
+    }
+    public function getOrderByAllGroupMenu($dateStart,$dateEnd)
+    {
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
+                        ->whereBetween('updated_at',[$dateStart,$dateEnd])
+                        ->whereIn('status',['1','2'])
+                        ->groupBy('id_dish')->get();
+        return $orders;
+    }
+    public function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu)
+    {
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
+                        ->whereBetween('updated_at',[$dateStart,$dateEnd])
+                        ->whereIn('status',['1','2'])
+                        ->groupBy('id_dish')
+                        ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
+                            $query->where('id',$idGroupMenu);
+                        })->get();
+        return $orders;
+    }
+    public function createArrayReportDish($orders)
+    {
+        $dishes = Dishes::with('groupMenu','unit','material')->get();
+        $results = array();
+        foreach ($dishes as $key => $dish) {
+            foreach ($orders as $key => $order) {
+                if($order->id_dish == $dish->id){
+                    $temp = [
+                        'stt' => $key + 1,
+                        'code' => $dish->code,
+                        'name' => $dish->name,
+                        'group_menu' => $dish->groupMenu->name,
+                        'unit' => $dish->unit->name,
+                        'qty' => $order->sumQty,
+                        'capital' => $dish->capital_price,
+                        'sale' => $dish->sale_price,
+                        'interest' => ($dish->sale_price - $dish->capital_price) *  $order->sumQty
+                    ];
+                    array_push($results,$temp);
+                    unset($temp);
+                    break;
+                }
+            }
+        }
+        return $results;
     }
 
     public function reportDish($request)
     {
         $dateCreate = $this->getTimeNow();
-        $s = " 00:00:00";
-        $e = " 23:59:59";
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
         $idGroupMenu = $request->groupMenu;
         if($idGroupMenu == '0'){
-            $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
-                        ->whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
-                        ->groupBy('id_dish')
-                        ->with('dish','dish.groupMenu','dish.unit')
-                        ->get();
-
+            $orders = $this->getOrderByAllGroupMenu($dateStart,$dateEnd);
+            $results = $this->createArrayReportDish($orders);
+            $arrBestSeller = $this->createArrayChartBestSeller($results);
+            $footerTotal = $this->createFooterTotal($results);
         }
         else{
-            $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
-                        ->whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
-                        ->groupBy('id_dish')
-                        ->with('dish','dish.groupMenu','dish.unit')
-                        ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
-                            $query->where('id',$idGroupMenu);
-                        })->get();
+            $orders = $this->getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu);
+            $results = $this->createArrayReportDish($orders);
+            $arrBestSeller = $this->createArrayChartBestSeller($results);
+            $footerTotal = $this->createFooterTotal($results);
         }
+        $groupMenuChoosen = GroupMenu::where('id',$idGroupMenu)->first();
+        $listGroupMenuExcept = GroupMenu::whereNotIn('id',[$idGroupMenu])->get();
         $listGroupMenu = GroupMenu::all();
-        $dataChart = $this->createChartDishByTime($dateStart,$dateEnd);
-        return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','idGroupMenu','listGroupMenu','dataChart'));
+        return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','groupMenuChoosen',
+                    'listGroupMenuExcept','listGroupMenu','idGroupMenu','arrBestSeller','footerTotal'));
     }
 
     public function getToTalRevenueInYear()

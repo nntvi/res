@@ -6,26 +6,35 @@
         <div class="col-sm-8 mail-w3agile">
             <section class="panel">
                 <div class="panel-heading">
-                    Hóa đơn {{ $idBillTable->id }} --
+                    Hóa đơn {{ $idBillTable->code }} --
                     {{ $idBillTable->table->name }}
                 </div>
-                <header class="panel-heading wht-bg">
+                {{-- <header class="panel-heading wht-bg">
                     <h5 class="gen-case ">
                         Thời gian: {{ $idBillTable->created_at }}
-                    </h5>
+                </h5>
                 </header>
-                <hr>
-                <div class="table-responsive">
+                <hr> --}}
+                <div class="row w3-res-tb">
+                    <div class="col-sm-5 m-b-xs">
+                        <h6>Thời gian vào: {{ $idBillTable->created_at }}</h6>
+
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <h6>Người tạo: {{ $idBillTable->created_by }}</h6>
+                    </div>
+                </div>
+                <div>
                     <table class="table table-striped b-t b-light">
                         <thead>
                             <tr>
-                                <th style="width:20px;">
-                                    STT
-                                </th>
+                                <th> STT </th>
                                 <th>Tên món</th>
                                 <th>Số lượng</th>
                                 <th>Đơn giá</th>
-                                <th>Thành tiền</th>
+                                <th class="text-right">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,19 +43,15 @@
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $item->dish->name }}</td>
                                     <td>{{ $item->amount }}</td>
-                                    <td>{{ number_format($item->dish->sale_price) }}</td>
-                                    <td>{{ number_format($item->dish->sale_price * $item->amount) }}</td>
+                                    <td>{{ number_format($item->dish->sale_price) . ' đ' }}</td>
+                                    <td class="text-right">{{ number_format($item->dish->sale_price * $item->amount) . ' đ' }}</td>
                                 </tr>
                             @endforeach
+                            <tr class="bold">
+                                <td colspan="4" style="text-transform: uppercase; color:black">Tổng tiền</td>
+                                <td class="text-right" style="color:black">{{ number_format($totalPrice) . ' đ' }}</td>
+                            </tr>
                         </tbody>
-                    </table>
-                </div>
-                <hr>
-                <div class="bs-example">
-                    <table class="table">
-                        <div class="panel-heading">
-                            Tổng tiền : {{ number_format($totalPrice) . ' đ' }}
-                        </div>
                     </table>
                 </div>
             </section>
@@ -124,6 +129,7 @@
                                     $('.change').html(debt);
                                     $('input#excessCash').val(debt);
                                 });
+
                             </script>
                         </div>
                     </div>

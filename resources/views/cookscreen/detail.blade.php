@@ -117,7 +117,7 @@
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
-                                                                                            @foreach ($dish->dish->groupNVL->materialAction as $key => $item)
+                                                                                            @foreach ($dish->dish->material->materialAction as $key => $item)
                                                                                                 <tr>
                                                                                                     <td>{{ $key + 1 }}</td>
                                                                                                     <td>{{ $item->materialDetail->name }}</td>

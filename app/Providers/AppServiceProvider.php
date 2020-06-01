@@ -160,6 +160,15 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\BookingRepository\BookingRepository'
         );
 
+        $this->app->bind(
+            'App\Repositories\DayRepository\IDayRepository',
+            'App\Repositories\DayRepository\DayRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\VoucherRepository\IVoucherRepository',
+            'App\Repositories\VoucherRepository\VoucherRepository'
+        );
     }
 
     /**
@@ -169,9 +178,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $now = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-        // $bookTables = Booking::whereBetween('date',[$now . ' 00:00:00', $now . ' 23:59:59'])
-        //                         ->where('status','0')->get(); // bàn chưa đặt trong ngày
-
     }
 }

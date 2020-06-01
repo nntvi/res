@@ -78,7 +78,6 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         $units = $this->getUnit();
         $materialDetails = $this->getMaterialDetails($id);
         $ingredients = $this->getMaterialAction($id);
-        //dd(count($ingredients));
         return view('materialaction.store',compact('material','units','materialDetails','ingredients'));
     }
 

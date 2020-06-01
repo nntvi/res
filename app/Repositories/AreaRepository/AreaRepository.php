@@ -1,10 +1,10 @@
 <?php
 namespace App\Repositories\AreaRepository;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\AreaRepository\IAreaRepository;
 use App\Area;
 use App\Table;
+use App\Http\Controllers\Controller;
+use App\Repositories\AreaRepository\IAreaRepository;
 
 class AreaRepository extends Controller implements IAreaRepository{
 
@@ -46,12 +46,12 @@ class AreaRepository extends Controller implements IAreaRepository{
         );
     }
 
-    public function addArea($req)
+    public function addArea($request)
     {
         $area = new Area();
-        $area->name = $req->nameArea;
+        $area->name = $request->nameArea;
         $area->save();
-        return redirect(route('area.index'))->with('success',"Thêm thành công");
+        return redirect(route('area.index'))->withSuccess('Thêm thành công');
     }
 
     public function updateArea($req,$id)
@@ -67,11 +67,6 @@ class AreaRepository extends Controller implements IAreaRepository{
         Table::where('id_area',$id)->delete();
         $area = Area::find($id)->delete();
         return redirect(route('area.index'));
-    }
-
-    public function collection()
-    {
-        return Area::orderBy('name', 'asc')->get();
     }
 
 }

@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
-                                <label for="cname" class="control-label col-lg-3">Từ ngày:</label>
+                                <label for="cname" class="control-label col-lg-3">Từ:</label>
                                 <div class="col-lg-9">
                                     <input class="date form-control" name="dateStart" type="text" id="dateStart"
                                         value="{{ $dateStart }}" disabled>
@@ -23,7 +23,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
-                                <label for="cname" class="control-label col-lg-3">Đến ngày:</label>
+                                <label for="cname" class="control-label col-lg-3">Đến:</label>
                                 <div class="col-lg-9">
                                     <input class="date form-control" name="dateEnd" type="text" id="dateEnd"
                                         value="{{ $dateEnd }}" disabled>
@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="space"></div>
                     <div class="space"></div>
                 </div>
                 <header class="panel-heading" style="text-align:left">

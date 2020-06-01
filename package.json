@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "print-js": "^1.0.63"
+        "print-js": "^1.0.63",
+        "toastr": "^2.1.4"
     }
 }

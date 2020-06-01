@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\GroupMenu;
 use App\OrderDetailTable;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -21,20 +22,25 @@ class ReportDishExport implements FromCollection, WithHeadings
         $this->idGroupMenu = $idGroupMenu;
     }
 
+    public function getNameGroupMenu($idGroupMenu)
+    {
+       $name = GroupMenu::where('id',$idGroupMenu)->value('name');
+       return $name;
+    }
     public function getResult()
     {
-        $s = " 00:00:00";
-        $e = " 23:59:59";
         if($this->idGroupMenu == '0'){
             $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
-                        ->whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])
+                        ->whereBetween('updated_at',[$this->dateStart,$this->dateEnd])
+                        ->whereIn('status',['1','2'])
                         ->groupBy('id_dish')
                         ->with('dish','dish.groupMenu','dish.unit')
                         ->get();
         }
         else{
             $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
-                        ->whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])
+                        ->whereBetween('updated_at',[$this->dateStart,$this->dateEnd])
+                        ->whereIn('status',['1','2'])
                         ->groupBy('id_dish')
                         ->with('dish','dish.groupMenu','dish.unit')
                         ->whereHas('dish.groupMenu', function($query) {
@@ -65,15 +71,22 @@ class ReportDishExport implements FromCollection, WithHeadings
     public function headings() : array
     {
         return [
-            'STT',
-            'Mã món ăn',
-            'Nhóm thực đơn',
-            'Tên món',
-            'Đơn vị tính',
-            'Số lượng',
-            'Giá vốn',
-            'Giá bán',
-            'Lợi nhuận',
+            ['Báo cáo Món ăn'],
+            ['Từ',$this->dateStart],
+            ['Đến',$this->dateEnd],
+            ['Danh mục',$this->idGroupMenu == '0' ? 'Tất cả' : $this->getNameGroupMenu($this->idGroupMenu)],
+            [],
+            [
+                'STT',
+                'Mã món ăn',
+                'Nhóm thực đơn',
+                'Tên món',
+                'Đơn vị tính',
+                'Số lượng',
+                'Giá vốn',
+                'Giá bán',
+                'Lợi nhuận',
+            ],
         ];
     }
 }

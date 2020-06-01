@@ -45,13 +45,22 @@
                 btn-warning">
                 <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
                 </a> --}}
+
             </div>
             <div class="col-sm-3">
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        <span class="error-message">{{ $error }}</span></p>
-                    @endforeach
-                @endif
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                    @if(session('warning'))
+                        toastr.warning('{{ session('warning') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4 text-right">
             </div>

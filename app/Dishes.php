@@ -38,10 +38,10 @@ class Dishes extends Model
         'id_groupnvl',        'id_dvt'
     ];
 
-    public function groupNVL()
-    {
-       return $this->belongsTo('App\Material','id_groupnvl');
-    }
+    // public function groupNVL()
+    // {
+    //    return $this->belongsTo('App\Material','id_groupnvl');
+    // }
 
     public function unit()
     {

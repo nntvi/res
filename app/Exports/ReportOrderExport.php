@@ -47,16 +47,22 @@ class ReportOrderExport implements FromCollection, WithHeadings
     public function headings() : array
     {
         return [
-            'STT',
-            'Khu vực',
-            'Bàn',
-            'Tổng tiền',
-            'Tiền khách đưa',
-            'Tiền thừa',
-            'Nhân viên',
-            'Ca',
-            'Thời gian thanh toán',
-            'Trạng thái',
+            ['Báo cáo hóa đơn'],
+            ['Từ', $this->dateStart],
+            ['Đến',$this->dateEnd],
+            [],
+            [
+                'STT',
+                'Khu vực',
+                'Bàn',
+                'Tổng tiền',
+                'Tiền khách đưa',
+                'Tiền thừa',
+                'Nhân viên',
+                'Ca',
+                'Thời gian thanh toán',
+                'Trạng thái',
+            ],
         ];
     }
 

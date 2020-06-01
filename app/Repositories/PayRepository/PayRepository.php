@@ -11,7 +11,7 @@ class PayRepository extends Controller implements IPayRepository{
 
     public function findOrder($id)
     {
-        $idBillTable = Order::where('id',$id)->with('table')->first();
+        $idBillTable = Order::where('id',$id)->with('table.getArea','shift')->first();
         return $idBillTable;
     }
 
@@ -58,7 +58,7 @@ class PayRepository extends Controller implements IPayRepository{
         ])->value('id');
         return $idShift;
     }
-    public function updateStatusOrder($request,$id)
+    public function updateStatusOrder($request,$id) // thanh toán
     {
         $bill = Order::find($id);
         $bill->total_price = $request->total;
@@ -67,16 +67,25 @@ class PayRepository extends Controller implements IPayRepository{
         $bill->note = $request->note;
         $bill->status = '0';
         $bill->payer = auth()->user()->name;
-        //$timeUpdate = Carbon::now('Asia/Ho_Chi_Minh');
-        //$bill->id_shift = $this->checkShift($timeUpdate);
         $bill->save();
-        return redirect(route('order.update',['id' => $id]));
+        return redirect(route('pay.bill',['id' => $id]));
     }
 
     public function printBill($id)
     {
-        $total = $this->findOrder($id);
+        $bill = $this->findOrder($id);
         $billPayment = $this->createBill($id);
-        return view('pay.print',compact('billPayment','total'));
+        $temp = array();
+        foreach ($billPayment as $key => $item) {
+            $obj = [
+                'STT' => $key + 1,
+                'Tên món' =>  $item->dish->name,
+                'Số lượng' => $item->amount,
+                'Đơn giá' => number_format($item->dish->sale_price) . ' đ',
+                'Thành tiền' => number_format($item->dish->sale_price * $item->amount) . ' đ'
+            ];
+            array_push($temp,$obj);
+        }
+        return view('pay.bill',compact('billPayment','bill','temp'));
     }
 }

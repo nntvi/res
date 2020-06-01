@@ -1,64 +1,137 @@
 <!--header start-->
 <style>
-.badge{
-    padding: 2px 6px;
-}
-@-webkit-keyframes my {
-    0% { color: red; }
-    50% { color: #450a0a;  }
-    100% { color: red;  }
-}
-@-moz-keyframes my {
-    0% { color: red;  }
-    50% { color: #450a0a;  }
-    100% { color: red;  }
-}
-@-o-keyframes my {
-    0% { color: red; }
-    50% { color: #450a0a; }
-    100% { color: red;  }
-}
-@keyframes my {
-    0% { color: red;  }
-    50% { color: #450a0a;  }
-    100% { color: red;  }
-}
-.test {
-    font-size:13.5px;
-    font-weight:bold;
-    -webkit-animation: my 700ms infinite;
-    -moz-animation: my 700ms infinite;
-    -o-animation: my 700ms infinite;
-    animation: my 700ms infinite;
-}
-.test1 {
-    font-size:13.5px;
-    font-weight:bold;
-    -webkit-animation: my1 700ms infinite;
-    -moz-animation: my1 700ms infinite;
-    -o-animation: my1 700ms infinite;
-    animation: my1 700ms infinite;
-}
-@-webkit-keyframes my1 {
-    0% { color: black; }
-    50% { text-decoration: underline;  }
-    100% { color: black;  }
-}
-@-moz-keyframes my1 {
-    0% { color: black;  }
-    50% { text-decoration: underline;  }
-    100% { color: black;  }
-}
-@-o-keyframes my1 {
-    0% { color: black; }
-    50% { text-decoration: underline; }
-    100% { color: black;  }
-}
-@keyframes my1 {
-    0% { color: black;  }
-    50% { text-decoration: underline;  }
-    100% { color: black;  }
-}
+    .badge {
+        padding: 2px 6px;
+    }
+
+    @-webkit-keyframes my {
+        0% {
+            color: red;
+        }
+
+        50% {
+            color: #450a0a;
+        }
+
+        100% {
+            color: red;
+        }
+    }
+
+    @-moz-keyframes my {
+        0% {
+            color: red;
+        }
+
+        50% {
+            color: #450a0a;
+        }
+
+        100% {
+            color: red;
+        }
+    }
+
+    @-o-keyframes my {
+        0% {
+            color: red;
+        }
+
+        50% {
+            color: #450a0a;
+        }
+
+        100% {
+            color: red;
+        }
+    }
+
+    <blade keyframes|%20my%20%7B>0% {
+        color: red;
+    }
+
+    50% {
+        color: #450a0a;
+    }
+
+    100% {
+        color: red;
+    }
+    }
+
+    .test {
+        font-size: 13.5px;
+        font-weight: bold;
+        -webkit-animation: my 700ms infinite;
+        -moz-animation: my 700ms infinite;
+        -o-animation: my 700ms infinite;
+        animation: my 700ms infinite;
+    }
+
+    .test1 {
+        font-size: 13.5px;
+        font-weight: bold;
+        -webkit-animation: my1 700ms infinite;
+        -moz-animation: my1 700ms infinite;
+        -o-animation: my1 700ms infinite;
+        animation: my1 700ms infinite;
+    }
+
+    @-webkit-keyframes my1 {
+        0% {
+            color: black;
+        }
+
+        50% {
+            text-decoration: underline;
+        }
+
+        100% {
+            color: black;
+        }
+    }
+
+    @-moz-keyframes my1 {
+        0% {
+            color: black;
+        }
+
+        50% {
+            text-decoration: underline;
+        }
+
+        100% {
+            color: black;
+        }
+    }
+
+    @-o-keyframes my1 {
+        0% {
+            color: black;
+        }
+
+        50% {
+            text-decoration: underline;
+        }
+
+        100% {
+            color: black;
+        }
+    }
+
+    <blade keyframes|%20my1%20%7B>0% {
+        color: black;
+    }
+
+    50% {
+        text-decoration: underline;
+    }
+
+    100% {
+        color: black;
+    }
+    }
+
 </style>
 <header class="header fixed-top clearfix">
     <!--logo start-->
@@ -128,18 +201,20 @@
         <!--search & user info start-->
         <ul class="nav pull-right top-menu">
             <li class="notificationWhCook">
-                @if (auth()->user()->notifyQtyWarehouse() != null)
+                @if(auth()->user()->notifyQtyWarehouse() != null)
                     <div class="alert alert-success" role="alert" style="margin-bottom: 0px; padding: 5px 5px">
-                        <strong class="test1">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết </strong>
+                        <strong class="test1">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết
+                        </strong>
                     </div>
                 @else
 
                 @endif
             </li>
             <li class="notificationWhCook">
-                @if (auth()->user()->notifyQtyOfCook() != null)
+                @if(auth()->user()->notifyQtyOfCook() != null)
                     <div class="alert alert-warning" role="alert" style="margin-bottom: 0px; padding: 5px 5px">
-                        <strong class="test"> Có {{ auth()->user()->notifyQtyOfCook() }} NVL cần nhập gấp cho bếp </strong>
+                        <strong class="test"> Có {{ auth()->user()->notifyQtyOfCook() }} NVL cần nhập gấp cho bếp
+                        </strong>
                     </div>
                 @else
 
@@ -166,6 +241,11 @@
                 });
             </script>  --}}
             <!-- user login dropdown start-->
+            @if(auth()->user()->checkOpenDay() == false)
+                <li><a href="{{ route('day.open') }}"
+                        style="background: yellow; padding: 7px 10px; color: black; font-size: 14px;"><i class="fa fa-lightbulb-o"></i> Khai ca</a>
+                </li>
+            @endif
             <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                     <img alt="" src="images/2.png">
@@ -173,13 +253,23 @@
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu extended logout">
-                    <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
-                    <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+                    @if (auth()->user()->checkOpenDay() == true)
+                        @if(auth()->user()->checkCloseDay() == false)
+                        <li><a href="{{ route('day.close') }}"
+                                style="background: #ffaf8c; font-weight: bold;"><i class="fa fa-lock"></i> Chốt
+                                ca</a></li>
+                        @else
+
+                        @endif
+                    @else
+
+                    @endif
+
                     <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                                   document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                            <i class="fa fa-key"></i></a></li>
-
+                        <i class="fa fa-sign-out"></i>{{ __('Đăng xuất') }}
+                        </a>
+                    </li>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
                         style="display: none;">
                         @csrf

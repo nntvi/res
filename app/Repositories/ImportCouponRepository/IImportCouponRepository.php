@@ -2,7 +2,6 @@
 namespace App\Repositories\ImportCouponRepository;
 
 interface IImportCouponRepository{
-    function getListImport();
     function getSuppliers();
     function getMaterialDetail();
     function getUnit();

@@ -3,11 +3,51 @@
 <div class="table-agile-info">
     <div class="panel panel-default">
         <div class="panel-heading">
-            Responsive Table
+            Phiếu thu - phiếu chi
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-5 m-b-xs">
-                <a href="{{ route('paymentvoucher.index') }}" class="btn btn-sm btn-default">Tạo mới</a>
+                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i> Tạo phiếu chi
+                </a>
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
+                    class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h4 class="modal-title">Chọn đối tượng chi</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('voucher.payment') }}" method="GET">
+                                    @csrf
+                                    <div class="form-group row">
+                                        <div class="col-xs-6">
+                                            <div class="col-xs-1">
+                                                <input type="radio" name="object" value="1">
+                                            </div>
+                                            <div class="col-xs-9">
+                                                <label for="">Trả nợ nhà cung cấp</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <div class="col-xs-1">
+                                                <input type="radio" name="object" value="2">
+                                            </div>
+                                            <div class="col-xs-9">
+                                                <label for="">Khác</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button type="submit" class="btn btn-danger">Chọn</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="" class="btn btn-sm btn-default"> <i class="fa fa-file-text" aria-hidden="true"></i> Tạo phiếu thu</a>
             </div>
             <div class="col-sm-4">
             </div>

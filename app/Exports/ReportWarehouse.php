@@ -28,8 +28,7 @@ class ReportWarehouse implements FromCollection , WithHeadings
         $e = " 23:59:59";
         $warehouse = WareHouse::whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])
                                     ->with('detailMaterial','typeMaterial','unit')
-                                    ->orderBy('id_material_detail')
-                                    ->get();
+                                    ->orderBy('id_material_detail')->get();
         return $warehouse;
     }
 
@@ -39,9 +38,7 @@ class ReportWarehouse implements FromCollection , WithHeadings
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$this->dateStart . $s ,$this->dateEnd . $e])
-                                            ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')
-                                            ->get();
+                                            ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailImport;
     }
 
@@ -51,9 +48,7 @@ class ReportWarehouse implements FromCollection , WithHeadings
         $e = " 23:59:59";
         $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$this->dateStart . $s ,$this->dateEnd . $e])
-                                            ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')
-                                            ->get();
+                                            ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailExport;
     }
 
@@ -127,10 +122,10 @@ class ReportWarehouse implements FromCollection , WithHeadings
                 '1' => $item['name'],
                 '2' => $item['nameType'],
                 '3' => $item['unit'],
-                '4' => $item['tondauky'],
-                '5' => $item['import'],
-                '6' => $item['export'],
-                '7' => $item['toncuoiky'],
+                '4' => $item['tondauky'] == 0 ? '0' : $item['tondauky'],
+                '5' => $item['import'] == 0 ? '0' : $item['import'],
+                '6' => $item['export'] == 0 ? '0' : $item['export'],
+                '7' => $item['toncuoiky'] == 0 ? '0' : $item['toncuoiky'],
             );
         }
         return collect($row);
@@ -139,14 +134,20 @@ class ReportWarehouse implements FromCollection , WithHeadings
     public function headings() : array
     {
         return [
-            'STT',
-            'Tên NVL',
-            'Nhóm thực đơn',
-            'Đơn vị tính',
-            'Tồn đầu kì',
-            'SL nhập',
-            'SL xuất',
-            'Tồn cuối kỳ'
+            ['Báo cáo kho'],
+            ['Từ', $this->dateStart],
+            ['Đến',$this->dateEnd],
+            [],
+            [
+                'STT',
+                'Tên NVL',
+                'Nhóm thực đơn',
+                'Đơn vị tính',
+                'Tồn đầu kì',
+                'SL nhập',
+                'SL xuất',
+                'Tồn cuối kỳ'
+            ],
         ];
     }
 }

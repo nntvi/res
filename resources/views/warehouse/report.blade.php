@@ -16,20 +16,25 @@
                                 <div class="row">
                                         <div class="col-xs-12 col-sm-4">
                                                 <div class="form-group ">
-                                                        <label for="cname" class="control-label col-lg-3">Báo cáo theo</label>
+                                                        <label for="cname" class="control-label col-lg-3">Chọn:</label>
                                                         <div class="col-lg-9">
                                                             <select class="form-control m-bot15" id="timeReport">
-                                                                <option value="0">Theo ngày</option>
-                                                                <option value="2">Theo tuần</option>
-                                                                <option value="4">Theo tháng</option>
-                                                                <option value="8">Theo năm</option>
+                                                                    <option value="0">Hôm nay</option>
+                                                                    <option value="1">Hôm qua</option>
+                                                                    <option value="2">Tuần này</option>
+                                                                    <option value="3">Tuần trước</option>
+                                                                    <option value="4">Tháng này</option>
+                                                                    <option value="5">Tháng trước</option>
+                                                                    <option value="6">Quý này</option>
+                                                                    <option value="7">Quý trước</option>
+                                                                    <option value="8">Năm nay</option>
                                                             </select>
                                                         </div>
                                                 </div>
                                         </div>
                                         <div class="col-xs-12 col-sm-4">
                                                 <div class="form-group ">
-                                                        <label for="cname" class="control-label col-lg-3">Từ ngày:</label>
+                                                        <label for="cname" class="control-label col-lg-3">Từ:</label>
                                                         <div class="col-lg-9">
                                                             <input class="date form-control" name="dateStart" type="text" id="dateStart" value="{{ $dateStart }}">
                                                         </div>
@@ -37,7 +42,7 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-4">
                                                 <div class="form-group ">
-                                                        <label for="cname" class="control-label col-lg-3">Đến ngày:</label>
+                                                        <label for="cname" class="control-label col-lg-3">Đến:</label>
                                                         <div class="col-lg-9">
                                                             <input class="date form-control" name="dateEnd" type="text" id="dateEnd" value="{{ $dateEnd }}">
                                                         </div>
@@ -51,9 +56,9 @@
 
                                 </div>
                                 <div class="space"></div>
-                                <div class="space"></div>
                                 <div class="row">
                                     <div class="col-xs-12 text-center">
+                                        <a href="{{ route('warehouse.index') }}" class="btn btn-default">Trở về</a>
                                         <button type="submit" id="submitReport" class="btn green-meadow radius">Tìm kiếm</button>
                                     </div>
                                 </div>
@@ -64,6 +69,7 @@
                         </header>
                         <div class="row w3-res-tb" style="padding: 15px">
                             <div class="col-sm-5 bold">
+                                Ngày lập: {{ $today }}
                             </div>
                             <div class="col-sm-4">
                             </div>

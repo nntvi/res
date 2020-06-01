@@ -3,7 +3,7 @@
 <div class="form-w3layouts">
     <h2 class="w3ls_head">Kho</h2>
     <div class="row">
-        <div class="box_content">
+        <div class="box_content" style="margin: 1em;">
             <div class="icon-box col-md-3 col-sm-4">
                 <a class="agile-icon" href="{{ route('importcoupon.import') }}">
                     <i class="fa fa-tasks"></i> Nhập kho
@@ -76,7 +76,7 @@
     </div>
 
     <div class="row">
-        <section class="panel">
+        <section class="panel" style="margin: 1em;">
             <div class="panel-body">
                 <div class="space"></div>
                 <form action="{{ route('reportwarehouse.p_report') }}" method="post"
@@ -85,31 +85,30 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
-                                <label for="cname" class="control-label col-lg-3">Báo cáo theo</label>
-                                <div class="col-lg-9">
+                                <label class="control-label">Báo cáo theo</label>
                                     <select class="form-control m-bot15" id="timeReport">
-                                        <option value="0">Theo ngày</option>
-                                        <option value="2">Theo tuần</option>
-                                        <option value="4">Theo tháng</option>
-                                        <option value="8">Theo năm</option>
+                                            <option value="0">Hôm nay</option>
+                                            <option value="1">Hôm qua</option>
+                                            <option value="2">Tuần này</option>
+                                            <option value="3">Tuần trước</option>
+                                            <option value="4">Tháng này</option>
+                                            <option value="5">Tháng trước</option>
+                                            <option value="6">Quý này</option>
+                                            <option value="7">Quý trước</option>
+                                            <option value="8">Năm nay</option>
                                     </select>
-                                </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
-                                <label for="cname" class="control-label col-lg-3">Từ ngày:</label>
-                                <div class="col-lg-9">
-                                    <input class="date form-control" name="dateStart" type="text" id="dateStart">
-                                </div>
+                                <label class="control-label">Từ ngày:</label>
+                                <input class="date form-control" name="dateStart" type="text" id="dateStart">
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
-                                <label for="cname" class="control-label col-lg-3">Đến ngày:</label>
-                                <div class="col-lg-9">
-                                    <input class="date form-control" name="dateEnd" type="text" id="dateEnd">
-                                </div>
+                                <label class="control-label">Đến ngày:</label>
+                                <input class="date form-control" name="dateEnd" type="text" id="dateEnd">
                             </div>
                             <script type="text/javascript">
                                 $('.date').datepicker({
@@ -134,8 +133,6 @@
                             </script>
                         </div>
                     </div>
-                    <div class="space"></div>
-                    <div class="space"></div>
                     <div class="row">
                         <div class="col-xs-12 text-center">
                             <button type="submit" class="btn green-meadow radius">Tìm kiếm</button>

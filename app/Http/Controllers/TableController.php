@@ -45,9 +45,4 @@ class TableController extends Controller
     {
         return $this->tableRepository->deleteTable($id);
     }
-
-    public function exportExcel()
-    {
-        return Excel::download(new TableExport,'table.xlsx');
-    }
 }

@@ -8,4 +8,5 @@ interface IWarehouseCookRepository{
     function getCookWarehouse();
     function showWarehouseCook();
     function resetWarehouseCook();
+    function reportWarehouseCook($request);
 }

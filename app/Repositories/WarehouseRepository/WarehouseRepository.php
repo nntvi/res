@@ -12,6 +12,7 @@ use App\WareHouseDetail;
 use App\ImportCouponDetail;
 use App\ExportCouponDetail;
 use App\ImportCoupon;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class WarehouseRepository extends Controller implements IWarehouseRepository{
@@ -134,7 +135,8 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $detailImport = $this->importBetween($dateStart,$dateEnd);
         $detailExport = $this->exportBetween($dateStart,$dateEnd);
         $arrayReport = $this->getReportWarehouse($warehouse,$detailImport,$detailExport);
-        return view('warehouse.report',compact('arrayReport','dateStart','dateEnd'));
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->toDayDateTimeString();
+        return view('warehouse.report',compact('arrayReport','dateStart','dateEnd','today'));
     }
 
     public function getImportById($id,$dateStart,$dateEnd)

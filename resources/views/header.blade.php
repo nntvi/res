@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <base href="{{ asset('') }}">
-    <script type="application/x-javascript">
+    {{-- <script type="application/x-javascript">
         addEventListener("load", function () {
             setTimeout(hideURLbar, 0);
         }, false);
@@ -13,7 +13,7 @@
             window.scrollTo(0, 1);
         }
 
-    </script>
+    </script> --}}
     <!-- bootstrap-css -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <!-- //bootstrap-css -->
@@ -28,11 +28,15 @@
     <link rel="stylesheet" href="{{ asset('css/font.css' ) }}" type="text/css" />
     <link href="{{ asset('css/font-awesome.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/morris.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/print.css') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/toastr.css') }}">
+
     <script src="{{ asset('js/jquery2.0.3.min.js') }}"></script>
+    <script src="{{ asset('js/print.js') }}"></script>
     <script src="{{ asset('js/raphael-min.js') }}"></script>
     <script src="{{ asset('js/morris.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-
     <script src="{{ asset('js/ajax.js') }}"></script>
     <script src="{{ asset('js/validate.js') }}"></script>
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -44,5 +48,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
     <script src="https://js.pusher.com/6.0/pusher.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 </head>
 

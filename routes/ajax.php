@@ -4,9 +4,12 @@ Route::group(['prefix' => 'ajax'], function() {
     Route::get('search/suppliers/{search}','AjaxController@searchSupplier');
     Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
     Route::get('getImportCoupon/{idSupplier}','AjaxController@getUnPaidImport');
-    Route::get('orderTable/{idTable}','AjaxController@getDishOrderTable');
 
-    Route::post('order','AjaxController@order');
+    Route::group(['prefix' => 'order'], function () {
+        Route::get('table/{idTable}','AjaxController@getDishOrderTable');
+        Route::post('store','OrderController@orderTablePost');
+        Route::post('update/{idBill}','OrderController@addMoreDish');
+    });
 
     Route::group(['prefix' => 'getMaterial'], function() {
         Route::get('bySupplier/{idSupplier}','AjaxController@getMaterialBySupplier');

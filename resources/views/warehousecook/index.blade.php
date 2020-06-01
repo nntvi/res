@@ -1,15 +1,82 @@
 @extends('layouts')
-
 @section('content')
 <div class="form-w3layouts">
-    {{-- <div class="box_content">
-        <div class="icon-box col-md-3 col-sm-4">
-            <a class="agile-icon" href="{{route('warehousecook.reset')}}"
-            onclick="return confirm('Bạn có thật sự muốn reset kho bếp?')">
-                <i class="fa fa-undo"></i> Reset Kho Bếp
-            </a>
+    <h2 class="w3ls_head">Kho Bếp</h2>
+        <div class="row">
+            <section class="panel" style="margin: 1em;">
+                <div class="panel-body">
+                    <div class="space"></div>
+                        <form action="{{ route('warehousecook.report') }}" method="post" onsubmit="return validateForm()">
+                            @csrf
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-3">
+                                    <div class="form-group ">
+                                        <label class="control-label">Báo cáo theo</label>
+                                                <select class="form-control" id="timeReport">
+                                                        <option value="0">Hôm nay</option>
+                                                        <option value="1">Hôm qua</option>
+                                                        <option value="2">Tuần này</option>
+                                                        <option value="3">Tuần trước</option>
+                                                        <option value="4">Tháng này</option>
+                                                        <option value="5">Tháng trước</option>
+                                                        <option value="6">Quý này</option>
+                                                        <option value="7">Quý trước</option>
+                                                        <option value="8">Năm nay</option>
+                                                </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-3">
+                                    <div class="form-group ">
+                                        <label class="control-label">Từ ngày:</label>
+                                        <input class="date form-control" name="dateStart" type="text" id="dateStart">
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-3">
+                                    <div class="form-group ">
+                                        <label class="control-label">Đến ngày:</label>
+                                        <input class="date form-control" name="dateEnd" type="text" id="dateEnd">
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-3">
+                                    <div class="form-group ">
+                                        <label class="control-label">Chọn bếp:</label>
+                                        <select name="cook" id="" class="form-control">
+                                            @foreach ($cooks as $cook)
+                                                <option value="{{ $cook->id }}">{{ $cook->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    $('.date').datepicker({
+                                        format: 'yyyy-mm-dd'
+                                    });
+
+                                    function validateForm() {
+                                        var dateStart = document.getElementById('dateStart').value;
+                                        var dateEnd = document.getElementById('dateEnd').value;
+
+                                        if (dateStart == null || dateStart == "") {
+                                            alert("Không để trống ngày bắt đầu");
+                                            return false;
+                                        }
+                                        if (dateEnd == null || dateEnd == "") {
+                                            alert("Không để trống ngày kết thúc");
+                                            return false;
+                                        }
+                                        return true;
+                                    }
+                                </script>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 text-center">
+                                    <button type="submit" class="btn green-meadow radius">Tìm kiếm</button>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </section>
         </div>
-    </div> --}}
         <!-- page start-->
         @foreach ($cookWarehouse as $cookwarehouse)
         <div class="row">

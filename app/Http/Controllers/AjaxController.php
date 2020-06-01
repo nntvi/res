@@ -139,8 +139,8 @@ class AjaxController extends Controller
                 break;
             case 8:
                 $data = [
-                    'dateStart' => $this->getDateTime->getFirstOfYear(),
-                    'dateEnd' => $this->getDateTime->getLastOfYear(),
+                    'dateStart' => $this->getDateTime->getFirstOfYear()->format('Y-m-d'),
+                    'dateEnd' => $this->getDateTime->getLastOfYear()->format('Y-m-d'),
                 ];
                 break;
             default:
@@ -192,15 +192,11 @@ class AjaxController extends Controller
         return response()->json($results);
     }
 
-    public function getDishOrderTable($idTable)
+    public function getDishOrderTable($idBill)
     {
-        $idOrder = Order::where('id_table',$idTable)->where('status','1')->value('id');
-        $dish = OrderDetailTable::where('id_bill',$idOrder)->with('dish')->get();
-        return response()->json($dish);
+        $dishes = OrderDetailTable::where('id_bill',$idBill)->with('dish')->get();
+        return response()->json($dishes);
     }
 
-    public function order()
-    {
 
-    }
 }

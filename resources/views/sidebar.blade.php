@@ -84,8 +84,7 @@
                 </a>
                 <ul class="sub">
                     <li><a href="{{ route('bill.index') }}">Danh sách hóa đơn</a></li>
-                    <li><a href="{{ route('receiptvoucher.index') }}">Phiếu Thu</a></li>
-                    <li><a href="{{ route('paymentvoucher.index') }}">Phiếu Chi</a></li>
+                    <li><a href="{{ route('voucher.index') }}">Phiếu Thu/Chi</a></li>
                 </ul>
             </li>
             <li class="sub-menu">

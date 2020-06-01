@@ -55,7 +55,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-xs-12 text-center">
-                                <a href="{{ route('paymentvoucher.index') }}" class="btn btn-default">Trở về</a>
+                                <a href="{{ route('voucher.index') }}" class="btn btn-default">Trở về</a>
                                 <button type="submit" class="btn btn-info">Submit</button>
                             </div>
                         </div>

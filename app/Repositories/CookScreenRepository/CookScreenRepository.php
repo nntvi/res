@@ -28,8 +28,8 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])
                                     ->orderBy('updated_at','asc')
                                     ->with('dish.groupMenu.cookArea','order.table',
-                                            'dish.groupNVL.materialAction.materialDetail',
-                                            'dish.groupNVL.materialAction.unit')->get();
+                                            'dish.material.materialAction.materialDetail',
+                                            'dish.material.materialAction.unit')->get();
         return $dishes;
     }
     public function getMaterialInWarehouseCook($idCook)
@@ -61,7 +61,6 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         $dishes = $this->getDishesByDate($date);
         $data = $this->addDishesToArray($dishes,$id);
         $materials = $this->getMaterialInWarehouseCook($id);
-        //dd($dishes);
         return view('cookscreen.detail',compact('data','cook','materials'));
     }
 

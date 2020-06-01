@@ -25,10 +25,7 @@ class AreaController extends Controller
     public function store(Request $request)
     {
         $this->areaRepository->validatorRequestStore($request);
-        $area = new Area();
-        $area->name = $request->nameArea;
-        $area->save();
-        return redirect(route('area.index'));
+        return $this->areaRepository->addArea($request);
     }
 
     public function update(Request $request, $id)
@@ -40,10 +37,5 @@ class AreaController extends Controller
     public function delete($id)
     {
         return $this->areaRepository->deleteArea($id);
-    }
-
-    public function exportExcel()
-    {
-        return Excel::download(new AreaExport,'area.xlsx');
     }
 }

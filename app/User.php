@@ -6,7 +6,7 @@ use App\Permission;
 use App\UserPermission;
 use App\PermissionDetail;
 use App\WarehouseCook;
-
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -128,5 +128,18 @@ class User extends Authenticatable
             }
         }
         return $count;
+    }
+
+    public function checkOpenDay()
+    {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y:m:d');
+        $check = StartDay::where('date',$today)->value('id');
+        return $check != null ? true : false;
+    }
+    public function checkCloseDay()
+    {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y:m:d');
+        $check = EndDay::where('date',$today)->value('id');
+        return $check != null ? true : false;
     }
 }

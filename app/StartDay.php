@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentVoucher extends Model
+class StartDay extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'payment_voucher';
+    protected $table = 'start_day';
 
     /**
      * The primary key associated with the table.
@@ -25,24 +25,14 @@ class PaymentVoucher extends Model
      *
      * @var bool
      */
-    public $timestamps = true;
-
+    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'code','type_payment','name','content','total','created_by'
+        'date',
+        'time'
     ];
-
-    public function typePayment()
-    {
-        return $this->belongsTo('App\TypePayment','type_payment','id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\User','created_by','id');
-    }
 }

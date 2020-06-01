@@ -36,7 +36,7 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Số HĐ</th>
+                        <th>Mã HĐ</th>
                         <th>Bàn</th>
                         <th>Trạng thái</th>
                         <th>Tổng giá</th>
@@ -54,7 +54,7 @@
                     @foreach($bills as $key => $bill)
                         <tr>
                             <td>{{ $key + 1 }}</td>
-                            <td>{{ $bill->id }}</td>
+                            <td>{{ $bill->code }}</td>
                             <td>{{ $bill->id_table }}</td>
                             <td>{{ $bill->status == '0' ? 'Đã thanh toán' : 'Chưa thanh toán' }}</td>
                             <td>{{ number_format($bill->total_price) . ' đ' }}</td>
@@ -78,7 +78,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title"> Chi tiết hóa đơn số {{ $bill->id }}</h4>
+                                                <h4 class="modal-title"> Chi tiết hóa đơn số {{ $bill->code }}</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="modal-body">

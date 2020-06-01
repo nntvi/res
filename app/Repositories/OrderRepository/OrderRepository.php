@@ -48,7 +48,7 @@ class OrderRepository extends Controller implements IOrderRepository{
     public function getIdTableActive($date)
     {
         $activeTables= Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])
-                            ->where('status', '1')->get('id_table');
+                            ->where('status', '1')->get();
         return $activeTables;
     }
 
@@ -176,9 +176,9 @@ class OrderRepository extends Controller implements IOrderRepository{
         $orderDetail->qty = $request->qty[$key];
         $orderDetail->price = $price;
         $orderDetail->note = $request->note[$key];
-        $orderDetail->status = '0';
+        $orderDetail->status = '0'; // chưa làm
         $orderDetail->save();
-        //$this->notifyNewDishForCook($idCook,$idDish);
+        $this->notifyNewDishForCook($idCook,$idDish);
     }
     public function addOrderTableFalse($idDish,$idOrderTable,$idCook,$key,$request)
     {
@@ -189,9 +189,9 @@ class OrderRepository extends Controller implements IOrderRepository{
         $orderDetail->qty = $request->qty[$key];
         $orderDetail->price = $price;
         $orderDetail->note = $request->note[$key];
-        $orderDetail->status = '-1';
+        $orderDetail->status = '-1'; // hết nvl phục vụ
         $orderDetail->save();
-        //$this->notifyNewDishForCook($idCook,$idDish);
+        $this->notifyNewDishForCook($idCook,$idDish);
     }
 
     public function notifyNewDishForCook($idCook,$idDish)
@@ -230,26 +230,24 @@ class OrderRepository extends Controller implements IOrderRepository{
     public function orderTablePost($request)
     {
         $idOrderTable = $this->saveOrder($request);
-        $idDishes = $request->idDish;
         $this->addDishesOrder($request,$idOrderTable);
-        return redirect(route('order.index'));
+        return redirect(route('order.index'))->withSuccess('Order thành công');
     }
 
-    public function addMoreDish($request,$idOrderTable)
+    public function addMoreDish($request,$idBill)
     {
         $idDishes = $request->idDish;
-        foreach ($idDishes as $idDish) {
+        foreach ($idDishes as $key => $idDish) {
             $idGroupNVL = $this->findIdGroupNVL($idDish);
             $idCook = $this->findIdCook($idDish);
             $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL);
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
-            // if($this->compare($materialInWarehouseCooks,$materialInActions)){
-            //     $this->addOrderTableTrue($idDish,$idOrderTable,$idCook);
-            // }else{
-            //     $this->addOrderTableFalse($idDish,$idOrderTable,$idCook);
-            // }
+            if($this->compare($materialInWarehouseCooks,$materialInActions)){
+                $this->addOrderTableTrue($idDish,$idBill,$idCook,$key,$request);
+            }else{
+                $this->addOrderTableFalse($idDish,$idBill,$idCook,$key,$request);
+            }
         }
-        return redirect(route('order.update',['id' => $idOrderTable]));
     }
 }

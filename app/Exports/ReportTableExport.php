@@ -56,13 +56,19 @@ class ReportTableExport implements FromCollection, WithHeadings
     public function headings() : array
     {
         return [
-            'STT',
-            'Khu vực',
-            'Bàn',
-            'Những món đã gọi',
-            'Thời gian vào',
-            'Thời gian ra',
-            'Trạng thái',
+            ['Báo cáo theo bàn'],
+            ['Từ', $this->dateStart],
+            ['Đến', $this->dateEnd],
+            [],
+            [
+                'STT',
+                'Khu vực',
+                'Bàn',
+                'Những món đã gọi',
+                'Thời gian vào',
+                'Thời gian ra',
+                'Trạng thái',
+            ],
         ];
     }
 }
