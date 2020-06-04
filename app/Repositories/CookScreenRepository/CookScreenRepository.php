@@ -95,17 +95,13 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
     }
     public function getOnlyIdMaterialAction($idGroupNVL)
     {
-        $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)
-                                            ->orderBy('id_material_detail')
-                                            ->get('id_material_detail');
+        $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)->orderBy('id_material_detail')->get('id_material_detail');
         return $idMaterialDetails;
     }
     public function findInWarehouseCook($idCook,$idMaterialDetails)
     {
-        $detailWarehouse = WarehouseCook::where('cook',$idCook)
-                                        ->whereIn('id_material_detail',$idMaterialDetails)
-                                        ->orderBy('id_material_detail')
-                                        ->get();
+        $detailWarehouse = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)
+                                        ->orderBy('id_material_detail')->get();
         return $detailWarehouse;
     }
 

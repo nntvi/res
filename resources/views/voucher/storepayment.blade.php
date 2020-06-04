@@ -1,69 +1,111 @@
 @extends('layouts')
 @section('content')
-<div class="row">
-    <div class="col-lg-12">
-        <section class="panel">
-            <header class="panel-heading">
-                Tạo phiếu chi
-            </header>
-            <div class="panel-body">
-                <div class="position-center">
-                    <form role="form">
-                        <div class="form-group row">
-                            <div class="col-xs-6">
-                                <label>Mã phiếu chi</label>
-                                <input type="text" class="form-control" max="30" min="3" required>
-                            </div>
-                            <div class="col-xs-6" id="supplier">
-                                <label>Tên nhà cung cấp</label>
-                                <select class="form-control" name="supplier" id="supplierPayment">
-                                    @foreach($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="space"></div>
-                            <div class="col-md-12">
-                                <label>Danh sách những phiếu nhập còn nợ NCC</label>
-                                <div class="space"></div>
-                                <div id="material">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th width="25%">Ngày nhập hàng</th>
-                                                <th width="15%">Mã phiếu nhập</th>
-                                                <th width="22%">Tổng tiền</th>
-                                                <th width="17%">Tiền phải trả</th>
-                                                <th width="2%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tablePayment">
-
-                                        </tbody>
-                                        <script type="text/javascript">
-                                            function clickToRemove($id) {
-                                                var row = document.getElementById('row' + $id);
-                                                row.remove();
-                                            }
-
-                                        </script>
-                                    </table>
+<div class="form-w3layouts">
+    <!-- page start-->
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    Phiếu chi
+                </header>
+                <div class="panel-body">
+                    <script>
+                        @if($errors->any())
+                            @foreach($errors->all() as $error)
+                                toastr.error('{{ $error }}')
+                            @endforeach
+                        @endif
+                    </script>
+                    <div class="space"></div>
+                    <form id="paymentVoucherForm">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-3">
+                                <div class="form-group ">
+                                    <label class="control-label">Báo cáo theo</label>
+                                    <select class="form-control" id="timeReport">
+                                        <option value="0">Hôm nay</option>
+                                        <option value="1">Hôm qua</option>
+                                        <option value="2">Tuần này</option>
+                                        <option value="3">Tuần trước</option>
+                                        <option value="4">Tháng này</option>
+                                        <option value="5">Tháng trước</option>
+                                        <option value="6">Quý này</option>
+                                        <option value="7">Quý trước</option>
+                                        <option value="8">Năm nay</option>
+                                    </select>
                                 </div>
                             </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <div class="form-group ">
+                                    <label class="control-label">Từ ngày:</label>
+                                    <input class="date form-control" type="text" id="dateStart">
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <div class="form-group ">
+                                    <label class="control-label">Đến ngày:</label>
+                                    <input class="date form-control" type="text" id="dateEnd">
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <div class="form-group ">
+                                    <label class="control-label">Chọn NCC:</label>
+                                    <select class="form-control" id="idSupplier">
+                                        @foreach($suppliers as $supplier)
+                                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                $('.date').datepicker({
+                                    format: 'yyyy-mm-dd'
+                                });
+
+                                function validateForm() {
+                                    var dateStart = document.getElementById('dateStart').value;
+                                    var dateEnd = document.getElementById('dateEnd').value;
+
+                                    if (dateStart == null || dateStart == "") {
+                                        alert("Không để trống ngày bắt đầu");
+                                        return false;
+                                    }
+                                    if (dateEnd == null || dateEnd == "") {
+                                        alert("Không để trống ngày kết thúc");
+                                        return false;
+                                    }
+                                    return true;
+                                }
+
+                            </script>
                         </div>
-                        <div class="form-group row">
+                        <div class="row">
                             <div class="col-xs-12 text-center">
                                 <a href="{{ route('voucher.index') }}" class="btn btn-default">Trở về</a>
-                                <button type="submit" class="btn btn-info">Submit</button>
+                                <button id="submitPaymentVc" class="btn green-meadow radius">Tìm kiếm</button>
                             </div>
                         </div>
                     </form>
-                </div>
+                    <div class="grid_3 grid_5 wthree">
+                        <div class="col-md-7 agileits-w3layouts" id="leftTable">
 
-            </div>
-        </section>
+                        </div>
+                        <div class="col-md-5 w3-agileits">
+                            <form class="form-horizontal" action="{{ route('voucher.p_storepayment') }}" method="POST"
+                            onsubmit="return validatePaymentVoucher()">
+                                @csrf
+                                <input type="hidden" name="type" value="1">
+                                <div id="formPaymentVoucherSupplier">
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
+    <!-- page end-->
 </div>
 @endsection

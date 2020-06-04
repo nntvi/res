@@ -283,3 +283,14 @@ function saveOrder() {
         return false;
     }
 }
+
+function validatePaymentVoucher() {
+    let unPaid = document.getElementById('unPaid').value;
+    let payCash = document.getElementById('payCash').value;
+    if(parseFloat(payCash) > parseFloat(unPaid)){
+        alert('Số tiền nhập vào không được lớn hơn số tiền cần trả');
+        return false;
+    }else{
+        return true;
+    }
+}

@@ -19,9 +19,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
 
     public function getMaterialById($id)
     {
-        $material = Material::where('id',$id)
-                    ->with('materialAction.materialDetail','materialAction.unit')
-                    ->first();
+        $material = Material::where('id',$id)->with('materialAction.materialDetail','materialAction.unit')->first();
         return $material;
     }
     public function getMaterialDetails($id)
@@ -149,7 +147,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     {
         $count = $this->countMaterialRequest($request);
         $this->addOneByOneMaterialAction($count,$request);
-        return redirect(route('material.index'));
+        return redirect(route('material.index'))->withSuccess('Thiết lập công thức thành công');
     }
 
     public function showMoreDetailById($id)
@@ -161,8 +159,8 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     public function updateMaterialAction($request,$id)
     {
         MaterialAction::where('id',$id)->update(['qty' => $request->qty ]);
-        $idGroupNVL = MaterialAction::find($id)->value('id_groupnvl');
-        return redirect(route('material_action.detail',['id' => $idGroupNVL]));
+        $idGroupNVL = $this->findRowMaterialAction($id);
+        return redirect(route('material_action.detail',['id' => $idGroupNVL->id_groupnvl]))->with('info','Cập nhật công thức thành công');
     }
 
     public function searchMaterialAction($request)
@@ -178,8 +176,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     public function deleteMaterialAction($id)
     {
         $mat_detail = $this->findRowMaterialAction($id);
-        $id_groupnvl = $mat_detail->id_groupnvl;
         $mat_detail->delete();
-        return redirect(route('material_action.detail',['id' => $id_groupnvl]));
+        return redirect(route('material_action.detail',['id' => $mat_detail->id_groupnvl]))->withSuccess('info','Xóa NVL thành công');
     }
 }

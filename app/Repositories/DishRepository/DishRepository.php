@@ -99,50 +99,39 @@ class DishRepository extends Controller implements IDishRepository{
         $dish->id_groupmenu = $this->getIdGroupMenuByIdMaterial($request->idMaterial);
         $dish->image = $this->getImage($request,1);
         $dish->save();
-        return redirect(route('dishes.index'));
+        return redirect(route('dishes.index'))->withSuccess('Thêm món ăn thành công');
     }
 
     public function updateImageDish($request,$id)
     {
         $newImg = $this->getImage($request);
         Dishes::where('id',$id)->update(['image' => $newImg]);
-        return redirect(route('dishes.index'));
+        return redirect(route('dishes.index'))->with('info','Cập nhật hình ảnh thành công');
     }
 
     public function updateSalePriceDish($request,$id)
     {
        Dishes::where('id',$id)->update(array('capital_price' => $request->newCapitalPriceHidden,
                                                 'sale_price' => $request->newSalePriceUpdate));
-       return redirect(route('dishes.index'));
+       return redirect(route('dishes.index'))->with('info','Cập nhật giá sản phẩm thành công');
     }
 
     public function updateUnitDish($request,$id)
     {
         Dishes::where('id',$id)->update(['id_dvt' => $request->unitUpdate]);
-        return redirect(route('dishes.index'));
+        return redirect(route('dishes.index'))->with('info','Cập nhật đơn vị thành công');
     }
 
     public function updateStatusDish($request,$id)
     {
         Dishes::where('id',$id)->update(['status' => $request->status]);
-        return redirect(route('dishes.index'));
+        return redirect(route('dishes.index'))->with('info','Cập nhật trạng thái thành công');
     }
-    public function validatorRequestSearch($req){
-        $messeages = [
-           'idGroupMenuSearch.required' => 'Vui lòng chọn nhóm thực đơn'
-        ];
 
-        $req->validate(
-            [
-               'idGroupMenuSearch' => 'required'
-            ],
-            $messeages
-        );
-    }
     public function searchDish($request)
     {
         $content = $request->nameSearch;
-        $dishes = Dishes::with('groupNVL.groupMenu.cookArea','unit')
+        $dishes = Dishes::with('material.groupMenu.cookArea','unit')
                             ->where('name','LIKE',"%{$content}%")
                             ->orWhere('code','LIKE',"%{$content}%")->get();
         $units = $this->getUnit();
@@ -152,6 +141,6 @@ class DishRepository extends Controller implements IDishRepository{
     public function deleteDish($id)
     {
         $dish = Dishes::find($id)->delete();
-        return redirect(route('dishes.index'));
+        return redirect(route('dishes.index'))->withSuccess('Xóa món ăn thành công');
     }
 }

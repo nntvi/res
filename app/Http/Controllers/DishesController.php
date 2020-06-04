@@ -21,7 +21,7 @@ class DishesController extends Controller
     public function index()
     {
         $groupmenus = $this->dishesRepository->getGroupMenu();
-        $dishes = Dishes::with('groupNVL.groupMenu.cookArea','unit')->paginate(10);
+        $dishes = Dishes::with('material.groupMenu.cookArea','unit')->paginate(10);
         $units = $this->dishesRepository->getUnit();
         return view('dishes.index',compact('dishes','groupmenus','units'));
     }

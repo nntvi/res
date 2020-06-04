@@ -5,8 +5,10 @@ use App\Dishes;
 use App\Helper\IGetDateTime;
 use App\GroupMenu;
 use App\Http\Controllers\Controller;
+use App\ImportCoupon;
 use App\Order;
 use App\OrderDetailTable;
+use App\Supplier;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -183,6 +185,67 @@ class ReportRepository extends Controller implements IReportRepository{
                     'listGroupMenuExcept','listGroupMenu','idGroupMenu','arrBestSeller','footerTotal'));
     }
 
+    public function createFooterTotalSupplier($results)
+    {
+        $total = 0; $paid = 0; $unPaid = 0;
+        foreach ($results as $key => $result) {
+            $total += $result->total;
+            $paid += $result->paid;
+        }
+        $unPaid = $total - $paid;
+        $temp = [
+            'total' => $total,
+            'paid' => $paid,
+            'unPaid' => $unPaid
+        ];
+        $footerTotalSupplier = array();
+        array_push($footerTotalSupplier,$temp);
+        return $footerTotalSupplier;
+    }
+
+    public function createArrayChartSupplier($dateStart,$dateEnd)
+    {
+        $getTotalByTimeAllSupplier = ImportCoupon::selectRaw('id_supplier,sum(total) as Total')->whereBetween('created_at',[$dateStart,$dateEnd])
+                                    ->groupBy('id_supplier')->orderBy('id_supplier')->with('supplier')->get();
+        $getTotalPaidByTimeAllSupplier = ImportCoupon::selectRaw('id_supplier,sum(paid) as Paid')->whereBetween('created_at',[$dateStart,$dateEnd])
+                                        ->groupBy('id_supplier')->orderBy('id_supplier')->get();
+        $dataChart = array();
+            foreach ($getTotalByTimeAllSupplier as $total) {
+                foreach ($getTotalPaidByTimeAllSupplier as $paid) {
+                    if($paid->id_supplier == $total->id_supplier){
+                        $temp = [
+                            'name' => $total->supplier->name,
+                            'total' => $total->Total,
+                            'paid' => $paid->Paid,
+                            'unpaid' => $total->Total - $paid->Paid
+                        ];
+                        array_push($dataChart,$temp);
+                        unset($temp);
+                        break;
+                    }
+                }
+            }
+        return $dataChart;
+    }
+    public function reportSupplier($request)
+    {
+        $dateStart = $request->dateStart;
+        $dateEnd = $request->dateEnd;
+        $idSupplier = $request->idSupplier;
+        if($idSupplier == 0){
+            $results = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->with('supplier')->get();
+        }else{
+            $results = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)
+                                    ->with('supplier')->get();
+        }
+        $nameSupplierChoosen = Supplier::where('id',$idSupplier)->value('name');
+        $listSupplier = Supplier::whereNotIn('id',[$idSupplier])->get();
+        $suppliers = Supplier::all();
+        $footerTotalSupplier = $this->createFooterTotalSupplier($results);
+        $dataChart = $this->createArrayChartSupplier($dateStart,$dateEnd);
+        return view('report.p_supplier',compact('results','dateStart','dateEnd','idSupplier','nameSupplierChoosen',
+                                                'listSupplier','suppliers','footerTotalSupplier','dataChart'));
+    }
     public function getToTalRevenueInYear()
     {
         $firstYear = $this->getDateTime->getFirstOfJan();

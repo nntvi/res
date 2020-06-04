@@ -63,6 +63,7 @@ class UserRepository  extends Controller implements IUserRepository{
         $position->id_position = $idPosition;
         $position->save();
     }
+
     public function createUser($request){
         $user = new User();
         $user->name = $request->name;
@@ -71,7 +72,7 @@ class UserRepository  extends Controller implements IUserRepository{
         $user->save();
         $this->addUserPermission($request->permissiondetail,$user->id);
         $this->addUserPosition($user->id,$request->position);
-        return redirect(route('user.index'));
+        return redirect(route('user.index'))->withSuccess('Thêm nhân viên thành công');
     }
 
     public function validateRequestUpdateUsername($request)
@@ -84,7 +85,7 @@ class UserRepository  extends Controller implements IUserRepository{
     public function updateUserName($request ,$id)
     {
         User::where('id',$id)->update(['name' => $request->name]);
-        return redirect(route('user.index'));
+        return redirect(route('user.index'))->with('info','Cập nhật username thành công');
     }
 
     public function viewScheduleUser($id)
@@ -127,7 +128,7 @@ class UserRepository  extends Controller implements IUserRepository{
             $userSchedule = UserSchedule::where('id_user',$id)->delete();
             $this->loopShiftAndWeekday($request);
         }
-        return redirect(route('user.shift',['id' => $id]));
+        return redirect(route('user.shift',['id' => $id]))->with('info','Ca làm việc đã được cập nhật');
     }
 
     public function validatorUpdateRole($request)
@@ -154,7 +155,7 @@ class UserRepository  extends Controller implements IUserRepository{
             ];
            UserPermission::create($data);
         }
-        return redirect(route('user.index'));
+        return redirect(route('user.index'))->with('info','Cập nhật quyền thành công');
     }
 
     public function validatorRequestUpdatePassword($req){
@@ -178,13 +179,13 @@ class UserRepository  extends Controller implements IUserRepository{
     public function updatePasswordUser($request, $id)
     {
         User::where('id',$id)->update(['password' => bcrypt($request->password) ]);
-        return redirect(route('user.index'))->with('success','Đổi password thành công');
+        return redirect(route('user.index'))->with('info','Đổi password thành công');
     }
 
     public function updatePositionUser($request,$id)
     {
         User::where('id',$id)->update(['id_position' => $request->position]);
-        return redirect(route('user.index'));
+        return redirect(route('user.index'))->with('info','Cập nhật vị trí thành công');
     }
     public function searchUser($request)
     {
@@ -198,6 +199,6 @@ class UserRepository  extends Controller implements IUserRepository{
     {
         UserPermission::where('id_user',$id)->delete();
         User::where('id',$id)->delete();
-        return redirect(route('user.index'));
+        return redirect(route('user.index'))->withSuccess('Xóa nhân viên thành công');
     }
 }

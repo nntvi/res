@@ -47,15 +47,19 @@
                         </div>
                     </div>
                 </div>
-                <a href="" class="btn btn-sm btn-default"> <i class="fa fa-file-text" aria-hidden="true"></i> Tạo phiếu thu</a>
             </div>
             <div class="col-sm-4">
+                <script>
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-3">
                 <div class="input-group">
-                    <input type="text" class="input-sm form-control" placeholder="Search">
+                    <input type="text" class="input-sm form-control" id="codeSearchPaymentVc">
                     <span class="input-group-btn">
-                        <button class="btn btn-sm btn-default" type="button">Go!</button>
+                        <button class="btn btn-sm btn-default" type="button" id="btnSearchPaymentVc">Go!</button>
                     </span>
                 </div>
             </div>
@@ -64,127 +68,58 @@
             <table class="table table-striped b-t b-light">
                 <thead>
                     <tr>
-                        <th style="width:20px;">
-                            <label class="i-checks m-b-none">
-                                <input type="checkbox"><i></i>
-                            </label>
-                        </th>
-                        <th>Project</th>
-                        <th>Task</th>
-                        <th>Date</th>
-                        <th style="width:30px;"></th>
+                        <th style="width:20px;">STT</th>
+                        <th>Mã phiếu chi</th>
+                        <th>Lý do chi</th>
+                        <th>Đối tượng</th>
+                        <th>Số tiền</th>
+                        <th>Ghi chú</th>
+                        <th>Người tạo</th>
+                        <th class="text-center">Thời gian tạo</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Idrawfast prototype design prototype design prototype design prototype design prototype
-                            design</td>
-                        <td><span class="text-ellipsis">{item.PrHelpText1}</span></td>
-                        <td><span class="text-ellipsis">{item.PrHelpText1}</span></td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Formasa</td>
-                        <td>8c</td>
-                        <td>Jul 22, 2013</td>
-                        <td>
-                            <a href="" ui-toggle-class=""><i class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Avatar system</td>
-                        <td>15c</td>
-                        <td>Jul 15, 2013</td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Throwdown</td>
-                        <td>4c</td>
-                        <td>Jul 11, 2013</td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Idrawfast</td>
-                        <td>4c</td>
-                        <td>Jul 7, 2013</td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Formasa</td>
-                        <td>8c</td>
-                        <td>Jul 3, 2013</td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Avatar system</td>
-                        <td>15c</td>
-                        <td>Jul 2, 2013</td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                        <td>Videodown</td>
-                        <td>4c</td>
-                        <td>Jul 1, 2013</td>
-                        <td>
-                            <a href="" class="active" ui-toggle-class=""><i
-                                    class="fa fa-check text-success text-active"></i><i
-                                    class="fa fa-times text-danger text"></i></a>
-                        </td>
-                    </tr>
+                <tbody id="bodyPaymentVc">
+                    @foreach ($payments as $key => $payment)
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $payment->code }}</td>
+                            @if ($payment->type == '1')
+                            <td>Chi nợ NCC</td>
+                            @else
+
+                            @endif
+                            <td>{{ $payment->name }}</td>
+                            <td>{{ number_format($payment->pay_cash) . ' đ' }}</td>
+                            <td>{{ $payment->note }}</td>
+                            <td>{{ $payment->created_by }}</td>
+                            <td class="text-right">{{ $payment->created_at }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
         <footer class="panel-footer">
             <div class="row">
-
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">
-                        <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                        <li><a href="">1</a></li>
-                        <li><a href="">2</a></li>
-                        <li><a href="">3</a></li>
-                        <li><a href="">4</a></li>
-                        <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
+                        {{ $payments->links() }}
                     </ul>
                 </div>
             </div>
         </footer>
     </div>
 </div>
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+    @if(session('info'))
+        toastr.info('{{ session('info') }}')
+    @endif
+</script>
 @endsection

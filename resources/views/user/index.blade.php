@@ -12,9 +12,19 @@
                 </a>
             </div>
             <div class="col-sm-5">
-                <span class="error-message">{{ $errors->first('name') }}</span></p>
-                <span class="error-message">{{ $errors->first('password') }}</span></p>
-                <span class="error-message">{{ $errors->first('password-confirm') }}</span></p>
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                    @if(session('info'))
+                        toastr.info('{{ session('info') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
                 <form action="{{ route('user.search') }}" method="get">

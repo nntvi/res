@@ -11,6 +11,7 @@ use App\Supplier;
 use App\ImportCouponDetail;
 use App\ExportCouponDetail;
 use App\GroupMenu;
+use App\ImportCoupon;
 use App\MaterialAction;
 use App\Method;
 use App\Order;
@@ -41,9 +42,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function getMaterialWarehouseCook($idCook)
     {
-        $materials = WarehouseCook::where('cook',$idCook)
-                        ->with('detailMaterial','unit')
-                        ->get();
+        $materials = WarehouseCook::where('cook',$idCook)->with('detailMaterial','unit')->get();
         return $materials;
     }
 
@@ -59,8 +58,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     public function findMaterialInWarehouse($idMaterialArray)
     {
         $materialWarehouse = WareHouse::whereIn('id_material_detail',$idMaterialArray)
-                                        ->with('detailMaterial','unit')
-                                        ->get();
+                                        ->with('detailMaterial','unit')->get();
         return $materialWarehouse;
     }
 
@@ -72,8 +70,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function getMaterialInWarehouseByType($type)
     {
-        $materials = WareHouse::where('id_type',$type)
-                                ->with('detailMaterial','unit')->get();
+        $materials = WareHouse::where('id_type',$type)->with('detailMaterial','unit')->get();
         return $materials;
     }
 
@@ -103,8 +100,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')->get();
+                                            ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailImport;
     }
 
@@ -114,8 +110,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $e = " 23:59:59";
         $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')->get();
+                                            ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailExport;
     }
 
@@ -127,6 +122,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
                             })->get();
         return $material;
     }
+
     public function searchMaterialDestroyCook($id,$name){
         $material = WarehouseCook::where('cook',$id)->with('detailMaterial','unit')
                                     ->whereHas('detailMaterial', function ($query) use($name) {
@@ -190,5 +186,28 @@ class AjaxRepository extends Controller implements IAjaxRepository{
                             ->whereBetween('created_at',[$dateStart,$dateEnd])
                             ->value('qtyServing');
         return $qtyServingBill;
+    }
+
+    public function getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier)
+    {
+        $coupons = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])
+                                ->where('id_supplier',$idSupplier)
+                                ->with('detailImportCoupon')->get();
+        return $coupons;
+    }
+
+    public function getConcludeImportCoupon($coupons)
+    {
+        $total = 0; $unPaid = 0; $paid = 0;
+        foreach ($coupons as $key => $coupon) {
+            $total += $coupon->total;
+            $paid += $coupon->paid;
+        }
+        $temp = [
+            'sumTotal' => $total,
+            'paid' => $paid,
+            'unPaid' => $total - $paid,
+        ];
+        return $temp;
     }
 }

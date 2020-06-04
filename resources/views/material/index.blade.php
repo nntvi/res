@@ -57,8 +57,19 @@
                 </a> --}}
             </div>
             <div class="col-sm-4">
-                <span class="error-message">{{ $errors->first('name') }}</span>
-                </p>
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                    @if(session('info'))
+                        toastr.info('{{ session('info') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
                 <form action="{{ route('material.search') }}" method="GET">
@@ -78,7 +89,7 @@
                     <tr>
                     <tr>
                         <th>STT</th>
-                        <th>Tên danh mục món ăn</th>
+                        <th>Nhóm thực đơn</th>
                         <th>Tên món</th>
                         <th>NVL cấu tạo</th>
                         <th></th>
@@ -112,7 +123,7 @@
                                                     <div class="form-group">
                                                         <label>Danh mục cũ</label>
                                                         <input type="text" class="form-control"
-                                                            value="{{ $material->name }}" disabled>
+                                                            value="{{ $material->groupMenu->name }}" disabled>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Danh mục cần sửa <span style="color: #ff0000">

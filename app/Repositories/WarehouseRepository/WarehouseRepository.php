@@ -42,8 +42,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
                                     ->with('detailMaterial','typeMaterial','unit')
-                                    ->orderBy('id_material_detail')
-                                    ->get();
+                                    ->orderBy('id_material_detail')->get();
         return $warehouse;
     }
 
@@ -53,9 +52,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')
-                                            ->get();
+                                            ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailImport;
     }
 
@@ -65,9 +62,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->groupBy('id_material_detail')
-                                            ->orderBy('id_material_detail')
-                                            ->get();
+                                            ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailExport;
     }
     public function getValueImport($idMaterialDetail,$detailImport)
@@ -144,9 +139,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $s = " 00:00:00";
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::where('id_material_detail',$id)
-                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            // ->with('importCoupon.supplier')
-                                            ->get();
+                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])->get();
         return $detailImport;
     }
 
@@ -156,8 +149,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $detailExport = ExportCouponDetail::where('id_material_detail',$id)
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->with('exportCoupon.typeExport')
-                                            ->get();
+                                            ->with('exportCoupon.typeExport')->get();
         return $detailExport;
     }
 
@@ -166,9 +158,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $s = " 00:00:00";
         $e = " 23:59:59";
         $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
-                                    ->where('id_material_detail',$id)
-                                    ->with('detailMaterial','unit')
-                                    ->first();
+                                    ->where('id_material_detail',$id)->with('detailMaterial','unit')->first();
         return $warehouse;
     }
     public function importDetailReportById($id,$dateStart,$dateEnd)
@@ -177,9 +167,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->where('id_material_detail',$id)
-                                            ->groupBy('id_material_detail')
-                                            ->first();
+                                            ->where('id_material_detail',$id)->groupBy('id_material_detail')->first();
         return $detailImport;
     }
     public function exportDetailReportById($id,$dateStart,$dateEnd)
@@ -188,9 +176,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $e = " 23:59:59";
         $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
                                             ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
-                                            ->where('id_material_detail',$id)
-                                            ->groupBy('id_material_detail')
-                                            ->first();
+                                            ->where('id_material_detail',$id)->groupBy('id_material_detail')->first();
         return $detailExport;
     }
     public function calculateTonDauKyById($tck,$xuat,$nhap)
@@ -206,8 +192,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
                 ->join('detail_import_coupon', 'detail_import_coupon.code_import', '=', 'import_coupons.code')
                 ->join('suppliers','suppliers.id','=','import_coupons.id_supplier')
                 ->where('detail_import_coupon.id_material_detail',$id)
-                ->whereBetween('import_coupons.created_at',[$dateStart . $s , $dateEnd . $e])
-                ->get();
+                ->whereBetween('import_coupons.created_at',[$dateStart . $s , $dateEnd . $e])->get();
         return $a;
     }
 
@@ -219,8 +204,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
                 ->join('detail_export_coupon', 'detail_export_coupon.code_export', '=', 'export_coupons.code')
                 ->join('type_export','type_export.id','=','export_coupons.id_type')
                 ->where('detail_export_coupon.id_material_detail',$id)
-                ->whereBetween('export_coupons.created_at',[$dateStart . $s , $dateEnd . $e])
-                ->get();
+                ->whereBetween('export_coupons.created_at',[$dateStart . $s , $dateEnd . $e])->get();
         return $a;
     }
 
@@ -241,8 +225,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $s = " 00:00:00";
         $e = " 23:59:59";
         $infoImports = ImportCoupon::whereBetween('created_at',[$dateStart . $s , $dateEnd . $e])
-                                ->with('detailImportCoupon.materialDetail','detailImportCoupon.unit')
-                                ->get();
+                                ->with('detailImportCoupon.materialDetail','detailImportCoupon.unit')->get();
         return $infoImports;
     }
     public function getInfoExport($dateStart,$dateEnd)
@@ -250,8 +233,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $s = " 00:00:00";
         $e = " 23:59:59";
         $infoExports = ExportCoupon::whereBetween('created_at',[$dateStart . $s , $dateEnd . $e])
-                                    ->with('detailExportCoupon.materialDetail','detailExportCoupon.unit')
-                                    ->get();
+                                    ->with('detailExportCoupon.materialDetail','detailExportCoupon.unit')->get();
         return $infoExports;
     }
     public function getDetailReport($id,$dateStart,$dateEnd)
@@ -267,11 +249,8 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         $tondauky = $this->checkTonDauKy($warehouse,$detailImportById,$detailExportById);
         $infoImports = $this->getInfoImport($dateStart,$dateEnd);
         $infoExports = $this->getInfoExport($dateStart,$dateEnd);
-        return view('warehouse.reportdetail',compact('detailImport','detailExport',
-                                                    'warehouse','detailImportById',
-                                                    'detailExportById','tondauky',
-                                                    'dateStart','dateEnd',
-                                                    'importCoupon','exportCoupon','count',
-                                                    'infoImports','infoExports'));
+        return view('warehouse.reportdetail',compact('detailImport','detailExport', 'warehouse','detailImportById',
+                                                    'detailExportById','tondauky', 'dateStart','dateEnd',
+                                                    'importCoupon','exportCoupon','count', 'infoImports','infoExports'));
     }
 }

@@ -22,27 +22,25 @@ class ShiftRepository extends Controller implements IShiftRepository{
         $shift->name = $request->nameShift;
         $shift->hour_start = $request->hourStart;
         $shift->hour_end = $request->hourEnd;
-        // dd($shift);
         $shift->save();
-        return redirect(route('shift.index'));
+        return redirect(route('shift.index'))->withSuccess('Thêm ca mới thành công');
     }
 
     public function updateNameShift($request, $id)
     {
         Shift::where('id',$id)->update(['name' => $request->nameShift]);
-        return redirect(route('shift.index'));
+        return redirect(route('shift.index'))->with('info','Cập nhật tên ca thành công');
     }
 
     public function updateTimeShift($request,$id)
     {
-        Shift::where('id',$id)->update(['hour_start' => $request->timeStart],
-                                        ['hour_end' => $request->timeEnd]);
-        return redirect(route('shift.index'));
+        Shift::where('id',$id)->update(['hour_start' => $request->timeStart],['hour_end' => $request->timeEnd]);
+        return redirect(route('shift.index'))->with('info','Cập nhật thời gian thành công');
     }
 
     public function deleteShift($id)
     {
         Shift::where('id',$id)->delete();
-        return redirect(route('shift.index'));
+        return redirect(route('shift.index'))->withSuccess('Xóa ca thành công');
     }
 }

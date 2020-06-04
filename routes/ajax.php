@@ -3,8 +3,11 @@ Route::group(['prefix' => 'ajax'], function() {
     Route::get('material/{codeCoupon}','AjaxController@getMaterialByImportCoupon');
     Route::get('search/suppliers/{search}','AjaxController@searchSupplier');
     Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
-    Route::get('getImportCoupon/{idSupplier}','AjaxController@getUnPaidImport');
+    Route::get('getImportCoupon/{dateStart}/{dateEnd}/{idSupplier}','AjaxController@getImportCouponToPaymentVc');
 
+    Route::group(['prefix' => 'search'], function () {
+        Route::get('paymentvoucher/{code}','AjaxController@searchPaymentVoucher');
+    });
     Route::group(['prefix' => 'order'], function () {
         Route::get('table/{idTable}','AjaxController@getDishOrderTable');
         Route::post('store','OrderController@orderTablePost');

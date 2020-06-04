@@ -44,7 +44,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     }
     public function validatorRequestUpadate($req){
         $req->validate(['nameGroupMenu' => 'unique:groupmenu,name',],
-                         ['nameGroupMenu.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống']);
+                        ['nameGroupMenu.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống']);
     }
 
     public function addGroupMenu($request)
@@ -53,7 +53,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
         $groupmenu->name = $request->name;
         $groupmenu->id_cook = $request->idCook;
         $groupmenu->save();
-        return redirect(route('groupmenu.index'));
+        return redirect(route('groupmenu.index'))->withSuccess('Thêm mới nhóm thực đơn thành công');
     }
 
     public function searchGroupMenu($request)
@@ -73,7 +73,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
     public function updateNameGroupMenu($request, $id)
     {
         GroupMenu::where('id',$id)->update(['name' => $request->nameGroupMenu]);
-        return redirect(route('groupmenu.index'));
+        return redirect(route('groupmenu.index'))->with('info','Cập nhật tên nhóm thực đơn thành công');
     }
 
     public function getMaterialDetailsByMaterial($arrayIdMaterials)
@@ -135,7 +135,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
             $this->moveMaterialDetailsChangeCook($arrMaterialDetailsInNewCook,$cookChange,$idOldCook);
         }
         GroupMenu::where('id',$id)->update(['id_cook' => $request->idCook]);
-        return redirect(route('groupmenu.index'));
+        return redirect(route('groupmenu.index'))->with('info','Cập nhật bếp cho nhóm thực đơn thành công');
     }
     public function deleteGroupMenu($id)
     {
@@ -145,6 +145,6 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
         $arrNameDish = Material::where('id_groupmenu',$id)->get('id');
         MaterialAction::whereIn('id_groupnvl',$arrNameDish)->delete();
         Material::where('id_groupmenu',$id)->delete();
-        return redirect(route('groupmenu.index'));
+        return redirect(route('groupmenu.index'))->withSuccess('Xóa thực đơn thành công');
     }
 }

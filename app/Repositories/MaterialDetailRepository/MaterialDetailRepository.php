@@ -32,18 +32,9 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
     }
 
     public function validatorRequestStore($req){
-        $messeages = [
-            'nameAdd.required' => 'Không để trống tên nvl',
-            'nameAdd.min' => 'Tên nvl nhiều hơn 3 ký tự',
-            'nameAdd.max' => 'Tên nvl giới hạn 30 ký tự',
-            'nameAdd.unique' => 'Tên nvl đã tồn tại trong hệ thống'
-        ];
-
         $req->validate(
-            [
-                'nameAdd' => 'required|min:3|max:30|unique:material_details,name',
-            ],
-            $messeages
+            ['nameAdd' => 'unique:material_details,name'],
+            ['nameAdd.unique' => 'Tên nvl đã tồn tại trong hệ thống']
         );
     }
 
@@ -80,7 +71,7 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $materialDetail->save();
         $this->addNVLToWarehouse($request,$materialDetail->id);
         $this->addNVLToSettingPrice($materialDetail->id);
-        return redirect(route('material_detail.index'));
+        return redirect(route('material_detail.index'))->withSuccess('Thêm NVL thành công');
     }
 
     public function searchMaterialDetail($request)
@@ -97,26 +88,17 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
                         ['nameUpdate.unique' => 'Tên nvl đã tồn tại trong hệ thống']);
     }
 
-    public function updateMaterialDetail($request,$id)
-    {
-        $materialDetail = MaterialDetail::find($id);
-        $materialDetail->name = $request->name;
-        $materialDetail->id_type = $request->type;
-        $materialDetail->save();
-        return redirect(route('material_detail.index'));
-    }
-
     public function updateNameMaterialDetail($request,$id)
     {
         MaterialDetail::where('id',$id)->update(['name' => $request->nameUpdate]);
-        return redirect(route('material_detail.index'));
+        return redirect(route('material_detail.index'))->with('info','Cập nhật tên NVL thành công');
     }
 
     public function updateTypeMaterialDetail($request,$id)
     {
         MaterialDetail::where('id',$id)->update(['id_type' => $request->type]);
         Warehouse::where('id_material_detail',$id)->update(['id_type' => $request->type]);
-        return redirect(route('material_detail.index'));
+        return redirect(route('material_detail.index'))->with('info','Cập nhật nhóm thực đơn NVL thành công');
     }
     public function deleteMaterialDetail($id)
     {
@@ -124,6 +106,6 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $materialDetail = MaterialDetail::find($id)->delete();
         WareHouse::where('id_material_detail',$id)->delete();
         WarehouseCook::where('id_material_detail',$id)->delete();
-        return redirect(route('material_detail.index'));
+        return redirect(route('material_detail.index'))->withSuccess('Xóa NVL thành công');
     }
 }

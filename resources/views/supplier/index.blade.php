@@ -83,51 +83,18 @@
             </div>
         </footer>
     </div>
-    {{-- <script>
-        $(document).ready(function () {
-            $('#nameSearchSupplier').keyup(function(){
-                var search = document.getElementById('nameSearchSupplier').value;
-                $.ajax({
-                    url: 'ajax/search/suppliers/' + search, //Trang xử lý
-                    method: 'GET',
-                    dataType: 'JSON',
-                    success: function (suppliers) {
-                        suppliers.map(function(supplier){
-                            console.log(supplier);
-                            let row =   `<tr class="odd">
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>{{ $supplier->code }}</td>
-                                            <td style="font-weight:bold">{{ $supplier->name }}</td>
-                                            <td>{{ $supplier->address }}</td>
-                                            <td style="font-weight:bold">{{ $supplier->phone }}</td>
-                                            <td>{{ $supplier->email }}</td>
-                                            <td style="font-weight:bold">{{ $supplier->typeMaterial->name }}</td>
-                                            <td>
-                                                @if($supplier->status == '0')
-                                                    Chưa Hoạt động
-                                                @else
-                                                    Hoạt động
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('supplier.update',['id' => $supplier->id]) }}"
-                                                    class="active" ui-toggle-class=""><i
-                                                        class="fa fa-pencil-square-o text-success text-active"></i></a>
-                                                <a href="{{ route('supplier.delete',['id' => $supplier->id]) }}"
-                                                    onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i
-                                                        class="fa fa-times text-danger text"></i></a>
-                                            </td>
-                                        </tr>`
-                        });
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    }
-                });
-            });
-        });
-    </script> --}}
-
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+    @if(session('info'))
+        toastr.info('{{ session('info') }}')
+    @endif
+</script>
 </div>
 @endsection

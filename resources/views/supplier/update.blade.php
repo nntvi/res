@@ -25,7 +25,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="form-group">
                                                 <label>Tên nhà cung cấp</label>
-                                                <input type="text" size="40" class="form-control" name="name" value="{{$supplier->name}}">
+                                                <input type="text" size="40" class="form-control" name="name" value="{{$supplier->name}}" required>
                                                 <span class="error-message">{{ $errors->first('name') }}</span></p>
                                             </div>
                                         </div>
@@ -40,7 +40,7 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                                 <div class="form-group">
-                                                    <input type="text" size="40" class="form-control" name="phone" id="Account_phone" maxlength="30" value="{{$supplier->phone}}">
+                                                    <input type="text" size="40" class="form-control" name="phone" id="Account_phone" maxlength="30" value="{{$supplier->phone}}" required>
                                                     <span class="error-message">{{ $errors->first('phone') }}</span></p>
                                                 </div>
                                         </div>
@@ -49,7 +49,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                                 <div class="form-group">
                                                         <label>Địa chỉ</label>
-                                                        <input type="text" size="40" class="form-control" name="address" maxlength="150" value="{{$supplier->address}}">
+                                                        <input type="text" size="40" class="form-control" name="address" maxlength="150" value="{{$supplier->address}}" required>
                                                         <span class="error-message">{{ $errors->first('address') }}</span></p>
                                                 </div>
 
@@ -57,7 +57,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                                 <div class="form-group">
                                                         <label>Mã số thuế</label>
-                                                        <input type="text" size="40" class="form-control" name="mst" maxlength="100" value="{{$supplier->mst}}">
+                                                        <input type="text" size="40" class="form-control" name="mst" min="10" max="20"  value="{{$supplier->mst}}" required>
                                                         <span class="error-message">{{ $errors->first('mst') }}</span></p>
                                                 </div>
 
@@ -114,4 +114,11 @@
 
         </div>
 </div>
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+</script>
 @endsection

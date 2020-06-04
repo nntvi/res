@@ -96,9 +96,8 @@
                     <li><a href="{{ route('report.order') }}">Theo đơn hàng</a></li>
                     <li><a href="{{ route('report.table') }}">Theo bàn</a></li>
                     <li><a href="{{ route('report.dish') }}">Theo món</a></li>
-                    <li><a href="thuchi.html">Thu chi</li></a>
+                    <li><a href="{{ route('report.supplier') }}">Thu chi NCC</li></a>
                     <li><a href="loinhuan.html">Lợi nhuận</a></li>
-                    <li><a href="congnoncc.html">Công nợ nhà cung cấp</a></li>
                 </ul>
             </li>
             <li class="sub-menu">

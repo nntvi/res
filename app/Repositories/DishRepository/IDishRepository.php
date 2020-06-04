@@ -9,7 +9,6 @@ interface IDishRepository{
     function searchDish($request);
     function validatorRequestStore($req);
     function deleteDish($id);
-    function validatorRequestSearch($req);
     function getMaterial();
     function updateImageDish($request,$id);
     function validateImage($request);

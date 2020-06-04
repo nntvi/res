@@ -22,9 +22,6 @@
                                         <input type="text" name="id_groupnvl" value="{{ $material->id }}" hidden>
                                         <input type="text" size="40" class="form-control" name="" maxlength="200"
                                             value="{{ $material->name }}" disabled>
-                                        <span
-                                            class="error-message">{{ $errors->first('name') }}</span>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -270,4 +267,17 @@
         </section>
     </div>
 </div>
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+    @if(session('info'))
+        toastr.info('{{ session('info') }}')
+    @endif
+</script>
 @endsection

@@ -27,7 +27,7 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
-        $this->supplierRepository->validatorRequestStore($request);
+        $this->supplierRepository->validatorRequest($request);
         return $this->supplierRepository->addSupplier($request);
     }
 
@@ -38,7 +38,7 @@ class SupplierController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->supplierRepository->validatorRequestUpdate($request);
+        $this->supplierRepository->validatorRequest($request);
         return $this->supplierRepository->updateSupplier($request,$id);
     }
 

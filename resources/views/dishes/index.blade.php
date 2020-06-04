@@ -13,6 +13,19 @@
                     </a>
                 </div>
                 <div class="col-sm-3">
+                    <script>
+                        @if($errors->any())
+                            @foreach($errors->all() as $error)
+                                toastr.error('{{ $error }}')
+                            @endforeach
+                        @endif
+                        @if(session('success'))
+                            toastr.success('{{ session('success') }}')
+                        @endif
+                        @if(session('info'))
+                            toastr.info('{{ session('info') }}')
+                        @endif
+                    </script>
                 </div>
                 <div class="col-sm-4">
                     <form action="{{ route('dishes.search') }}" method="get">
@@ -89,13 +102,13 @@
                             </td>
                             <td>{{ $dish->code }}</td>
                             <td>{{ $dish->name }}</td>
-                            <td>{{ $dish->groupNVL->groupMenu->cookArea->name }}</td>
-                            <td class="text-center">{{ $dish->groupNVL->groupMenu->name }}</td>
+                            <td>{{ $dish->material->groupMenu->cookArea->name }}</td>
+                            <td class="text-center">{{ $dish->material->groupMenu->name }}</td>
                             <td>
                                 <a href="#updatePrice{{ $dish->id }}" data-toggle="modal" ui-toggle-class="" id="clickUpdatePrice">
                                     <i class="fa fa-pencil-square-o text-success text-active"></i>
                                 </a>
-                                <input type="hidden" id="idMaterialUpdatePrice" value="{{ $dish->groupNVL->id }}">
+                                <input type="hidden" id="idMaterialUpdatePrice" value="{{ $dish->material->id }}">
                                 <div aria-hidden="true" aria-labelledby="updatePrice" role="dialog" tabindex="-1"
                                     id="updatePrice{{ $dish->id }}" class="modal fade" style="display: none;">
                                     <div class="modal-dialog">

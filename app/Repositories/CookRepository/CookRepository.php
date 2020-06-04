@@ -35,6 +35,6 @@ class CookRepository extends Controller implements ICookRepository{
         if($request->status == '0'){ // nếu bếp cập nhật lại ko hđ
             GroupMenu::where('id_cook',$id)->update(['id_cook' => $request->status]);
         }
-        return redirect(route('cook.index'));
+        return redirect(route('cook.index'))->withSuccess('Cập nhật thành công');
     }
 }

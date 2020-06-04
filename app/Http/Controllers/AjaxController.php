@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\CookArea;
-use App\GroupMenu;
-use App\Helper\IGetDateTime;
-use App\ImportCoupon;
-use App\ImportCouponDetail;
-use App\Supplier;
 use App\Order;
-use App\MaterialDetail;
-use App\OrderDetailTable;
-use App\Repositories\AjaxRepository\IAjaxRepository;
-use App\TypeMaterial;
+use App\CookArea;
+use App\Supplier;
+use App\GroupMenu;
 use App\WareHouse;
-use App\WarehouseCook;
 use Carbon\Carbon;
+use App\ImportCoupon;
+use App\TypeMaterial;
+use App\WarehouseCook;
+use App\MaterialDetail;
+use App\PaymentVoucher;
+use App\OrderDetailTable;
+use App\ImportCouponDetail;
+use App\Helper\IGetDateTime;
 
 use Illuminate\Http\Request;
+use App\Repositories\AjaxRepository\IAjaxRepository;
 
 class AjaxController extends Controller
 {
@@ -148,22 +149,6 @@ class AjaxController extends Controller
         return response()->json($data);
     }
 
-    public function getDataChartBestSeller($timeStart,$timeEnd)
-    {
-        $dishes = OrderDetailTable::selectRaw('id_dish, sum(qty) as total')
-                                    ->whereBetween('created_at',[$timeStart,$timeEnd])
-                                    ->groupBy('id_dish')->with('dish')->get();
-        $qtyDishes = array();
-        foreach ($dishes as $key => $dish) {
-            $obj = array(
-                'nameDish' => $dish->dish->name,
-                'qty' => $dish->total
-            );
-            array_push($qtyDishes,$obj);
-        }
-        return response()->json($qtyDishes);
-    }
-
     public function showOverview($dateStart,$dateEnd)
     {
         $totalRevenue = $this->ajaxRepository->getRevenue($dateStart,$dateEnd);
@@ -181,8 +166,7 @@ class AjaxController extends Controller
 
     public function getUnPaidImport($idSupplier)
     {
-        $imports = ImportCoupon::where('status','0')
-                                ->where('id_supplier',$idSupplier)->with('supplier')->get();
+        $imports = ImportCoupon::where('status','0')->where('id_supplier',$idSupplier)->with('supplier')->get();
         return response()->json($imports);
     }
 
@@ -198,5 +182,20 @@ class AjaxController extends Controller
         return response()->json($dishes);
     }
 
+    public function getImportCouponToPaymentVc($dateStart,$dateEnd,$idSupplier)
+    {
+        $coupons = $this->ajaxRepository->getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier);
+        $conclusion = $this->ajaxRepository->getConcludeImportCoupon($coupons);
+        $data = [
+            'coupons' => $coupons,
+            'conclusion' => $conclusion
+        ];
+        return response()->json($data);
+    }
 
+    public function searchPaymentVoucher($code)
+    {
+        $results = PaymentVoucher::where('code','LIKE',"{$code}")->get();
+        return response()->json($results);
+    }
 }

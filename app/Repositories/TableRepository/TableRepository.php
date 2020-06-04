@@ -40,33 +40,31 @@ class TableRepository extends Controller implements ITableRepository{
         $table->name = $request->nameTable;
         $table->id_area = $request->idArea;
         $table->save();
-        return redirect(route('table.index'));
+        return redirect(route('table.index'))->withSuccess('Thêm bàn thành công');
     }
 
     public function updateNameTable($request,$id)
     {
         Table::where('id',$id)->update(['name' => $request->nameTable]);
-        return redirect(route('table.index'));
+        return redirect(route('table.index'))->with('info','Cập nhật tên bàn thành công');
     }
 
     public function updateArea($request,$id)
     {
         Table::where('id',$id)->update(['id_area' => $request->idArea]);
-        return redirect(route('table.index'));
+        return redirect(route('table.index'))->with('info','Cập nhật khu vực thành công');
     }
 
     public function searchTable($request)
     {
         $search = $request->nameSearch;
-        $tables = Table::where('name','LIKE',"%{$search}%")
-                        ->orwhere('code','LIKE',"{$search}")
-                        ->get();
+        $tables = Table::where('name','LIKE',"%{$search}%")->orwhere('code','LIKE',"{$search}")->get();
         $areas = $this->getAllArea();
         return view('table.search',compact('tables','areas'));
     }
     public function deleteTable($id)
     {
         Table::find($id)->delete();
-        return redirect(route('table.index'));
+        return redirect(route('table.index'))->withSuccess('Xóa bàn thành công');
     }
 }

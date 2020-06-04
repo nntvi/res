@@ -15,4 +15,6 @@ interface IAjaxRepository{
     function countPaidBill($dateStart,$dateEnd);
     function countServingBill($dateStart,$dateEnd);
     function countBill($dateStart,$dateEnd);
+    function getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier);
+    function getConcludeImportCoupon($coupons);
 }

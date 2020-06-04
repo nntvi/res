@@ -53,11 +53,19 @@
                 </div>
             </div>
             <div class="col-sm-5">
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        <span class="error-message">{{ $error }}</span></p>
-                    @endforeach
-                @endif
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                    @if(session('info'))
+                        toastr.info('{{ session('info') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
 

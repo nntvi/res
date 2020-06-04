@@ -141,7 +141,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $count = $this->countMaterialExport($request);
         $this->addExportCoupon($request);
         $this->addDetailExportCoupon($request,$count);
-        return redirect(route('exportcoupon.index'));
+        return redirect(route('exportcoupon.index'))->withSuccess('Tạo phiếu xuất thành công');
     }
 
     public function calculatePrice($request,$i)
@@ -171,7 +171,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $this->addExportCoupon($request);
         $this->addDetailExportCoupon($request,$count);
         $this->updateSettingPrice($count,$request);
-        return redirect(route('exportcoupon.index'));
+        return redirect(route('exportcoupon.index'))->withSuccess('Tạo phiếu xuất thành công');
     }
     public function showIndex()
     {
@@ -200,7 +200,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
             $detailExportCoupon->id_unit = $request->id_unit[$i];
             $this->checkTypeExport($request->id_kind,$request,$i);
             $this->substractQtyWarehouseCook($request->idMaterial[$i],$request->type_object,$request->qty[$i]);
-            //$detailExportCoupon->save();
+            $detailExportCoupon->save();
         }
     }
     public function destroyCook($request)
@@ -208,19 +208,14 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $count = $this->countMaterialExport($request);
         $this->addExportCoupon($request);
         $this->addDetailExportCouponDestroyCook($request,$count);
-        return redirect(route('exportcoupon.index'));
+        return redirect(route('exportcoupon.index'))->withSuccess('Tạo phiếu hủy thành công');
     }
     public function printDetailExport($id)
     {
         $code = $this->getCodeById($id);
         $exportCoupon = ExportCoupon::where('code',$code->code)
-                                        ->with('typeExport',
-                                            'detailExportCoupon.cook',
-                                            'detailExportCoupon.supplier',
-                                            'detailExportCoupon.unit',
-                                            'detailExportCoupon.materialDetail')
-                                        ->get();
-        //dd($exportCoupon);
+                                        ->with('typeExport','detailExportCoupon.cook', 'detailExportCoupon.supplier',
+                                            'detailExportCoupon.unit','detailExportCoupon.materialDetail')->get();
         return view('exportcoupon.print',compact('exportCoupon'));
     }
 

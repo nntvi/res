@@ -33,7 +33,6 @@
                             <div class="col-md-12">
                                 <div class="page-header">
                                     <h3 class="bars text-center">Ca làm việc</h3>
-                                    <span class="error-message">{{ $errors->first('shift') }}</span></p>
                                 </div>
                                 <div class="bs-docs-example">
                                     <table class="table table-bordered">
@@ -108,4 +107,17 @@
         </section>
     </div>
 </div>
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+    @if(session('info'))
+        toastr.info('{{ session('info') }}')
+    @endif
+</script>
 @endsection

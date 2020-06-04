@@ -51,7 +51,6 @@
                                     <textarea class="form-control" rows="1" name="describe"></textarea>
                                 </div>
                                 <div class="col-xs-6 col-sm-3 ">
-                                    <span class="error-message">{{ $errors->first('status') }}</span>
                                     <div class="space"></div>
                                     <label class="control-label">Trạng thái: &nbsp;&nbsp;</label>
                                     <label class="control-label">Ẩn</label>
@@ -67,7 +66,6 @@
                                 <div class="col-xs-12 col-sm-6">
                                     <label for="exampleInputFile">Chọn hình ảnh</label>
                                     <input type="file" name="file">
-                                    <span class="error-message">{{ $errors->first('file') }}</span></p>
                                     @if (session('mes_error'))
                                         <span class="error-message">{{ session('mes_error') }}</span></p>
                                     @endif
@@ -86,4 +84,11 @@
             </section>
         </div>
     </div>
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+</script>
 @endsection

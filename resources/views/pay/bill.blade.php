@@ -109,7 +109,6 @@
                     <td align="right" style="padding:5px;">Sl </td>
                     <td align="right" style="padding:5px;">Đơn giá </td>
                     <td align="right" style="padding:5px;">Thành tiền </td>
-
                 </tr>
                 <tbody>
                     @foreach($billPayment as $key => $item)
@@ -158,5 +157,9 @@
 
     </div>
 </div>
-
+<script>
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+</script>
 @endsection

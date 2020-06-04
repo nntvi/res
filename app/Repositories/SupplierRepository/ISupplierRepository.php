@@ -4,10 +4,9 @@ namespace App\Repositories\SupplierRepository;
 interface ISupplierRepository{
     function getTypeMarial();
     function getAllSupplier();
-    function validatorRequestStore($req);
+    function validatorRequest($req);
     function addSupplier($request);
     function showViewUpdateSupplier($id);
     function updateSupplier($request,$id);
-    function validatorRequestUpdate($req);
     function deleteSupplier($id);
 }

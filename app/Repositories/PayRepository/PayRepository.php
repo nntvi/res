@@ -17,11 +17,8 @@ class PayRepository extends Controller implements IPayRepository{
 
     public function createBill($id)
     {
-        $bill = OrderDetailTable::selectRaw('id_dish, sum(qty) as amount')
-                                ->where('id_bill',$id)
-                                ->whereIn('status',['1','2'])
-                                ->groupBy('id_dish')
-                                ->with('dish')->get();
+        $bill = OrderDetailTable::selectRaw('id_dish, sum(qty) as amount')->where('id_bill',$id)
+                                ->whereIn('status',['1','2'])->groupBy('id_dish')->with('dish')->get();
         return $bill;
     }
 
@@ -36,9 +33,7 @@ class PayRepository extends Controller implements IPayRepository{
 
     public function countStatus($idBill)
     {
-        $count = OrderDetailTable::where('id_bill',$idBill)
-                                    ->whereIn('status', ['1', '2'])
-                                    ->count();
+        $count = OrderDetailTable::where('id_bill',$idBill)->whereIn('status', ['1', '2'])->count();
         return $count;
     }
     public function showBill($id)
@@ -68,7 +63,7 @@ class PayRepository extends Controller implements IPayRepository{
         $bill->status = '0';
         $bill->payer = auth()->user()->name;
         $bill->save();
-        return redirect(route('pay.bill',['id' => $id]));
+        return redirect(route('pay.bill',['id' => $id]))->withSuccess('Thanh toán thành công');
     }
 
     public function printBill($id)

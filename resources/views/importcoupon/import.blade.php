@@ -20,9 +20,6 @@
                                         <div class="space"></div>
                                         <input type="text" size="40" class="form-control" name="code" maxlength="200"
                                             id="codeImportCoupon">
-                                        <span
-                                            class="error-message">{{ $errors->first('code') }}</span>
-                                        </p>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="control-label">Nhà cung cấp<span style="color: #ff0000">
@@ -86,4 +83,11 @@
         </section>
     </div>
 </div>
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+</script>
 @endsection

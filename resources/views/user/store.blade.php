@@ -18,7 +18,6 @@
                             </label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="name" min="3" max="30" required>
-                                <span class="error-message">{{ $errors->first('name') }}</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -27,7 +26,6 @@
                             </label>
                             <div class="col-sm-6">
                                 <input type="email" class="form-control" name="email" required>
-                                <span class="error-message">{{ $errors->first('email') }}</span>
                             </div>
 
                         </div>
@@ -45,8 +43,6 @@
                                     Password Confirm<span style="color: #ff0000"> *</span>
                                 </label>
                                 <input type="password" class="form-control" name="password-confirm" min="3" max="15" required>
-                                <span
-                                    class="error-message">{{ $errors->first('password-confirm') }}</span>
                             </div>
                         </div>
                         <div class="space"></div>
@@ -71,7 +67,6 @@
                                         <a class="fa fa-chevron-circle-up" href="javascript:;"></a>
                                     </span>
                                     <br>
-                                    <span class="error-message text-center">{{ $errors->first('permissiondetail') }}</span>
                                 </header>
                                 <div class="panel-body1" style="display: block;">
                                     <div class="form-group">
@@ -110,5 +105,18 @@
         </div>
     </div>
     <!-- page end-->
+    <script>
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                toastr.error('{{ $error }}')
+            @endforeach
+        @endif
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
 </div>
 @endsection

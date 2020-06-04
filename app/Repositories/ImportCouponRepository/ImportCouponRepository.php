@@ -154,7 +154,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
             $importcouponDetail = $this->createImportCouponDetail($request,$i);
         }
         $this->createImportCoupon($request);
-        return redirect(route('importcoupon.index'));
+        return redirect(route('importcoupon.index'))->withSuccess('Tạo phiếu nhập kho thành công');
     }
 
     public function findDetailImportCouponByIdImport($id)
@@ -179,7 +179,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         $sum = $this->getTotalDetailImportCoupon($allDetailByCode);
         $import = ImportCoupon::where('code',$code->code_import)->update(['total' => $sum]);
         $idImport = ImportCoupon::where('code',$code->code_import)->first('id');
-        return redirect(route('importcoupon.index'))->withSuccess('Cập nhật thành công');
+        return redirect(route('importcoupon.index'))->with('info','Cập nhật thành công');
     }
 
     public function findImportCouponByCode($code)

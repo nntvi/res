@@ -9,5 +9,5 @@ interface IReportRepository{
     function getRevenueByMonth($startMonth,$endMonth);
     function getAllRevenue();
     function getAllQtyCustomer();
-    //function createChartDishByTime($dateStart,$dateEnd);
+    function reportSupplier($request);
 }

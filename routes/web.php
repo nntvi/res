@@ -288,7 +288,8 @@ Route::group(['middleware' => ['auth']], function() {
 
         Route::group(['prefix' => 'payment'], function () {
             Route::get('object', 'VoucherController@chooseObject')->name('voucher.payment');
-            Route::get('store', 'VoucherController@storePayment')->name('voucher.storepayment');
+            //Route::get('store', 'VoucherController@storePaymentView')->name('voucher.storepayment');
+            Route::post('store', 'VoucherController@storePayment')->name('voucher.p_storepayment');
         });
     });
 
@@ -318,6 +319,11 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('export/{dateStart}/{dateEnd}/{idGroupMenu}','ReportController@exportDishReport')->name('report.exportdish');
         });
 
+        Route::group(['prefix' => 'supplier'], function () {
+            Route::get('view', 'ReportController@viewReportSupplier')->name('report.supplier');
+            Route::post('post', 'ReportController@reportSupplier')->name('report.p_supplier');
+            Route::get('export/{dateStart}/{dateEnd}/{idSupplier}','ReportController@exportSupplierReport')->name('report.exportsupplier');
+        });
     });
 
     // Booking

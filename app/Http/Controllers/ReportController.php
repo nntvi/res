@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ReportDishExport;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ReportOrderExport;
-use App\Exports\ReportTableExport;
+use App\Supplier;
 use App\GroupMenu;
-use App\Repositories\ReportRepository\IReportRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Exports\ReportDishExport;
+use App\Exports\ReportOrderExport;
+use App\Exports\ReportSupplier;
+use App\Exports\ReportTableExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Repositories\ReportRepository\IReportRepository;
 
 class ReportController extends Controller
 {
@@ -70,5 +72,21 @@ class ReportController extends Controller
     public function exportDishReport($dateStart,$dateEnd,$idGroupMenu)
     {
         return Excel::download(new ReportDishExport($dateStart,$dateEnd,$idGroupMenu),'dish_report.xlsx');
+    }
+
+    public function viewReportSupplier()
+    {
+        $suppliers = Supplier::all();
+        return view('report.supplier',compact('suppliers'));
+    }
+
+    public function reportSupplier(Request $request)
+    {
+        return $this->reportRepository->reportSupplier($request);
+    }
+
+    public function exportSupplierReport($dateStart,$dateEnd,$idSupplier)
+    {
+        return Excel::download(new ReportSupplier($dateStart,$dateEnd,$idSupplier),'reportsupplier.xlsx');
     }
 }

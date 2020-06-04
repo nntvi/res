@@ -59,14 +59,14 @@ class AreaRepository extends Controller implements IAreaRepository{
         $area = Area::find($id);
         $area->name = $req->AreaName;
         $area->save();
-        return redirect(route('area.index'));
+        return redirect(route('area.index'))->withSuccess('Cập nhật thành công');
     }
 
     public function deleteArea($id)
     {
         Table::where('id_area',$id)->delete();
         $area = Area::find($id)->delete();
-        return redirect(route('area.index'));
+        return redirect(route('area.index'))->withSuccess('Xóa khu vực thành công');
     }
 
 }

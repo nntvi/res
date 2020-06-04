@@ -2,6 +2,19 @@
 @section('content')
 <div class="form-w3layouts">
     <h2 class="w3ls_head">Kho</h2>
+    <script>
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                toastr.error('{{ $error }}')
+            @endforeach
+        @endif
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
     <div class="row">
         <div class="box_content" style="margin: 1em;">
             <div class="icon-box col-md-3 col-sm-4">
