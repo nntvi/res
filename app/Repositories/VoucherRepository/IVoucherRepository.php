@@ -6,4 +6,5 @@ interface IVoucherRepository{
     function objectPayment($request);
     function validatorStorePaymentVc($request);
     function createPaymentVoucher($request);
+    function createPaymentVcEmergency($request);
 }

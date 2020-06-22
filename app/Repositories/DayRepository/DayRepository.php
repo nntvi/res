@@ -34,15 +34,17 @@ class DayRepository extends Controller implements IDayRepository{
 
     public function saveFirstQtyStartDay()
     {
-        $whCook = WarehouseCook::all();
+        $whCook = WarehouseCook::with('cookArea')->get();
         foreach ($whCook as $key => $item) {
-            $historyWhCook = new HistoryWhCook();
-            $historyWhCook->id_cook = $item->cook;
-            $historyWhCook->id_material_detail = $item->id_material_detail;
-            $historyWhCook->first_qty = $item->qty;
-            $historyWhCook->last_qty = $item->qty;
-            $historyWhCook->id_unit = $item->id_unit;
-            $historyWhCook->save();
+            if($item->cookArea != null){ // bếp đã hủy hoạt động
+                $historyWhCook = new HistoryWhCook();
+                $historyWhCook->id_cook = $item->cook;
+                $historyWhCook->id_material_detail = $item->id_material_detail;
+                $historyWhCook->first_qty = $item->qty;
+                $historyWhCook->last_qty = $item->qty;
+                $historyWhCook->id_unit = $item->id_unit;
+                $historyWhCook->save();
+            }
         }
     }
     public function startDay()
@@ -71,8 +73,8 @@ class DayRepository extends Controller implements IDayRepository{
         foreach ($historyWhCook as $key => $history) {
             foreach ($warehouseCook as $key => $whCook) {
                 if($whCook->cook == $history->id_cook && $history->id_material_detail == $whCook->id_material_detail){
-                    $history->last_qty = $whCook->qty;
-                    $history->save();
+                        $history->last_qty = $whCook->qty;
+                        $history->save();
                 }
             }
         }

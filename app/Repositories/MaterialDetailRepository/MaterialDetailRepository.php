@@ -18,23 +18,23 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $types = TypeMaterial::all();
         return $types;
     }
+
     public function getUnit()
     {
         $units = Unit::orderBy('name')->get();
         return $units;
     }
-    public function showMaterialDetail()
+
+    public function getMaterialDetail()
     {
-        $materialDetails = MaterialDetail::orderBy('id','desc')->with('typeMaterial','unit')->paginate(10);
-        $types = $this->getTypeMaterial();
-        $units = $this->getUnit();
-        return view('materialdetail.index',compact('materialDetails','types','units'));
+        $materialDetails = MaterialDetail::where('status','1')->orderBy('id','desc')->with('typeMaterial','unit')->paginate(10);
+        return $materialDetails;
     }
 
-    public function validatorRequestStore($req){
+    public function validatorName($req){
         $req->validate(
-            ['nameAdd' => 'unique:material_details,name'],
-            ['nameAdd.unique' => 'Tên nvl đã tồn tại trong hệ thống']
+            ['name' => 'check_status_mat_detail'],
+            ['name.check_status_mat_detail' => 'Tên NVL đã tồn tại trong hệ thống']
         );
     }
 
@@ -62,12 +62,14 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         $settingPrice->giatra = 0;
         $settingPrice->save();
     }
+
     public function addMaterialDetail($request)
     {
         $materialDetail = new MaterialDetail();
-        $materialDetail->name = $request->nameAdd;
+        $materialDetail->name = $request->name;
         $materialDetail->id_type = $request->idType;
         $materialDetail->id_unit = $request->idUnit;
+        $materialDetail->status = '1';
         $materialDetail->save();
         $this->addNVLToWarehouse($request,$materialDetail->id);
         $this->addNVLToSettingPrice($materialDetail->id);
@@ -76,21 +78,16 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
 
     public function searchMaterialDetail($request)
     {
-        $temp = $request->nameSearch;
-        $materialDetails = MaterialDetail::where('name','LIKE',"%{$temp}%")->with('typeMaterial','unit')->get();
+        $count = MaterialDetail::selectRaw('count(id) as qty')->where('name','LIKE',"%{$request->nameSearch}%")->where('status','1')->value('qty');
+        $materialDetails = MaterialDetail::where('name','LIKE',"%{$request->nameSearch}%")->where('status','1')->with('typeMaterial','unit')->get();
         $types = $this->getTypeMaterial();
         $units = $this->getUnit();
-        return view('materialdetail.search',compact('materialDetails','types','units'));
-    }
-
-    public function validatorRequestUpdate($req){
-        $req->validate(['nameUpdate' => 'unique:material_details,name'],
-                        ['nameUpdate.unique' => 'Tên nvl đã tồn tại trong hệ thống']);
+        return view('materialdetail.search',compact('materialDetails','types','units','count'));
     }
 
     public function updateNameMaterialDetail($request,$id)
     {
-        MaterialDetail::where('id',$id)->update(['name' => $request->nameUpdate]);
+        MaterialDetail::where('id',$id)->update(['name' => $request->name]);
         return redirect(route('material_detail.index'))->with('info','Cập nhật tên NVL thành công');
     }
 
@@ -103,9 +100,10 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
     public function deleteMaterialDetail($id)
     {
         $materialAction = MaterialAction::where('id_material_detail',$id)->delete();
-        $materialDetail = MaterialDetail::find($id)->delete();
-        WareHouse::where('id_material_detail',$id)->delete();
-        WarehouseCook::where('id_material_detail',$id)->delete();
+        MaterialDetail::where('id',$id)->update(['status' => '0']);
+        // $materialDetail = MaterialDetail::find($id)->delete();
+        // WareHouse::where('id_material_detail',$id)->delete();
+        // WarehouseCook::where('id_material_detail',$id)->delete();
         return redirect(route('material_detail.index'))->withSuccess('Xóa NVL thành công');
     }
 }

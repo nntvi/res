@@ -3,13 +3,13 @@
 <div class="table-agile-info">
     <div class="panel panel-default">
         <div class="panel-heading">
-            Chi tiết Nguyên vật liệu
+            Nguyên vật liệu
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="{{ route('material_detail.index') }}" class="btn btn-sm btn-default">Trở về</a>
                 <a href="#myModal" data-toggle="modal">
-                    <button class="btn btn-sm btn-danger">Thêm mới</button>
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
                     class="modal fade" style="display: none;">
@@ -48,6 +48,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Thiết lập mức tồn kho cho NVL này</label>
+                                        <input type="number" class="form-control" name="limit" min="1"  required="">
+                                    </div>
                                     <div class="space"></div>
                                     <div class="alert alert-danger" role="alert">
                                         <strong>Lưu ý!</strong> Đơn vị của NVL sẽ không chỉnh sửa được sau khi thêm, vui
@@ -67,11 +71,13 @@
                 </div>
             </div>
             <div class="col-sm-5">
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        <span class="error-message">{{ $error }}</span></p>
-                    @endforeach
-                @endif
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
                 <form action="{{ route('material_detail.search') }}" method="GET">
@@ -79,7 +85,7 @@
                     <div class="input-group">
                         <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch" required>
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-success">Tìm kiếm</button>
+                            <button type="submit" class="btn btn-sm btn-default">Tìm kiếm</button>
                         </span>
                     </div>
                 </form>
@@ -87,14 +93,14 @@
         </div>
         <div class="table-responsive">
             <table class="table table-striped b-t b-light">
-                <thead style="background: #ffeeda;">
+                <thead>
                     <tr>
                     <tr>
                         <th>STT</th>
                         <th>Tên nguyên vật liệu</th>
                         <th>Thuộc nhóm</th>
                         <th>Đơn vị</th>
-                        <th class="text-right">Xóa</th>
+                        <th class="text-right"></th>
                     </tr>
                     </tr>
                 </thead>
@@ -192,12 +198,11 @@
                                 </td>
                             </form>
                             <td class="text-right">
-                                <a href="{{ route('material_detail.delete',['id' => $materialDetail->id]) }}"
-                                    class="btn btn-warning btn-xs radius">
-                                    <i class="fa fa-trash-o"
+                                <a href="{{ route('material_detail.delete',['id' => $materialDetail->id]) }}">
+                                    <i class="fa fa-trash-o text-danger"
                                         onclick="return confirm('Khi click xóa, NVL trong kho chính và kho bếp cũng được xóa, bạn đã chắc chắn?')">
-                                        Xóa</i>
 
+                                    </i>
                                 </a>
                             </td>
                         </tr>
@@ -207,9 +212,8 @@
         </div>
         <footer class="panel-footer">
             <div class="row">
-
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-10 items</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">{{ $count }} kết quả được tìm thấy</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

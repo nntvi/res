@@ -26,18 +26,19 @@ class ReportTableExport implements FromCollection, WithHeadings
         $s = "";
         $data = array();
         foreach ($item->orderDetail as $key => $detail) {
-            array_push($data,$detail->dish->name);
+            array_push($data,$detail->dish->stt == '1' ? $detail->dish->name : $detail->dish->name . '( ngưng phục vụ)' );
         }
         $s = implode(", ",$data);
         return $s;
     }
     public function collection()
     {
-        $s = " 00:00:00";
-        $e = " 23:59:59";
-        $results = Order::whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])
-                        ->where('status',  $this->status)
-                        ->with('table.getArea','orderDetail.dish')->get();
+        if($this->status == '2'){
+            $results = Order::whereBetween('updated_at',[$this->dateStart,$this->dateEnd])->with('table.getArea','orderDetail.dish')->get();
+        }else{
+            $results = Order::whereBetween('updated_at',[$this->dateStart,$this->dateEnd])->where('status', $this->status)
+                            ->with('table.getArea','orderDetail.dish')->get();
+        }
         foreach ($results as $key => $item) {
             $this->getDish($item);
             $row[] = array(

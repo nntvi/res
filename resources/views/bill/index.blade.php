@@ -36,7 +36,7 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Mã HĐ</th>
+                        <th>Mã Bill</th>
                         <th>Bàn</th>
                         <th>Trạng thái</th>
                         <th>Tổng giá</th>
@@ -47,7 +47,6 @@
                         <th>Ca</th>
                         <th>Tạo lúc</th>
                         <th>Thanh toán lúc</th>
-
                     </tr>
                 </thead>
                 <tbody id="tableBill">
@@ -56,7 +55,20 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $bill->code }}</td>
                             <td>{{ $bill->id_table }}</td>
-                            <td>{{ $bill->status == '0' ? 'Đã thanh toán' : 'Chưa thanh toán' }}</td>
+                            <td>
+                                @switch($bill->status)
+                                    @case('0')
+                                        Đã thanh toán
+                                        @break
+                                    @case('1')
+                                        Chưa thanh toán
+                                        @break
+                                    @case('-1')
+                                        Đã hủy
+                                        @break
+                                    @default
+                                @endswitch
+                            </td>
                             <td>{{ number_format($bill->total_price) . ' đ' }}</td>
                             <td>{{ number_format($bill->receive_cash) . ' đ' }}</td>
                             <td>{{ number_format($bill->excess_cash) . ' đ' }}</td>
@@ -78,7 +90,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title"> Chi tiết hóa đơn số {{ $bill->code }}</h4>
+                                                <h4 class="modal-title"> Chi tiết hóa đơn "<b>{{ $bill->code }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="modal-body">
@@ -116,7 +128,9 @@
                                                                                     <tbody>
                                                                                         @foreach ($bill->orderDetail as $detail)
                                                                                             <tr>
-                                                                                                <td>{{ $detail->dish->name }}</td>
+                                                                                                <td>
+                                                                                                    {{ $detail->dish->stt == '1' ? $detail->dish->name : $detail->dish->name . ' (ngưng phục vụ)' }}
+                                                                                                </td>
                                                                                                 <td>{{ $detail->qty }}</td>
                                                                                                 <td>{{ number_format($detail->price) . ' đ' }}</td>
                                                                                                 <td>
@@ -134,6 +148,7 @@
                                                                                                             Hoàn thành
                                                                                                             @break
                                                                                                         @default
+                                                                                                            Đã hủy
                                                                                                     @endswitch
                                                                                                 </td>
                                                                                             </tr>
@@ -163,9 +178,8 @@
         </div>
         <footer class="panel-footer">
             <div class="row">
-
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-5 bills </small>
+                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-10 bills </small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

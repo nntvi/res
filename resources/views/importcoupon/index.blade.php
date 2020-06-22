@@ -9,15 +9,18 @@
             <div class="col-sm-5 m-b-xs">
                 <a href="{{ route('warehouse.index') }}" class="btn btn-sm btn-default">Về trang kho</a>
             </div>
-            <div class="col-sm-4">
-            </div>
             <div class="col-sm-3">
-                <div class="input-group">
-                    <input type="text" class="input-sm form-control" placeholder="Search">
-                    <span class="input-group-btn">
-                        <button class="btn btn-sm btn-default" type="button">Go!</button>
-                    </span>
-                </div>
+            </div>
+            <div class="col-sm-4">
+                <form action="{{ route('importcoupon.search') }}" method="get">
+                    @csrf
+                    <div class="input-group">
+                            <input type="text" name="searchImC" class="input-sm form-control" required>
+                            <span class="input-group-btn">
+                                <button class="btn btn-sm btn-default" type="submit">Tìm kiếm</button>
+                            </span>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="table-responsive">
@@ -40,7 +43,7 @@
                             <td>{{ $key+1 }}</td>
                             <td>{{ $import->code }}</td>
                             <td>{{ number_format($import->total) . ' đ' }}</td>
-                            <td>{{ $import->supplier->name }}</td>
+                            <td>{{ $import->supplier->status == '1' ? $import->supplier->name : $import->supplier->name . '( ngưng hoạt động)' }}</td>
                             <td>{{ $import->note }}</td>
                             <td>
                                 {{ $import->status == "0" ? "Chưa thanh toán" : "Đã thanh toán" }}
@@ -55,31 +58,21 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title">Chi tiết phiếu nhập {{ $import->code }}</h4>
+                                                <h4 class="modal-title">Chi tiết phiếu nhập <b>{{ $import->code }}</b> <button style="background: white;
+                                                    border: none;" onclick="printJS({ printable: 'printImportCoupon{{ $import->id }}', type: 'html', header: 'Restaurant' })">
+                                                        <i class="fa fa-print text-danger" aria-hidden="true"></i>
+                                                    </button> </h4>
+
                                             </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-xs-12 bold">
-                                                        <i class="fa fa-building-o" aria-hidden="true"></i>
-                                                        {{ $import->supplier->name }}
+                                            <div class="modal-body" id="printImportCoupon{{ $import->id }}">
+                                                <div class="titleImportCoupon">
+                                                    <div class="leftTitle">
+                                                        NCC: <span class="bold">{{ $import->supplier->status == '1' ? $import->supplier->name : $import->supplier->name . '( ngưng hoạt động)' }}</span>
+                                                        - Trạng thái: <span class="bold">{{ $import->status == "0" ? "Chưa thanh toán" : "Đã thanh toán" }}</span>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-6 bold">
-                                                        Tổng tiền:
-                                                        {{ number_format($import->total) . ' đ' }}
-                                                    </div>
-                                                    <div class="col-xs-6 bold">
-                                                        Người tạo: {{ $import->created_by }}
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-6 bold">
-                                                        Trạng thái:
-                                                        {{ $import->status == "0" ? "Chưa thanh toán" : "Đã thanh toán" }}
-                                                    </div>
-                                                    <div class="col-xs-6 bold">
-                                                        Ngày tạo: {{ $import->created_at }}
+                                                    <br>
+                                                    <div class="rightTittle">
+                                                        Người tạo: {{ $import->created_by }} - Ngày tạo: <span class="bold">{{ $import->created_at }}</span>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -93,25 +86,31 @@
                                                                         <th>Số lượng nhập</th>
                                                                         <th>Đơn vị tính</th>
                                                                         <th>Giá nhập</th>
-                                                                        <th style="width:30px;"></th>
+                                                                        {{--  <th style="width:30px;"></th>  --}}
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach ($import->detailImportCoupon as $key => $detail)
-                                                                        <form role="form" action="{{route('importcoupon.p_detail',['id' => $detail->id])}}" method="POST">
-                                                                            @csrf
+                                                                        {{--  <form role="form" action="{{route('importcoupon.p_detail',['id' => $detail->id])}}" method="POST">
+                                                                            @csrf  --}}
                                                                             <tr>
-                                                                                <td>{{$key+1}}</td>
-                                                                                <td>{{ $detail->materialDetail->name }}</td>
-                                                                                <td>{{ $detail->qty }}</td>
-                                                                                <td>{{ $detail->unit->name}}</td>
-                                                                                <td><input type="number" min="0" value="{{ $detail->price }}" name="price"></td>
+                                                                                <td>&nbsp;&nbsp;&nbsp;{{$key+1}}</td>
+                                                                                <td>&nbsp;&nbsp;{{ $detail->materialDetail->status == '1' ? $detail->materialDetail->name : $detail->materialDetail->name . ' (ko còn sử dụng)' }}</td>
+                                                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $detail->qty }}</td>
+                                                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $detail->unit->name}}</td>
+                                                                                <td>&nbsp;&nbsp;&nbsp;{{ $detail->price }}</td>
+                                                                                {{--  <td><input type="number" min="0" value="{{ $detail->price }}" name="price"></td>
                                                                                 <td>
                                                                                     <button type="submit"><i class="fa fa-pencil text-success"></i></button>
-                                                                                </td>
+                                                                                </td>  --}}
                                                                             </tr>
-                                                                        </form>
+
+                                                                        {{--  </form>  --}}
                                                                     @endforeach
+                                                                        <tr class="bold">
+                                                                            <td colspan="4" class="text-right">TỔNG: </td>
+                                                                            <td>{{ number_format($import->total) . ' đ' }}</td>
+                                                                        </tr>
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -131,7 +130,7 @@
             <div class="row">
 
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-10 phiếu nhập</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

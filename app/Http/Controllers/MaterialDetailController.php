@@ -19,24 +19,21 @@ class MaterialDetailController extends Controller
 
     public function index()
     {
-        return $this->materialDetailRepository->showMaterialDetail();
+        $materialDetails = $this->materialDetailRepository->getMaterialDetail();
+        $types = $this->materialDetailRepository->getTypeMaterial();
+        $units = $this->materialDetailRepository->getUnit();
+        return view('materialdetail.index',compact('materialDetails','types','units'));
     }
 
     public function store(Request $request)
     {
-        $this->materialDetailRepository->validatorRequestStore($request);
+        $this->materialDetailRepository->validatorName($request);
         return $this->materialDetailRepository->addMaterialDetail($request);
-    }
-
-    public function update(Request $request,$id)
-    {
-        $this->materialDetailRepository->validatorRequestUpdate($request);
-        return $this->materialDetailRepository->updateMaterialDetail($request,$id);
     }
 
     public function updateName(Request $request,$id)
     {
-        $this->materialDetailRepository->validatorRequestUpdate($request);
+        $this->materialDetailRepository->validatorName($request);
         return  $this->materialDetailRepository->updateNameMaterialDetail($request,$id);
     }
     public function updateType(Request $request,$id)

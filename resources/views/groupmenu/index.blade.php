@@ -23,11 +23,11 @@
                                     action="{{ route('groupmenu.store') }}" method="POST">
                                     @csrf
                                     <div class="form-group">
-                                        <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">
+                                        <label class="col-lg-2 col-sm-2 control-label">
                                             Tên
                                         </label>
                                         <div class="col-lg-10">
-                                            <input type="text" class="form-control" name="name">
+                                            <input type="text" class="form-control" min="2" max="60" name="name" required>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -137,6 +137,57 @@
                                 </td>
                                 <td>
                                     @if ($groupmenu->id_cook == '0')
+                                    <a href="#myModal-1{{ $groupmenu->id }}" data-toggle="modal">
+                                            <i class="fa fa-pencil-square-o text-info" aria-hidden="true"></i>
+                                        </a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                        id="myModal-1{{ $groupmenu->id }}" class="modal fade">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                        type="button">×</button>
+                                                    <h4 class="modal-title">Sửa bếp</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                        <form role="form" action="{{ route('groupmenu.updatecook',['id' => $groupmenu->id]) }}" method="POST">
+                                                                @csrf
+                                                                <div class="form-group row">
+                                                                    <div class="col-xs-12 col-sm-6">
+                                                                        <label>Tên nhóm thực đơn</label>
+                                                                        <input type="text" class="form-control" value="{{ $groupmenu->name }}" disabled>
+                                                                    </div>
+                                                                    <div class="col-xs-12 col-sm-6">
+                                                                        <label>Bếp hiện tại</label>
+                                                                        <input type="text" class="form-control" value="Chưa chọn bếp" disabled>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="space"></div>
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-6">
+                                                                            <label style="color:black">Bếp thay đổi: </label>&nbsp;&nbsp;
+                                                                            @foreach ($cook_active as $item)
+                                                                                <label style="display:inline">{{$item->name}}</label>
+                                                                                <input value="{{$item->id}}"  type="radio" name="idCook" style="margin-right: 20px" checked>
+                                                                            @endforeach
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-6">
+                                                                            <input type="checkbox" name="move" value="" hidden>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="form-group row">
+                                                                    <div class="col-xs-12 text-center">
+                                                                        <button type="submit" class="btn btn-success text-center">Lưu</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                         Chưa chọn bếp
                                     @else
                                         <a href="#myModal-1{{ $groupmenu->id }}" data-toggle="modal">
@@ -213,7 +264,7 @@
             <div class="row">
 
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-10 nhóm thực đơn</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

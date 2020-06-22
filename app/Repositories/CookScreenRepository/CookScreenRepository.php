@@ -25,18 +25,14 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
     }
     public function getDishesByDate($date)
     {
-        $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])
-                                    ->orderBy('updated_at','asc')
-                                    ->with('dish.groupMenu.cookArea','order.table',
-                                            'dish.material.materialAction.materialDetail',
+        $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])->orderBy('updated_at','asc')
+                                    ->with('dish.groupMenu.cookArea','order.table', 'dish.material.materialAction.materialDetail',
                                             'dish.material.materialAction.unit')->get();
         return $dishes;
     }
     public function getMaterialInWarehouseCook($idCook)
     {
-        $materials = WarehouseCook::where('cook',$idCook)
-                                    ->with('detailMaterial','unit')
-                                    ->get();
+        $materials = WarehouseCook::where('cook',$idCook)->with('detailMaterial','unit')->get();
         return $materials;
     }
     public function findCookAreaById($id)
@@ -66,9 +62,7 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
 
     public function updateStatusWarehouseCook($idMaterial,$idCook)
     {
-        WarehouseCook::where('cook',$idCook)
-                        ->where('id_material_detail',$idMaterial)
-                        ->update(['status' => '0']);
+        WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterial)->update(['status' => '0']);
         $data['idCook'] = (integer) $idCook;
         $data['material'] = MaterialDetail::where('id',$idMaterial)->value('name');
         $options = array(
@@ -100,8 +94,7 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
     }
     public function findInWarehouseCook($idCook,$idMaterialDetails)
     {
-        $detailWarehouse = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)
-                                        ->orderBy('id_material_detail')->get();
+        $detailWarehouse = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)->orderBy('id_material_detail')->get();
         return $detailWarehouse;
     }
 
@@ -111,13 +104,12 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
             foreach ($materialInWarehouseCooks as $key => $materialInWarehouseCook) {
                 if($materialAction->id_material_detail == $materialInWarehouseCook->id_material_detail){
                     $temp = $materialAction->qty * $qty;
-                    WarehouseCook::where('id',$materialInWarehouseCook->id)
-                                    ->update(['qty' => $materialInWarehouseCook->qty - $temp]);
+                    WarehouseCook::where('id',$materialInWarehouseCook->id)->update(['qty' => $materialInWarehouseCook->qty - $temp]);
                 }
             }
         }
     }
-    public function checkStatus($status,$idDish,$idCook,$qty)
+    public function checkStatus($status,$idDish,$idCook,$qty,$nameTable)
     {
         if($status == '1'){
             $idGroupNVL = $this->findIdGroupNVL($idDish);
@@ -125,14 +117,33 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
             $materialActions = $this->getMaterialAction($idGroupNVL);
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
             $this->substractMaterial($materialActions,$materialInWarehouseCooks,$qty);
+        }else if($status == '2'){
+            $dish = Dishes::where('id',$idDish)->with('unit')->first();
+            $data['imgDish'] = $dish->image;
+            $data['nameDish'] = $dish->name;
+            $data['nameTable'] = $nameTable;
+            $data['qty'] = $qty;
+            $data['unit'] = $dish->unit->name;
+            $options = array(
+                'cluster' => 'ap1',
+                'useTLS' => true
+            );
+            $pusher = new Pusher(
+                'cc6422348edc9fbaff00',
+                '54d59c765665f5bc6194',
+                '994181',
+                $options
+            );
+            $pusher->trigger('FinishDish', 'finish-dish', $data);
         }
     }
     public function updateStatusDish($request,$id,$idCook)
     {
         $dish = OrderDetailTable::find($id);
         $dish->status = $request->status;
+        $nameTable = $request->nameTable;
         $qty = $dish->qty;
-        $this->checkStatus($request->status,$dish->id_dish,$idCook,$qty);
+        $this->checkStatus($request->status,$dish->id_dish,$idCook,$qty,$nameTable);
         $dish->save();
         return redirect(route('cook_screen.detail',['id' => $idCook]));
     }

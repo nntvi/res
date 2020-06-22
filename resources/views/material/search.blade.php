@@ -7,7 +7,7 @@
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-4 m-b-xs">
-                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-danger">
+                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
                     Thêm mới
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
@@ -57,8 +57,19 @@
                 </a>
             </div>
             <div class="col-sm-4">
-                <span class="error-message">{{ $errors->first('name') }}</span>
-                </p>
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                    @if(session('info'))
+                        toastr.info('{{ session('info') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
                 <form action="{{ route('material.search') }}" method="GET">
@@ -195,4 +206,11 @@
                 </tbody>
             </table>
         </div>
-        @endsection
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-sm-5 text-center">
+                    <small class="text-muted inline m-t-sm m-b-sm">{{ $count }} kết quả được tìm thấy</small>
+                </div>
+            </div>
+        </footer>
+@endsection

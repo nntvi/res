@@ -2,11 +2,17 @@
 
 namespace App\Providers;
 
-use App\Booking;
+use App\Area;
+use App\User;
+use App\Table;
+use App\Material;
+use App\GroupMenu;
 use App\WarehouseCook;
-use Carbon\Carbon;
+use App\MaterialDetail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -169,6 +175,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\VoucherRepository\IVoucherRepository',
             'App\Repositories\VoucherRepository\VoucherRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\MethodRepository\IMethodRepository',
+            'App\Repositories\MethodRepository\MethodRepository'
+        );
     }
 
     /**
@@ -178,5 +189,52 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Validator::extend('status_area', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Area::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('code_table', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Table::where('code',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('status_table', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Table::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('check_status_mat_detail', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = MaterialDetail::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('status_groupmenu', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = GroupMenu::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('status_material', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Material::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('check_old_password', function ($attribute, $value, $parameters, $validator)
+        {
+            $getOldPw = $this->getPassword(auth()->user()->id);
+            return Hash::check($value, $getOldPw, []) == true ? true : false ;
+        });
+    }
+
+    public function getPassword($idUser)
+    {
+        $password = User::where('id',$idUser)->value('password');
+        return $password;
     }
 }

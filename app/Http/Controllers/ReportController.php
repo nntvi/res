@@ -89,4 +89,9 @@ class ReportController extends Controller
     {
         return Excel::download(new ReportSupplier($dateStart,$dateEnd,$idSupplier),'reportsupplier.xlsx');
     }
+
+    public function profit()
+    {
+        return $this->reportRepository->indexReportProfit();
+    }
 }

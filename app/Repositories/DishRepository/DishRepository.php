@@ -93,6 +93,7 @@ class DishRepository extends Controller implements IDishRepository{
         $dish->capital_price = $request->capitalPriceHidden;
         $dish->sale_price = $request->salePrice;
         $dish->id_dvt = $request->idUnit;
+        $dish->stt = '1';
         $dish->describe = $request->describe;
         $dish->status = $request->status;
         $dish->id_groupnvl = $request->idMaterial;
@@ -111,8 +112,7 @@ class DishRepository extends Controller implements IDishRepository{
 
     public function updateSalePriceDish($request,$id)
     {
-       Dishes::where('id',$id)->update(array('capital_price' => $request->newCapitalPriceHidden,
-                                                'sale_price' => $request->newSalePriceUpdate));
+       Dishes::where('id',$id)->update(array('capital_price' => $request->newCapitalPriceHidden,'sale_price' => $request->newSalePriceUpdate));
        return redirect(route('dishes.index'))->with('info','Cập nhật giá sản phẩm thành công');
     }
 
@@ -130,12 +130,12 @@ class DishRepository extends Controller implements IDishRepository{
 
     public function searchDish($request)
     {
-        $content = $request->nameSearch;
-        $dishes = Dishes::with('material.groupMenu.cookArea','unit')
-                            ->where('name','LIKE',"%{$content}%")
-                            ->orWhere('code','LIKE',"%{$content}%")->get();
+        $count = Dishes::selectRaw('count(id) as qty')->where('stt','1')->where('name','LIKE',"%{$request->nameSearch}%")
+                        ->orWhere('code','LIKE',"%{$request->nameSearch}%")->value('qty');
+        $dishes = Dishes::with('material.groupMenu.cookArea','unit')->where('stt','1')->where('name','LIKE',"%{$request->nameSearch}%")
+                        ->orWhere('code','LIKE',"%{$request->nameSearch}%")->get();
         $units = $this->getUnit();
-        return view('dishes.search',compact('dishes','units'));
+        return view('dishes.search',compact('dishes','units','count'));
     }
 
     public function deleteDish($id)

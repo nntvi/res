@@ -33,8 +33,9 @@ class ExportCouponDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'code_import',
-        'id_object',
+        'id_excoupon',
+        'code_export',
+        'name_object',
         'id_material_detail',
         'id_unit',
         'qty',
@@ -50,10 +51,10 @@ class ExportCouponDetail extends Model
         return $this->belongsTo('App\Unit','id_unit','id');
     }
 
-    public function cook()
-    {
-        return $this->belongsTo('App\CookArea','id_object');
-    }
+    // public function cook()
+    // {
+    //     return $this->belongsTo('App\CookArea','id_object');
+    // }
 
     public function supplier()
     {
@@ -62,6 +63,6 @@ class ExportCouponDetail extends Model
 
     public function exportCoupon()
     {
-        return $this->belongsTo('App\ExportCoupon','code_export','code');
+        return $this->belongsTo('App\ExportCoupon','id_excoupon','id');
     }
 }

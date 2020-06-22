@@ -100,16 +100,16 @@ class User extends Authenticatable
         return json_encode($roleImportMaterialCook);
     }
 
-    public function viewBooking()
+    public function fisnishDish()
     {
         $result = $this->getActionCode($this->id);
-        $roleViewBooking = array();
+        $roleOrder = array();
         foreach ($result as $key => $value) {
-            if($value == "VIEW_BOOKING" || $value == "VIEW_FULL"){
-                array_push($roleViewBooking,$value);
+            if($value == "VIEW_ORDERS" || $value == "CREATE_ORDERS" || $value == "EDIT_ORDERS" || $value == "VIEW_FULL"){
+                array_push($roleOrder,$value);
             }
         }
-        return json_encode($roleViewBooking);
+        return json_encode($roleOrder);
     }
 
     public function notifyQtyOfCook()
@@ -141,5 +141,17 @@ class User extends Authenticatable
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y:m:d');
         $check = EndDay::where('date',$today)->value('id');
         return $check != null ? true : false;
+    }
+
+    public function checkAdmin($idUser)
+    {
+        $roles = $this->getActionCode($idUser);
+        $temp = 0;
+        foreach ($roles as $key => $role) {
+            if($role == "VIEW_FULL"){
+                $temp++;
+            }
+        }
+        return $temp == 0 ? false : true;
     }
 }

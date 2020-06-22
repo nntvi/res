@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\ImportCoupon;
 use App\Order;
 use App\OrderDetailTable;
+use App\PaymentVoucher;
 use App\Supplier;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class ReportRepository extends Controller implements IReportRepository{
         $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->toDayDateTimeString();
         return $timeNow;
     }
+
     public function createFooterOrderReport($orders)
     {
         $total = 0; $totalReceive = 0; $totalExcess = 0; $footerOrderReport = array();
@@ -48,8 +50,7 @@ class ReportRepository extends Controller implements IReportRepository{
         $e = " 23:59:59";
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
-        $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
-                        ->with('table.getArea','user','shift')->get();
+        $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])->with('table.getArea','user','shift')->get();
         $dateCreate = $this->getTimeNow();
         $footer = $this->createFooterOrderReport($orders);
         return view('report.p_order',compact('orders','dateStart','dateEnd','dateCreate','footer'));
@@ -81,6 +82,7 @@ class ReportRepository extends Controller implements IReportRepository{
         }
         return $totalQty;
     }
+
     public function createFooterTotal($results)
     {
         $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;
@@ -116,23 +118,20 @@ class ReportRepository extends Controller implements IReportRepository{
     }
     public function getOrderByAllGroupMenu($dateStart,$dateEnd)
     {
-        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
-                        ->whereBetween('updated_at',[$dateStart,$dateEnd])
-                        ->whereIn('status',['1','2'])
-                        ->groupBy('id_dish')->get();
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                        ->whereIn('status',['1','2'])->groupBy('id_dish')->get();
         return $orders;
     }
     public function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu)
     {
-        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
-                        ->whereBetween('updated_at',[$dateStart,$dateEnd])
-                        ->whereIn('status',['1','2'])
-                        ->groupBy('id_dish')
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                        ->whereIn('status',['1','2'])->groupBy('id_dish')
                         ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
                             $query->where('id',$idGroupMenu);
                         })->get();
         return $orders;
     }
+
     public function createArrayReportDish($orders)
     {
         $dishes = Dishes::with('groupMenu','unit','material')->get();
@@ -143,7 +142,7 @@ class ReportRepository extends Controller implements IReportRepository{
                     $temp = [
                         'stt' => $key + 1,
                         'code' => $dish->code,
-                        'name' => $dish->name,
+                        'name' => $dish->stt == '1' ? $dish->name : $dish->name . ' (ngưng phục vụ)',
                         'group_menu' => $dish->groupMenu->name,
                         'unit' => $dish->unit->name,
                         'qty' => $order->sumQty,
@@ -189,8 +188,8 @@ class ReportRepository extends Controller implements IReportRepository{
     {
         $total = 0; $paid = 0; $unPaid = 0;
         foreach ($results as $key => $result) {
-            $total += $result->total;
-            $paid += $result->paid;
+            $total += $result['total'];
+            $paid += $result['paid'];
         }
         $unPaid = $total - $paid;
         $temp = [
@@ -227,31 +226,139 @@ class ReportRepository extends Controller implements IReportRepository{
             }
         return $dataChart;
     }
+
+    public function getResultImports($dateStart,$dateEnd, $idSupplier)
+    {
+        if($idSupplier == 0){
+            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->orderBy('id_supplier','asc')->with('supplier')->get();
+        }else{
+            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)
+                                            ->orderBy('id_supplier','asc')->with('supplier')->get();
+        }
+        return $resultImports;
+    }
+
+    public function getPaidByIdCoupon($dateStart,$dateEnd,$idImportCoupon)
+    {
+        $paid = ImportCoupon::whereBetween('updated_at',[$dateStart,$dateEnd])->where('id',$idImportCoupon)->value('paid');
+        return $paid == null ? 0 : $paid;
+    }
+
+    public function createArrayReportSupplier($dateStart,$dateEnd,$imports)
+    {
+        $data = array();
+        if(empty($imports)){
+            return $data;
+        }else{
+            foreach ($imports as $key => $import) {
+                $temp = [
+                    'STT' => $key + 1,
+                    'code' => $import->code,
+                    'name' => $import->supplier->name,
+                    'total' => $import->total,
+                    'paid' => $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
+                    'unpaid' => $import->total - $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
+                    'status' => $import->status,
+                    'created_at' => $import->created_at,
+                    'created_by' => $import->created_by,
+                ];
+                array_push($data,$temp);
+                unset($temp);
+            }
+            return $data;
+        }
+    }
     public function reportSupplier($request)
     {
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
         $idSupplier = $request->idSupplier;
-        if($idSupplier == 0){
-            $results = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->with('supplier')->get();
-        }else{
-            $results = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)
-                                    ->with('supplier')->get();
-        }
-        $nameSupplierChoosen = Supplier::where('id',$idSupplier)->value('name');
+        $imports = $this->getResultImports($dateStart,$dateEnd,$idSupplier);
+        $results = $this->createArrayReportSupplier($dateStart,$dateEnd,$imports);
+        $supplierChoosen = Supplier::where('id',$idSupplier)->first();
         $listSupplier = Supplier::whereNotIn('id',[$idSupplier])->get();
         $suppliers = Supplier::all();
         $footerTotalSupplier = $this->createFooterTotalSupplier($results);
         $dataChart = $this->createArrayChartSupplier($dateStart,$dateEnd);
-        return view('report.p_supplier',compact('results','dateStart','dateEnd','idSupplier','nameSupplierChoosen',
+        return view('report.p_supplier',compact('results','dateStart','dateEnd','idSupplier','supplierChoosen',
                                                 'listSupplier','suppliers','footerTotalSupplier','dataChart'));
+    }
+
+    public function getRevenue($dateStart,$dateEnd)
+    {
+        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->where('status','0')->value('total');
+        return $revenue == null ? 0 : $revenue;
+    }
+
+    public function getCapitalPriceOfDish($dateStart,$dateEnd)
+    {
+        $dishOrders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                                        ->whereIn('status',['1','2'])->groupBy('id_dish')->with('dish')->get();
+        $capitalPrice = 0;
+        foreach ($dishOrders as $key => $dishOrder) {
+            $capitalPrice += ($dishOrder->sumQty) * ($dishOrder->dish->capital_price);
+        }
+        return $capitalPrice;
+    }
+
+    public function getTotalPayment($dateStart,$dateEnd)
+    {
+        $payCash = PaymentVoucher::selectRaw('sum(pay_cash) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->value('total');
+        return $payCash == null ? 0 : $payCash;
+    }
+
+    public function getExpense($dateStart,$dateEnd)
+    {
+        $capitalPrice = $this->getCapitalPriceOfDish($dateStart,$dateEnd);
+        $payCash = $this->getTotalPayment($dateStart,$dateEnd);
+        return $capitalPrice + $payCash;
+    }
+
+    public function createDataChartProfitIndex($dateStart,$dateEnd)
+    {
+        $obj = array(
+            'month' => $dateStart,
+            'revenue' => $this->getRevenue($dateStart,$dateEnd),
+            'expense' => $this->getExpense($dateStart,$dateEnd),
+            'profit'  => $this->getRevenue($dateStart,$dateEnd) - $this->getExpense($dateStart,$dateEnd)
+        );
+        return $obj;
+    }
+
+    public function getAllProfit()
+    {
+        $data = array();
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfJan(),$this->getDateTime->getEndOfJan()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfFreb(),$this->getDateTime->getEndOfFreb()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfMar(),$this->getDateTime->getEndOfMar()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfApr(),$this->getDateTime->getEndOfApr()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfMay(),$this->getDateTime->getEndOfMay()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfJun(),$this->getDateTime->getEndOfJun()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfJul(),$this->getDateTime->getEndOfJul()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfAug(),$this->getDateTime->getEndOfAug()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfSep(),$this->getDateTime->getEndOfSep()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfOct(),$this->getDateTime->getEndOfOct()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfNov(),$this->getDateTime->getEndOfNov()));
+        array_push($data,$this->createDataChartProfitIndex($this->getDateTime->getFirstOfDec(),$this->getDateTime->getEndOfDec()));
+        return $data;
+    }
+
+    public function indexReportProfit()
+    {
+        $now = Carbon::now('Asia/Ho_Chi_Minh');
+        $firstMonth = $now->firstOfMonth()->format('Y-m-d');
+        $endMonth = $now->endOfMonth()->format('Y-m-d');
+        $revenue = $this->getRevenue($firstMonth,$endMonth);
+        $expense = $this->getExpense($firstMonth,$endMonth);
+        $profit = $revenue - $expense;
+        $dataChart = $this->getAllProfit();
+        return view('report.profit',compact('revenue','expense','profit','firstMonth','endMonth','dataChart'));
     }
     public function getToTalRevenueInYear()
     {
         $firstYear = $this->getDateTime->getFirstOfJan();
         $lastYear = $this->getDateTime->getEndOfDec();
-        $totalRevenue = Order::selectRaw('sum(total_price) as total')
-                                ->whereBetween('created_at',[$firstYear,$lastYear])->value('total');
+        $totalRevenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$firstYear,$lastYear])->value('total');
         return $totalRevenue;
     }
 

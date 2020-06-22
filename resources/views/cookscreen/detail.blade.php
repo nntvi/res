@@ -10,24 +10,31 @@
                             </div>
                             <div class="list-group list-group-alternate">
                                     @foreach ($materials as $material)
-                                        @if ($material->status == "1")
-                                        <a href="{{route('cook_screen.p_updatematerial',[   'idMaterial' => $material->detailMaterial->id,
-                                                                                            'idCook' => $cook->id ])}}"
-                                            class="list-group-item" onclick="return confirm('Bạn có chắc muốn nhập thêm [ {{ $material->detailMaterial->name }} ] ?')">
-                                                <span class="badge badge-danger">{{$material->qty}}
-                                                    <small>{{$material->unit->name}}</small>
-                                                </span>
-                                            <i class="ti ti-bell"></i> {{ $material->detailMaterial->name }}
-                                        </a>
+                                        @if ($material->detailMaterial->status == '1')
+                                            @switch($material->status)
+                                                @case('1')
+                                                <a href="{{route('cook_screen.p_updatematerial',[   'idMaterial' => $material->detailMaterial->id,
+                                                        'idCook' => $cook->id ])}}"
+                                                    class="list-group-item" onclick="return confirm('Bạn có chắc muốn nhập thêm [ {{ $material->detailMaterial->name }} ] ?')">
+                                                        <span class="badge badge-danger">{{$material->qty}}
+                                                            <small>{{$material->unit->name}}</small>
+                                                        </span>
+                                                    <i class="ti ti-bell"></i> {{ $material->detailMaterial->name }}
+                                                </a>
+                                                    @break
+                                                @case('0')
+                                                    <small class="list-group-item" style="background: linear-gradient(45deg, #ff8181, transparent);">
+                                                        <span class="badge badge-danger">{{$material->qty}}
+                                                            {{--  <small>{{$material->unit->name}}</small>  --}}
+                                                        </span>
+                                                        <i class="ti ti-bell"></i> {{ $material->detailMaterial->name }}
+                                                    </small>
+                                                    @break
+                                                @default
+                                            @endswitch
                                         @else
-                                        <small class="list-group-item" style="background: linear-gradient(45deg, #ff8181, transparent);">
-                                            <span class="badge badge-danger">{{$material->qty}}
-                                                {{--  <small>{{$material->unit->name}}</small>  --}}
-                                            </span>
-                                            <i class="ti ti-bell"></i> {{ $material->detailMaterial->name }}
-                                        </small>
+                                            @continue
                                         @endif
-
                                     @endforeach
                             </div>
                     </div>
@@ -39,21 +46,22 @@
                                     <table class="table table-striped b-t b-light">
                                     <thead>
                                         <tr>
-                                        <th data-breakpoints="xs">Bàn</th>
-                                        <th>Tên món</th>
-                                        <th>Sl</th>
-                                        <th>Ghi chú</th>
-                                        <th class="text-center" >Thời gian</th>
-                                        <th>Duyệt món</th>
-                                        <th>Công thức</th>
-                                        <th>Cập nhật</th>
+                                            <th>Bàn</th>
+                                            <th>Tên món</th>
+                                            <th>Sl</th>
+                                            <th>Ghi chú</th>
+                                            <th class="text-center">Thời gian</th>
+                                            <th>Duyệt món</th>
+                                            <th>Công thức</th>
+                                            <th class="text-center">Cập nhật</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $key => $dish)
-                                                <form action="{{route('cook_screen.p_update',['id' => $dish->id,'idCook' => $cook->id])}}" method="post">
-                                                    @csrf
-                                                    <input type="text" name="idCook" value="{{$cook->id}}" hidden>
+                                            <form action="{{route('cook_screen.p_update',['id' => $dish->id,'idCook' => $cook->id])}}" method="post">
+                                                @csrf
+                                                    <input name="idCook" value="{{$cook->id}}" hidden>
+                                                    <input name="nameTable" value="{{$dish->order->table->name}}" hidden>
                                                     <tr data-expanded="true">
                                                         <td>{{ $dish->order->table->name }}</td>
                                                         <td>{{ $dish->dish->name }}</td>
@@ -85,7 +93,7 @@
                                                                 @endif
                                                                 @if ($dish->status == '1')
                                                                     <input value="2" type="radio" name="status" checked>
-                                                                    <label style="display:inline; color: red;">Hoàn thành</label>
+                                                                    <label style="display:inline; color: purple;">Hoàn thành</label>
                                                                 @endif
                                                                 @if($dish->status == '2')
                                                                     <label style="display:inline; color: darkgreen;" >
@@ -96,7 +104,7 @@
                                                             </td>
                                                             <td>
                                                                 <a href="#myModal{{ $dish->dish->id }}" data-toggle="modal" >
-                                                                    <i class="fa fa-eye text-info" aria-hidden="true"></i>
+                                                                    <i class="fa fa-eye text-info" aria-hidden="true"></i> Xem CT
                                                                 </a>
                                                                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal{{ $dish->dish->id }}" class="modal fade" style="display: none;">
                                                                     <div class="modal-dialog">
@@ -134,25 +142,25 @@
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td>
+                                                            <td class="text-center">
                                                                 @if ($dish->status == '0')
-                                                                    <button type="submit" class="btn default btn-xs yellow-crusta radius">
-                                                                        <i class="fa fa-edit"></i>
+                                                                    <button type="submit" class="btn btn-xs btn-danger">
+                                                                        Cập nhật
                                                                     </button>
                                                                 @endif
                                                                 @if ($dish->status == '1')
-                                                                    <button type="submit" class="btn default btn-xs yellow-crusta radius">
-                                                                        <i class="fa fa-edit"> Cập nhật</i>
+                                                                    <button type="submit" class="btn btn-xs  btn-warning">
+                                                                        Cập nhật
                                                                     </button>
                                                                 @endif
                                                                 @if ($dish->status == '2')
-                                                                    --
+                                                                    <i class="fa fa-check text-success" aria-hidden="true"></i>
                                                                 @endif
                                                             </td>
                                                         @endif
 
                                                     </tr>
-                                                </form>
+                                            </form>
                                         @endforeach
                                     </tbody>
                                     </table>

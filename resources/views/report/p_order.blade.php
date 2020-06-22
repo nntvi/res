@@ -91,57 +91,63 @@
                 </div>
             </div>
             <hr>
-            <table class="table" ui-jq="footable" ui-options="{
-                    &quot;paging&quot;: {
-                    &quot;enabled&quot;: true
-                    },
-                    &quot;filtering&quot;: {
-                    &quot;enabled&quot;: true
-                    },
-                    &quot;sorting&quot;: {
-                    &quot;enabled&quot;: true
-                    }}">
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Khu vực</th>
-                        <th>Bàn</th>
-                        <th>Người tạo</th>
-                        <th>Người thanh toán</th>
-                        <th>Ca</th>
-                        <th>Trạng thái</th>
-                        <th>Thời gian thanh toán</th>
-                        <th>Tổng tiền</th>
-                        <th>Tiền khách đưa</th>
-                        <th>Tiền hoàn lại</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($orders as $key => $order)
-                        <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td>{{ $order->table->getArea->name }}</td>
-                            <td>{{ $order->table->name }}</td>
-                            <td>{{ $order->created_by }}</td>
-                            <td>{{ $order->payer }}</td>
-                            <td>{{ $order->shift->name }}</td>
-                            <td>{{ $order->status == '0' ? 'Đã thanh toán' : 'Chưa thanh toán' }}</td>
-                            <td>{{ $order->updated_at }}</td>
-                            <td>{{ number_format($order->total_price) . ' đ' }}</td>
-                            <td>{{ number_format($order->receive_cash) . ' đ' }}</td>
-                            <td>{{ number_format($order->excess_cash) . ' đ' }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr class="bold">
-                        <td colspan="8" class="text-right">TỔNG: </td>
-                        <td>{{ number_format($footer[0]['total']) . ' đ' }}</td>
-                        <td>{{ number_format($footer[0]['totalReceive']) . ' đ' }}</td>
-                        <td>{{ number_format($footer[0]['totalExcess']) . ' đ' }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="table-responsive">
+                    <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Khu vực</th>
+                                    <th>Bàn</th>
+                                    <th>Người tạo</th>
+                                    <th>Người thanh toán</th>
+                                    <th>Ca</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thời gian thanh toán</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Tiền khách đưa</th>
+                                    <th>Tiền hoàn lại</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($orders as $key => $order)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $order->table->getArea->name }}</td>
+                                        <td>{{ $order->table->name }}</td>
+                                        <td>{{ $order->created_by }}</td>
+                                        <td>{{ $order->payer }}</td>
+                                        <td>{{ $order->shift->name }}</td>
+                                        <td>
+                                            @switch($order->status)
+                                                @case('0')
+                                                    Đã thanh toán
+                                                    @break
+                                                @case('1')
+                                                    Chưa thanh toán
+                                                    @break
+                                                @case('-1')
+                                                    Đã hủy
+                                                @default
+                                            @endswitch
+                                        </td>
+                                        <td>{{ $order->updated_at }}</td>
+                                        <td>{{ number_format($order->total_price) . ' đ' }}</td>
+                                        <td>{{ number_format($order->receive_cash) . ' đ' }}</td>
+                                        <td>{{ number_format($order->excess_cash) . ' đ' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="bold">
+                                    <td colspan="8" class="text-right">TỔNG: </td>
+                                    <td>{{ number_format($footer[0]['total']) . ' đ' }}</td>
+                                    <td>{{ number_format($footer[0]['totalReceive']) . ' đ' }}</td>
+                                    <td>{{ number_format($footer[0]['totalExcess']) . ' đ' }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+            </div>
+
         </div>
     </div>
 </div>

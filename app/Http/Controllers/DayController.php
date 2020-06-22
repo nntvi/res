@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 class DayController extends Controller
 {
     private $dayRepository;
+
     public function __construct(IDayRepository $dayRepository)
     {
         $this->dayRepository = $dayRepository;

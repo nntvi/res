@@ -1,23 +1,13 @@
 @extends('layouts')
 @section('content')
 <div class="table-agile-info">
-    <a href="{{ route('bill.index') }}" class="btn btn-sm btn-warning">Trở về</a>
-    <div class="space"></div>
     <div class="panel panel-default">
         <div class="panel-heading">
             Danh sách hóa đơn
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-5 m-b-xs">
-                <form action="{{ route('bill.filter') }}" method="get">
-                    @csrf
-                    <select class="input-sm form-control w-sm inline v-middle" name="typeFilter">
-                        <option value="0">Theo ngày</option>
-                        <option value="1">Theo giá</option>
-                        <option value="2">Theo ca</option>
-                    </select>
-                    <button class="btn btn-sm btn-default" type="submit">Sắp xếp</button>
-                </form>
+                <a href="{{ route('bill.index') }}" class="btn btn-sm btn-default">Trở về</a>
             </div>
             <div class="col-sm-3">
             </div>
@@ -38,7 +28,7 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Số HĐ</th>
+                        <th>Mã Bill</th>
                         <th>Bàn</th>
                         <th>Trạng thái</th>
                         <th>Tổng giá</th>
@@ -56,7 +46,7 @@
                     @foreach($bills as $key => $bill)
                         <tr>
                             <td>{{ $key + 1 }}</td>
-                            <td>{{ $bill->id }}</td>
+                            <td>{{ $bill->code }}</td>
                             <td>{{ $bill->id_table }}</td>
                             <td>{{ $bill->status == '0' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
                             </td>
@@ -79,7 +69,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title"> Chi tiết hóa đơn số {{ $bill->id }}</h4>
+                                                <h4 class="modal-title"> Chi tiết hóa đơn "<b>{{ $bill->code }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="modal-body">
@@ -136,6 +126,7 @@
                                                                                                             Hoàn thành
                                                                                                             @break
                                                                                                         @default
+                                                                                                            Đã hủy
                                                                                                     @endswitch
                                                                                                 </td>
                                                                                             </tr>
@@ -165,14 +156,8 @@
         </div>
         <footer class="panel-footer">
             <div class="row">
-
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-10 bills search </small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{ $bills->links() }}
-                    </ul>
+                    <small class="text-muted inline m-t-sm m-b-sm">{{ $count }} kết quả được tìm thấy</small>
                 </div>
             </div>
         </footer>

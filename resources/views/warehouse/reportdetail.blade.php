@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class="col-md-12" style="margin-top: 15px; margin-bottom: 15px;">
                         <div class="col-md-2 bold">
-                            Tên NVL : <span class=""> {{ $warehouse->detailMaterial->name }}
+                            Tên NVL : <span class=""> {{ $warehouse->status == '1' ? $warehouse->detailMaterial->name : $warehouse->detailMaterial->name . ' (đã xóa)' }}
                             </span>
                         </div>
                         <div class="col-md-2 bold">

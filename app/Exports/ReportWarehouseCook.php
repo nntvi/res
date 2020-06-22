@@ -29,9 +29,7 @@ class ReportWarehouseCook implements FromCollection, WithHeadings
         $e = " 23:59:59";
         $fisrtQtyList = HistoryWhCook::selectRaw('id_material_detail, sum(first_qty) as qty')
                                 ->whereBetween('created_at',[$this->dateStart . $s ,$this->dateEnd . $e])
-                                ->where('id_cook',$this->cook)
-                                ->groupBy('id_material_detail')
-                                ->get();
+                                ->where('id_cook',$this->cook)->groupBy('id_material_detail')->get();
         return $fisrtQtyList;
     }
     public function getQtyFirstPeriodById($idMaterialDetail)
@@ -50,9 +48,7 @@ class ReportWarehouseCook implements FromCollection, WithHeadings
         $e = " 23:59:59";
         $lastQtyList = HistoryWhCook::selectRaw('id_material_detail, sum(last_qty) as qty')
                                 ->whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])
-                                ->where('id_cook',$this->cook)
-                                ->groupBy('id_material_detail')
-                                ->get();
+                                ->where('id_cook',$this->cook)->groupBy('id_material_detail')->get();
         return $lastQtyList;
     }
     public function getQtyLastPeriodById($idMaterialDetail)
@@ -70,8 +66,7 @@ class ReportWarehouseCook implements FromCollection, WithHeadings
     {
         $histories = HistoryWhCook::selectRaw('id_material_detail')
                                 ->whereBetween('created_at',[$this->dateStart,$this->dateEnd])
-                                ->where('id_cook',$this->cook)
-                                ->groupBy('id_material_detail')
+                                ->where('id_cook',$this->cook)->groupBy('id_material_detail')
                                 ->with('detailMaterial.unit','detailMaterial.typeMaterial')->get();
         return $histories;
     }
@@ -84,7 +79,7 @@ class ReportWarehouseCook implements FromCollection, WithHeadings
         foreach ($histories as $key => $history) {
             $temp = [
                 'stt' => $key + 1,
-                'name_detail_material' => $history->detailMaterial->name,
+                'name_detail_material' => $history->detailMaterial->status == '1' ? $history->detailMaterial->name : $history->detailMaterial->name . ' (ko còn sử dụng)',
                 'name_type_material' => $history->detailMaterial->typeMaterial->name,
                 'name_unit' => $history->detailMaterial->unit->name,
                 'tondauky' => $this->getQtyFirstPeriodById($history->id_material_detail,$this->dateStart,$this->dateEnd,$this->cook),

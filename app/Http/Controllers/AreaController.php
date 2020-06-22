@@ -19,18 +19,20 @@ class AreaController extends Controller
 
     public function index()
     {
-        return $this->areaRepository->getAllArea();
+        $areas = $this->areaRepository->getAllArea();
+        $areaTables = Area::where('status','1')->orderBy('name','asc')->get();
+        return view('area/index',compact('areas','areaTables'));
     }
 
     public function store(Request $request)
     {
-        $this->areaRepository->validatorRequestStore($request);
+        $this->areaRepository->validatorArea($request);
         return $this->areaRepository->addArea($request);
     }
 
     public function update(Request $request, $id)
     {
-        $this->areaRepository->validatorRequestUpdate($request);
+        $this->areaRepository->validatorArea($request);
         return $this->areaRepository->updateArea($request,$id);
     }
 

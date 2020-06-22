@@ -12,4 +12,5 @@ interface IExportCouponRepository{
     function destroyWarehouse($request);
     function viewDestroyCook($id);
     function destroyCook($request);
+    function createCode($random_string);
 }

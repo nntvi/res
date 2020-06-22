@@ -67,13 +67,14 @@
                                 @if($idSupplier == '0')
                                     <option value="0">Tất cả</option>
                                     @foreach($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                        <option value="{{ $supplier->id }}">{{ $supplier->status == '1' ? $supplier->name : $supplier->name . '( ngưng hoạt động)' }}</option>
                                     @endforeach
                                 @else
-                                    <option value="{{ $idSupplier }}">{{ $nameSupplierChoosen }}</option>
+                                    <option value="{{ $idSupplier }}">{{ $supplierChoosen->status == '1' ? $supplierChoosen->name : $supplierChoosen->name . '( ngưng hoạt động)' }}</option>
                                     @foreach($listSupplier as $supplier)
-                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                        <option value="{{ $supplier->id }}">{{ $supplier->status == '1' ? $supplier->name : $supplier->name . '( ngưng hoạt động)' }}</option>
                                     @endforeach
+                                    <option value="0">Tất cả</option>
                                 @endif
 
                             </select>
@@ -130,14 +131,15 @@
                 Kết quả
             </div>
             <div class="row w3-res-tb" style="padding: 15px">
-                <div class="col-sm-5 bold">
+                <div class="col-sm-8 bold">
                     @if ($idSupplier == '0')
                         NCC: Tất cả - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
                     @else
-                        NCC: {{ $supplier->name }} - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
+                        NCC: {{ $supplierChoosen->status == '1' ? $supplierChoosen->name : $supplierChoosen->name . '( ngưng hoạt động)' }}
+                        - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
                     @endif
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-1">
                 </div>
                 <div class="col-sm-3 text-right">
                     <a href="{{ route('report.exportsupplier',['dateStart' => $dateStart,'dateEnd' => $dateEnd, 'idSupplier' => $idSupplier]) }}"
@@ -147,55 +149,46 @@
                 </div>
             </div>
             <div>
-                <table class="table table-responsive">
-                    <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Mã phiếu nhập</th>
-                            <th>Người tạo</th>
-                            <th>Tên Nhà Cung cấp</th>
-                            <th>Trạng thái</th>
-                            <th>Tổng tiền</th>
-                            <th>Đã trả</th>
-                            <th>Nợ</th>
-                            <th class="text-center">Ngày nhập hàng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($results as $key => $result)
-                            <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td>{{ $result->code }}</td>
-                                <td>{{ $result->created_by }}</td>
-                                <td>{{ $result->supplier->name }}</td>
-                                @switch($result->status)
-                                    @case('0')
-                                        <td style="color: red">Chưa thanh toán</td>
-                                        @break
-                                    @case('1')
-                                        <td style="color: purple">Còn nợ</td>
-                                        @break
-                                    @default
-                                        <td>Đã thanh toán</td>
-                                        @break
-                                @endswitch
-                                <td>{{ number_format($result->total) . ' đ' }}</td>
-                                <td>{{ number_format($result->paid) . ' đ' }}</td>
-                                <td>{{ number_format($result->total - $result->paid) . ' đ' }}</td>
-                                <td class="text-right">{{ $result->created_at }}</td>
-                            </tr>
-                        @endforeach
-                        <tr class="bold">
-                            <td colspan="5" class="text-right">TỔNG: </td>
-                            <td>{{ number_format($footerTotalSupplier[0]['total']) . ' đ' }}
-                            </td>
-                            <td>{{ number_format($footerTotalSupplier[0]['paid']) . ' đ' }}
-                            </td>
-                            <td>{{ number_format($footerTotalSupplier[0]['unPaid']) . ' đ' }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                        <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã phiếu nhập</th>
+                                        <th>Người tạo</th>
+                                        <th>Tên Nhà Cung cấp</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Đã trả</th>
+                                        <th>Nợ</th>
+                                        <th class="text-center">Ngày nhập hàng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($results as $result)
+                                        <tr>
+                                            <td>{{ $result['STT'] }}</td>
+                                            <td>{{ $result['code'] }}</td>
+                                            <td>{{ $result['created_by'] }}</td>
+                                            <td>{{ $result['name'] }}</td>
+                                            <td>{{ number_format($result['total']) . ' đ' }}</td>
+                                            <td>{{ number_format($result['paid']) . ' đ' }}</td>
+                                            <td>{{ number_format($result['unpaid']) . ' đ' }}</td>
+                                            <td class="text-right">{{ $result['created_at'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="bold">
+                                        <td colspan="4" class="text-right">TỔNG: </td>
+                                        <td>{{ number_format($footerTotalSupplier[0]['total']) . ' đ' }}
+                                        </td>
+                                        <td>{{ number_format($footerTotalSupplier[0]['paid']) . ' đ' }}
+                                        </td>
+                                        <td>{{ number_format($footerTotalSupplier[0]['unPaid']) . ' đ' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                </div>
+
             </div>
         </div>
     </div>

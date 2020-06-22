@@ -34,21 +34,19 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function getOrders($date)
     {
-        $idOrders = Order::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])
-                        ->with('table.getArea')->get();
+        $idOrders = Order::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])->with('table.getArea')->get();
         return $idOrders;
     }
 
     public function getDishes()
     {
-        $groupmenus = GroupMenu::with('dishes')->get();
+        $groupmenus = GroupMenu::where('status','1')->where('id_cook','!=','0')->with('dishes')->get();
         return $groupmenus;
     }
 
     public function getIdTableActive($date)
     {
-        $activeTables= Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])
-                            ->where('status', '1')->get();
+        $activeTables= Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])->where('status', '1')->get();
         return $activeTables;
     }
 
@@ -60,9 +58,7 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function getOnlyIdMaterialAction($idGroupNVL)
     {
-        $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)
-                                            ->orderBy('id_material_detail')
-                                            ->get('id_material_detail');
+        $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)->orderBy('id_material_detail')->get('id_material_detail');
         return $idMaterialDetails;
     }
 
@@ -72,6 +68,11 @@ class OrderRepository extends Controller implements IOrderRepository{
         return $materialDetails;
     }
 
+    public function countDishCookingorFinish($idOrderTable)
+    {
+        $qty = OrderDetailTable::selectRaw('count(id) as qty')->where('id_bill',$idOrderTable)->whereIn('status',['1','2'])->value('qty');
+        return $qty;
+    }
     public function findIdGroupNVL($idDish)
     {
         $idGroupNVL = Dishes::where('id',$idDish)->first('id_groupnvl');
@@ -86,15 +87,13 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function findInWarehouseCook($idCook,$idMaterialDetails)
     {
-        $detailWarehouse = WarehouseCook::where('cook',$idCook)
-                                        ->whereIn('id_material_detail',$idMaterialDetails)
-                                        ->orderBy('id_material_detail')->get();
+        $detailWarehouse = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)->orderBy('id_material_detail')->get();
         return $detailWarehouse;
     }
 
     public function showTableInDay()
     {
-        $tables = Table::get();
+        $tables = Table::where('status','1')->get();
         $activeTables = $this->getIdTableActive($this->getDateNow());
         $groupmenus = $this->getDishes();
         return view('order.index',compact('tables','activeTables','groupmenus'));
@@ -206,9 +205,42 @@ class OrderRepository extends Controller implements IOrderRepository{
             '994181',
             $options
         );
+        $data['type'] = '1';
         $data['idCook'] = $idCook;
         $data['nameDish'] = Dishes::where('id',$idDish)->value('name');
         $pusher->trigger('NotifyCook', 'notify-cook', $data);
+    }
+
+    public function notifyDistroyDish($idDishOrder)
+    {
+        $dish = OrderDetailTable::where('id',$idDishOrder)->with('dish.groupMenu.cookArea')->first();
+        $options = array(
+            'cluster' => 'ap1',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            'cc6422348edc9fbaff00',
+            '54d59c765665f5bc6194',
+            '994181',
+            $options
+        );
+        $data['type'] = '0';
+        $data['idCook'] = $dish->dish->groupMenu->cookArea->id;
+        $data['nameDish'] = $dish->dish->name;
+        $pusher->trigger('NotifyCook', 'notify-cook', $data);
+    }
+
+    public function destroyDish($idDishOrder)
+    {
+        OrderDetailTable::where('id',$idDishOrder)->update(['status' => '-2']);
+        $this->notifyDistroyDish($idDishOrder);
+    }
+
+    public function loopDishOrdertoDestroy($arrDishOrder)
+    {
+        foreach ($arrDishOrder as $key => $dish) {
+            $this->destroyDish($dish->id);
+        }
     }
     public function addDishesOrder($request,$idOrderTable)
     {
@@ -250,4 +282,5 @@ class OrderRepository extends Controller implements IOrderRepository{
             }
         }
     }
+
 }

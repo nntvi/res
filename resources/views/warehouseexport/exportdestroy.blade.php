@@ -18,7 +18,7 @@
                                                 <label class="control-label">Mã xuất hủy<span style="color: #ff0000">
                                                         *</span></label>
                                                 <div class="space"></div>
-                                                <input type="text" size="40" class="form-control" name="code" id="codeDestroy">
+                                                <input type="text" value="{{ $code }}" class="form-control" name="code" id="codeDestroy">
                                                 <input name="id_kind" value="3" hidden>
                                                 <input name="type_object" value="1" hidden>
                                             </div>
@@ -79,6 +79,7 @@
 
                                     <div class="row">
                                         <div class="col-xs-12 text-center">
+                                            <a href="{{ route('warehouse.index') }}" class="btn btn-default">Trở về</a>
                                             <button type="submit" class="btn green-meadow radius">Tạo phiếu xuất</button>
                                         </div>
                                     </div>

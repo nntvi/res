@@ -31,9 +31,13 @@
                             <th scope="row">{{ $key + 1 }}</th>
                             <td>{{ $cook->name }}</td>
                             <td>
-                                @foreach($cook->groupMenu as $key => $groupmneu)
-                                    {{ $groupmneu->name }}
-                                    {{ count($cook->groupMenu) != $key+1 ? ',' : '' }}
+                                @foreach($cook->groupMenu as $key => $groupmenu)
+                                    @if ($groupmenu->status == '1')
+                                        {{ $groupmenu->name }}
+                                        {{ count($cook->groupMenu) != $key+1 ? ',' : '' }}
+                                    @else
+                                        @continue
+                                    @endif
                                 @endforeach
                             </td>
                             <form method="post"

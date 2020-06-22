@@ -261,6 +261,7 @@ function validateFormDestroyCook() {
     }
 }
 
+// bắt lỗi tạo order
 function saveOrder() {
     let tableOrder = document.getElementById('tableOrder');
     let data = [];
@@ -284,11 +285,22 @@ function saveOrder() {
     }
 }
 
+// bắt lỗi form trả tiền NCC
 function validatePaymentVoucher() {
     let unPaid = document.getElementById('unPaid').value;
     let payCash = document.getElementById('payCash').value;
     if(parseFloat(payCash) > parseFloat(unPaid)){
         alert('Số tiền nhập vào không được lớn hơn số tiền cần trả');
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function validateCookEmer() {
+    let tableCookEmer = document.getElementById('cookEmergencyTable');
+    if(tableCookEmer.rows.length == 0){
+        alert('Chưa có NVL để tạo phiếu');
         return false;
     }else{
         return true;

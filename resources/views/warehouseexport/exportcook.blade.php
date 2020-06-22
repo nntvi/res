@@ -16,7 +16,7 @@
                                     <div class="col-md-3">
                                         <label class="control-label">Mã phiếu xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" size="40" class="form-control" name="code" maxlength="200" id="codeExportCook">
+                                        <input type="text" class="form-control" name="code" maxlength="200" id="codeExportCook" value="{{ $code }}">
                                     </div>
                                     <div class="col-md-3">
                                         <input name="id_kind" value="1" hidden>
@@ -31,7 +31,7 @@
                                     <div class="col-md-6">
                                         <label class="control-label">Ghi chú</label>
                                         <div class="space"></div>
-                                        <textarea type="text" size="40" class="form-control" rows="1"
+                                        <textarea type="text" class="form-control" rows="1"
                                             name="note">
                                         </textarea>
                                     </div>

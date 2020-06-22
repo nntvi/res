@@ -5,7 +5,7 @@
         right: 25px;
     }
 
-    .hr-menu .brand{
+    .hr-menu .brand {
         width: 100%;
     }
 
@@ -17,6 +17,7 @@
         margin-top: 10px;
         float: right;
     }
+
     .media-gal .item {
         width: 100%;
     }
@@ -25,60 +26,101 @@
         margin: 25px 0;
     }
 }
-@media (min-width: 434px) and (max-width: 943px){
-    .brand{
-        height: 89px;
+
+@media (min-width: 434px) and (max-width: 943px) {
+    .brand {
+        height: 58px;
     }
 }
-@media (min-width: 480px) and (max-width: 767px) {
-  .header{
-    position: relative! important;
-    margin-top: 80px ! important;
+
+@media (min-width: 312px) and (max-width: 425px){
+    .content-order{
+        height: 270px;
+        overflow: auto;
+    }
+    .panel-heading.nameTableOrder{
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+    }
+    ul.nav.nav-tabs > li > a{
+        font-size: 13px;
+    }
+    .nav-tabs>li.active>a{
+        font-size: 13px;
+    }
 }
-    .merge-header{
+@media (min-width: 480px) and (max-width: 768px) {
+    .content-order{
+        height: 280px;
+        overflow: auto;
+    }
+    .header {
+        position: relative ! important;
+        margin-top: 60px ! important;
+    }
+
+    .merge-header {
         margin-right: 0px !important;
     }
-.brand{
-    height: 80px;
-    width: 100%;
-    float: none;
-    position: fixed;
-    top: 0px;
-    z-index: 1005;
-}
-    a.logo{
-        margin: 18px 0 0 25px;
+
+    .brand {
+        height: 59px;
+        width: 100%;
+        float: none;
+        position: fixed;
+        top: 0px;
+        z-index: 1005;
     }
+
+    a.logo {
+        margin: 7px 0 0 25px;
+    }
+
     .sidebar-toggle-box .fa-bars {
         padding: 8px 8px 8px 9px;
     }
-    .sidebar-toggle-box{
+
+    .sidebar-toggle-box {
         right: 10px;
+        margin-top: 12px;
     }
-    .top-nav{
-        margin-bottom: 20px;
+
+    .top-nav {
+        margin-bottom: 10px;
     }
-    .top-menu{
+
+    ul.top-menu {
+        margin-right: 8px;
+    }
+
+    .top-menu {
         margin-right: 10px;
     }
-    .wrapper{
+
+    .wrapper {
         margin-top: 0px;
     }
+
     ul.sidebar-menu {
         margin-top: 0px;
     }
-    #sidebar{
+
+    #sidebar {
         position: fixed !important;
         z-index: 1002;
-        top: 25px;
+        top: 4px;
     }
-    #main-content{
+
+    #main-content {
         margin-left: 0px;
     }
+
     /*calendar*/
     .fc-button-inner {
         padding: 0;
     }
+
     /*-*/
     .prd-row .action {
         right: 25px;
@@ -116,9 +158,10 @@
         width: 100%;
     }
 
-    .horizontal-menu .navbar-nav > li {
+    .horizontal-menu .navbar-nav>li {
         margin-bottom: 10px;
     }
+
     .lock-wrapper {
         padding: 0 20px;
     }
@@ -136,50 +179,61 @@
     #time {
         font-size: 100px;
     }
+
     .media-gal .item {
         width: 100%;
     }
+
     .media-filter {
         margin: 25px 0;
     }
 
-    .media-filter + .pull-right, .media-filter + .pull-right + .btn  {
+    .media-filter+.pull-right,
+    .media-filter+.pull-right+.btn {
         float: left !important;
     }
 
 
 }
-@media (max-width:767px){
 
-    .fixed-width #container, .fixed-width #container .header {
+@media (max-width:767px) {
+
+    .fixed-width #container,
+    .fixed-width #container .header {
         width: 100%;
     }
 
-    #sidebar{
-        margin-left:-240px;
-        -webkit-transition:all .3s ease-in-out;
-        -moz-transition:all .3s ease-in-out;
-        -o-transition:all .3s ease-in-out;
-        transition:all .3s ease-in-out;
+    #sidebar {
+        margin-left: -240px;
+        -webkit-transition: all .3s ease-in-out;
+        -moz-transition: all .3s ease-in-out;
+        -o-transition: all .3s ease-in-out;
+        transition: all .3s ease-in-out;
     }
+
     .hide-left-bar {
-        margin-left:0px!important;
+        margin-left: 0px !important;
     }
-    ul.sidebar-menu{
+
+    ul.sidebar-menu {
         padding-top: 0px;
     }
+
     /*-*/
     .prd-row .action {
         right: 25px;
     }
+
     .lock-wrapper {
         padding: 0 20px;
     }
+
     .lock-wrapper img {
         width: 140px;
         height: 140px;
         margin-top: 10px;
     }
+
     .lock-pwd input {
         width: 70%;
     }
@@ -191,74 +245,105 @@
     .media-gal .item {
         width: 100%;
     }
+
     .media-filter {
         margin: 25px 0;
     }
 
-    .media-filter + .pull-right, .media-filter + .pull-right + .btn  {
+    .media-filter+.pull-right,
+    .media-filter+.pull-right+.btn {
         float: left !important;
     }
 
 }
+
 @media (max-width: 479px) {
-    body{
-        margin-top:80px !important;
+    ul.top-menu{
+        margin-right: 0px;
     }
-    .header{
+
+    body {
+        margin-top: 55px !important;
+    }
+
+    .header {
         position: relative !important;
 
     }
-    .merge-header{
+
+    .merge-header {
         margin-right: 0px !important;
     }
-    .brand{
+
+    .brand {
         width: 100%;
         float: none;
         position: fixed;
         top: 0px;
         z-index: 1005;
     }
-    .sidebar-toggle-box{
+
+    .sidebar-toggle-box {
         right: 10px;
     }
-    .top-nav{
-        margin-bottom: 20px;
+
+    .top-nav {
+        margin-bottom: 10px;
     }
-    .top-menu{
+
+    .top-menu {
         margin-right: 10px;
     }
-    .wrapper{
+
+    .wrapper {
         margin-top: 0px;
     }
+
     ul.sidebar-menu {
         margin-top: 0px;
     }
-    #sidebar{
+
+    #sidebar {
         position: fixed !important;
         z-index: 1002;
-        top: 80px;
+        top: 55px;
+        margin-top: 0px;
     }
-    #main-content{
+
+    #main-content {
         margin-left: 0px;
     }
-    .notify-row{
+
+    /* .notify-row {
         float: none;
-    }
+    } */
+
     /*calendar*/
-    .fc-button-inner, .fc-button-content {
+    .fc-button-inner,
+    .fc-button-content {
         padding: 0;
     }
+
     .fc-header-title h2 {
-        font-size: 12px!important;
+        font-size: 12px !important;
     }
+
     .fc .fc-header-space {
         padding-left: 0;
     }
-    .fc-state-active, .fc-state-active .fc-button-inner, .fc-state-active, .fc-button-today .fc-button-inner, .fc-state-hover, .fc-state-hover .fc-button-inner {
+
+    .fc-state-active,
+    .fc-state-active .fc-button-inner,
+    .fc-state-active,
+    .fc-button-today .fc-button-inner,
+    .fc-state-hover,
+    .fc-state-hover .fc-button-inner {
         background: none repeat scroll 0 0 #FFFFFF !important;
         color: #32323A !important;
     }
-    .fc-state-default, .fc-state-default .fc-button-inner {
+
+    .fc-state-default,
+    .fc-state-default .fc-button-inner {
         background: none repeat scroll 0 0 #FFFFFF !important;
     }
 
@@ -295,17 +380,19 @@
         float: right;
         margin: 10px 0;
     }
+
     .horizontal-menu {
         width: 100%;
     }
 
-    .horizontal-menu .navbar-nav > li {
+    .horizontal-menu .navbar-nav>li {
         margin-bottom: 10px;
     }
 
     .lock-wrapper {
         padding: 0 20px;
     }
+
     .lock-wrapper img {
         width: 100px;
         height: 100px;
@@ -332,7 +419,8 @@
         margin: 5px 0;
     }
 
-    .media-filter + .pull-right, .media-filter + .pull-right + .btn  {
+    .media-filter+.pull-right,
+    .media-filter+.pull-right+.btn {
         float: left !important;
     }
 
@@ -342,4 +430,60 @@
     }
 }
 
+@media (max-width: 2560px){
+    .tab-content .cardDish{
+        height: 128px;
+        border: 1px groove gray;
+        padding: 0;
+    }
+    .tab-content .card-img-top{
+        height: 80px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .tab-content p.card-title{
+        font-size: 13px;
+        font-weight: bold;
+    }
+}
+@media (min-width: 944px) and (max-width: 1280px){
+    .brand{
+        height: 58px;
+    }
+}
+@media (max-width: 1024px){
 
+    .tab-content .cardDish{
+        height: 100px;
+        padding: 0;
+    }
+    .tab-content .card-img-top{
+        height: 60px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .tab-content p.card-title{
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .tab-content h6.card-text{
+        font-size: 9px;
+    }
+
+    .tab-content .cardDish .card-title{
+        height: 20px;
+        overflow: hidden;
+        line-height: 20px;
+    }
+}
+
+@media (min-width: 415px) and (max-width: 991px) {
+    .tab-content .cardDish{
+        height: 120px;
+    }
+    .tab-content .card-img-top{
+        height: 81px;
+        width: 100%;
+        overflow: hidden;
+    }
+}

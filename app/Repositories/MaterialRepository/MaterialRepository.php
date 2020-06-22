@@ -14,21 +14,19 @@ class MaterialRepository extends Controller implements IMaterialRepository{
 
     public function getCategoryDish()
     {
-        $groupMenu = GroupMenu::all();
+        $groupMenu = GroupMenu::where('status','1')->get();
         return $groupMenu;
     }
+
     public function showMaterial()
     {
-        $materials = Material::with('groupMenu','materialAction.materialDetail')->orderBy('id','desc')->paginate(8);
+        $materials = Material::with('groupMenu','materialAction.materialDetail')->where('status','1')->orderBy('id','desc')->paginate(10);
         $groupMenus = $this->getCategoryDish();
         return view('material.index',compact('materials','groupMenus'));
     }
 
     public function validatorRequestStore($req){
-        $req->validate(
-            [ 'name' => 'unique:materials,name'],
-            ['name.unique' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống'],
-        );
+        $req->validate([ 'name' => 'status_material'], ['name.status_material' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống']);
     }
 
     public function addMaterial($request)
@@ -36,6 +34,7 @@ class MaterialRepository extends Controller implements IMaterialRepository{
         $material = new Material();
         $material->name = $request->name;
         $material->id_groupmenu = $request->idGroupMenu;
+        $material->status = '1';
         $material->save();
         return redirect(route('material.index'))->withSuccess('Thêm tên món thành công');
     }
@@ -49,9 +48,10 @@ class MaterialRepository extends Controller implements IMaterialRepository{
     public function searchMaterial($request)
     {
         $name = $request->nameSearch;
-        $materials = Material::where('name','LIKE',"%{$name}%")->get();
+        $count = Material::selectRaw('count(id) as qty')->where('name','LIKE',"%{$name}%")->where('status','1')->value('qty');
+        $materials = Material::where('name','LIKE',"%{$name}%")->where('status','1')->with('groupMenu','materialAction.materialDetail')->get();
         $groupMenus = $this->getCategoryDish();
-        return view('material.search',compact('materials','groupMenus'));
+        return view('material.search',compact('materials','groupMenus','count'));
     }
     public function updateNameMaterial($request, $id)
     {
@@ -98,10 +98,12 @@ class MaterialRepository extends Controller implements IMaterialRepository{
         Material::where('id',$id)->update(['id_groupmenu' => $request->idGroupMenu]);
         return redirect(route('material.index'))->with('infor','Cập nhật nhóm thực đơn thành công');
     }
+
     public function deleteMaterial($id)
     {
-        Material::find($id)->delete();
-        Dishes::where('id_groupnvl',$id)->delete();
+        Dishes::where('id_groupnvl',$id)->update(['stt' => '0']);
+        MaterialAction::where('id_groupnvl',$id)->delete();
+        Material::where('id',$id)->update(['status' => '0']);
         return redirect(route('material.index'))->withSuccess('Xóa tên món thành công');
     }
 }

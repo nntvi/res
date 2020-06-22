@@ -1,18 +1,22 @@
 <?php
 namespace App\Repositories\VoucherRepository;
 
+use App\CookArea;
 use App\Http\Controllers\Controller;
 use App\ImportCoupon;
 use App\Supplier;
 use App\PaymentVoucher;
+use App\PaymentVoucherDetail;
 use App\User;
 use App\TypePayment;
+use App\WarehouseCook;
+
 class VoucherRepository extends Controller implements IVoucherRepository{
 
     public function showIndex()
     {
         $suppliers = Supplier::all();
-        $payments = PaymentVoucher::paginate(10);
+        $payments = PaymentVoucher::with('detailPaymentVc')->paginate(10);
         return view('voucher.index',compact('suppliers','payments'));
     }
 
@@ -25,9 +29,8 @@ class VoucherRepository extends Controller implements IVoucherRepository{
                 return view('voucher.storepayment',compact('suppliers'));
                 break;
             case 2:
-                $types = TypePayment::whereNotIn('id',[1])->get();
-                $users = User::all();
-                return view('paymentvoucher.otherstore',compact('types','users'));
+                $cooks = CookArea::where('status','1')->get();
+                return view('voucher.cookemergency',compact('cooks'));
                 break;
             default:
         }
@@ -46,11 +49,15 @@ class VoucherRepository extends Controller implements IVoucherRepository{
         return $name;
     }
 
+    public function getCookById($idCook)
+    {
+        $name = CookArea::where('id',$idCook)->value('name');
+        return $name;
+    }
     public function getImportCouponsByTime($request)
     {
         $importCoupons = ImportCoupon::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
-                                    ->where('id_supplier',$request->idSupplierChoosen)
-                                    ->orderBy('created_at','asc')->get();
+                                    ->where('id_supplier',$request->idSupplierChoosen)->orderBy('created_at','asc')->get();
         return $importCoupons;
     }
 
@@ -74,17 +81,43 @@ class VoucherRepository extends Controller implements IVoucherRepository{
         }
     }
 
-    public function createPaymentVoucher($request)
+    public function createNewPaymentVoucher($request)
     {
         $paymentVc = new PaymentVoucher();
         $paymentVc->code = $request->code;
         $paymentVc->type = $request->type;
-        $paymentVc->name = $this->getNameSupplierById($request->idSupplierChoosen);
+        $paymentVc->name = $request->type == '1' ? $this->getNameSupplierById($request->idSupplierChoosen) : $this->getCookById($request->idCook);
         $paymentVc->pay_cash = $request->pay_cash;
         $paymentVc->note = $request->note;
         $paymentVc->created_by = auth()->user()->name;
         $paymentVc->save();
-        $this->updateImportCoupon($this->getImportCouponsByTime($request),$paymentVc->pay_cash);
+        return $request->type == '1' ? $paymentVc->pay_cash : $paymentVc->id;
+    }
+    public function createPaymentVoucher($request)
+    {
+        $payCash = $this->createNewPaymentVoucher($request);
+        $this->updateImportCoupon($this->getImportCouponsByTime($request),$payCash);
+        return redirect(route('voucher.index'))->withSuccess("Tạo phiếu chixxxxx  thành công");
+    }
+
+    public function addWarehouseCook($idCook,$idMaterialDetail,$qty)
+    {
+        $nowQty = WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterialDetail)->value('qty');
+        WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterialDetail)->update(['qty' => $nowQty + $qty]);
+    }
+    public function createPaymentVcEmergency($request)
+    {
+        $idCook = $request->idCook;
+        $idPaymentVC = $this->createNewPaymentVoucher($request);
+        $count = count($request->idMaterialDetail);
+        for ($i=0; $i < $count; $i++) {
+            $detailPaymentEmer = new PaymentVoucherDetail();
+            $detailPaymentEmer->id_paymentvc = $idPaymentVC;
+            $detailPaymentEmer->id_material_detail = $request->idMaterialDetail[$i];
+            $detailPaymentEmer->qty = $request->qty[$i];
+            $detailPaymentEmer->save();
+            $this->addWarehouseCook($idCook,$detailPaymentEmer->id_material_detail,$detailPaymentEmer->qty);
+        }
         return redirect(route('voucher.index'))->withSuccess("Tạo phiếu chi thành công");
     }
 }

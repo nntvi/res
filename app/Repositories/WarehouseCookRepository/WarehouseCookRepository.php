@@ -10,12 +10,12 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
 
     public function getCookActive()
     {
-        $cooks = CookArea::where('status','1')->get();
+        $cooks = CookArea::get();
         return $cooks;
     }
     public function getMaterialFromCook()
     {
-        $cookWarehouse = CookArea::with('groupMenu.material.materialAction.materialDetail')->get();
+        $cookWarehouse = CookArea::with('groupMenu.material.materialAction.materialDetail')->where('status','1')->get();
         return $cookWarehouse;
     }
     public function addMaterial($data,$cookwarehouse)
@@ -49,8 +49,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
 
     public function getCookWarehouse()
     {
-        $cookWarehouse = CookArea::with('warehouseCook.detailMaterial','warehouseCook.unit')
-                                    ->where('status','1')->get();
+        $cookWarehouse = CookArea::with('warehouseCook.detailMaterial','warehouseCook.unit')->where('status','1')->get();
         return $cookWarehouse;
     }
 
@@ -72,8 +71,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $fisrtQtyList = HistoryWhCook::selectRaw('id_material_detail, sum(first_qty) as qty')
-                                ->whereBetween('created_at',[$dateStart . $s ,$dateEnd . $e])
+        $fisrtQtyList = HistoryWhCook::selectRaw('id_material_detail, sum(first_qty) as qty')->whereBetween('created_at',[$dateStart . $s ,$dateEnd . $e])
                                 ->where('id_cook',$cook)->groupBy('id_material_detail')->get();
         return $fisrtQtyList;
     }
@@ -91,8 +89,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $lastQtyList = HistoryWhCook::selectRaw('id_material_detail, sum(last_qty) as qty')
-                                ->whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
+        $lastQtyList = HistoryWhCook::selectRaw('id_material_detail, sum(last_qty) as qty')->whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
                                 ->where('id_cook',$cook)->groupBy('id_material_detail')->get();
         return $lastQtyList;
     }
@@ -109,10 +106,8 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
 
     public function getHistoryWhCook($dateStart,$dateEnd,$cook)
     {
-        $histories = HistoryWhCook::selectRaw('id_material_detail')
-                                ->whereBetween('created_at',[$dateStart,$dateEnd])
-                                ->where('id_cook',$cook)->groupBy('id_material_detail')
-                                ->with('detailMaterial.unit','detailMaterial.typeMaterial')->get();
+        $histories = HistoryWhCook::selectRaw('id_material_detail')->whereBetween('created_at',[$dateStart,$dateEnd])
+                                ->where('id_cook',$cook)->groupBy('id_material_detail')->with('detailMaterial.unit','detailMaterial.typeMaterial')->get();
         return $histories;
     }
 
@@ -124,7 +119,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
         foreach ($histories as $key => $history) {
             $temp = [
                 'stt' => $key + 1,
-                'name_detail_material' => $history->detailMaterial->name,
+                'name_detail_material' => $history->detailMaterial->status == '1' ? $history->detailMaterial->name : $history->detailMaterial->name . ' (ko còn sử dụng)',
                 'name_type_material' => $history->detailMaterial->typeMaterial->name,
                 'name_unit' => $history->detailMaterial->unit->name,
                 'tondauky' => $this->getQtyFirstPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook),
@@ -137,6 +132,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
         }
         return $data;
     }
+
     public function reportWarehouseCook($request)
     {
         $dateStart = $request->dateStart;

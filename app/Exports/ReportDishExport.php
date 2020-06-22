@@ -32,16 +32,13 @@ class ReportDishExport implements FromCollection, WithHeadings
         if($this->idGroupMenu == '0'){
             $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
                         ->whereBetween('updated_at',[$this->dateStart,$this->dateEnd])
-                        ->whereIn('status',['1','2'])
-                        ->groupBy('id_dish')
-                        ->with('dish','dish.groupMenu','dish.unit')
-                        ->get();
+                        ->whereIn('status',['1','2'])->groupBy('id_dish')
+                        ->with('dish','dish.groupMenu','dish.unit')->get();
         }
         else{
             $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
                         ->whereBetween('updated_at',[$this->dateStart,$this->dateEnd])
-                        ->whereIn('status',['1','2'])
-                        ->groupBy('id_dish')
+                        ->whereIn('status',['1','2'])->groupBy('id_dish')
                         ->with('dish','dish.groupMenu','dish.unit')
                         ->whereHas('dish.groupMenu', function($query) {
                             $query->where('id',$this->idGroupMenu);
@@ -57,7 +54,7 @@ class ReportDishExport implements FromCollection, WithHeadings
                 '0' => $key + 1,
                 '1' => $item->dish->code,
                 '2' => $item->dish->groupMenu->name,
-                '3' => $item->dish->name,
+                '3' => $item->dish->stt == '1' ? $item->dish->name : $item->dish->name . '( ngưng phục vụ)',
                 '4' => $item->dish->unit->name,
                 '5' => $item->sumQty,
                 '6' => $item->dish->capital_price,

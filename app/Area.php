@@ -38,7 +38,7 @@ class Area extends Model
 
     public function containTable()
     {
-        return $this->hasMany('App\Table','id_area');
+        return $this->hasMany(Table::class,'id_area')->where('status','1');
     }
 
 }

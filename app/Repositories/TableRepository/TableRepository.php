@@ -20,17 +20,13 @@ class TableRepository extends Controller implements ITableRepository{
         return view('table/index',compact('tables','areas'));
     }
 
-    public function validatorRequestStore($req){
-        $req->validate(
-            [
-                'codeTable' => 'unique:tables,code',
-                'nameTable' => 'unique:tables,name',
-            ],
-            [
-                'codeTable.unique' => 'Mã bàn đã tồn tại trong hệ thống',
-                'nameTable.unique' => 'Tên bàn đã tồn tại trong hệ thống',
-            ]
-        );
+    public function validateCodeTable($request)
+    {
+        $request->validate(['codeTable' => 'code_table'],['codeTable.code_table' => 'Mã bàn đã tồn tại trong hệ thống']);
+    }
+
+    public function validatorNameTable($req){
+        $req->validate(['nameTable' => 'status_table'],['nameTable.status_table' => 'Tên bàn đã tồn tại trong hệ thống']);
     }
 
     public function addTable($request)
@@ -38,21 +34,20 @@ class TableRepository extends Controller implements ITableRepository{
         $table = new Table();
         $table->code = $request->codeTable;
         $table->name = $request->nameTable;
+        $table->status = '1';
         $table->id_area = $request->idArea;
         $table->save();
-        return redirect(route('table.index'))->withSuccess('Thêm bàn thành công');
+        return redirect(route('area.index'))->withSuccess('Thêm bàn thành công');
     }
 
     public function updateNameTable($request,$id)
     {
         Table::where('id',$id)->update(['name' => $request->nameTable]);
-        return redirect(route('table.index'))->with('info','Cập nhật tên bàn thành công');
     }
 
-    public function updateArea($request,$id)
+    public function updateAreaTable($request,$id)
     {
-        Table::where('id',$id)->update(['id_area' => $request->idArea]);
-        return redirect(route('table.index'))->with('info','Cập nhật khu vực thành công');
+        Table::where('id',$id)->update(['id_area' => $request->changeArea]);
     }
 
     public function searchTable($request)
@@ -64,7 +59,7 @@ class TableRepository extends Controller implements ITableRepository{
     }
     public function deleteTable($id)
     {
-        Table::find($id)->delete();
-        return redirect(route('table.index'))->withSuccess('Xóa bàn thành công');
+        Table::where('id',$id)->update(['status' => '0']);
+        return redirect(route('area.index'))->withSuccess('Xóa bàn thành công');
     }
 }

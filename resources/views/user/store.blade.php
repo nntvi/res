@@ -40,7 +40,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <label class="control-label">
-                                    Password Confirm<span style="color: #ff0000"> *</span>
+                                    PasswordConfirm<span style="color: #ff0000"> *</span>
                                 </label>
                                 <input type="password" class="form-control" name="password-confirm" min="3" max="15" required>
                             </div>

@@ -160,17 +160,16 @@ class UserRepository  extends Controller implements IUserRepository{
 
     public function validatorRequestUpdatePassword($req){
         $messeages = [
-            'password.required' => 'Không để trống password cần thay đổi',
+            'oldpassword.check_old_password' => 'Password cũ không khớp',
             'password.min' => 'Password không ít hơn 3 ký tự',
             'password.max' => 'Password nhiều nhất 10 ký tự',
-            'password-confirm.same' => 'Password xác nhận không khớp',
-            'password-confirm.required' => 'Vui lòng nhập password xác nhận',
+            'passwordconfirm.same' => 'Password xác nhận không khớp',
         ];
-
         $req->validate(
             [
-                'password' => 'required|min:3|max:10',
-                'password-confirm' => 'required|same:password',
+                'oldpassword' => 'check_old_password',
+                'password' => 'min:3|max:10',
+                'passwordconfirm' => 'same:password',
             ],
             $messeages
         );
@@ -178,7 +177,7 @@ class UserRepository  extends Controller implements IUserRepository{
 
     public function updatePasswordUser($request, $id)
     {
-        User::where('id',$id)->update(['password' => bcrypt($request->password) ]);
+        User::where('id',$id)->update(['password' => bcrypt($request->passwordconfirm)]);
         return redirect(route('user.index'))->with('info','Đổi password thành công');
     }
 
@@ -187,12 +186,14 @@ class UserRepository  extends Controller implements IUserRepository{
         User::where('id',$id)->update(['id_position' => $request->position]);
         return redirect(route('user.index'))->with('info','Cập nhật vị trí thành công');
     }
+
     public function searchUser($request)
     {
         $name = $request->nameSearch;
+        $count = User::selectRaw('count(id) as qty')->where('name','LIKE',"%{$name}%")->value('qty');
         $users = User::where('name','LIKE',"%{$name}%")->with('userper.permissionDetail','position')->get();
         $positions = Position::orderBy('name','asc')->get();
-        return view('user.search',compact('users','positions'));
+        return view('user.search',compact('users','positions','count'));
     }
 
     public function deleteUser($id)

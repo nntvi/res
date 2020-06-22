@@ -1,27 +1,98 @@
 <?php
 namespace App\Repositories\AjaxRepository;
 
-use App\CookArea;
-use App\Http\Controllers\Controller;
-use App\TypeMaterial;
 use App\Unit;
-use App\WareHouse;
-use App\WarehouseCook;
-use App\Supplier;
-use App\ImportCouponDetail;
-use App\ExportCouponDetail;
-use App\GroupMenu;
-use App\ImportCoupon;
-use App\MaterialAction;
-use App\Method;
 use App\Order;
-use App\OrderDetailTable;
-use App\Permission;
+use App\Method;
+use App\CookArea;
+use App\Supplier;
+use App\GroupMenu;
+use App\WareHouse;
 use Carbon\Carbon;
+use App\Permission;
+use App\ImportCoupon;
+use App\TypeMaterial;
+use App\WarehouseCook;
+use App\MaterialAction;
+use App\PaymentVoucher;
+use App\OrderDetailTable;
+use App\ExportCouponDetail;
+use App\ImportCouponDetail;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Controllers\Controller;
+use App\Helper\IGetDateTime;
 class AjaxRepository extends Controller implements IAjaxRepository{
 
+    private $ajaxRepository;
+    private $getDateTime;
+
+    public function __construct(IGetDateTime $getDateTime)
+    {
+        $this->getDateTime = $getDateTime;
+    }
+
+    public function getDateTime($id)
+    {
+        $data = array();
+        switch ($id) {
+            case 0:
+                $data = [
+                    'dateStart' => $this->getDateTime->getNow()->format('Y-m-d') . ' 00:00:00' ,
+                    'dateEnd' => $this->getDateTime->getNow()->format('Y-m-d') . ' 23:59:59' ,
+                ];
+                break;
+            case 1:
+                $data = [
+                    'dateStart' => $this->getDateTime->getYesterday() . ' 00:00:00' ,
+                    'dateEnd' => $this->getDateTime->getYesterday() . ' 23:59:59' ,
+                ];
+                break;
+            case 2:
+                $data = [
+                    'dateStart' => $this->getDateTime->getStartOfWeek(),
+                    'dateEnd' => $this->getDateTime->getEndOfWeek(),
+                ];
+                break;
+            case 3:
+                $data = [
+                    'dateStart' => $this->getDateTime->getStartOfPreWeek(),
+                    'dateEnd' => $date = $this->getDateTime->getEndOfPreWeek(),
+                ];
+                break;
+            case 4:
+                $data = [
+                    'dateStart' => $this->getDateTime->getStartOfMonth(),
+                    'dateEnd' => $this->getDateTime->getEndOfMonth(),
+                ];
+                break;
+            case 5:
+                $data = [
+                    'dateStart' => $this->getDateTime->getStartOfPreMonth(),
+                    'dateEnd' => $this->getDateTime->getEndOfPreMonth(),
+                ];
+                break;
+            case 6:
+                $data = [
+                    'dateStart' => $this->getDateTime->getStartOfQuarter(),
+                    'dateEnd' => $this->getDateTime->getEndOfQuarter(),
+                ];
+                break;
+            case 7:
+                $data = [
+                    'dateStart' => $this->getDateTime->getStartOfPreQuarter(),
+                    'dateEnd' => $this->getDateTime->getEndOfPreQuarter(),
+                ];
+                break;
+            case 8:
+                $data = [
+                    'dateStart' => $this->getDateTime->getFirstOfYear()->format('Y-m-d'),
+                    'dateEnd' => $this->getDateTime->getLastOfYear()->format('Y-m-d'),
+                ];
+                break;
+            default:
+        }
+        return $data;
+    }
     public function getAllCook()
     {
         $cooks = CookArea::get();
@@ -34,9 +105,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     }
     public function getMaterialBySupplier($idSupplier)
     {
-        $materials = Supplier::where('id',$idSupplier)
-                            ->with('typeMaterial.warehouse.detailMaterial','typeMaterial.warehouse.unit')
-                            ->get();
+        $materials = Supplier::where('id',$idSupplier)->with('typeMaterial.warehouse.detailMaterial.unit')->first();
         return $materials;
     }
 
@@ -50,7 +119,9 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     {
         $idMaterialArray = array();
         foreach ($materials as $key => $material) {
-            $idMaterialArray[] = $material->id_material_detail;
+            if($material->detailMaterial->status == '1'){
+                $idMaterialArray[] = $material->id_material_detail;
+            }
         }
         return $idMaterialArray;
     }
@@ -119,6 +190,8 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $material = WareHouse::with('detailMaterial','unit')
                             ->whereHas('detailMaterial', function ($query) use($name) {
                                 $query->where('name','LIKE','%'. $name . '%');
+                            })->whereHas('detailMaterial', function ($query) {
+                                $query->where('status','1');
                             })->get();
         return $material;
     }
@@ -127,17 +200,23 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $material = WarehouseCook::where('cook',$id)->with('detailMaterial','unit')
                                     ->whereHas('detailMaterial', function ($query) use($name) {
                                         $query->where('name','LIKE','%'. $name . '%');
+                                    })->whereHas('detailMaterial', function ($query) {
+                                        $query->where('status','1');
                                     })->get();
         return $material;
     }
 
     public function getEquation()
     {
-        $heSo = Method::where('status','1')->first('result');
+        $heSo = Method::where('status','1')->first();
         if($heSo == null){
             return (35/100);
         }else{
-            return $heSo;
+            if($heSo->result == null || $heSo->result == ""){
+                return (35/100);
+            }else{
+                return $heSo->result;
+            }
         }
     }
 
@@ -155,14 +234,6 @@ class AjaxRepository extends Controller implements IAjaxRepository{
             'salePrice' => $salePrice
         ];
         return $data;
-    }
-
-    public function getRevenue($dateStart,$dateEnd)
-    {
-        $totalRevenue = Order::selectRaw('sum(total_price) as total')
-                                        ->whereBetween('created_at',[$dateStart,$dateEnd])
-                                        ->value('total');
-        return $totalRevenue;
     }
 
     public function countBill($dateStart,$dateEnd)
@@ -209,5 +280,72 @@ class AjaxRepository extends Controller implements IAjaxRepository{
             'unPaid' => $total - $paid,
         ];
         return $temp;
+    }
+
+    public function getRevenue($dateStart,$dateEnd)
+    {
+        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->where('status','0')->value('total');
+        return $revenue == null ? 0 : $revenue;
+    }
+
+    public function getCapitalPriceOfDish($dateStart,$dateEnd)
+    {
+        $dishOrders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                                        ->whereIn('status',['1','2'])->groupBy('id_dish')->with('dish')->get();
+        $capitalPrice = 0;
+        foreach ($dishOrders as $key => $dishOrder) {
+            $capitalPrice += ($dishOrder->sumQty) * ($dishOrder->dish->capital_price);
+        }
+        return $capitalPrice;
+    }
+
+    public function getTotalPayment($dateStart,$dateEnd)
+    {
+        $payCash = PaymentVoucher::selectRaw('sum(pay_cash) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->value('total');
+        return $payCash == null ? 0 : $payCash;
+    }
+
+    public function getExpense($dateStart,$dateEnd)
+    {
+        $capitalPrice = $this->getCapitalPriceOfDish($dateStart,$dateEnd);
+        $payCash = $this->getTotalPayment($dateStart,$dateEnd);
+        return $capitalPrice + $payCash;
+    }
+
+    public function getQtyCustomerByTime($timeStart,$timeEnd)
+    {
+        $qtyCustomers = Order::selectRaw('count(id) as qty')->whereBetween('created_at',[$timeStart,$timeEnd])->where('status','0')->value('qty');
+        return $qtyCustomers;
+    }
+
+    public function createObjToPushQtyCustomer($timeStart,$timeEnd)
+    {
+        $obj = array(
+            'timeStart' => $timeStart,
+            'timeEnd' => $timeEnd,
+            'value' => $this->getQtyCustomerByTime($timeStart,$timeEnd),
+        );
+        return $obj;
+    }
+
+    public function getAllQtyCustomer($time)
+    {
+        $data = array();
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 08:00:00',$time['dateEnd'] . ' 08:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 09:00:00',$time['dateEnd'] . ' 09:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 10:00:00',$time['dateEnd'] . ' 10:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 11:00:00',$time['dateEnd'] . ' 11:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 12:00:00',$time['dateEnd'] . ' 12:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 13:00:00',$time['dateEnd'] . ' 13:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 14:00:00',$time['dateEnd'] . ' 14:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 15:00:00',$time['dateEnd'] . ' 15:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 16:00:00',$time['dateEnd'] . ' 16:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 17:00:00',$time['dateEnd'] . ' 17:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 18:00:00',$time['dateEnd'] . ' 18:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 19:00:00',$time['dateEnd'] . ' 19:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 20:00:00',$time['dateEnd'] . ' 20:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 21:00:00',$time['dateEnd'] . ' 21:59:59'));
+        array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 22:00:00',$time['dateEnd'] . ' 22:59:59'));
+        return $data;
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\ExportCouponRepository\IExportCouponRepository;
+use App\ExportCoupon;
 use Illuminate\Http\Request;
+use App\Repositories\ExportCouponRepository\IExportCouponRepository;
 
 class ExportCouponController extends Controller
 {
@@ -44,7 +45,8 @@ class ExportCouponController extends Controller
 
     public function viewDestroyWarehouse()
     {
-        return view('warehouseexport.exportdestroy');
+        $code = $this->exportcouponRepository->createCode("XHK");
+        return view('warehouseexport.exportdestroy',compact('code'));
     }
 
     public function destroyWarehouse(Request $request)
@@ -59,5 +61,12 @@ class ExportCouponController extends Controller
     public function destroyWarehouseCook(Request $request)
     {
         return $this->exportcouponRepository->destroyCook($request);
+    }
+
+    public function search(Request $request)
+    {
+        $count = ExportCoupon::selectRaw('count(code) as qty')->where('code','LIKE',"%{$request->searchExC}%")->value('qty');
+        $exportCoupons = ExportCoupon::where('code','LIKE',"%{$request->searchExC}%")->with('typeExport','detailExportCoupon')->get();
+        return view('exportcoupon.search',compact('count','exportCoupons'));
     }
 }

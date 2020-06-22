@@ -1,7 +1,6 @@
 @extends('layouts')
 @section('content')
 <div class="table-agile-info">
-    <a href="{{ route('bill.index') }}" class="btn btn-sm btn-default">Trở về</a>
     <div class="space"></div>
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -9,36 +8,36 @@
         </div>
         <div class="row w3-res-tb">
                 <div class="col-sm-5 m-b-xs">
-                        <form action="{{ route('bill.filter') }}" method="get">
-                            @csrf
-                            <select class="input-sm form-control w-sm inline v-middle" name="typeFilter">
-                                <option value="0">Theo ngày</option>
-                                <option value="1">Theo giá</option>
-                                <option value="2">Theo ca</option>
-                            </select>
-                            <button class="btn btn-sm btn-default" type="submit">Sắp xếp</button>
+                    <form action="{{ route('bill.filter') }}" method="get">
+                        @csrf
+                        <select class="input-sm form-control w-sm inline v-middle" name="typeFilter">
+                            <option value="0">Theo ngày</option>
+                            <option value="1">Theo giá</option>
+                            <option value="2">Theo ca</option>
+                        </select>
+                        <button class="btn btn-sm btn-default" type="submit">Sắp xếp</button>
                         </form>
-                    </div>
-                    <div class="col-sm-3">
-                    </div>
-                    <div class="col-sm-4">
-                        <form action="{{ route('bill.search') }}" method="get">
-                            @csrf
-                            <div class="input-group">
-                                <input type="text" class="input-sm form-control" name="searchBill" required>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-sm btn-default" type="submit">Tìm kiếm!</button>
-                                </span>
-                            </div>
-                        </form>
-                    </div>
+                </div>
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-4">
+                    <form action="{{ route('bill.search') }}" method="get">
+                        @csrf
+                        <div class="input-group">
+                            <input type="text" class="input-sm form-control" name="searchBill" required>
+                             <span class="input-group-btn">
+                                <button class="btn btn-sm btn-default" type="submit">Tìm kiếm!</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
         </div>
         <div class="table-responsive">
             <table class="table table-striped b-t b-light">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Số HĐ</th>
+                        <th>Mã Bill</th>
                         <th>Bàn</th>
                         <th>Trạng thái</th>
                         <th>Tổng giá</th>
@@ -135,6 +134,7 @@
                                                                                                             Hoàn thành
                                                                                                             @break
                                                                                                         @default
+                                                                                                            Đã hủy
                                                                                                     @endswitch
                                                                                                 </td>
                                                                                             </tr>
@@ -166,7 +166,7 @@
             <div class="row">
 
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-5 bills </small>
+                    <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-10 bills </small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

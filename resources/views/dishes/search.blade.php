@@ -8,9 +8,16 @@
         <div class="row w3-res-tb">
                 <div class="col-sm-5 m-b-xs">
                     <a href="{{ route('dishes.index') }}" class="btn btn-sm btn-default">Trở về</a>
-                    <a href="{{ route('dishes.store') }}" class="btn btn-sm btn-success">Thêm mới</a>
+                    <a href="{{ route('dishes.store') }}" class="btn btn-sm btn-default">Thêm mới</a>
                 </div>
                 <div class="col-sm-3">
+                    <script>
+                        @if($errors->any())
+                            @foreach($errors->all() as $error)
+                                toastr.error('{{ $error }}')
+                            @endforeach
+                        @endif
+                    </script>
                 </div>
                 <div class="col-sm-4">
                     <form action="{{ route('dishes.search') }}" method="get">
@@ -37,7 +44,6 @@
                         <th>Giá bán</th>
                         <th>Đơn vị tính</th>
                         <th>Trạng thái</th>
-                        <th style="width:30px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +60,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title">Chỉnh sửa ảnh món ăn</h4>
+                                                <h4 class="modal-title">Chỉnh sửa ảnh món ăn "<b>{{ $dish->name }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <form action="{{ route('dishes.p_updateimage',['id'=>$dish->id]) }}"
@@ -63,7 +69,7 @@
                                                     <div class="form-group">
                                                         <div class="row">
                                                             <div class="col-xs-5">
-                                                                <label class="col-xs-4">Ảnh cũ</label>
+                                                                <label class="col-xs-4">Ảnh hiẹn tại</label>
                                                                 <img src="img/{{ $dish->image }}"  class="col-xs-6">
                                                             </div>
                                                             <div class="col-xs-7">
@@ -76,7 +82,7 @@
                                                         <div class="row">
                                                             <hr>
                                                             <div class="col-xs-12 text-center">
-                                                                <button type="submit" class="btn btn-success">Lưu</button>
+                                                                <button type="submit" class="btn btn-default">Cập nhật</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -102,7 +108,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title">Chỉnh sửa giá NVL</h4>
+                                                <h4 class="modal-title">Chỉnh sửa giá món "<b>{{ $dish->name }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <form action="{{ route('dishes.p_updatesaleprice',['id' => $dish->id]) }}" method="post">
@@ -115,8 +121,8 @@
                                                             </div>
                                                             <div class="col-xs-6">
                                                                 <label>Giá vốn mới/tính đến thời điểm hiện tại</label>
-                                                                <input name="newCapitalPriceHidden" id="newCapitalPriceHidden" hidden>
-                                                                <input class="form-control" id="newCapitalUpdate" >
+                                                                <input name="newCapitalPriceHidden" id="newCapitalPriceHidden{{ $dish->material->id }}" hidden>
+                                                                <input class="form-control" id="newCapitalUpdate{{ $dish->material->id }}" disabled>
                                                             </div>
                                                         </div>
 
@@ -129,14 +135,14 @@
                                                             </div>
                                                             <div class="col-xs-6">
                                                                 <label>Giá bán mới</label>
-                                                                <input type="number" min="0" class="form-control" id="newSalePriceUpdate" name="newSalePriceUpdate">
+                                                                <input type="number" min="0" class="form-control" id="newSalePriceUpdate{{ $dish->material->id }}" name="newSalePriceUpdate">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="row">
                                                             <div class="col-xs-12 text-center">
-                                                                <button type="submit" class="btn btn-success">Lưu</button>
+                                                                <button type="submit" class="btn btn-default">Cập nhật</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -158,7 +164,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title">Chỉnh sửa đơn vị món</h4>
+                                                <h4 class="modal-title">Chỉnh sửa đơn vị món "<b>{{ $dish->name }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <form action="{{ route('dishes.p_updateunit',['id' => $dish->id]) }}" method="post">
@@ -166,7 +172,7 @@
                                                     <div class="form-group">
                                                         <div class="row">
                                                             <div class="col-xs-6">
-                                                                <label>Đơn vị cũ</label>
+                                                                <label>Đơn vị hiện tại</label>
                                                                 <input type="text" class="form-control"
                                                                     value="{{ $dish->unit->name }}" disabled>
                                                             </div>
@@ -181,7 +187,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <button type="submit" class="btn btn-warning">Lưu</button>
+                                                    <button type="submit" class="btn btn-default">Cập nhật</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -200,7 +206,7 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title">Chỉnh sửa trạng thái</h4>
+                                                <h4 class="modal-title">Chỉnh sửa trạng thái "<b>{{ $dish->name }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <form class="form-horizontal" action="{{ route('dishes.p_updatestatus',['id' => $dish->id]) }}" method="POST">
@@ -208,25 +214,25 @@
                                                     <div class="form-group">
                                                         <label class="col-lg-2 col-sm-2 control-label">Trạng
                                                             thái</label>
-                                                        <div class="col-lg-8 text-center">
+                                                        <div class="col-lg-7 text-center">
                                                             @if($dish->status == '0')
                                                                 <label class="control-label">Ẩn</label>
-                                                                <input value="0" id="status1" type="radio" name="status"
+                                                                <input value="0" type="radio" name="status"
                                                                     style="margin-right: 20px" checked>
                                                                 <label class="control-label">Hiện</label>
-                                                                <input value="1" id="status2" type="radio" name="status"
+                                                                <input value="1" type="radio" name="status"
                                                                     style="margin-right: 20px">
                                                             @else
                                                                 <label class="control-label">Ẩn</label>
-                                                                <input value="0" id="status1" type="radio" name="status"
+                                                                <input value="0" type="radio" name="status"
                                                                     style="margin-right: 20px">
                                                                 <label class="control-label">Hiện</label>
-                                                                <input value="1" id="status2" type="radio" name="status"
+                                                                <input value="1" type="radio" name="status"
                                                                     style="margin-right: 20px" checked>
                                                             @endif
                                                         </div>
-                                                        <div class="col-lg-2">
-                                                            <button type="submit" class="btn btn-danger">Cập
+                                                        <div class="col-lg-3">
+                                                            <button type="submit" class="btn btn-default">Cập
                                                                 nhật</button>
                                                         </div>
                                                     </div>
@@ -244,11 +250,11 @@
                                     Hiện
                                 @endif
                             </td>
-                            <td>
+                            {{--  <td>
                                 <a href="{{ route('dishes.delete',['id' => $dish->id]) }}"
                                     onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i
                                         class="fa fa-times text-danger text"></i></a>
-                            </td>
+                            </td>  --}}
                         </tr>
                     @endforeach
                 </tbody>
@@ -256,19 +262,8 @@
         </div>
         <footer class="panel-footer">
             <div class="row">
-
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                        <li><a href="">1</a></li>
-                        <li><a href="">2</a></li>
-                        <li><a href="">3</a></li>
-                        <li><a href="">4</a></li>
-                        <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
-                    </ul>
+                    <small class="text-muted inline m-t-sm m-b-sm">{{ $count }} kết quả tìm thấy</small>
                 </div>
             </div>
         </footer>

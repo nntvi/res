@@ -71,7 +71,7 @@
                                                             <div class="space"></div>
                                                             <label style="display:inline">Hoạt động</label>
                                                                 <input value="1" id="status1" type="radio" name="status" style="margin-right: 20px">
-                                                            <label style="display:inline">Chưa hoạt động</label>
+                                                            <label style="display:inline">Ngưng hoạt động</label>
                                                                 <input  value="0" id="status2" type="radio" name="status">
                                                         </div>
                                                         <span class="error-message">{{ $errors->first('status') }}</span></p>
@@ -95,6 +95,7 @@
                                         <div class="col-xs-12 col-sm-6 text-right">
                                                 <div class="space"></div>
                                                 <div class="space"></div>
+                                            <a href="{{ route('supplier.index') }}" class="btn btn-default">Trở về</a>
                                             <button type="submit" class="btn btn-info">Thêm mới</button>
                                         </div>
                                     </div>

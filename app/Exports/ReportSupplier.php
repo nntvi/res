@@ -26,57 +26,68 @@ class ReportSupplier implements FromCollection, WithHeadings
         $name = Supplier::where('id',$idSupplier)->value('name');
         return $name;
     }
-    public function getAllSupplier()
-    {
-        $results = ImportCoupon::whereBetween('created_at',[$this->dateStart,$this->dateEnd])->with('supplier')->get();
-        return $results;
-    }
 
-    public function getSupplierById($idSupplier)
+    public function getResultImports($dateStart,$dateEnd, $idSupplier)
     {
-        $results = ImportCoupon::whereBetween('created_at',[$this->dateStart,$this->dateEnd])->where('id_supplier',$idSupplier)
-                                    ->with('supplier')->get();
-        return $results;
-    }
-    public function getStatusImportCoupon($status)
-    {
-        switch ($status) {
-            case '0':
-                return 'Chưa thanh toán';
-                break;
-            case '1':
-                return 'Còn nợ';
-                break;
-            default:
-                return 'Đã thanh toán';
-                break;
-        }
-    }
-
-    public function createResultByTimeAndIdSupplier()
-    {
-        if($this->idSupplier == '0'){
-            $results = $this->getAllSupplier();
+        if($idSupplier == 0){
+            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->orderBy('id_supplier','asc')->with('supplier')->get();
         }else{
-            $results = $this->getSupplierById($this->idSupplier);
+            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)
+                                            ->orderBy('id_supplier','asc')->with('supplier')->get();
         }
-        return $results;
+        return $resultImports;
+    }
+
+    public function getPaidByIdCoupon($dateStart,$dateEnd,$idImportCoupon)
+    {
+        $paid = ImportCoupon::whereBetween('updated_at',[$dateStart,$dateEnd])->where('id',$idImportCoupon)->value('paid');
+        if($paid == null){
+            return 0;
+        }else{
+            return $paid;
+        }
+    }
+
+    public function createArrayReportSupplier($dateStart,$dateEnd,$imports)
+    {
+        $data = array();
+        if(empty($imports)){
+            return $data;
+        }else{
+            foreach ($imports as $key => $import) {
+                $temp = [
+                    'STT' => $key + 1,
+                    'code' => $import->code,
+                    'name' => $import->supplier->name,
+                    'total' => $import->total,
+                    'paid' => $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
+                    'unpaid' => $import->total - $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
+                    'status' => $import->status,
+                    'created_at' => $import->created_at,
+                    'created_by' => $import->created_by,
+                ];
+                array_push($data,$temp);
+                unset($temp);
+            }
+            return $data;
+        }
+
     }
 
     public function collection()
     {
-        $results = $this->createResultByTimeAndIdSupplier();
+        $imports = $this->getResultImports($this->dateStart,$this->dateEnd,$this->idSupplier);
+        $results = $this->createArrayReportSupplier($this->dateStart,$this->dateEnd,$imports);
         foreach ($results as $key => $result) {
             $row[] = array(
-                '0' => $key + 1,
-                '1' => $result->code,
-                '2' => $result->created_by,
-                '3' => $result->supplier->name,
-                '4' => $this->getStatusImportCoupon($result->status),
-                '5' => $result->total,
-                '6' => $result->paid == 0 ? '0' : $result->paid,
-                '7' => ($result->total - $result->paid) == 0 ? '0' : ($result->total - $result->paid),
-                '8' => $result->created_at
+                '0' => $result['STT'],
+                '1' =>$result['code'],
+                '2' => $result['created_by'],
+                '3' => $result['name'],
+                '5' => $result['total'],
+                '6' => $result['paid'] == 0 ? '0' : $result['paid'],
+                '7' => $result['unpaid'] == 0 ? '0' : $result['unpaid'],
+                '8' => $result['created_at']
             );
         }
         return collect($row);
@@ -95,7 +106,6 @@ class ReportSupplier implements FromCollection, WithHeadings
                 'Mã phiếu nhập',
                 'Người tạo',
                 'Nhà cung cấp',
-                'Trạng thái',
                 'Tổng tiền',
                 'Đã trả',
                 'Còn nợ',

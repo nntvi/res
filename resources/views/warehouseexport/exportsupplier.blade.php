@@ -16,8 +16,8 @@
                                     <div class="col-md-3">
                                         <label class="control-label">Mã phiếu xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" size="40" class="form-control" name="code" maxlength="200" id="codeExportSupplier" required>
-                                        <span class="error-message">{{ $errors->first('code') }}</span></p>
+                                        <input type="text" class="form-control" name="code" maxlength="200" id="codeExportSupplier" value="{{ $code }}"  required>
+
                                     </div>
                                     <div class="col-md-3">
                                         <input name="id_kind" value="2" hidden>

@@ -29,4 +29,9 @@ class VoucherController extends Controller
         $this->voucherRepository->validatorStorePaymentVc($request);
         return $this->voucherRepository->createPaymentVoucher($request);
     }
+
+    public function storePaymentEmergency(Request $request)
+    {
+        return $this->voucherRepository->createPaymentVcEmergency($request);
+    }
 }

@@ -16,6 +16,7 @@ Route::group(['prefix' => 'ajax'], function() {
 
     Route::group(['prefix' => 'getMaterial'], function() {
         Route::get('bySupplier/{idSupplier}','AjaxController@getMaterialBySupplier');
+        Route::get('cookemergency/{idCook}','AjaxController@getMaterialByIdCook');
         Route::group(['prefix' => 'export'], function() {
             Route::get('cook/{idObjectCook}','AjaxController@getMaterialToExportCook');
             Route::get('supplier/{idSupplier}','AjaxController@getImportCouponByIdSupplier');
@@ -30,7 +31,8 @@ Route::group(['prefix' => 'ajax'], function() {
     Route::group(['prefix' => 'report'], function() {
         Route::get('getDateTime/{id}','AjaxController@getDateTimeToReport');
         Route::get('overview/{dateStart}/{dateEnd}','AjaxController@showOverview');
-        Route::get('bestseller/{timeStart}/{timeEnd}','AjaxController@getDataChartBestSeller');
+        Route::get('profit/{dateStart}/{dateEnd}','AjaxController@getProfit');
+        Route::get('chartCustomer/{typeTime}','AjaxController@createCustomerChart');
     });
 });
 ?>

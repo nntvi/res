@@ -15,7 +15,7 @@ use App\MaterialDetail;
 use App\PaymentVoucher;
 use App\OrderDetailTable;
 use App\ImportCouponDetail;
-use App\Helper\IGetDateTime;
+
 
 use Illuminate\Http\Request;
 use App\Repositories\AjaxRepository\IAjaxRepository;
@@ -23,23 +23,16 @@ use App\Repositories\AjaxRepository\IAjaxRepository;
 class AjaxController extends Controller
 {
     private $ajaxRepository;
-    private $getDateTime;
 
-    public function __construct(IAjaxRepository $ajaxRepository,IGetDateTime $getDateTime)
+    public function __construct(IAjaxRepository $ajaxRepository)
     {
         $this->ajaxRepository = $ajaxRepository;
-        $this->getDateTime = $getDateTime;
     }
 
     public function getMaterialBySupplier($idSupplier)
     {
         $materials = $this->ajaxRepository->getMaterialBySupplier($idSupplier);
-        $units = $this->ajaxRepository->getUnit();
-        $data = [
-            'materials' => $materials,
-            'units' => $units,
-        ];
-        return response()->json($data);
+        return response()->json($materials);
     }
 
     public function getMaterialToExportCook($idObjectCook)
@@ -63,8 +56,7 @@ class AjaxController extends Controller
 
     public function getMaterialByImportCoupon($codeCoupon)
     {
-        $materials = ImportCouponDetail::where('code_import',$codeCoupon)
-                                        ->with('materialDetail','unit')->get();
+        $materials = ImportCouponDetail::where('code_import',$codeCoupon)->with('materialDetail','unit')->get();
         return response()->json($materials);
     }
 
@@ -88,64 +80,7 @@ class AjaxController extends Controller
 
     public function getDateTimeToReport($id)
     {
-        $data = array();
-        switch ($id) {
-            case 0:
-                $data = [
-                    'dateStart' => $this->getDateTime->getNow()->format('Y-m-d') . ' 00:00:00' ,
-                    'dateEnd' => $this->getDateTime->getNow()->format('Y-m-d') . ' 23:59:59' ,
-                ];
-                break;
-            case 1:
-                $data = [
-                    'dateStart' => $this->getDateTime->getYesterday() . ' 00:00:00' ,
-                    'dateEnd' => $this->getDateTime->getYesterday() . ' 23:59:59' ,
-                ];
-                break;
-            case 2:
-                $data = [
-                    'dateStart' => $this->getDateTime->getStartOfWeek(),
-                    'dateEnd' => $this->getDateTime->getEndOfWeek(),
-                ];
-                break;
-            case 3:
-                $data = [
-                    'dateStart' => $this->getDateTime->getStartOfPreWeek(),
-                    'dateEnd' => $date = $this->getDateTime->getEndOfPreWeek(),
-                ];
-                break;
-            case 4:
-                $data = [
-                    'dateStart' => $this->getDateTime->getStartOfMonth(),
-                    'dateEnd' => $this->getDateTime->getEndOfMonth(),
-                ];
-                break;
-            case 5:
-                $data = [
-                    'dateStart' => $this->getDateTime->getStartOfPreMonth(),
-                    'dateEnd' => $this->getDateTime->getEndOfPreMonth(),
-                ];
-                break;
-            case 6:
-                $data = [
-                    'dateStart' => $this->getDateTime->getStartOfQuarter(),
-                    'dateEnd' => $this->getDateTime->getEndOfQuarter(),
-                ];
-                break;
-            case 7:
-                $data = [
-                    'dateStart' => $this->getDateTime->getStartOfPreQuarter(),
-                    'dateEnd' => $this->getDateTime->getEndOfPreQuarter(),
-                ];
-                break;
-            case 8:
-                $data = [
-                    'dateStart' => $this->getDateTime->getFirstOfYear()->format('Y-m-d'),
-                    'dateEnd' => $this->getDateTime->getLastOfYear()->format('Y-m-d'),
-                ];
-                break;
-            default:
-        }
+        $data = $this->ajaxRepository->getDateTime($id);
         return response()->json($data);
     }
 
@@ -195,7 +130,33 @@ class AjaxController extends Controller
 
     public function searchPaymentVoucher($code)
     {
-        $results = PaymentVoucher::where('code','LIKE',"{$code}")->get();
+        $results = PaymentVoucher::where('code','LIKE',"{$code}")->orWhere('pay_cash','LIKE',"%{$code}%")->with('detailPaymentVc.detailMaterial.unit')->get();
         return response()->json($results);
+    }
+
+    public function getProfit($dateStart,$dateEnd)
+    {
+        $revenue = $this->ajaxRepository->getRevenue($dateStart,$dateEnd);
+        $expense = $this->ajaxRepository->getExpense($dateStart,$dateEnd);
+        $profit = $revenue - $expense;
+        $data = [
+            'revenue' => number_format($revenue) . ' đ',
+            'expense' => number_format($expense) . ' đ',
+            'profit' => number_format($profit) . ' đ'
+        ];
+        return response()->json($data);
+    }
+
+    public function createCustomerChart($typeTime)
+    {
+        $time = $this->ajaxRepository->getDateTime($typeTime);
+        $data = $this->ajaxRepository->getAllQtyCustomer($time);
+        return response()->json($data);
+    }
+
+    public function getMaterialByIdCook($idCook)
+    {
+        $materialDetails = $this->ajaxRepository->getMaterialWarehouseCook($idCook);
+        return response()->json($materialDetails);
     }
 }

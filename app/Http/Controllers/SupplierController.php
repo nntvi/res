@@ -27,7 +27,11 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
-        $this->supplierRepository->validatorRequest($request);
+        $this->supplierRepository->validateCode($request);
+        $this->supplierRepository->validateName($request);
+        $this->supplierRepository->validateEmail($request);
+        $this->supplierRepository->validatePhone($request);
+        $this->supplierRepository->validateStatus($request);
         return $this->supplierRepository->addSupplier($request);
     }
 
@@ -36,14 +40,27 @@ class SupplierController extends Controller
         return $this->supplierRepository->showViewUpdateSupplier($id);
     }
 
+    public function updateName(Request $request, $id)
+    {
+        $this->supplierRepository->validateName($request);
+        return $this->supplierRepository->updateNameSupplier($request,$id);
+    }
     public function update(Request $request, $id)
     {
-        $this->supplierRepository->validatorRequest($request);
+        $this->supplierRepository->validatePhone($request);
+        $this->supplierRepository->validateStatus($request);
         return $this->supplierRepository->updateSupplier($request,$id);
     }
 
     public function delete($id)
     {
         return $this->supplierRepository->deleteSupplier($id);
+    }
+
+    public function search(Request $request)
+    {
+        $suppliers = $this->supplierRepository->searchSupplier($request);
+        $count = $this->supplierRepository->countResultSearch($request);
+        return view('supplier.search',compact('suppliers','count'));
     }
 }

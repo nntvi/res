@@ -20,20 +20,13 @@ class CookRepository extends Controller implements ICookRepository{
         return $cook;
     }
 
-    public function getGroupMenuByIdCook($idcook)
-    {
-        $groupmenus = GroupMenu::where('id_cook',$idcook)->get();
-        return $groupmenus;
-    }
-
     public function updateCook($request, $id)
     {
         $cook = $this->findCookById($id);
         $cook->status = $request->status;
         $cook->save();
-        $groupmenus = $this->getGroupMenuByIdCook($id);
         if($request->status == '0'){ // nếu bếp cập nhật lại ko hđ
-            GroupMenu::where('id_cook',$id)->update(['id_cook' => $request->status]);
+            GroupMenu::where('id_cook',$id)->update(['status' => $request->status]);
         }
         return redirect(route('cook.index'))->withSuccess('Cập nhật thành công');
     }

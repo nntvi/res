@@ -64,7 +64,7 @@
                             <select name="idSupplier" class="form-control">
                                 <option value="0">Tất cả</option>
                                 @foreach($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                    <option value="{{ $supplier->id }}">{{ $supplier->status == '1' ? $supplier->name : $supplier->name . '( ngưng hoạt động)' }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -97,13 +97,12 @@
                         <tr>
                             <th>STT</th>
                             <th>Mã phiếu nhập</th>
+                            <th>Người tạo</th>
                             <th>Tên Nhà Cung cấp</th>
                             <th>Tổng tiền</th>
                             <th>Đã trả</th>
                             <th>Nợ</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày nhập hàng</th>
-                            <th>Người tạo</th>
+                            <th class="text-center">Ngày nhập hàng</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -10,7 +10,7 @@ interface IImportCouponRepository{
     function showIndex();
     function showViewImport();
     function countMaterialImport($request);
-    function createImportCouponDetail($request,$i);
+    function createImportCouponDetail($request,$i,$idImportCoupon);
     function getTotalDetailImportCoupon($detailImports);
     function createImportCoupon($request);
     function import($request);

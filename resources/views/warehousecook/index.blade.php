@@ -42,7 +42,7 @@
                                         <label class="control-label">Chọn bếp:</label>
                                         <select name="cook" id="" class="form-control">
                                             @foreach ($cooks as $cook)
-                                                <option value="{{ $cook->id }}">{{ $cook->name }}</option>
+                                                <option value="{{ $cook->id }}">{{ $cook->status == '1' ? $cook->name : $cook->name . '( ngưng hoạt động)'}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -106,42 +106,47 @@
                                                   <th>Số lượng hiện có</th>
                                                   <th>Đơn vị</th>
                                                   <th>Ngày cập nhật</th>
-                                                  <th>Tình trạng</th>
+                                                  <th></th>
                                                 </tr>
                                               </thead>
                                               <tbody>
                                                 @foreach ($cookwarehouse->warehouseCook as $key => $warehouseCook)
-                                                @if ($warehouseCook->status == '0')
-                                                    <tr style="background: #fbff0094">
-                                                        <td>{{$key+1}}</td>
-                                                        <td>{{$warehouseCook->detailMaterial->name}}</td>
-                                                        <td>{{$warehouseCook->qty}}</td>
-                                                        <td>
-                                                            @if ($warehouseCook->unit == null)
-                                                                Rỗng
+                                                    @switch($warehouseCook->detailMaterial->status)
+                                                        @case('1')
+                                                            @if ($warehouseCook->status == '0')
+                                                                <tr style="background: #fbff0094">
+                                                                    <td>{{$key+1}}</td>
+                                                                    <td>{{$warehouseCook->detailMaterial->name}}</td>
+                                                                    <td>{{$warehouseCook->qty}}</td>
+                                                                    <td>
+                                                                        @if ($warehouseCook->unit == null)
+                                                                            Rỗng
+                                                                        @else
+                                                                        {{$warehouseCook->unit->name}}
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{{$warehouseCook->updated_at}}</td>
+                                                                    <td class="text-right" style="color:red;font-weight: bold">Cần nhập thêm</td>
+                                                                </tr>
                                                             @else
-                                                            {{$warehouseCook->unit->name}}
+                                                                <tr>
+                                                                    <td>{{$key+1}}</td>
+                                                                    <td>{{$warehouseCook->detailMaterial->name}}</td>
+                                                                    <td>{{$warehouseCook->qty}}</td>
+                                                                    <td>
+                                                                        @if ($warehouseCook->unit == null)
+                                                                            Rỗng
+                                                                        @else
+                                                                        {{$warehouseCook->unit->name}}
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{{$warehouseCook->updated_at}}</td>
+                                                                    <td> </td>
+                                                                </tr>
                                                             @endif
-                                                        </td>
-                                                        <td>{{$warehouseCook->updated_at}}</td>
-                                                        <td style="color:red;font-weight: bold">Cần nhập thêm</td>
-                                                    </tr>
-                                                @else
-                                                    <tr>
-                                                        <td>{{$key+1}}</td>
-                                                        <td>{{$warehouseCook->detailMaterial->name}}</td>
-                                                        <td>{{$warehouseCook->qty}}</td>
-                                                        <td>
-                                                            @if ($warehouseCook->unit == null)
-                                                                Rỗng
-                                                            @else
-                                                            {{$warehouseCook->unit->name}}
-                                                            @endif
-                                                        </td>
-                                                        <td>{{$warehouseCook->updated_at}}</td>
-                                                        <td> </td>
-                                                    </tr>
-                                                @endif
+                                                            @break
+                                                        @default
+                                                    @endswitch
                                                 @endforeach
                                               </tbody>
                                         </table>

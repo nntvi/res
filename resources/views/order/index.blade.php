@@ -10,7 +10,15 @@
         background: rgba(149, 149, 149, 0.09);
         cursor: pointer;
     }
-
+    .tab-content .cardDish{
+        border-radius: 0px;
+    }
+    .tab-content .cardDish:hover{
+        background: #e6e4e4;
+    }
+    .tab-content .cardDish .card-title{
+        height: 25px;
+    }
     .content-order {
         height: 400px;
         overflow: auto;
@@ -32,6 +40,9 @@
     .input-group{
         margin-bottom: 0px!important;
     }
+    ul.nav-tabs li>a{
+        color: unset;
+    }
 </style>
 @section('content')
 <div class="form-w3layouts">
@@ -52,12 +63,12 @@
                         @endphp
                         @foreach($activeTables as $activeTable)
                             @if($activeTable->id_table == $table->id)
-                                <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 m-b-xs" style="padding-right: 0px">
+                                <div class="col-xs-4 col-sm-2 col-md-2 col-lg-1 m-b-xs" style="padding-right: 0px">
                                     <div class="card" data-id="{{ $table->id }}" data-status="1"
                                         style="background: rgba(254, 48, 48, 0.55);border: 3px solid #ff6d6d;">
                                         <div class="card-body">
                                             <input type="hidden" name="idBill" value="{{ $activeTable->id }}">
-                                            <h6 class="card-title">{{ $table->name }}</h6>
+                                            <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
                                             <p class="card-text" >{{ $activeTable->code }}</p>
                                         </div>
                                     </div>
@@ -69,10 +80,10 @@
                             @endif
                         @endforeach
                         @if($temp == false)
-                            <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 m-b-xs" style="padding-right: 0px">
+                            <div class="col-xs-4 col-sm-2 col-md-2 col-lg-1 m-b-xs" style="padding-right: 0px">
                                 <div class="card" data-id="{{ $table->id }}" data-status="0">
                                     <div class="card-body">
-                                        <h6 class="card-title">{{ $table->name }}</h6>
+                                        <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
                                         <p class="card-text">Trống</p>
                                     </div>
                                 </div>
@@ -126,15 +137,15 @@
                                 @foreach($groupmenus as $groupmenu)
                                     <div id="{{ $groupmenu->id }}" class="tab-pane fade in ">
                                         @foreach($groupmenu->dishes as $dish)
-                                            <div class="card col-xs-4 col-sm-2 m-b-xs cardDish" style="margin-right: 5px">
-                                                <img class="card-img-top" style="width:100%; height: 60px"
-                                                    src="img/{{ $dish->image }}">
-                                                <div class="card-body row">
-                                                    <div class="space"></div>
-                                                    <h5 class="card-title col-xs-12" data-dish="{{ $dish->id }}">{{ $dish->name }}</h5>
-                                                    <p class="card-text col-xs-12">{{ $dish->sale_price }}</p>
+                                            @if ($dish->stt == '1' && $dish->status == '1')
+                                                <div class="card col-xs-4 col-sm-2 m-b-xs cardDish">
+                                                    <img class="card-img-top img-responsive" src="img/{{ $dish->image }}">
+                                                    <div class="card-body row">
+                                                        <p class="card-title col-xs-12" data-dish="{{ $dish->id }}">{{ $dish->name }}<p>
+                                                        <h6 class="card-text col-xs-12">{{ $dish->sale_price }}</h6>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                         @endforeach
                                     </div>
                                 @endforeach
@@ -165,8 +176,11 @@
                                     }
                                 }
                                 $('.card.cardDish').click(function () {
-                                    var idDish = $(this).find('h5[data-dish]').data('dish'); // id dish
                                     var table = document.getElementById('bodyTableOrder');
+                                    if(table == null || table == ""){
+                                        alert('Vui lòng chọn bàn');
+                                    }
+                                    var idDish = $(this).find('p[data-dish]').data('dish'); // id dish
                                     if(table.rows.length == 0){
                                         var nameDish = $(this).find('.card-title').text();
                                         var priceDish = $(this).find('.card-text').text();
@@ -244,6 +258,19 @@
                                         }
                                     }
                                 });
+                            </script>
+                            <script>
+                                @if($errors->any())
+                                    @foreach($errors->all() as $error)
+                                        toastr.error('{{ $error }}')
+                                    @endforeach
+                                @endif
+                                @if(session('success'))
+                                    toastr.success('{{ session('success') }}')
+                                @endif
+                                @if(session('warning'))
+                                    toastr.warning('{{ session('warning') }}')
+                                @endif
                             </script>
                         </div>
 

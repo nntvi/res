@@ -257,6 +257,7 @@
 
                             <div class="row">
                                 <div class="col-xs-12 text-center">
+                                    <a href="{{ route('material.index') }}" class="btn btn-default">Trở về</a>
                                     <button type="submit" class="btn green-meadow radius">Lưu</button>
                                 </div>
                             </div>

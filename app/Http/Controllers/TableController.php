@@ -22,19 +22,22 @@ class TableController extends Controller
 
     public function store(Request $request)
     {
-        $this->tableRepository->validatorRequestStore($request);
+        $this->tableRepository->validateCodeTable($request);
+        $this->tableRepository->validatorNameTable($request);
         return $this->tableRepository->addTable($request);
     }
 
     public function updateName(Request $request,$id)
     {
-        $this->tableRepository->validatorRequestStore($request);
-        return $this->tableRepository->updateNameTable($request,$id);
+        $this->tableRepository->validatorNameTable($request);
+        $this->tableRepository->updateNameTable($request,$id);
+        return redirect(route('area.index'))->withSuccess('Cập nhật tên bàn thành công');
     }
 
     public function updateArea(Request $request,$id)
     {
-        return $this->tableRepository->updateArea($request,$id);
+        $this->tableRepository->updateAreaTable($request,$id);
+        return redirect(route('area.index'))->withSuccess('Chuyển khu vực thành công');
     }
 
     public function search(Request $request)

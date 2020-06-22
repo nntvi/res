@@ -3,12 +3,12 @@
 <div class="table-agile-info">
     <div class="panel panel-default">
         <div class="panel-heading">
-            Chi tiết Nguyên vật liệu
+            Nguyên vật liệu
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="#myModal" data-toggle="modal">
-                    <button class="btn btn-sm btn-success">Thêm mới</button>
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
                     class="modal fade" style="display: none;">
@@ -24,7 +24,7 @@
                                     @csrf
                                     <div class="form-group">
                                         <label>Tên NVL</label>
-                                        <input class="form-control" name="nameAdd" min="3" max="30" required="">
+                                        <input class="form-control" name="name" min="3" max="30" required="">
                                     </div>
                                     <div class="form-group">
                                         <div class="row">
@@ -68,9 +68,9 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('material_detail.exportexcel') }}" class="btn btn-sm btn-default">
+                {{--  <a href="{{ route('material_detail.exportexcel') }}" class="btn btn-sm btn-default">
                     <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                </a>
+                </a>  --}}
             </div>
             <div class="col-sm-5">
                 <script>
@@ -108,7 +108,7 @@
                         <th>Tên nguyên vật liệu</th>
                         <th>Thuộc nhóm</th>
                         <th>Đơn vị</th>
-                        <th class="text-right">Xóa</th>
+                        {{-- <th class="text-right">Xóa</th> --}}
                     </tr>
                     </tr>
                 </thead>
@@ -148,7 +148,7 @@
                                                             <label>Tên cần sửa<span style="color: #ff0000">
                                                                     *</span></label>
                                                             <input type="text" size="40" class="form-control"
-                                                                required="required" name="nameUpdate" maxlength="255"
+                                                                required="required" name="name" maxlength="255"
                                                                 value="{{ $materialDetail->name }}">
                                                         </div>
                                                         <button type="submit" class="btn btn-default">Lưu</button>
@@ -170,7 +170,7 @@
                                                 <div class="modal-header">
                                                     <button aria-hidden="true" data-dismiss="modal" class="close"
                                                         type="button">×</button>
-                                                    <h4 class="modal-title">Chỉnh sửa nhóm cho NVL</h4>
+                                                    <h4 class="modal-title">Chỉnh sửa nhóm cho NVL: <strong>{{ $materialDetail->name }}</strong></h4>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form role="form"
@@ -205,13 +205,11 @@
                                     {{ $materialDetail->unit->name }}
                                 </td>
                             </form>
-                            <td class="text-right">
-                                <a href="{{ route('material_detail.delete',['id' => $materialDetail->id]) }}"
-                                    class="btn btn-warning btn-xs radius">
-                                    <i class="fa fa-trash-o"
+                             <td class="text-right">
+                                <a href="{{ route('material_detail.delete',['id' => $materialDetail->id]) }}">
+                                    <i class="fa fa-trash text-danger"
                                         onclick="return confirm('Khi click xóa, NVL trong kho chính và kho bếp cũng được xóa, bạn đã chắc chắn?')">
                                     </i>
-
                                 </a>
                             </td>
                         </tr>
@@ -221,9 +219,8 @@
         </div>
         <footer class="panel-footer">
             <div class="row">
-
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-10 items</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-10 nguyên vật liệu</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

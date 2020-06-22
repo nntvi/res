@@ -20,10 +20,6 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
     public function getTypes()
     {
         $types = TypeMaterial::with('warehouse')->get();
-                // ->whereHas('warehouse', function ($query)
-                // {
-                //     $query->select('(warehouse.limit_stock - warehouse.qty) as x')->orderBy('x','asc');
-                // })->get();
         return $types;
     }
     public function showIndex()
@@ -40,8 +36,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
-                                    ->with('detailMaterial','typeMaterial','unit')
+        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])->with('detailMaterial','typeMaterial','unit')
                                     ->orderBy('id_material_detail')->get();
         return $warehouse;
     }
@@ -107,7 +102,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
             $tempArray = [
                 'stt' => $key+1,
                 'idMaterialDetail' => $wh->id_material_detail,
-                'name' => $wh->detailMaterial->name,
+                'name' => $wh->detailMaterial->status == '1' ? $wh->detailMaterial->name : $wh->detailMaterial->name . ' (ko còn sử dụng)',
                 'nameType' => $wh->typeMaterial->name,
                 'unit' => $wh->unit->name,
                 'tondauky' => $this->getTonDauKy($wh->qty,$this->getValueExport($wh->id_material_detail,$detailExport),
@@ -138,8 +133,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $detailImport = ImportCouponDetail::where('id_material_detail',$id)
-                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])->get();
+        $detailImport = ImportCouponDetail::where('id_material_detail',$id)->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])->get();
         return $detailImport;
     }
 
@@ -147,8 +141,7 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $detailExport = ExportCouponDetail::where('id_material_detail',$id)
-                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+        $detailExport = ExportCouponDetail::where('id_material_detail',$id)->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->with('exportCoupon.typeExport')->get();
         return $detailExport;
     }

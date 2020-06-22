@@ -141,10 +141,10 @@
                                         }
                                     },
                                     hoverCallback: function (index, options, content, row) {
-                                        var hover = "<div class='morris-hover-row-label'>" + row.name +
-                                            "</div><div class='morris-hover-point' style='color: black;'><p color:black>Giá bán: " +
-                                                    row.sale.format(3) + " đ</p></div><div class='morris-hover-point' style='color: darkblue;'><p color:black>Giá vốn: " +
-                                                    row.capital.format(3) +" đ</p></div>";
+                                        var hover = `<div class='morris-hover-row-label'>` + row.name + `</div>
+                                                    <div class='morris-hover-point bold' style='color: darkgreen;'><p >Lợi nhuận:` +  row.interest.format(3) + ` đ</p></div>
+                                                    <div class='morris-hover-point' style='color: black;'><p>Giá bán:` +  row.sale.format(3) + ` đ</p></div>
+                                                    <div class='morris-hover-point' style='color: darkblue;'><p>Giá vốn:` + row.capital.format(3) + ` đ</p></div>`;
                                         return hover;
                                     }
                                 });

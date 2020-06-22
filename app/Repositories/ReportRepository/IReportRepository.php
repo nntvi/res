@@ -10,4 +10,5 @@ interface IReportRepository{
     function getAllRevenue();
     function getAllQtyCustomer();
     function reportSupplier($request);
+    function indexReportProfit();
 }

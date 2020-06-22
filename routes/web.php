@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('update_username/{id}', 'UserController@updateUsername')->name('user.p_updateusername');
         Route::get('viewShift/{id}', 'UserController@viewShift')->name('user.shift');
         Route::get('updateshift/{id}', 'UserController@updateShift')->name('user.p_shift');
+        Route::get('viewUpdatePassword/{id}', 'UserController@viewUpdatePassword')->name('user.updatepassword');
         Route::post('update_password/{id}','UserController@updatePassword')->name('user.p_updatepassword');
         Route::get('viewUpdateRole/{id}', 'UserController@viewUpdateRole')->name('user.updaterole');
         Route::post('updateRole/{id}', 'UserController@updateRole')->name('user.p_updaterole');
@@ -73,17 +74,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('update/{id}', 'AreaController@update')->name('area.update');
         Route::get('delete/{id}', 'AreaController@delete')->name('area.delete');
         Route::get('import', 'AreaController@importExcel')->name('area.importexcel');
-        Route::get('deleteall', 'AreaController@deleteAll')->name('area.deleteall');
     });
 
     // Table
     Route::group(['prefix' => 'table'], function() {
-        Route::get('index', 'TableController@index')->name('table.index');
         Route::post('store', 'TableController@store')->name('table.p_store');
-        Route::post('update/{id}', 'TableController@update')->name('table.p_update');
         Route::post('updateName/{id}', 'TableController@updateName')->name('table.p_updatename');
         Route::post('updateArea/{id}', 'TableController@updateArea')->name('table.p_updatearea');
-        Route::get('search/', 'TableController@search')->name('table.search');
         Route::get('delete/{id}', 'TableController@delete')->name('table.delete');
     });
 
@@ -117,7 +114,9 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('store', 'SupplierController@store')->name('supplier.p_store');
         Route::get('viewupdate/{id}', 'SupplierController@viewUpdate')->name('supplier.update');
         Route::post('update/{id}', 'SupplierController@update')->name('supplier.p_update');
+        Route::post('updateName/{id}', 'SupplierController@updateName')->name('supplier.p_updatename');
         Route::get('delete/{id}', 'SupplierController@delete')->name('supplier.delete');
+        Route::get('search/', 'SupplierController@search')->name('supplier.search');
     });
 
     // Cook
@@ -186,6 +185,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('addmoredish/{id}','OrderController@viewaddMoreDish')->name('order.addmore');
         Route::post('addmoredish/{id}','OrderController@addMoreDish')->name('order.p_addmore');
         Route::get('deletedish/{id}','OrderController@deleteDish')->name('order.delete');
+        Route::get('delete/{idOrderTable}','OrderController@deleteOrderTable')->name('order.deleteorder');
     });
 
     // Bill
@@ -238,6 +238,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('detail/{id}', 'ImportCouponController@getDetail')->name('importcoupon.detail');
         Route::post('detail/{id}', 'ImportCouponController@updateDetail')->name('importcoupon.p_detail');
         Route::get('printdetail/{id}', 'ImportCouponController@printDetail')->name('importcoupon.print_detail');
+        Route::get('search', 'ImportCouponController@search')->name('importcoupon.search');
     });
 
     // Export Coupon
@@ -252,6 +253,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('destroyWarehouseCook/', 'ExportCouponController@destroyWarehouseCook')->name('exportcoupon.p_destroywarehousecook');
         Route::get('detail/{id}', 'ExportCouponController@getDetail')->name('exportcoupon.detail');
         Route::get('printdetail/{id}', 'ExportCouponController@printDetail')->name('exportcoupon.print_detail');
+        Route::get('search', 'ExportCouponController@search')->name('exportcoupon.search');
     });
 
     // WareHouse Export
@@ -290,6 +292,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('object', 'VoucherController@chooseObject')->name('voucher.payment');
             //Route::get('store', 'VoucherController@storePaymentView')->name('voucher.storepayment');
             Route::post('store', 'VoucherController@storePayment')->name('voucher.p_storepayment');
+            Route::post('storeemergency', 'VoucherController@storePaymentEmergency')->name('voucher.p_storepaymentemergency');
         });
     });
 
@@ -324,6 +327,11 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('post', 'ReportController@reportSupplier')->name('report.p_supplier');
             Route::get('export/{dateStart}/{dateEnd}/{idSupplier}','ReportController@exportSupplierReport')->name('report.exportsupplier');
         });
+
+        Route::group(['prefix' => 'profit'], function () {
+            Route::get('index', 'ReportController@profit')->name('profit.index');
+        });
+
     });
 
     // Booking
@@ -336,10 +344,14 @@ Route::group(['middleware' => ['auth']], function() {
     // Method Math
     Route::group(['prefix' => 'method'], function () {
         Route::get('index','MethodController@index')->name('method.index');
+        Route::get('getQty','MethodController@getQty')->name('method.storyQty');
         Route::get('storeText','MethodController@viewStoreText')->name('method.storeText');
         Route::post('storeText','MethodController@storeText')->name('method.p_storeText');
+        Route::post('storeNumber/{id}','MethodController@storeNumber')->name('method.p_storeNumber');
         Route::get('update/{id}','MethodController@update')->name('method.update');
+        Route::get('delete/{id}','MethodController@delete')->name('method.delete');
     });
+
     // Ajax
     include "ajax.php";
 });

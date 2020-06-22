@@ -11,7 +11,7 @@
                     Trở về
                 </a>
                 <a href="#myModal-1" data-toggle="modal">
-                    <button class="btn btn-sm btn-danger">Thêm mới</button>
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
                 </a>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1"
                     class="modal fade" style="display: none;">
@@ -36,10 +36,9 @@
                                     <div class="form-group">
                                         <label class="col-lg-2 col-sm-2 control-label">Chọn bếp</label>
                                         <div class="col-lg-10">
-                                            @foreach($cook_active as $item)
+                                            @foreach($cooks as $cook)
                                                 <label class="checkbox-inline">
-                                                    <input type="radio" id="cook{{ $item->id }}"
-                                                        value="{{ $item->id }}" name="idCook"> {{ $item->name }}
+                                                    <input type="radio" value="{{ $cook->id }}" name="idCook"> {{ $cook->name }}
                                                 </label>
                                             @endforeach
                                         </div>
@@ -57,11 +56,13 @@
                 </div>
             </div>
             <div class="col-sm-5">
-                @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <span class="error-message">{{ $error }}</span></p>
-                    @endforeach
-                @endif
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
                 <form action="{{ route('groupmenu.search') }}" method="GET">
@@ -69,7 +70,7 @@
                     <div class="input-group">
                         <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch" required>
                         <span class="input-group-btn">
-                            <button class="btn btn-sm btn-info" type="submit">Tìm kiếm</button>
+                            <button class="btn btn-sm btn-default" type="submit">Tìm kiếm</button>
                         </span>
                     </div>
                 </form>
@@ -161,10 +162,10 @@
                                                                     <div class="row">
                                                                         <div class="col-xs-12 col-sm-6">
                                                                             <label style="color:black">Bếp thay đổi: </label>&nbsp;&nbsp;
-                                                                            @foreach ($cook_active as $item)
-                                                                                @if ($item->id != $groupmenu->cookArea->id)
-                                                                                    <label style="display:inline">{{$item->name}}</label>
-                                                                                    <input value="{{$item->id}}"  type="radio" name="idCook" style="margin-right: 20px" checked>
+                                                                            @foreach ($cooks as $cook)
+                                                                                @if ($cook->id != $groupmenu->cookArea->id)
+                                                                                    <label style="display:inline">{{$cook->name}}</label>
+                                                                                    <input value="{{$cook->id}}"  type="radio" name="idCook" style="margin-right: 20px" checked>
                                                                                 @endif
                                                                             @endforeach
                                                                         </div>
@@ -204,7 +205,7 @@
             <div class="row">
 
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">{{ $count }} kết quả được tìm thấy</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

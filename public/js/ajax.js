@@ -9,45 +9,30 @@ $(document).ready(function () {
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                //console.log(data);
-                data.materials.map(function (material) {
-                    // console.log(material);
+                console.log(data);
                     $('.list').empty();
-                    //console.log(material.type_material.material_detail);
-                    material.type_material.warehouse.forEach(function (detail) {
-                        //console.log(detail.name);
-                        var row = '<tr id="row' + detail.id + '">' +
-                            '<td>' +
-                            '<input name="id[]" value="' + detail.id + '" hidden>' +
-                            '<input name="idMaterial[]" value="' + detail.id_material_detail + '" hidden>' +
-                            detail.detail_material.name +
-                            '</td>' +
-                            '<td><input  type="number" class="form-control" value="' + detail.qty + '" disabled></td>' +
-                            '<td><input  type="number" step="0.01" class="qty form-control" name="qty[]"></td>' +
-                            '<td>';
-                        if (detail.id_unit == 0) {
-                            row += '<select class="device form-control" name="id_unit[]">';
-                            data.units.forEach(function (unit) {
-                                row += '<option value="' + unit.id + '">' + unit.name + '</option>';
-                            });
-                            row += '</select>';
-                        } else {
-                            row += '<input value="' + detail.unit.id + '" name="id_unit[]" hidden></input>' +
-                                '<input class="form-control" value="' + detail.unit.name + '" disabled></input>';
-                        }
-                        row += '</td>' +
-                            '<td><input type="number" class="price form-control" name="price[]" value=""></td>' +
-                            '<td>' +
-                            '<span class="input-group-btn" onclick="clickToRemove(' + detail.id + ')">' +
-                            '<button class="btn btn-danger" type="button">' +
-                            '<i class="fa fa-times" aria-hidden="true"></i>' +
-                            '</button>' +
-                            '</span>' +
-                            '</td>' +
-                            '</tr>';
+                    data.type_material.warehouse.forEach(function (detail) {
+                        if (detail.detail_material.status != 0) {
+                            var row = `<tr id="row` + detail.id + `">
+                                        <td><input name="id[]" value=" ` + detail.id + `" hidden>
+                                            <input name="idMaterial[]" value="` + detail.id_material_detail + `" hidden>
+                                                `+ detail.detail_material.name + `
+                                        </td>
+                                        <td>` + detail.qty + `</td>
+                                        <td><input  type="number" step="0.01" class="qty form-control" name="qty[]" ></td>
+                                        <td><input value="` + detail.detail_material.unit.id + `" name="id_unit[]" hidden></input>
+                                            ` +detail.detail_material.unit.name + `
+                                        </td>
+                                        <td><input type="number" class="price form-control" name="price[]" value=""></td>
+                                        <td>
+                                            <span class="input-group-btn" onclick="clickToRemove(` + detail.id + `)">
+                                                <button class="btn btn-sm btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>' +
+                                            </span>
+                                        </td>
+                                    </tr>`;
                         $('.list').append(row);
-                    })
-                });
+                        }
+                    });
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -67,78 +52,62 @@ $(document).ready(function () {
                 $('#warehouseCook').empty();
                 $('#warehouse').empty();
                 $('#submit').empty();
-                let tableWarehouseCook = '<h4 class="hdg">NVL của bếp vừa chọn</h4>' +
-                    '<table class="table table-bordered">' +
-                    '<thead>' +
-                    '<tr>' +
-                    '<th>Tên NVL</th>' +
-                    '<th>Sl tồn</th>' +
-                    '<th>Đơn vị</th>' +
-                    '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
+                let tableWarehouseCook = `<h4 class="hdg">NVL của bếp vừa chọn</h4>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                    <th>Tên NVL</th>
+                                                    <th>Sl tồn</th>
+                                                    <th>Đơn vị</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>`;
                 data.materialWarehouseCook.map(function (c) {
-                    tableWarehouseCook += '<tr>' +
-                        '<td>' + c.detail_material.name + '</td>' +
-                        '<td><span class="badge">' + c.qty + '</span></td>' +
-                        '<td>';
-                    if (c.unit == null) {
-                        tableWarehouseCook += 'Rỗng';
-                    } else {
-                        tableWarehouseCook += c.unit.name;
+                    if (c.detail_material.status == '1') {
+                        tableWarehouseCook += `<tr>
+                                                <td>` + c.detail_material.name + `</td>
+                                                <td><span class="badge">` + c.qty + `</span></td>
+                                                <td>`+ c.unit.name +`</td>
+                                            </tr>`;
                     }
-                    tableWarehouseCook += '</td>' +
-                        '</tr>';
                 });
-                '</tbody>' +
-                '</table>'
-                let tableWarehouse = '<h4 class="hdg">Danh sách NVL của bếp trong kho chính</h4>' +
-                    '<table class="table table-bordered">' +
-                    '<thead>' +
-                    '<tr>' +
-                    '<th width=25%>Tên mặt hàng</th>' +
-                    '<th width=15%>Sl trong kho</th>' +
-                    '<th width=22%>Sl cần xuất</th>' +
-                    '<th width=17%>Đơn vị tính</th>' +
-                    '<th width=2%></th>' +
-                    '</tr>' +
-                    '</thead>' +
-                    '<tbody id="bodyWarehouseExportCook">';
-                data.materialWarehouse.map(function (detail) {
-                    tableWarehouse +=
-                        '<tr id="row' + detail.id + '">' +
-                        '<td>' +
-                        '<input name="id[]" value="' + detail.id + '" hidden>' +
-                        '<input name="idMaterial[]" value="' + detail.detail_material.id + '" hidden>' +
-                        detail.detail_material.name +
-                        '</td>' +
-                        '<td><input type="number" name="oldQty[]" class="oldQty form-control" value="' + detail.qty + '" disabled></td>';
+                tableWarehouseCook += `</tbody></table>`;
 
-                    if (detail.id_unit == 0) {
-                        tableWarehouse += '<td><input type="number" step="0.01" class="qty form-control" value="" name="qty[]" disabled></td>' +
-                            '<td>' +
-                            'Hết hàng';
-                    } else {
-                        tableWarehouse += '<td><input type="number" step="0.01" class="qty form-control" value="" name="qty[]" required></td>' +
-                            '<td>' +
-                            '<input value="' + detail.unit.id + '" name="id_unit[]" hidden></input>' +
-                            '<input class="form-control" value="' + detail.unit.name + '" disabled></input>';
+                let tableWarehouse = `<h4 class="hdg">Danh sách NVL của bếp trong kho chính</h4>
+                                        <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                            <th width=25%>Tên mặt hàng</th>
+                                            <th width=15%>Sl trong kho</th>
+                                            <th width=22%>Sl cần xuất</th>
+                                            <th width=17%>Đơn vị tính</th>
+                                            <th width=2%></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyWarehouseExportCook">`;
+                data.materialWarehouse.map(function (detail) {
+                    if (detail.detail_material.status == '1') {
+                        tableWarehouse +=
+                        `<tr id="row` + detail.id + `">
+                            <td><input name="id[]" value="` + detail.id + `" hidden>
+                                <input name="idMaterial[]" value="` + detail.detail_material.id + `" hidden>`+ detail.detail_material.name + `</td>
+                            <td>` + detail.qty + `</td>
+                            <td><input type="number" step="0.01" class="qty form-control" value="" name="qty[]" required></td>
+                            <td><input value="`+detail.unit.id+`" name="id_unit[]" hidden>` + detail.unit.name + `</td>
+                            <td><span class="input-group-btn" onclick="clickToRemove(` + detail.id + `)">
+                                    <button class="btn btn-xs btn-danger" type="button">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </td>
+                        </tr>`;
                     }
-                    tableWarehouse += '</td>' +
-                        '<td>' +
-                        '<span class="input-group-btn" onclick="clickToRemove(' + detail.id + ')">' +
-                        '<button class="btn btn-danger" type="button">' +
-                        '<i class="fa fa-times" aria-hidden="true"></i>' +
-                        '</button>' +
-                        '</span>' +
-                        '</td>' +
-                        '</tr>';
                 })
-                '</tbody>' +
-                '</table>'
+                tableWarehouse += `</tbody></table>`;
+
                 $('#warehouseCook').append(tableWarehouseCook);
                 $('#warehouse').append(tableWarehouse);
-                $('#submit').append('<button type="submit" class="btn green-meadow radius">Tạo phiếu</button>');
+                $('#submit').append('<a href="warehouse/index" class="btn btn-default">Trở về</a>&nbsp;<button type="submit" class="btn green-meadow radius">Tạo phiếu</button>');
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -346,19 +315,21 @@ $(document).ready(function () {
     });
 
     // capitalPrice
-    $("#clickUpdatePrice").click(function () {
-        const idMaterial = document.getElementById('idMaterialUpdatePrice').value;
+    $(".clickUpdatePrice").click(function () {
+        const idMaterial = this.id;
         $.ajax({
             url: 'ajax/getCapitalPrice/' + idMaterial, //Trang xử lý
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                $('#newCapitalPriceHidden').empty();
-                $("#newCapitalUpdate").empty();
-                $("#newSalePriceUpdate").empty();
-                $('input#newCapitalPriceHidden').val(data.capitalPrice);
-                $('input#newCapitalUpdate').val(data.capitalPrice);
-                $('input#newSalePriceUpdate').val(data.salePrice);
+                $('#newCapitalPriceHidden' + idMaterial).empty();
+                $("#newCapitalUpdate" + idMaterial).empty();
+                $("#newSalePriceUpdate" + idMaterial).empty();
+                $('input#newCapitalPriceHidden'  + idMaterial).val(data.capitalPrice);
+                $('input#newCapitalUpdate' + idMaterial).val(data.capitalPrice);
+                $('input#newSalePriceUpdate' + idMaterial).val(data.salePrice);
+                console.log(data);
+
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -510,40 +481,69 @@ $(document).ready(function () {
                                                 <tbody id="bodyTableOrder">`;
                     $('#bodyTableOrdered').empty();
                     dishes.map(function (dish) {
-                        ordered += `<tr>
-                                                                <td>` + dish.dish.name + `</td>
-                                                                <td class="text-center">` + dish.qty + `</td>
-                                                                <td>`;
-                        if (dish.note == null) {
-                            ordered += `-`;
+                        if (dish.status == '0') {
+                            ordered += `<tr>
+                                        <td>` + dish.dish.name + `</td>
+                                        <td class="text-center">` + dish.qty + `</td>
+                                        <td>`;
+                                            if (dish.note == null) {
+                                                ordered += `-`;
+                                            } else {
+                                                ordered += dish.note;
+                                            }
+                            ordered += `</td>
+                                        <td>` + dish.price + `</td>
+                                        <td>`;
+                                            if (dish.status == '-1') {
+                                                ordered += `<i class="fa fa-pause text-danger" aria-hidden="true"></i>`;
+                                            } else if (dish.status == '0') { // chưa thực hiện
+                                                ordered += `<a href="order/deletedish/`+ dish.id +`" onclick="return confirm ('Bạn muốn hủy món này?')"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a>`;
+                                            }
+                            ordered += `</td>
+                                    </tr>`
+                            $('#bodyTableOrder').append(ordered);
                         } else {
-                            ordered += dish.note;
+                            ordered += `<tr>
+                                        <td>` + dish.dish.name + `</td>
+                                        <td class="text-center">` + dish.qty + `</td>
+                                        <td>`;
+                                            if (dish.note == null) {
+                                                ordered += `-`;
+                                            } else {
+                                                ordered += dish.note;
+                                            }
+                            ordered += `</td>
+                                        <td>` + dish.price + `</td>
+                                        <td>`;
+                                            if(dish.status == '-2'){
+                                                ordered += `Đã hủy`;
+                                            }
+                                            else if (dish.status == '-1') {
+                                                ordered += `<i class="fa fa-pause text-danger" aria-hidden="true"></i>`;
+                                            } else if (dish.status == '0') { // chưa thực hiện
+                                                ordered += `<i class="fa fa-battery-empty text-warning" aria-hidden="true"></i>`;
+                                            } else if (dish.status == '1') {
+                                                ordered += `<i class="fa fa-battery-half text-info" aria-hidden="true"></i>`;
+                                            } else if (dish.status == '2') {
+                                                ordered += `<i class="fa fa-battery-full text-success" aria-hidden="true"></i>`;
+                                            }
+                            ordered += `</td>
+                                    </tr>`
+                            $('#bodyTableOrder').append(ordered);
                         }
-                        ordered += `</td>
-                                                                <td>` + dish.price + `</td>
-                                                                <td>`;
-                        if (dish.status == '-1') {
-                            ordered += `<i class="fa fa-pause text-danger" aria-hidden="true"></i>`;
-                        } else if (dish.status == '0') { // chưa thực hiện
-                            ordered += `<i class="fa fa-battery-empty text-warning" aria-hidden="true"></i>`;
-                        } else if (dish.status == '1') {
-                            ordered += `<i class="fa fa-battery-half text-info" aria-hidden="true"></i>`;
-                        } else if (dish.status == '2') {
-                            ordered += `<i class="fa fa-battery-full text-success" aria-hidden="true"></i>`;
-                        }
-                        ordered += `</td>
-                                                            </tr>`
-                        $('#bodyTableOrder').append(ordered);
                     });
                     ordered += `</tbody>
                                             </table>
                                         </div>
                                         <div class="row activities">
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-4" style="padding-right: 0px">
                                                 <button  class="btn btn-success" style="width:100%">Lưu</button>
                                             </div>
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-4" style="padding-right: 0px">
                                                 <a href="pay/index/` + idBill + `" class="btn btn-danger" style="width:100%">Thanh toán</a>
+                                            </div>
+                                            <div class="col-xs-4" style="padding-right: 0px">
+                                                <a href="order/delete/`+ idBill +`" class="btn btn-default" style="width:100%">Hủy bàn</a>
                                             </div>
                                         </div>
                                     </div>
@@ -705,12 +705,13 @@ $(document).ready(function () {
             success: function (results) {
                 if(results.length == 0){
                     $('#bodyPaymentVc').empty();
-                    let a = `<tr><td colspan="8" class="text-center">Không tìm thấy kết quả</<td><tr>`;
-                    $('#bodyPaymentVc').append(a);
+                    let noneResult = `<tr><td colspan="9" class="text-center">Không tìm thấy kết quả</<td><tr>`;
+                    $('#bodyPaymentVc').append(noneResult);
                 }else{
                     $('#bodyPaymentVc').empty();
+                    let count = 0;
                     results.map(function (result) {
-                        let count = 0;
+                        console.log(result);
                         let row =
                         `<tr>
                             <td>`+ (count+1) +`</td>
@@ -718,7 +719,7 @@ $(document).ready(function () {
                             if (result.type == '1') {
                                 row += `<td>Chi nợ NCC</<td>`;
                             } else {
-                                row += `<td>Khác</td>`;
+                                row += `<td>Mua Gấp NVL</td>`;
                             }
                         row +=
                             `<td>`+ result.name +`</td>
@@ -729,12 +730,127 @@ $(document).ready(function () {
                                 row += `<td>` + result.note + `</td>`;
                             }
                             row +=
-                            `<td>` + result.created_by + `</td>
-                            <td class="text-right">` + result.created_at + `</td>
+                            `<td>` + result.created_by + `</td>`;
+                            if (result.type == '1') {
+                                row += `<td></td>`;
+                            } else if(result.type == '0') {
+                                row +=
+                                `<td>
+                                    <a href="#payment`+ result.id +`" data-toggle="modal">
+                                        <i class="fa fa-pencil text-success" aria-hidden="true"></i>
+                                    </a>
+                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="payment`+ result.id +`" class="modal fade" style="display: none;">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title">Chi tiết phiếu chi `+ result.code +`</h4>
+                                                    </div>
+                                                    <div class="modal-body" >
+                                                        <div class="titleImportCoupon">
+                                                            <div class="row bold">
+                                                                <div class="col-xs-6">
+                                                                    Lý do Chi:`;
+                                                                    if (result.type == 1) {
+                                                                        row += `Chi nợ NCC`;
+                                                                    } else {
+                                                                        row += `Mua gấp NVL`;
+                                                                    }
+                                                            row +=`    </div>
+                                                                <div class="col-xs-6">
+                                                                    Đối tượng: `+ result.name +` - Người tạo: `+ result.created_by +`
+                                                                </div>
+                                                            </div>
+                                                            <div class="row bold">
+                                                                <div class="col-xs-6">
+                                                                    Tổng tiền: `+ result.pay_cash +`
+                                                                </div>
+                                                                <div class="col-xs-6">
+                                                                    Ngày tạo: `+ result.created_at +`
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="bs-docs-example">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>STT</th>
+                                                                                <th>Tên NVL</th>
+                                                                                <th>Số lượng nhập</th>
+                                                                                <th>Đơn vị tính</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>`;
+                                                                            var dem = 0;
+                                                                            result.detail_payment_vc.map(function (detail) {
+                                                                                row +=
+                                                                                `<tr>
+                                                                                    <td>`+ ( ++dem ) +`</td>
+                                                                                    <td>`+ detail.detail_material.name +`</td>
+                                                                                    <td>`+ detail.qty +`</td>
+                                                                                    <td>`+ detail.detail_material.unit.name +`</td>
+                                                                                </tr>`
+                                                                            })
+                                                                    row +=` </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </td>`;
+                            }
+                            row += `<td class="text-right">` + result.created_at + `</td>
                         </tr>`;
                         $('#bodyPaymentVc').append(row);
                     });
                 }
+            }
+        });
+    })
+
+    $('#btnProfit').click(function () {
+        const start = document.getElementById('dateStart').value;
+        const end = document.getElementById('dateEnd').value;
+        $.ajax({
+            url: 'ajax/report/profit/' + start + '/' + end,
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (results) {
+                $("div#revenue").text(results.revenue);
+                $("div#expense").text(results.expense);
+                $("div#profit").text(results.profit);
+            }
+        });
+    })
+
+    $('#cookEmergency').click(function () {
+        const idCook = $(this).val();
+        $.ajax({
+            url: 'ajax/getMaterial/cookemergency/' + idCook ,
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (materialDetail) {
+                $('#cookEmergencyTable').empty();
+                materialDetail.map(function (data) {
+                    let row =   `<tr id="row`+ data.id +`">
+                                    <td><input type="hidden" name="idMaterialDetail[]" value="`+ data.detail_material.id +`">`+ data.detail_material.name +`</td>
+                                    <td>`+ data.qty +`</td>
+                                    <td><input type="number" class="form-control" name="qty[]" required></td>
+                                    <td>`+ data.unit.name +`</td>
+                                    <td>
+                                        <span class="input-group-btn" onclick="clickToRemove(`+ data.id +`)">
+                                            <button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>
+                                        </span>
+                                    </td>
+                                </tr>`;
+                    $('#cookEmergencyTable').append(row);
+                })
+
             }
         });
     })

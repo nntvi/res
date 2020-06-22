@@ -48,4 +48,9 @@ class WarehouseCook extends Model
     {
         return $this->belongsTo('App\Unit','id_unit','id');
     }
+
+    public function cookArea()
+    {
+        return $this->belongsTo(CookArea::class,'cook')->where('status','1');
+    }
 }

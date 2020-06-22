@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\ImportCouponRepository\IImportCouponRepository;
+use App\ImportCoupon;
 use Illuminate\Http\Request;
+use App\Repositories\ImportCouponRepository\IImportCouponRepository;
 
 class ImportCouponController extends Controller
 {
@@ -45,6 +46,13 @@ class ImportCouponController extends Controller
         return $this->importcouponRepository->printDetailByCode($id);
     }
 
+    public function search(Request $request)
+    {
+        $search = $request->searchImC;
+        $count = ImportCoupon::selectRaw('count(code) as qty')->where('code','LIKE',"%{$search}%")->orWhere('total','LIKE',"%{$search}%")->value('qty');
+        $listImports = ImportCoupon::where('code','LIKE',"%{$search}%")->orWhere('total','LIKE',"%{$search}")->with('supplier','detailImportCoupon')->get();
+        return view('importcoupon.search',compact('listImports','count'));
+    }
     // public function substractMaterial()
     // {
 

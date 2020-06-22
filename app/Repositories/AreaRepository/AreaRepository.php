@@ -10,62 +10,36 @@ class AreaRepository extends Controller implements IAreaRepository{
 
     public function getAllArea()
     {
-        $areas = Area::orderBy('name', 'asc')->get();
-        return view('area/index',compact('areas'));
+        $areas = Area::where('status','1')->orderBy('name', 'asc')->with('containTable.getArea')->paginate(2);
+        return $areas;
     }
 
-    public function validatorRequestStore($req){
-        $messeages = [
-            'nameArea.required' => 'Không để trống tên khu vực',
-            'nameArea.min' => 'Tên khu vực nhiều hơn 3 ký tự',
-            'nameArea.max' => 'Tên khu vực giới hạn 30 ký tự',
-            'nameArea.unique' => 'Tên khu vực đã tồn tại trong hệ thống'
-        ];
-
-        $req->validate(
-            [
-                'nameArea' => 'required|min:3|max:30|unique:areas,name',
-            ],
-            $messeages
-        );
-    }
-
-    public function validatorRequestUpdate($req){
-        $messeages = [
-            'AreaName.required' => 'Không để trống tên khu vực',
-            'AreaName.mix' => 'Tên khu vực nhiều hơn 3 ký tự',
-            'AreaName.max' => 'Tên khu vực giới hạn 30 ký tự',
-            'AreaName.unique' => 'Tên khu vực đã tồn tại trong hệ thống'
-        ];
-
-        $req->validate(
-            [
-                'AreaName' => 'required|min:3|max:30|unique:areas,name',
-            ],
-            $messeages
-        );
+    public function validatorArea($request)
+    {
+        $request->validate(['nameArea' => 'status_area'],['nameArea.status_area' => 'Tên khu vực đã tồn tại trong hệ thống']);
     }
 
     public function addArea($request)
     {
         $area = new Area();
         $area->name = $request->nameArea;
+        $area->status = '1';
         $area->save();
-        return redirect(route('area.index'))->withSuccess('Thêm thành công');
+        return redirect(route('area.index'))->withSuccess('Thêm khu vực thành công');
     }
 
     public function updateArea($req,$id)
     {
         $area = Area::find($id);
-        $area->name = $req->AreaName;
+        $area->name = $req->nameArea;
         $area->save();
         return redirect(route('area.index'))->withSuccess('Cập nhật thành công');
     }
 
     public function deleteArea($id)
     {
-        Table::where('id_area',$id)->delete();
-        $area = Area::find($id)->delete();
+        Table::where('id_area',$id)->update(['status' => '0']);
+        Area::where('id',$id)->update(['status' => '0']);
         return redirect(route('area.index'))->withSuccess('Xóa khu vực thành công');
     }
 

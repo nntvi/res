@@ -5,8 +5,9 @@ interface ITableRepository{
     function getAllTable();
     function addTable($request);
     function updateNameTable($request,$id);
-    function updateArea($request,$id);
+    function updateAreaTable($request,$id);
     function deleteTable($id);
-    function validatorRequestStore($req);
+    function validateCodeTable($request);
+    function validatorNameTable($req);
     function searchTable($request);
 }

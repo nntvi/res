@@ -4,7 +4,7 @@
         <!-- sidebar menu start-->
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
-                <li>
+                {{--  <li>
                     <a href="{{ route('customer.index') }}">
                         <i class="fa fa-home"></i>
                         <span>GIao diện khách hàng</span>
@@ -15,7 +15,7 @@
                         <i class="fa fa-cubes"></i>
                         <span>Tổng quan</span>
                     </a>
-                </li>
+                </li>  --}}
                 <li class="sub-menu">
                     <a href="javascript:;">
                         <i class="fa fa-cube"></i>
@@ -52,8 +52,8 @@
                 <ul class="sub">
                     <li><a href="{{ route('order.index') }}">Màn hình order</a></li>
                     <li><a href="{{ route('cook_screen.index') }}">Màn hình khu vực bếp</a></li>
-                    <li><a href="{{ route('area.index') }}">Khu vực</a></li>
-                    <li><a href="{{ route('table.index') }}">Phòng bàn</a></li>
+                    <li><a href="{{ route('area.index') }}">Khu vực - Phòng bàn</a></li>
+                    {{-- <li><a href="{{ route('table.index') }}">Phòng bàn</a></li> --}}
                     <li><a href="{{ route('cook.index') }}">Bếp</a></li>
                 </ul>
             </li>
@@ -63,7 +63,7 @@
                     <span>Đối tác</span>
                 </a>
                 <ul class="sub">
-                    <li><a href="{{ route('booking.index') }}">Khách hàng đặt bàn</a></li>
+                    {{--  <li><a href="{{ route('booking.index') }}">Khách hàng đặt bàn</a></li>  --}}
                     <li><a href="{{ route('supplier.index') }}">Nhà cung cấp</a></li>
                 </ul>
             </li>
@@ -80,11 +80,13 @@
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-usd"></i>
-                    <span>Sổ quỹ</span>
+                    <span>Phiếu/Hóa đơn</span>
                 </a>
                 <ul class="sub">
                     <li><a href="{{ route('bill.index') }}">Danh sách hóa đơn</a></li>
-                    <li><a href="{{ route('voucher.index') }}">Phiếu Thu/Chi</a></li>
+                    <li><a href="{{ route('voucher.index') }}">Phiếu Chi</a></li>
+                    <li><a href="{{ route('importcoupon.index') }}">Phiếu Nhập Kho</a></li>
+                    <li><a href="{{ route('exportcoupon.index') }}">Phiếu Xuất Kho</a></li>
                 </ul>
             </li>
             <li class="sub-menu">
@@ -97,7 +99,7 @@
                     <li><a href="{{ route('report.table') }}">Theo bàn</a></li>
                     <li><a href="{{ route('report.dish') }}">Theo món</a></li>
                     <li><a href="{{ route('report.supplier') }}">Thu chi NCC</li></a>
-                    <li><a href="loinhuan.html">Lợi nhuận</a></li>
+                    <li><a href="{{ route('profit.index') }}">Lợi nhuận</a></li>
                 </ul>
             </li>
             <li class="sub-menu">
@@ -107,7 +109,7 @@
                 </a>
                 <ul class="sub">
                     <li><a href="{{ route('shift.index') }}">Ca làm việc</a></li>
-                    <li><a href="{{ route('position.index') }}">Chức vụ và tiền lương</a></li>
+                    {{--  <li><a href="{{ route('position.index') }}">Chức vụ và tiền lương</a></li>  --}}
                     <li><a href="{{ route('method.index') }}">Hệ số giá bán</a></li>
                 </ul>
             </li>

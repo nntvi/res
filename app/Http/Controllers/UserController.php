@@ -66,6 +66,14 @@ class UserController extends Controller
         $this->userRepository->validatorUpdateRole($request);
         return $this->userRepository->updateRole($request,$id);
     }
+
+    public function viewUpdatePassword($id)
+    {
+        $username = User::where('id',$id)->value('name');
+        $email = User::where('id',$id)->value('email');
+        return view('user.changepassword',compact('username','email','id'));
+    }
+
     public function updatePassword(Request $request, $id)
     {
         $this->userRepository->validatorRequestUpdatePassword($request);

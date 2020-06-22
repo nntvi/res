@@ -68,7 +68,7 @@
                                 Thanh toán
                             </button>
                         @else
-                            <a href="{{ route('order.update',['id' => $idBillTable->id]) }}"
+                            <a href="{{ route('order.index') }}"
                                 class="btn btn-compose">
                                 Trở về
                             </a>

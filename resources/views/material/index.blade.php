@@ -31,7 +31,7 @@
                                             <div class="col-xs-6">
                                                 <label class="control-label">Thuộc Danh mục món</label>
                                                 <select class="form-control radius" name="idGroupMenu">
-                                                    @foreach($groupMenus as $groupMenu)
+                                                    @foreach($groupMenus as $groupMenu)\
                                                         <option value="{{ $groupMenu->id }}">{{ $groupMenu->name }}
                                                         </option>
                                                     @endforeach
@@ -99,111 +99,126 @@
                 </thead>
                 <tbody>
                     @foreach($materials as $key => $material)
+                        @if ($material->groupMenu->status == '1')
                         <tr>
-                            <td>{{ $key+1 }}</td>
-                            <td>
-                                <a href="#myModalCategory{{ $material->id }}" data-toggle="modal">
-                                    <i class="fa fa-pencil-square-o text-warning text-active"></i>
-                                </a>
-                                <div aria-hidden="true" aria-labelledby="myModalCategoryLabel" role="dialog"
-                                    tabindex="-1" id="myModalCategory{{ $material->id }}" class="modal fade"
-                                    style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button aria-hidden="true" data-dismiss="modal" class="close"
-                                                    type="button">×</button>
-                                                <h4 class="modal-title">Chỉnh sửa danh mục cho nhóm NVL</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form role="form"
-                                                    action="{{ route('material.updateGroup',['id' => $material->id ]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <label>Danh mục cũ</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $material->groupMenu->name }}" disabled>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Danh mục cần sửa <span style="color: #ff0000">
-                                                                *</span></label>
-                                                        <select class="form-control" name="idGroupMenu">
-                                                            @foreach($groupMenus as $groupmenu)
-                                                                <option value="{{ $groupmenu->id }}">
-                                                                    {{ $groupmenu->name }}</option>
-                                                            @endforeach
-                                                        </select> </div>
-                                                    <button type="submit" class="btn btn-default">Lưu</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{ $material->groupMenu->name }}
-                            </td>
-                            <td>
-                                <a href="#myModal{{ $material->id }}" data-toggle="modal">
-                                    <i class="fa fa-pencil-square-o text-success text-active"></i>
-                                </a>
-                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
-                                    id="myModal{{ $material->id }}" class="modal fade" style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button aria-hidden="true" data-dismiss="modal" class="close"
-                                                    type="button">×</button>
-                                                <h4 class="modal-title">Chỉnh sửa tên nhóm NVL cho món</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form role="form"
-                                                    action="{{ route('material.updateName',['id' => $material->id ]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <label>Tên cũ</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $material->name }}" disabled>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Action Name <span style="color: #ff0000">
-                                                                *</span></label>
-                                                        <input type="text" size="40" class="form-control"
-                                                            required="required" name="nameMaterial" maxlength="255"
-                                                            value="{{ $material->name }}">
-                                                    </div>
-                                                    <button type="submit" class="btn btn-default">Lưu</button>
-                                                </form>
+                                <td>{{ $key+1 }}</td>
+                                <td>
+                                    <a href="#myModalCategory{{ $material->id }}" data-toggle="modal">
+                                        <i class="fa fa-pencil-square-o text-warning text-active"></i>
+                                    </a>
+                                    <div aria-hidden="true" aria-labelledby="myModalCategoryLabel" role="dialog"
+                                        tabindex="-1" id="myModalCategory{{ $material->id }}" class="modal fade"
+                                        style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                        type="button">×</button>
+                                                    <h4 class="modal-title">Chỉnh sửa danh mục cho nhóm NVL</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form"
+                                                        action="{{ route('material.updateGroup',['id' => $material->id ]) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <div class="form-group">
+                                                            <label>Danh mục cũ</label>
+                                                            <input type="text" class="form-control"
+                                                                value="{{ $material->groupMenu->name }}" disabled>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Danh mục cần sửa <span style="color: #ff0000">
+                                                                    *</span></label>
+                                                            <select class="form-control" name="idGroupMenu">
+                                                                @foreach($groupMenus as $groupmenu)
+                                                                    <option value="{{ $groupmenu->id }}">
+                                                                        {{ $groupmenu->name }}</option>
+                                                                @endforeach
+                                                            </select> </div>
+                                                        <button type="submit" class="btn btn-default">Lưu</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                {{ $material->name }}
-                            </td>
-                            <td>
-                                <a
-                                    href="{{ route('material_action.detail',['id' => $material->id]) }}">
-                                    <i class="fa fa-eye text-info" aria-hidden="true"></i>
-                                </a>
-                                @foreach($material->materialAction as $key => $item)
-                                    {{ $item->materialDetail->name }}
-                                    {{ count($material->materialAction) != $key+1 ? ',' : '' }}
-                                @endforeach
-                            </td>
-                            <td>
-                                <a href="{{ route('material_action.store',['id' => $material->id]) }}"
-                                    class="btn btn-xs btn-success">
-                                    <i class="fa fa-plus-square-o" aria-hidden="true"></i> Tạo công thức
-                                </a>
-                            </td>
-                            <td class="text-right">
-                                <a href="{{ route('material.delete',['id' => $material->id]) }}"
-                                    onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i
-                                        class="fa fa-times text-danger text"></i></a>
-                            </td>
-                        </tr>
+                                    {{ $material->groupMenu->name }}
+                                </td>
+                                <td>
+                                    <a href="#myModal{{ $material->id }}" data-toggle="modal">
+                                        <i class="fa fa-pencil-square-o text-success text-active"></i>
+                                    </a>
+                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                        id="myModal{{ $material->id }}" class="modal fade" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                        type="button">×</button>
+                                                    <h4 class="modal-title">Chỉnh sửa tên nhóm NVL cho món</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form"
+                                                        action="{{ route('material.updateName',['id' => $material->id ]) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <div class="form-group">
+                                                            <label>Tên cũ</label>
+                                                            <input type="text" class="form-control"
+                                                                value="{{ $material->name }}" disabled>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Action Name <span style="color: #ff0000">
+                                                                    *</span></label>
+                                                            <input type="text" size="40" class="form-control"
+                                                                required="required" name="nameMaterial" maxlength="255"
+                                                                value="{{ $material->name }}">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-default">Lưu</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{ $material->name }}
+                                </td>
+                                <td>
+                                    <a
+                                        href="{{ route('material_action.detail',['id' => $material->id]) }}">
+                                        <i class="fa fa-eye text-info" aria-hidden="true"></i>
+                                    </a>
+                                    @foreach($material->materialAction as $key => $item)
+                                        {{ $item->materialDetail->name }}
+                                        {{ count($material->materialAction) != $key+1 ? ',' : '' }}
+                                    @endforeach
+                                </td>
+                                <td>
+                                    <a href="{{ route('material_action.store',['id' => $material->id]) }}"
+                                        class="btn btn-xs btn-success">
+                                        <i class="fa fa-plus-square-o" aria-hidden="true"></i> Tạo công thức
+                                    </a>
+                                </td>
+                                <td class="text-right">
+                                    <a href="{{ route('material.delete',['id' => $material->id]) }}"
+                                        onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i
+                                            class="fa fa-times text-danger text"></i></a>
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
         </div>
-        @endsection
+        <footer class="panel-footer">
+            <div class="row">
+
+                <div class="col-sm-5 text-center">
+                <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-10 tên món ăn và công thức tương ứng</small>
+                </div>
+                <div class="col-sm-7 text-right text-center-xs">
+                <ul class="pagination pagination-sm m-t-none m-b-none">
+                    {{ $materials->links() }}
+                </ul>
+                </div>
+            </div>
+        </footer>
+@endsection

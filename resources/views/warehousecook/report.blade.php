@@ -56,9 +56,9 @@
                                 <div class="form-group ">
                                     <label class="control-label">Chọn bếp:</label>
                                     <select name="cook" class="form-control">
-                                        <option value="{{ $cookFind->id }}">{{ $cookFind->name }}</option>
+                                        <option value="{{ $cookFind->id }}">{{ $cookFind->status == '1' ? $cookFind->name : $cookFind->name . '( ngưng hoạt động)' }}</option>
                                         @foreach($cookDiffs as $cook)
-                                            <option value="{{ $cook->id }}">{{ $cook->name }}</option>
+                                            <option value="{{ $cook->id }}">{{ $cook->status == '1' ? $cook->name : $cook->name . '( ngưng hoạt động)'}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -132,10 +132,15 @@
                     <i class="fa fa-edit"></i> Báo cáo
                 </header>
                 <div class="row w3-res-tb" style="padding: 15px">
-                    <div class="col-sm-5 bold">
-                        {{ $cookFind->name }} - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
+                    <div class="col-sm-7 bold">
+                        @if ($cookFind->status == '1')
+                            {{ $cookFind->name }} - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
+                        @else
+                            {{ $cookFind->name }} - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }} (Bếp hiện tại ngưng hoạt động)
+                        @endif
+
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                     </div>
                     <div class="col-sm-3 text-right">
                         <a href="{{ route('warehousecook.exportexcel',['cook' => $cookFind->id, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]) }}"

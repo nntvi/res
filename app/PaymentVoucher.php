@@ -36,4 +36,9 @@ class PaymentVoucher extends Model
         'name',     'code',     'type',     'name',
         'pay_cash',     'note',     'created_by'
     ];
+
+    public function detailPaymentVc()
+    {
+        return $this->hasMany('App\PaymentVoucherDetail','id_paymentvc');
+    }
 }

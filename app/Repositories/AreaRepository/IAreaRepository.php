@@ -6,6 +6,5 @@ interface IAreaRepository{
     function addArea($req);
     function updateArea($req,$id);
     function deleteArea($id);
-    function validatorRequestStore($req);
-    function validatorRequestUpdate($req);
+    function validatorArea($request);
 }

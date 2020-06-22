@@ -137,14 +137,46 @@
     <div class="col-md-6 floatcharts_w3layouts_left">
         <div class="floatcharts_w3layouts_top">
             <div class="floatcharts_w3layouts_bottom">
-                <h3 class="hdg">Số lượng khách theo giờ</h3>
-                <div id="graph7" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h4 class="hdg">Số lượng khách theo giờ</h4>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <select class="sel" id="sel">
+                                <option value="0">Hôm nay</option>
+                                <option value="1">Hôm qua</option>
+                                <option value="2">Tuần này</option>
+                                <option value="3">Tuần trước</option>
+                                <option value="4">Tháng này</option>
+                                <option value="5">Tháng trước</option>
+                                <option value="6">Quý này</option>
+                                <option value="7">Quý trước</option>
+                                <option value="8">Năm nay</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div id="chartCustomer" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
                 </div>
                 <script>
-                    // This crosses a DST boundary in the UK.
-                    Morris.Area({
-                        element: 'graph7',
+                    $("#sel").change(function () {
+                        const typeTime = $(this).val();
+                        $.ajax({
+                            url: 'ajax/report/chartCustomer/' + typeTime, //Trang xử lý
+                            method: 'GET',
+                            dataType: 'JSON',
+                            success: function (data) {
+                                console.log(data);
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                alert(xhr.status);
+                                alert(thrownError);
+                            }
+                        });
+                    });
+                    var amountCustomerChart = Morris.Area({
+                        element: 'chartCustomer',
                         data: @json($qtyCustomer),
                         xkey: 'timeStart',
                         ykeys: ['value'],

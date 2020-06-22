@@ -18,7 +18,7 @@
                                         <label class="control-label">Mã phiếu nhập<span style="color: #ff0000">
                                                 *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" size="40" class="form-control" name="code" maxlength="200"
+                                        <input type="text" class="form-control" name="code" value="{{ $code }}"
                                             id="codeImportCoupon">
                                     </div>
                                     <div class="col-md-6">
@@ -73,6 +73,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12 text-center">
+                                    <a href="{{ route('warehouse.index') }}" class="btn btn-default">Trở về</a>
                                     <button type="submit" class="btn green-meadow radius">Tạo phiếu</button>
                                 </div>
                             </div>

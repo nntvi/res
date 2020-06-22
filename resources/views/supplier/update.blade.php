@@ -25,7 +25,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="form-group">
                                                 <label>Tên nhà cung cấp</label>
-                                                <input type="text" size="40" class="form-control" name="name" value="{{$supplier->name}}" required>
+                                                <input type="text" size="40" class="form-control" name="name" value="{{$supplier->name}}" disabled>
                                                 <span class="error-message">{{ $errors->first('name') }}</span></p>
                                             </div>
                                         </div>
@@ -40,7 +40,8 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                                 <div class="form-group">
-                                                    <input type="text" size="40" class="form-control" name="phone" id="Account_phone" maxlength="30" value="{{$supplier->phone}}" required>
+                                                    <label>Số điện thoại</label>
+                                                    <input type="text" min="10" max="10" class="form-control" name="phone" id="Account_phone" value="{{$supplier->phone}}" required>
                                                     <span class="error-message">{{ $errors->first('phone') }}</span></p>
                                                 </div>
                                         </div>
@@ -68,14 +69,14 @@
                                                 <div class="form-group">
                                                         @if ($supplier->status == '0')
                                                         <label style="display:inline">Hoạt động</label>
-                                                            <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px">
-                                                        <label style="display:inline">Chưa hoạt động</label>
-                                                            <input  value="1" id="status2" type="radio" name="status" checked>
+                                                            <input value="1" id="status1" type="radio" name="status" style="margin-right: 20px">
+                                                        <label style="display:inline">Ngưng hoạt động</label>
+                                                            <input  value="0" id="status2" type="radio" name="status" checked>
                                                         @else
                                                         <label style="display:inline">Hoạt động</label>
-                                                            <input value="0" id="status1" type="radio" name="status" style="margin-right: 20px" checked>
-                                                        <label style="display:inline">Chưa hoạt động</label>
-                                                            <input  value="1" id="status2" type="radio" name="status" >
+                                                            <input value="1" id="status1" type="radio" name="status" style="margin-right: 20px" checked>
+                                                        <label style="display:inline">Ngưng hoạt động</label>
+                                                            <input  value="0" id="status2" type="radio" name="status" >
                                                         @endif
                                                 </div>
                                                 <span class="error-message">{{ $errors->first('status') }}</span></p>

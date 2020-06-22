@@ -47,7 +47,28 @@ class CookScreenController extends Controller
 
     public function getDetail($id)
     {
-        return $this->cookscreenRepository->getDetailCookScreen($id);
+        $results = $this->checkAction->getPermission(auth()->id());
+        $temp = 0;
+        foreach ($results as $key => $result) {
+            if($result == "VIEW_COOK1" || $result == "EDIT_COOK1" || $result == "VIEW_FULL"){
+                $temp++;
+                return $this->cookscreenRepository->getDetailCookScreen(1);
+                break;
+            }
+            else if($result == "VIEW_COOK2" || $result == "EDIT_COOK2" || $result == "VIEW_FULL"){
+                $temp++;
+                return $this->cookscreenRepository->getDetailCookScreen(2);
+                break;
+            }
+            else if($result == "VIEW_COOK3" || $result == "EDIT_COOK3" || $result == "VIEW_FULL"){
+                $temp++;
+                return $this->cookscreenRepository->getDetailCookScreen(1);
+                break;
+            }
+        }
+        if($temp == 0){
+            return view('layouts');
+        }
     }
 
     public function update(Request $request,$id,$idCook)

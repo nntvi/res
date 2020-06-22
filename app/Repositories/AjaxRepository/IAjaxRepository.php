@@ -2,6 +2,7 @@
 namespace App\Repositories\AjaxRepository;
 
 interface IAjaxRepository{
+    function getDateTime($id);
     function getMaterialBySupplier($idSupplier);
     function getUnit();
     function getMaterialWarehouseCook($idCook);
@@ -17,4 +18,6 @@ interface IAjaxRepository{
     function countBill($dateStart,$dateEnd);
     function getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier);
     function getConcludeImportCoupon($coupons);
+    function getExpense($dateStart,$dateEnd);
+    function getAllQtyCustomer($time);
 }

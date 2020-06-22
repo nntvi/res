@@ -8,16 +8,26 @@
         <div class="row w3-res-tb">
             <div class="col-sm-3 m-b-xs">
                 <a href="{{ route('user.index') }}">
-                    <button class="btn btn-sm btn-danger">Trở về</button>
+                    <button class="btn btn-sm btn-default">Trở về</button>
                 </a>
                 <a href="{{ route('user.store') }}">
                     <button class="btn btn-sm btn-default">Thêm mới</button>
                 </a>
             </div>
             <div class="col-sm-5">
-                <span class="error-message">{{ $errors->first('name') }}</span></p>
-                <span class="error-message">{{ $errors->first('password') }}</span></p>
-                <span class="error-message">{{ $errors->first('password-confirm') }}</span></p>
+                <script>
+                    @if($errors->any())
+                        @foreach($errors->all() as $error)
+                            toastr.error('{{ $error }}')
+                        @endforeach
+                    @endif
+                    @if(session('success'))
+                        toastr.success('{{ session('success') }}')
+                    @endif
+                    @if(session('info'))
+                        toastr.info('{{ session('info') }}')
+                    @endif
+                </script>
             </div>
             <div class="col-sm-4">
                 <form action="{{ route('user.search') }}" method="get">
@@ -34,13 +44,12 @@
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
-                    <tr style="
-                            background: #fafafa;">
+                    <tr style="background: #fafafa;">
                         <th>STT</th>
                         <th>Username</th>
                         <th>Email</th>
                         <th>Chức vụ</th>
-                        <th>Lương tháng</th>
+                        {{--  <th>Lương tháng</th>  --}}
                         <th>Hoạt động</th>
                         <th>Ca</th>
                         <th width="5%"></th>
@@ -65,8 +74,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <form role="form"
-                                                    action="{{ route('user.p_updateusername',['id' => $user->id]) }}"
-                                                    method="POST">
+                                                    action="{{ route('user.p_updateusername',['id' => $user->id]) }}" method="POST">
                                                     @csrf
                                                     <div class="form-group">
                                                         <label>Tên hiện tại</label>
@@ -78,7 +86,7 @@
                                                         <input type="text" class="form-control"
                                                             value="{{ $user->name }}" name="name" required>
                                                     </div>
-                                                    <button type="submit" class="btn btn-default">Submit</button>
+                                                    <button type="submit" class="btn btn-default">Cập nhật</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -120,12 +128,11 @@
                                                         <label>Chức vụ mới</label>
                                                         <select name="position" id="" class="form-control">
                                                             @foreach($positions as $position)
-                                                                <option value="{{ $position->id }}">
-                                                                    {{ $position->name }}</option>
+                                                                <option value="{{ $position->id }}">{{ $position->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <button type="submit" class="btn btn-default">Submit</button>
+                                                    <button type="submit" class="btn btn-default">Cập nhật</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -137,13 +144,13 @@
                                     {{ $user->position->name }}
                                 @endif
                             </td>
-                            <td>
+                            {{--  <td>
                                 @if($user->position == null )
                                     Chưa có chức vụ
                                 @else
                                     {{ number_format($user->position->salary) . ' đ/tháng' }}
                                 @endif
-                            </td>
+                            </td>  --}}
                             <td>
                                 <a href="{{ route('user.updaterole',['id' => $user->id]) }}"
                                     class="btn btn-xs btn-success">
@@ -165,7 +172,7 @@
                                             class="fa fa-times text-danger text"
                                             onclick="return confirm('Bạn muốn xóa dữ liệu này?')"></i></a>
                                 @endif
-                                <a href="#myModal-1-{{ $user->id }}" data-toggle="modal">
+                                {{--  <a href="#myModal-1-{{ $user->id }}" data-toggle="modal">
                                     <i class="fa fa-key text-warning" aria-hidden="true"></i>
                                 </a>
                                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
@@ -215,7 +222,7 @@
 
                                         </div>
                                     </div>
-                                </div>
+                                </div>  --}}
                             </td>
                         </tr>
                     @endforeach
@@ -226,7 +233,7 @@
             <div class="row">
 
                 <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-7 users</small>
+                    <small class="text-muted inline m-t-sm m-b-sm">{{ $count }} kết quả được tìm thấy</small>
                 </div>
                 <div class="col-sm-7 text-right text-center-xs">
                     <ul class="pagination pagination-sm m-t-none m-b-none">

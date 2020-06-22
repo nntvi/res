@@ -3,135 +3,62 @@
     .badge {
         padding: 2px 6px;
     }
-
     @-webkit-keyframes my {
-        0% {
-            color: red;
-        }
-
-        50% {
-            color: #450a0a;
-        }
-
-        100% {
-            color: red;
-        }
+        0% { color: red; }
+        50% { color: #450a0a;  }
+        100% { color: red;  }
     }
-
     @-moz-keyframes my {
-        0% {
-            color: red;
-        }
-
-        50% {
-            color: #450a0a;
-        }
-
-        100% {
-            color: red;
-        }
+        0% { color: red; }
+        50% { color: #450a0a;  }
+        100% { color: red;  }
     }
-
     @-o-keyframes my {
-        0% {
-            color: red;
-        }
-
-        50% {
-            color: #450a0a;
-        }
-
-        100% {
-            color: red;
-        }
+        0% { color: red; }
+        50% { color: #450a0a;  }
+        100% { color: red;  }
     }
-
-    <blade keyframes|%20my%20%7B>0% {
-        color: red;
+    @keyframes my {
+        0% { color: red; }
+        50% { color: #450a0a;  }
+        100% { color: red;  }
     }
-
-    50% {
-        color: #450a0a;
-    }
-
-    100% {
-        color: red;
-    }
-    }
-
     .test {
-        font-size: 13.5px;
-        font-weight: bold;
+        font-size:13px;
+        font-weight:bold;
         -webkit-animation: my 700ms infinite;
         -moz-animation: my 700ms infinite;
         -o-animation: my 700ms infinite;
         animation: my 700ms infinite;
     }
-
     .test1 {
-        font-size: 13.5px;
+        font-size: 13px;
         font-weight: bold;
         -webkit-animation: my1 700ms infinite;
         -moz-animation: my1 700ms infinite;
         -o-animation: my1 700ms infinite;
         animation: my1 700ms infinite;
     }
-
     @-webkit-keyframes my1 {
-        0% {
-            color: black;
-        }
-
-        50% {
-            text-decoration: underline;
-        }
-
-        100% {
-            color: black;
-        }
+        0% { color: black; }
+        50% { text-decoration: underline;  }
+        100% {  color: black; }
     }
-
     @-moz-keyframes my1 {
-        0% {
-            color: black;
-        }
-
-        50% {
-            text-decoration: underline;
-        }
-
-        100% {
-            color: black;
-        }
+        0% { color: black; }
+        50% { text-decoration: underline;  }
+        100% {  color: black; }
     }
-
     @-o-keyframes my1 {
-        0% {
-            color: black;
-        }
-
-        50% {
-            text-decoration: underline;
-        }
-
-        100% {
-            color: black;
-        }
+        0% { color: black; }
+        50% { text-decoration: underline;  }
+        100% {  color: black; }
     }
-
-    <blade keyframes|%20my1%20%7B>0% {
-        color: black;
+    @keyframes my1 {
+        0% { color: black; }
+        50% { text-decoration: underline;  }
+        100% {  color: black; }
     }
-
-    50% {
-        text-decoration: underline;
-    }
-
-    100% {
-        color: black;
-    }
-    }
-
 </style>
 <header class="header fixed-top clearfix">
     <!--logo start-->
@@ -161,20 +88,15 @@
             </li>
             <!-- settings end -->
             <!-- inbox dropdown start-->
-            <li id="header_inbox_bar" class="dropdown notificationBooking">
+            <li id="header_inbox_bar" class="dropdown notificationFinishDish">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                    <i class="fa fa-envelope-o" data-count="0"></i>
-                    <span class="badge bg-important notif-count-booking">0</span>
+                    <i class="fa fa-coffee" data-count="0"></i>
+                    <span class="badge bg-important notif-count-finish-dish">0</span>
                 </a>
-                <ul class="dropdown-menu extended inbox">
-                    <div class="title-notify-booking">
+                <ul class="dropdown-menu extended finishDish inbox">
+                    <div class="title-notify-finish-dish">
                         <li>
-                            <p class="red">Bạn có <span class="notif-count-booking">0</span> thông báo đặt bàn</p>
-                        </li>
-                    </div>
-                    <div class="see-all-booking">
-                        <li>
-                            <a href="{{ route('booking.index') }}">Xem tất cả tin đặt bàn</a>
+                            <p>Có món mới vừa hoàn thành</p>
                         </li>
                     </div>
                 </ul>
@@ -193,6 +115,7 @@
 
                 </ul>
             </li>
+
             <!-- notification dropdown end -->
         </ul>
         <!--  notification end -->
@@ -201,19 +124,18 @@
         <!--search & user info start-->
         <ul class="nav pull-right top-menu">
             <li class="notificationWhCook">
-                @if(auth()->user()->notifyQtyWarehouse() != null)
-                    <div class="alert alert-success" role="alert" style="margin-bottom: 0px; padding: 5px 5px">
-                        <strong class="test1">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết
-                        </strong>
+                @if(auth()->user()->notifyQtyOfCook() != null)
+                    <div class="alert alert-warning" role="alert" style="margin-bottom: 0px; padding: 5px 5px; margin-top: 2px">
+                        <strong class="test"> Có {{ auth()->user()->notifyQtyOfCook() }} NVL bếp cần nhập gấp </strong>
                     </div>
                 @else
 
                 @endif
             </li>
             <li class="notificationWhCook">
-                @if(auth()->user()->notifyQtyOfCook() != null)
-                    <div class="alert alert-warning" role="alert" style="margin-bottom: 0px; padding: 5px 5px">
-                        <strong class="test"> Có {{ auth()->user()->notifyQtyOfCook() }} NVL cần nhập gấp cho bếp
+                @if(auth()->user()->notifyQtyWarehouse() != null)
+                    <div class="alert alert-success" role="alert" style="margin-bottom: 0px; padding: 5px 5px; margin-top: 2px">
+                        <strong class="test1">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết
                         </strong>
                     </div>
                 @else
@@ -241,10 +163,12 @@
                 });
             </script>  --}}
             <!-- user login dropdown start-->
-            @if(auth()->user()->checkOpenDay() == false)
-                <li><a href="{{ route('day.open') }}"
+            @if (auth()->user()->checkAdmin(auth()->user()->id) == true)
+                @if(auth()->user()->checkOpenDay() == false)
+                    <li><a href="{{ route('day.open') }}"
                         style="background: yellow; padding: 7px 10px; color: black; font-size: 14px;"><i class="fa fa-lightbulb-o"></i> Khai ca</a>
-                </li>
+                    </li>
+                @endif
             @endif
             <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -253,23 +177,26 @@
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu extended logout">
-                    @if (auth()->user()->checkOpenDay() == true)
-                        @if(auth()->user()->checkCloseDay() == false)
-                        <li><a href="{{ route('day.close') }}"
-                                style="background: #ffaf8c; font-weight: bold;"><i class="fa fa-lock"></i> Chốt
-                                ca</a></li>
-                        @else
-
+                    @if (auth()->user()->checkAdmin(auth()->user()->id) == true)
+                        @if (auth()->user()->checkOpenDay() == true)
+                            @if(auth()->user()->checkCloseDay() == false)
+                            <li><a href="{{ route('day.close') }}"
+                                    style="background: #ffaf8c; font-weight: bold;"><i class="fa fa-lock"></i> Chốt
+                                    ca</a></li>
+                            @endif
                         @endif
-                    @else
-
                     @endif
-
+                    <li>
+                        <a href="{{ route('user.updatepassword',['id' => auth()->user()->id]) }}">
+                            <i class="fa fa-key"></i> Đổi mật khẩu
+                        </a>
+                    </li>
                     <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                                   document.getElementById('logout-form').submit();">
                         <i class="fa fa-sign-out"></i>{{ __('Đăng xuất') }}
                         </a>
                     </li>
+
                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
                         style="display: none;">
                         @csrf

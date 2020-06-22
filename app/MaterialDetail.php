@@ -35,7 +35,8 @@ class MaterialDetail extends Model
     protected $fillable = [
         'name',
         'id_type',
-        'id_unit'
+        'id_unit',
+        'status'
     ];
 
     public function typeMaterial()

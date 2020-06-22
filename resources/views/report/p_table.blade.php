@@ -109,16 +109,7 @@
             </div>
             <hr>
             <div>
-                <table class="table" ui-jq="footable" ui-options="{
-                    &quot;paging&quot;: {
-                    &quot;enabled&quot;: true
-                    },
-                    &quot;filtering&quot;: {
-                    &quot;enabled&quot;: true
-                    },
-                    &quot;sorting&quot;: {
-                    &quot;enabled&quot;: true
-                    }}">
+                <table class="table table-responsive">
                     <thead>
                         <tr>
                             <th>STT</th>
@@ -138,14 +129,24 @@
                                 <td>{{ $item->table->name }}</td>
                                 <td>
                                     @foreach($item->orderDetail as $detail)
-                                        {{ $detail->dish->name }}
+                                        {{ $detail->dish->stt == '1' ? $detail->dish->name : $detail->dish->name . ' (ngưng phục vụ)' }}
                                         {{ count($item->orderDetail) > 1 ? ',' : '' }}
                                     @endforeach
                                 </td>
                                 <td>{{ $item->created_at }}</td>
                                 <td>{{ $item->updated_at }}</td>
                                 <td>
-                                    {{ $item->status == '0' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
+                                    @switch($item->status)
+                                        @case('0')
+                                            Đã thanh toán
+                                            @break
+                                        @case('1')
+                                            Chưa thanh toán
+                                            @break
+                                        @case('-1')
+                                            Đã hủy
+                                        @default
+                                    @endswitch
                                 </td>
                             </tr>
                         @endforeach
