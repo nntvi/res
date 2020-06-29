@@ -4,14 +4,19 @@ Route::group(['prefix' => 'ajax'], function() {
     Route::get('search/suppliers/{search}','AjaxController@searchSupplier');
     Route::get('getCapitalPrice/{idMaterial}','AjaxController@getCapitalPrice');
     Route::get('getImportCoupon/{dateStart}/{dateEnd}/{idSupplier}','AjaxController@getImportCouponToPaymentVc');
+    Route::get('checkNVL/{idDishOrder}','CookScreenController@checkNVL');
+    Route::get('getArea/{idTable}','AjaxController@getAreaByIdTable');
 
     Route::group(['prefix' => 'search'], function () {
         Route::get('paymentvoucher/{code}','AjaxController@searchPaymentVoucher');
+        Route::get('table/{name}','AjaxController@searchTables');
     });
     Route::group(['prefix' => 'order'], function () {
-        Route::get('table/{idTable}','AjaxController@getDishOrderTable');
+        Route::get('table/{idBill}/{idTable}','AjaxController@getDishOrderTable');
         Route::post('store','OrderController@orderTablePost');
         Route::post('update/{idBill}','OrderController@addMoreDish');
+        Route::post('match/{idBill}','OrderController@matchTable');
+        Route::post('destroy/{idBill}','OrderController@destroyTable');
     });
 
     Route::group(['prefix' => 'getMaterial'], function() {

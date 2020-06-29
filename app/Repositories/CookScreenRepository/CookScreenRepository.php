@@ -3,15 +3,45 @@ namespace App\Repositories\CookScreenRepository;
 
 use App\Dishes;
 use App\CookArea;
+use App\Material;
+use App\WareHouse;
 use Carbon\Carbon;
 use Pusher\Pusher;
 use App\WarehouseCook;
 use App\MaterialAction;
+use App\MaterialDetail;
 use App\OrderDetailTable;
 use App\Http\Controllers\Controller;
-use App\MaterialDetail;
+use App\OrderTable;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 
 class CookScreenRepository extends Controller implements ICookScreenRepository{
+
+    public function getDishByIdDishOrder($idDishOrder)
+    {
+        $dish = OrderDetailTable::where('id',$idDishOrder)->with('dish','order.tableOrdered.table')->first();
+        return $dish;
+    }
+    public function getIdDishByIdDishOrder($idDishOrder)
+    {
+        $idDish = OrderDetailTable::where('id',$idDishOrder)->value('id_dish');
+        return $idDish;
+    }
+
+    public function getQtyDishOrderByIdDishOrder($idDishOrder)
+    {
+        $qty = OrderDetailTable::where('id',$idDishOrder)->value('qty');
+        return $qty;
+    }
+
+    public function getIdCookByGroupNVL($idGroupNVL)
+    {
+        $idCook = Material::where('id',$idGroupNVL)->with('groupMenu.cookArea')->first();
+        return $idCook->groupMenu->cookArea->id;
+    }
 
     public function getAllCookArea()
     {
@@ -25,8 +55,8 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
     }
     public function getDishesByDate($date)
     {
-        $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])->orderBy('updated_at','asc')
-                                    ->with('dish.groupMenu.cookArea','order.table', 'dish.material.materialAction.materialDetail',
+        $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])->orderBy('updated_at','desc')
+                                    ->with('dish.groupMenu.cookArea','order.tableOrdered.table', 'dish.material.materialAction.materialDetail',
                                             'dish.material.materialAction.unit')->get();
         return $dishes;
     }
@@ -40,6 +70,74 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         $cook = CookArea::where('id',$id)->first();
         return $cook;
     }
+
+    public function validateToCook($request)
+    {
+        $request->validate(
+            ['qtyOrder' => 'check_to_cook'],
+            ['qtyOrder.check_to_cook' => 'Có món đang thực hiện, không thể sang món mới']
+        );
+    }
+    public function checkWarehouseCook($a,$b,$qtyOrder,$materialInWarehouseCooks,$materialInActions)
+    {
+        if($a != $b) { // ko đủ NVL thực hiện hết số sp order
+            if($qtyOrder == 1){ // chỉ order 1 món hàng và check thấy ko đủ
+                return 0;
+            }else if($qtyOrder > 1){
+                $qtyOrder -=1;
+                return $this->compareWarehouseCook($materialInWarehouseCooks,$materialInActions,$qtyOrder);
+            }
+        }else{
+            return $qtyOrder;
+        }
+    }
+
+    public function compareWarehouseCook($materialInWarehouseCooks,$materialInActions,$qtyOrder)
+    {
+        $a = 0;$b = 0;
+        foreach ($materialInWarehouseCooks as $matCook) {
+            $a++;
+            foreach ($materialInActions as $matAction) {
+                if($matCook->id_material_detail == $matAction->id_material_detail){
+                    if(($matCook->qty - ($matAction->qty) * $qtyOrder) >=0){ // vd đặt 10 lon coca , kho chỉ còn 7 lon => 3 lon kia ??
+                        $b++;
+                    }
+                }
+            }
+        }
+        return $this->checkWarehouseCook($a,$b,$qtyOrder,$materialInWarehouseCooks,$materialInActions);
+    }
+
+    public function checkWarehouse($a,$b,$qtyNotEnough,$materialInWarehouse,$materialInActions)
+    {
+        if($a != $b) { // ko đủ NVL thực hiện hết số sp order
+            if($qtyNotEnough == 1){ // chỉ order 1 món hàng và check thấy ko đủ
+                return 0;
+            }else if($qtyNotEnough > 1){
+                $qtyNotEnough -=1;
+                return $this->compareWarehouse($materialInWarehouse,$materialInActions,$qtyNotEnough);
+            }
+        }else{
+            return $qtyNotEnough;
+        }
+    }
+
+    public function compareWarehouse($materialInWarehouse,$materialInActions,$qtyNotEnough)
+    {
+        $a = 0; $b = 0;
+        foreach ($materialInWarehouse as $matWarehouse) {
+            $a++;
+            foreach ($materialInActions as $matAction) {
+                if($matWarehouse->id_material_detail == $matAction->id_material_detail){
+                    if($matWarehouse->qty - (($matAction->qty) * $qtyNotEnough) >=0){
+                        $b++; // nếu NVL trong kho trừ cho công thức >0 => vẫn đủ đề làm
+                    }
+                }
+            }
+        }
+        return $this->checkWarehouse($a,$b,$qtyNotEnough,$materialInWarehouse,$materialInActions);
+    }
+
     public function addDishesToArray($dishes,$id)
     {
         $data = array();
@@ -50,12 +148,20 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         }
         return $data;
     }
+
+    public function paginate($items, $perPage = 10, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
+
     public function getDetailCookScreen($id)
     {
         $cook = $this->findCookAreaById($id);
         $date = $this->getDateNow();
         $dishes = $this->getDishesByDate($date);
-        $data = $this->addDishesToArray($dishes,$id);
+        $data = $this->paginate($this->addDishesToArray($dishes,$id))->setPath(route('cook_screen.detail',['id' => $id]));
         $materials = $this->getMaterialInWarehouseCook($id);
         return view('cookscreen.detail',compact('data','cook','materials'));
     }
@@ -92,38 +198,60 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         $idMaterialDetails = MaterialAction::where('id_groupnvl',$idGroupNVL)->orderBy('id_material_detail')->get('id_material_detail');
         return $idMaterialDetails;
     }
+
     public function findInWarehouseCook($idCook,$idMaterialDetails)
     {
         $detailWarehouse = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)->orderBy('id_material_detail')->get();
         return $detailWarehouse;
     }
 
-    public function substractMaterial($materialActions,$materialInWarehouseCooks,$qty)
+    public function findInWarehouse($idMaterialDetails)
     {
-        foreach ($materialActions as $materialAction) {
-            foreach ($materialInWarehouseCooks as $key => $materialInWarehouseCook) {
-                if($materialAction->id_material_detail == $materialInWarehouseCook->id_material_detail){
-                    $temp = $materialAction->qty * $qty;
-                    WarehouseCook::where('id',$materialInWarehouseCook->id)->update(['qty' => $materialInWarehouseCook->qty - $temp]);
-                }
+        $detailWarehouse = WareHouse::whereIn('id_material_detail',$idMaterialDetails)->orderBy('id_material_detail')->get();
+        return $detailWarehouse;
+    }
+
+    public function getTableByIdOrder($idOrder)
+    {
+        $tables = OrderTable::where('id_order',$idOrder)->with('table')->get();
+        $stringTable = "";
+        foreach ($tables as $key => $table) {
+            if(count($tables) > 1 ){
+                $stringTable = $stringTable . $table->table->name . " ";
+            }
+            else{
+                $stringTable = $stringTable . $table->table->name;
             }
         }
+        return $stringTable;
     }
-    public function checkStatus($status,$idDish,$idCook,$qty,$nameTable)
+
+    public function updateStatusDish($idDishOrder,$idCook,$dishOrder,$qty,$status)
     {
-        if($status == '1'){
-            $idGroupNVL = $this->findIdGroupNVL($idDish);
-            $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL);
-            $materialActions = $this->getMaterialAction($idGroupNVL);
-            $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
-            $this->substractMaterial($materialActions,$materialInWarehouseCooks,$qty);
-        }else if($status == '2'){
-            $dish = Dishes::where('id',$idDish)->with('unit')->first();
-            $data['imgDish'] = $dish->image;
-            $data['nameDish'] = $dish->name;
-            $data['nameTable'] = $nameTable;
-            $data['qty'] = $qty;
-            $data['unit'] = $dish->unit->name;
+        $stringTable = $this->getTableByIdOrder($dishOrder->id_bill);
+        if($status == '1'){ // đang làm
+            OrderDetailTable::where('id',$idDishOrder)->update(['qty' => $qty,'status' => $status]);
+        }else if($status == '-1'){ // bếp hết NVL
+            OrderDetailTable::where('id',$idDishOrder)->update(['qty' => $qty,'status' => $status]);
+            $this->notifyDish($dishOrder->id_dish,$qty,$stringTable,$status,$idCook);
+            return redirect(route('cook_screen.detail',['id' => $idCook]));
+        }else if($status == '-3'){ // kho hết NVL
+            OrderDetailTable::where('id',$idDishOrder)->update(['qty' => $qty,'status' => $status]);
+            $this->notifyDish($dishOrder->id_dish,$qty,$stringTable,$status,$idCook);
+            return redirect(route('cook_screen.detail',['id' => $idCook]))->withErrors('Kho không đủ NVL thực hiện');
+        }
+    }
+
+    public function notifyDish($idDish,$qty,$nameTable,$status,$idCook)
+    {
+        $dish = Dishes::where('id',$idDish)->with('unit')->first();
+        $data['imgDish'] = $dish->image;
+        $data['nameDish'] = $dish->name;
+        $data['nameTable'] = $nameTable;
+        $data['qty'] = $qty;
+        $data['unit'] = $dish->unit->name;
+        $data['stt'] = $status;
+        $data['idCook'] = $idCook;
             $options = array(
                 'cluster' => 'ap1',
                 'useTLS' => true
@@ -134,17 +262,49 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
                 '994181',
                 $options
             );
-            $pusher->trigger('FinishDish', 'finish-dish', $data);
-        }
+        $pusher->trigger('FinishDish', 'finish-dish', $data);
     }
-    public function updateStatusDish($request,$id,$idCook)
+
+    public function createDishEmptyCook($dishOrder,$qtyEmptyCook,$idCook)
     {
-        $dish = OrderDetailTable::find($id);
-        $dish->status = $request->status;
-        $nameTable = $request->nameTable;
-        $qty = $dish->qty;
-        $this->checkStatus($request->status,$dish->id_dish,$idCook,$qty,$nameTable);
-        $dish->save();
-        return redirect(route('cook_screen.detail',['id' => $idCook]));
+        $orderDetailTable = new OrderDetailTable();
+        $orderDetailTable->id_bill = $dishOrder->id_bill;
+        $orderDetailTable->id_dish = $dishOrder->id_dish;
+        $orderDetailTable->price = $dishOrder->dish->sale_price;
+        $orderDetailTable->qty = $qtyEmptyCook;
+        $orderDetailTable->status = '-1';
+        $orderDetailTable->save();
+        $this->notifyDish($orderDetailTable->id_dish,$qtyEmptyCook,$this->getTableByIdOrder($dishOrder->id_bill),'-1',$idCook);
+
     }
+
+    public function createDishEmptyWh($dishOrder,$qtyEmptyWh,$idCook)
+    {
+        $orderDetailTable = new OrderDetailTable();
+        $orderDetailTable->id_bill = $dishOrder->id_bill;
+        $orderDetailTable->id_dish = $dishOrder->id_dish;
+        $orderDetailTable->price = $dishOrder->dish->sale_price;
+        $orderDetailTable->qty = $qtyEmptyWh;
+        $orderDetailTable->status = '-3';
+        $orderDetailTable->save();
+        $this->notifyDish($orderDetailTable->id_dish,$qtyEmptyWh,$this->getTableByIdOrder($dishOrder->id_bill),'-3',$idCook);
+    }
+
+    public function getPrevQtyWarehouseCook($idCook,$idMaterialDetail)
+    {
+        $prevQty = WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterialDetail)->value('qty');
+        return $prevQty;
+    }
+
+    public function updateFinishDish($idDishOrder,$idCook,$idMaterialDetails,$qtyMethods,$qtyReals,$dish)
+    {
+        OrderDetailTable::where('id',$idDishOrder)->update(['status' => '2','cooked_by' => auth()->user()->name]);
+        for ($i=0; $i < count($idMaterialDetails); $i++) {
+            $temp = $this->getPrevQtyWarehouseCook($idCook,$idMaterialDetails[$i]);
+            //WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterialDetails[$i])->update(['qty' => $temp - ($qtyMethods[$i] * $qtyReals[$i])]);
+        }
+        $this->notifyDish($dish->dish->id,$dish->qty,$this->getTableByIdOrder($dish->id_bill),'2',$idCook);
+        return redirect(route('cook_screen.detail',['id' => $idCook]))->withSuccess('Đã thực hiện xong món: ' . $dish->dish->name . ' ' . $this->getTableByIdOrder($dish->id_bill));
+    }
+
 }

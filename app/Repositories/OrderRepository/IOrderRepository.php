@@ -6,6 +6,7 @@ interface IOrderRepository{
     function getDishes();
     function countDishCookingorFinish($idOrderTable);
     function showTableInDay();
+    function saveTable($idOrderTable,$idTable);
     function orderTable();
     function orderTablePost($request);
     function addMoreDish($request,$idOrderTable);

@@ -48,6 +48,11 @@ class Order extends Model
         return $this->hasMany('App\OrderDetailTable','id_bill');
     }
 
+    public function tableOrdered()
+    {
+        return $this->hasMany('App\OrderTable','id_order','id');
+    }
+
     public function table()
     {
         return $this->belongsTo('App\Table','id_table');

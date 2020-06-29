@@ -7,7 +7,11 @@
             <section class="panel">
                 <div class="panel-heading">
                     Hóa đơn {{ $idBillTable->code }} --
-                    {{ $idBillTable->table->name }}
+                    @foreach ($idBillTable->tableOrdered as $key => $item)
+                        {{ $item->table->name }}
+                        {{ count($idBillTable->tableOrdered) != $key+1 ? ', ' : '' }}
+                    @endforeach
+
                 </div>
                 {{-- <header class="panel-heading wht-bg">
                     <h5 class="gen-case ">

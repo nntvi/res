@@ -49,7 +49,6 @@
                                             <th>Bàn</th>
                                             <th>Tên món</th>
                                             <th>Sl</th>
-                                            <th>Ghi chú</th>
                                             <th class="text-center">Thời gian</th>
                                             <th>Duyệt món</th>
                                             <th>Công thức</th>
@@ -58,51 +57,59 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $key => $dish)
-                                            <form action="{{route('cook_screen.p_update',['id' => $dish->id,'idCook' => $cook->id])}}" method="post">
-                                                @csrf
                                                     <input name="idCook" value="{{$cook->id}}" hidden>
-                                                    <input name="nameTable" value="{{$dish->order->table->name}}" hidden>
+                                                    @foreach ($dish->order->tableOrdered as $item)
+                                                        <input name="nameTable" value="{{ $item->table->name }} {{ count($dish->order->tableOrdered) != $key+1 ? ',' : '' }}" hidden>
+                                                    @endforeach
                                                     <tr data-expanded="true">
-                                                        <td>{{ $dish->order->table->name }}</td>
-                                                        <td>{{ $dish->dish->name }}</td>
-                                                        <td class="text-center">
-                                                            {{$dish->qty}}
+                                                        <td>
+                                                            @foreach ($dish->order->tableOrdered as $item)
+                                                                {{ $item->table->name }}
+                                                                {{ count($dish->order->tableOrdered) > 1 ? ', ' : '' }}
+                                                            @endforeach
                                                         </td>
-                                                        @if ($dish->note != null)
-                                                            <td>
-                                                                {{ $dish->note }}
-                                                            </td>
-                                                        @else
-                                                            <td class="text-center">--</td>
-                                                        @endif
+                                                        <td>{{ $dish->dish->name }}</td>
+                                                        <td class="text-center">{{$dish->qty}}</td>
                                                         <td>{{$dish->created_at}}</td>
-                                                        @if ($dish->status == '-1')
-                                                            <td>
-                                                                <label style="display:inline; color: red;">Không đủ NVL</label>
-                                                            </td>
-                                                        @endif
-                                                        @if ($dish->status == '-2')
-                                                            <td>
-                                                                <label style="display:inline; color: red;">Món đã hủy chọn</label>
-                                                            </td>
-                                                        @else
-                                                            <td>
-                                                                @if ($dish->status == '0')
-                                                                    <input value="1" type="radio" name="status" checked>
-                                                                    <label style="display:inline; color: red;">Đang thực hiện</label>
-                                                                @endif
-                                                                @if ($dish->status == '1')
+                                                        @switch($dish->status)
+                                                            @case('-3')
+                                                                <td>
+                                                                    <label style="display:inline; color: red;">Bếp lẫn kho không đủ NVL thực hiện</label>
+                                                                </td>
+                                                                @break
+                                                            @case('-2')
+                                                                <td>
+                                                                    <label style="display:inline; color: red;">Món đã hủy chọn</label>
+                                                                </td>
+                                                                @break
+                                                            @case('-1')
+                                                                <td>
+                                                                    <label style="display:inline; color: red;">Bếp không đủ NVL thực hiện</label>
+                                                                </td>
+                                                                @break
+                                                            @case('0')
+                                                                <td>
+                                                                    {{--  <input value="1" type="radio" name="status" checked>
+                                                                    <label style="display:inline; color: red;">Đang thực hiện</label>  --}}
+                                                                    Chưa xem xét
+                                                                </td>
+                                                                @break
+                                                            @case('1')
+                                                                <td>
                                                                     <input value="2" type="radio" name="status" checked>
                                                                     <label style="display:inline; color: purple;">Hoàn thành</label>
-                                                                @endif
-                                                                @if($dish->status == '2')
+                                                                </td>
+                                                                @break
+                                                            @default
+                                                                <td>
                                                                     <label style="display:inline; color: darkgreen;" >
-                                                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                                                        Đã Hoàn thành
+                                                                                <i class="fa fa-check" aria-hidden="true"></i>
+                                                                                Đã Hoàn thành
                                                                     </label>
-                                                                @endif
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                @break
+                                                        @endswitch
+                                                        <td>
                                                                 <a href="#myModal{{ $dish->dish->id }}" data-toggle="modal" >
                                                                     <i class="fa fa-eye text-info" aria-hidden="true"></i> Xem CT
                                                                 </a>
@@ -141,37 +148,189 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </td>
+                                                        </td>
                                                             <td class="text-center">
                                                                 @if ($dish->status == '0')
-                                                                    <button type="submit" class="btn btn-xs btn-danger">
-                                                                        Cập nhật
-                                                                    </button>
+                                                                <a href="#myModal{{ $dish->id }}" data-toggle="modal" class="btn btn-xs btn-danger checkNVL" id="{{ $dish->id }}">
+                                                                    Cập nhật
+                                                                </a>
+                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal{{ $dish->id }}" class="modal fade" style="display: none;">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+
+                                                                                <h4 class="modal-title text-left">Xem xét NVL thực hiện món {{ $dish->dish->name }} -
+                                                                                    @foreach ($dish->order->tableOrdered as $item)
+                                                                                        {{ $item->table->name }}
+                                                                                        {{ count($dish->order->tableOrdered) > 1 ? ',' : '' }}
+                                                                                    @endforeach
+                                                                                </h4>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form action="{{route('cook_screen.p_update',['id' => $dish->id,'idCook' => $cook->id])}}" method="post">
+                                                                                    @csrf
+                                                                                    <table class="table table-bordered">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>STT</th>
+                                                                                                <th>Tên NVL</th>
+                                                                                                <th>SL Công thức</th>
+                                                                                                <th>SL Đặt</th>
+                                                                                                <th>Cần</th>
+                                                                                                <th>SL Trong bếp</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            @foreach ($dish->dish->material->materialAction as $key => $item)
+                                                                                                <tr>
+                                                                                                    <td>{{ $key + 1 }}</td>
+                                                                                                    <td>{{ $item->materialDetail->name }} ({{ ($item->unit->name) }})</td>
+                                                                                                    <td>{{ $item->qty }}</td>
+                                                                                                    <td>{{ $dish->qty }}</td>
+                                                                                                    <td>{{ $item->qty * $dish->qty }}</td>
+                                                                                                    @foreach ($materials as $material)
+                                                                                                        @if ($material->id_material_detail == $item->materialDetail->id)
+                                                                                                            @if ($material->qty < $item->qty * $dish->qty)
+                                                                                                                <td style="color:red">{{ $material->qty }}</td>
+                                                                                                            @else
+                                                                                                                <td>{{ $material->qty }}</td>
+                                                                                                            @endif
+                                                                                                            @break
+                                                                                                        @endif
+                                                                                                    @endforeach
+                                                                                                </tr>
+                                                                                            @endforeach
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                    <div class="row">
+                                                                                        <div class="col-xs-4 form-group">
+                                                                                            <label>SL món có thể thực hiện</label>
+                                                                                            <input id="qtyOrder{{ $dish->id }}" name="qtyOrder" hidden>
+                                                                                            <input class="form-control" id="DqtyOrder{{ $dish->id }}" disabled>
+                                                                                        </div>
+                                                                                        <div class="col-xs-4 form-group">
+                                                                                            <label>Bếp thiếu</label>
+                                                                                            <input id="qtyEmptyCook{{ $dish->id }}" name="qtyEmptyCook" hidden>
+                                                                                            <input class="form-control" id="DqtyEmptyCook{{ $dish->id }}" disabled>
+                                                                                        </div>
+                                                                                        <div class="col-xs-4 form-group">
+                                                                                            <label>Kho thiếu</label>
+                                                                                            <input id="qtyEmptyWh{{ $dish->id }}" name="qtyEmptyWh" hidden>
+                                                                                            <input class="form-control" id="DqtyEmptyWh{{ $dish->id }}" disabled>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button type="submit" class="btn btn-default">Tiến hành thực hiện</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 @endif
                                                                 @if ($dish->status == '1')
-                                                                    <button type="submit" class="btn btn-xs  btn-warning">
+                                                                    <a href="#finish{{ $dish->id }}" data-toggle="modal" class="btn btn-xs btn-warning">
                                                                         Cập nhật
-                                                                    </button>
+                                                                    </a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="finish{{ $dish->id }}" class="modal fade" style="display: none;">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title text-left">Xem xét NVL thực hiện món {{ $dish->dish->name }} -
+                                                                                        @foreach ($dish->order->tableOrdered as $item)
+                                                                                            {{ $item->table->name }}
+                                                                                            {{ count($dish->order->tableOrdered) > 1 ? ',' : '' }}
+                                                                                        @endforeach
+                                                                                    </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <div class="alert alert-xs alert-info text-left" role="alert">
+                                                                                        Ghi chú: <strong>{{ $dish->note }}</strong>
+                                                                                    </div>
+                                                                                    <form action="{{ route('cook_screen.updatefinish',['id' => $dish->id,'idCook' => $cook->id]) }}" method="post">
+                                                                                        @csrf
+                                                                                        <table class="table table-bordered">
+                                                                                            <thead>
+                                                                                                <tr>
+                                                                                                    <th>STT</th>
+                                                                                                    <th>Tên NVL</th>
+                                                                                                    <th>Công thức</th>
+                                                                                                    <th>SL Đặt</th>
+                                                                                                    <th>Cần</th>
+                                                                                                    <th>Chỉnh sửa</th>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                @foreach ($dish->dish->material->materialAction as $key => $item)
+                                                                                                    <tr>
+                                                                                                        <td>{{ $key + 1 }}</td>
+                                                                                                        <td>
+                                                                                                            <input type="hidden" name="idMaterialDetail[]" value="{{ $item->materialDetail->id }}">
+                                                                                                            {{ $item->materialDetail->name }} ({{ ($item->unit->name) }})
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <input type="hidden" name="qtyMethod[]" value="{{ $item->qty }}">
+                                                                                                            {{ $item->qty }}
+                                                                                                        </td>
+                                                                                                        <td>{{ $dish->qty }}</td>
+                                                                                                        <td>{{ $item->qty * $dish->qty }}</td>
+                                                                                                        <td>
+                                                                                                            @if ($item->unit->id == 16)
+                                                                                                                <input type="hidden" name="qtyReal[]" value="{{ $dish->qty }}">
+                                                                                                                <input value="{{ $dish->qty }}" disabled>
+                                                                                                            @else
+                                                                                                                <input type="number" name="qtyReal[]" min="0" max="{{ $dish->qty }}" value="{{ $dish->qty }}" required>
+                                                                                                            @endif
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                @endforeach
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                        <button type="submit" class="btn btn-default">Hoàn thành</button>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 @endif
                                                                 @if ($dish->status == '2')
                                                                     <i class="fa fa-check text-success" aria-hidden="true"></i>
                                                                 @endif
                                                             </td>
-                                                        @endif
-
                                                     </tr>
-                                            </form>
                                         @endforeach
                                     </tbody>
                                     </table>
                                 </div>
+                                <footer class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-sm-5 text-center">
+                                            <small class="text-muted inline m-t-sm m-b-sm">1-10 món mới nhất được order</small>
+                                            </div>
+                                            <div class="col-sm-7 text-right text-center-xs">
+                                            <ul class="pagination pagination-sm m-t-none m-b-none">
+                                                {{ $data->links() }}
+                                            </ul>
+                                            </div>
+                                        </div>
+                                </footer>
                     </div>
                 </div>
             <!-- page end-->
         </div>
 
 </div>
-
-
-
+<script>
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            toastr.error('{{ $error }}')
+        @endforeach
+    @endif
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+    @if(session('warning'))
+        toastr.warning('{{ session('warning') }}')
+    @endif
+</script>
 @endsection

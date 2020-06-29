@@ -155,9 +155,15 @@
                             <span class="from"> Món: `+ data.nameDish +`</span>
                                 <span class="time">`+ data.nameTable +`</span>
                             </span>
-                            <span class="message">
-                                Số lượng: `+ data.qty +` - `+ data.unit +`
-                            </span>
+                            <span class="message">`;
+                                if(data.stt == '-1'){
+                                    newNotifications += `Số lượng ` + data.qty + ` - Bếp `+ data.idCook +` không đủ NVL thực hiện `;
+                                }else if(data.stt == '-3'){
+                                    newNotifications += `Số lượng ` + data.qty + ` - Kho không đủ NVL thực hiện `;
+                                }else if(data.stt == '2'){
+                                    newNotifications += `Số lượng: ` + data.qty + ` - Bếp `+ data.idCook +` đã hoàn thành`;
+                                }
+                newNotifications += `</span>
                         </a>
                     </li>`;
                     notificationsFinishDish.html(newNotifications);

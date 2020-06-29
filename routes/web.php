@@ -199,6 +199,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('index', 'CookScreenController@index')->name('cook_screen.index');
         Route::get('detail/{id}', 'CookScreenController@getDetail')->name('cook_screen.detail');
         Route::post('update/{id}/{idCook}', 'CookScreenController@update')->name('cook_screen.p_update');
+        Route::post('updateFinish/{id}/{idCook}', 'CookScreenController@updateFinish')->name('cook_screen.updatefinish');
         Route::get('updateMaterialDetail/{idMaterial}/{idCook}', 'CookScreenController@updateMaterialDetail')
                 ->name('cook_screen.p_updatematerial');
     });

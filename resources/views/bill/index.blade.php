@@ -135,8 +135,11 @@
                                                                                                 <td>{{ number_format($detail->price) . ' đ' }}</td>
                                                                                                 <td>
                                                                                                     @switch($detail->status)
+                                                                                                        @case('-3')
+                                                                                                            Kho không đủ NVL thực hiện
+                                                                                                            @break
                                                                                                         @case('-1')
-                                                                                                            Không đủ NVL thực hiện
+                                                                                                            Bếp không đủ NVL thực hiện
                                                                                                             @break
                                                                                                         @case('0')
                                                                                                             Chưa thực hiện

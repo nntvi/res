@@ -128,8 +128,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function findMaterialInWarehouse($idMaterialArray)
     {
-        $materialWarehouse = WareHouse::whereIn('id_material_detail',$idMaterialArray)
-                                        ->with('detailMaterial','unit')->get();
+        $materialWarehouse = WareHouse::whereIn('id_material_detail',$idMaterialArray)->with('detailMaterial','unit')->get();
         return $materialWarehouse;
     }
 
@@ -160,8 +159,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])
-                                    ->with('detailMaterial','typeMaterial','unit')
+        $warehouse = WareHouse::whereBetween('updated_at',[$dateStart . $s , $dateEnd . $e])->with('detailMaterial','typeMaterial','unit')
                                     ->orderBy('id_material_detail')->get();
         return $warehouse;
     }
@@ -169,8 +167,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
-                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+        $detailImport = ImportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailImport;
     }
@@ -179,8 +176,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')
-                                            ->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
+        $detailExport = ExportCouponDetail::selectRaw('id_material_detail, sum(qty) as total')->whereBetween('created_at',[$dateStart . $s, $dateEnd . $e])
                                             ->groupBy('id_material_detail')->orderBy('id_material_detail')->get();
         return $detailExport;
     }
@@ -238,32 +234,24 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function countBill($dateStart,$dateEnd)
     {
-        $qtyBill = Order::selectRaw('count(status) as qtyBill')
-                        ->whereBetween('created_at',[$dateStart,$dateEnd])
-                        ->value('qtyBill');
+        $qtyBill = Order::selectRaw('count(status) as qtyBill')->whereBetween('created_at',[$dateStart,$dateEnd])->value('qtyBill');
         return $qtyBill;
     }
     public function countPaidBill($dateStart,$dateEnd)
     {
-        $qtyPaidBill = Order::selectRaw('count(status) as qtyPaid')->where('status','0')
-                                ->whereBetween('created_at',[$dateStart,$dateEnd])
-                                ->value('qtyPaid');
+        $qtyPaidBill = Order::selectRaw('count(status) as qtyPaid')->where('status','0')->whereBetween('created_at',[$dateStart,$dateEnd])->value('qtyPaid');
         return $qtyPaidBill;
     }
 
     public function countServingBill($dateStart,$dateEnd)
     {
-        $qtyServingBill = Order::selectRaw('count(status) as qtyServing')->where('status','1')
-                            ->whereBetween('created_at',[$dateStart,$dateEnd])
-                            ->value('qtyServing');
+        $qtyServingBill = Order::selectRaw('count(status) as qtyServing')->where('status','1')->whereBetween('created_at',[$dateStart,$dateEnd])->value('qtyServing');
         return $qtyServingBill;
     }
 
     public function getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier)
     {
-        $coupons = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])
-                                ->where('id_supplier',$idSupplier)
-                                ->with('detailImportCoupon')->get();
+        $coupons = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)->with('detailImportCoupon')->get();
         return $coupons;
     }
 

@@ -96,7 +96,7 @@
                 </a>
                 <ul class="sub">
                     <li><a href="{{ route('report.order') }}">Theo đơn hàng</a></li>
-                    <li><a href="{{ route('report.table') }}">Theo bàn</a></li>
+                    {{--  <li><a href="{{ route('report.table') }}">Theo bàn</a></li>  --}}
                     <li><a href="{{ route('report.dish') }}">Theo món</a></li>
                     <li><a href="{{ route('report.supplier') }}">Thu chi NCC</li></a>
                     <li><a href="{{ route('profit.index') }}">Lợi nhuận</a></li>

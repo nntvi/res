@@ -19,8 +19,8 @@
     .tab-content .cardDish .card-title{
         height: 25px;
     }
-    .content-order {
-        height: 400px;
+    .content-order, .tab-content {
+        height: 500px;
         overflow: auto;
     }
     .card-text{
@@ -43,6 +43,31 @@
     ul.nav-tabs li>a{
         color: unset;
     }
+    .activities .btn{
+        border-radius: 0px;
+    }
+    .activities .btn button.btn{
+        height: 50px;
+    }
+    /* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 </style>
 @section('content')
 <div class="form-w3layouts">
@@ -51,12 +76,19 @@
         <div class="col-lg-12">
             <section class="panel">
                 <header class="panel-heading">
-                    Chọn bàn &nbsp;
-                    <span class="tools">
-                        <a class="fa fa-chevron-down" href="javascript:;"></a>
-                    </span>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-9">Chọn bàn &nbsp;
+                            <span class="tools">
+                                <a class="fa fa-chevron-down" href="javascript:;"></a>
+                            </span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 text-right" style="margin: 10px 0px">
+                            <input type="text" id="searchTable" class="form-control">
+                        </div>
+                    </div>
+
                 </header>
-                <div class="panel-body">
+                <div class="panel-body tables">
                     @foreach($tables  as $table)
                         @php
                             $temp = false
@@ -67,9 +99,9 @@
                                     <div class="card" data-id="{{ $table->id }}" data-status="1"
                                         style="background: rgba(254, 48, 48, 0.55);border: 3px solid #ff6d6d;">
                                         <div class="card-body">
-                                            <input type="hidden" name="idBill" value="{{ $activeTable->id }}">
+                                            <input type="hidden" name="idBill" value="{{ $activeTable->id_order }}">
                                             <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
-                                            <p class="card-text" >{{ $activeTable->code }}</p>
+                                            <p class="card-text" >Có</p>
                                         </div>
                                     </div>
                                 </div>
@@ -81,7 +113,7 @@
                         @endforeach
                         @if($temp == false)
                             <div class="col-xs-4 col-sm-2 col-md-2 col-lg-1 m-b-xs" style="padding-right: 0px">
-                                <div class="card" data-id="{{ $table->id }}" data-status="0">
+                                <div class="card" data-id="{{ $table->id }}" data-status="0" id="tbl{{ $table->id }}">
                                     <div class="card-body">
                                         <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
                                         <p class="card-text">Trống</p>
@@ -90,7 +122,6 @@
                             </div>
                         @endif
                     @endforeach
-
                 </div>
             </section>
         </div>
@@ -150,7 +181,9 @@
                                     </div>
                                 @endforeach
                             </div>
+
                             <script>
+
                                 $('ul.nav-tabs li:first-child').addClass('active');
                                 $('.tab-content div:first-child').addClass('active');
                                 function clickToRemove($id){
@@ -258,6 +291,7 @@
                                         }
                                     }
                                 });
+
                             </script>
                             <script>
                                 @if($errors->any())

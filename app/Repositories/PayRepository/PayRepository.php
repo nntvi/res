@@ -4,6 +4,7 @@ namespace App\Repositories\PayRepository;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\OrderDetailTable;
+use App\OrderTable;
 use App\Shift;
 use Carbon\Carbon;
 
@@ -11,7 +12,8 @@ class PayRepository extends Controller implements IPayRepository{
 
     public function findOrder($id)
     {
-        $idBillTable = Order::where('id',$id)->with('table.getArea','shift')->first();
+        $idBillTable = Order::where('id',$id)->with('tableOrdered.table.getArea','shift')->first();
+        //dd($idBillTable);
         return $idBillTable;
     }
 
@@ -53,6 +55,11 @@ class PayRepository extends Controller implements IPayRepository{
         ])->value('id');
         return $idShift;
     }
+
+    public function updateStatusTableOrder($idOrder)
+    {
+        OrderTable::where('id_order',$idOrder)->update(['status' => '0']);
+    }
     public function updateStatusOrder($request,$id) // thanh toán
     {
         $bill = Order::find($id);
@@ -63,6 +70,7 @@ class PayRepository extends Controller implements IPayRepository{
         $bill->status = '0';
         $bill->payer = auth()->user()->name;
         $bill->save();
+        $this->updateStatusTableOrder($id);
         return redirect(route('pay.bill',['id' => $id]))->withSuccess('Thanh toán thành công');
     }
 

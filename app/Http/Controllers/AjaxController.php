@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Area;
 use App\Order;
+use App\Table;
 use App\CookArea;
 use App\Supplier;
 use App\GroupMenu;
@@ -13,10 +15,11 @@ use App\TypeMaterial;
 use App\WarehouseCook;
 use App\MaterialDetail;
 use App\PaymentVoucher;
+
+
 use App\OrderDetailTable;
 use App\ImportCouponDetail;
-
-
+use App\OrderTable;
 use Illuminate\Http\Request;
 use App\Repositories\AjaxRepository\IAjaxRepository;
 
@@ -111,10 +114,30 @@ class AjaxController extends Controller
         return response()->json($results);
     }
 
-    public function getDishOrderTable($idBill)
+    public function getTableNotActiveByTableOrdered($tablesOfArea,$idArea)
     {
-        $dishes = OrderDetailTable::where('id_bill',$idBill)->with('dish')->get();
-        return response()->json($dishes);
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        $tableActives = OrderTable::whereBetween('updated_at',[$now . " 00:00:00",$now . " 23:59:59"])->where('status','1')->get('id_table');
+        $tableNotActives = Table::where('id_area',$idArea)->whereNotIn('id',$tableActives)->get();
+        return $tableNotActives;
+    }
+
+    public function getDishOrderTable($idBill,$idTable)
+    {
+        $code = Order::where('id',$idBill)->value('code');
+        $dishes = OrderDetailTable::where('id_bill',$idBill)->with('dish')->get(); // những món bàn đó order
+        $area = Table::where('id',$idTable)->with('getArea')->first(); // lấy tên khu vực
+        $tableOrder = OrderTable::where('id_order',$idBill)->with('table.getArea')->get(); // bàn đang đặt thuộc khu vực nào
+        $tables = Area::where('id',$area->getArea->id)->with('containTable')->first(); // những bàn thuộc khu vực của bàn đang đặt
+        $tableNotActives = $this->getTableNotActiveByTableOrdered($tables,$area->getArea->id); // bàn trống thuộc khu vực cần ghép
+        $data = [
+            'code' => $code,
+            'dishes' => $dishes,
+            'tableOrder' => $tableOrder,
+            'nameArea' => $area->getArea->name,
+            'tableNotActives' => $tableNotActives
+        ];
+        return response()->json($data);
     }
 
     public function getImportCouponToPaymentVc($dateStart,$dateEnd,$idSupplier)
@@ -158,5 +181,31 @@ class AjaxController extends Controller
     {
         $materialDetails = $this->ajaxRepository->getMaterialWarehouseCook($idCook);
         return response()->json($materialDetails);
+    }
+
+    // public function searchTables($name)
+    // {
+    //     $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+    //     $tables = Table::where('status','1')->where('name','LIKE',"%{$name}%")->get();
+    //     $activeTables = Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])->get();
+    //     foreach ($tables as $key => $table) {
+    //         foreach ($activeTables as $key => $activeTable) {
+    //             if($table->id == $activeTable->id){
+
+    //             }
+    //         }
+    //     }
+    //     return response()->json($tables);
+    // }
+
+    public function getAreaByIdTable($idTable)
+    {
+        $table = Table::where('id',$idTable)->with('getArea')->first();
+        $tables = Area::where('id',$table->id_area)->with('containTable')->get();
+        $data = [
+            'nameArea' => $table->getArea->name,
+            'tables' => $tables
+        ];
+        return response()->json($data);
     }
 }

@@ -26,8 +26,23 @@
         </div>
         <div class="row w3-res-tb">
             <div class="col-sm-5 m-b-xs">
-                <h6>{{ $bill->table->name }} - Ca: {{ $bill->shift->name }}</h6><br>
-                <h6>Khu vực: {{ $bill->table->getArea->name }}</h6>
+                <h6>
+                    @foreach ($bill->tableOrdered as $table)
+                        {{ $table->table->name }}
+                        {{ count($bill->tableOrdered) > 1 ? ', ' : '' }}
+                    @endforeach
+                    @foreach ($bill->tableOrdered as $table)
+                        {{ $table->table->getArea->name }}
+                        @break
+                    @endforeach
+                    - Ca: {{ $bill->shift->name }}
+                </h6><br>
+                <h6>Khu vực:
+                    @foreach ($bill->tableOrdered as $table)
+                        {{ $table->table->getArea->name }}
+                        @break
+                    @endforeach
+                </h6>
             </div>
             <div class="col-sm-3">
                 <h6>Người tạo: {{ $bill->created_by }}</h6><br>
@@ -90,7 +105,15 @@
         </div>
         <div class="info">
             <h5 style="font-weight:bold; text-align:center; font-size:13px;">Mã hóa đơn: {{ $bill->code }} -
-                {{ $bill->table->name }} - Khu vực: {{ $bill->table->getArea->name }}</h5>
+                @foreach ($bill->tableOrdered as $table)
+                    {{ $table->table->name }}
+                    {{ count($bill->tableOrdered) > 1 ? ', ' : '' }}
+                @endforeach
+                @foreach ($bill->tableOrdered as $table)
+                    {{ $table->table->getArea->name }}
+                    @break
+                @endforeach
+            </h5>
         </div>
         <div class="info">
             <h6>Giờ vào: {{ $bill->created_at }} - Giờ ra: {{ $bill->updated_at }}</h6>

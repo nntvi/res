@@ -383,211 +383,6 @@ $(document).ready(function () {
         });
     });
 
-    $(".card").click(function () { // chọn bàn
-        const idTable = $(this).attr('data-id');
-        const nameTableOrder = $(this).find('h6.card-title').text();
-        let statusTable = $(this).attr('data-status'); // lấy status có khách or not
-        if (statusTable == "0") { // ko có khách
-            $('#tableOrder').empty();
-            let order = `<form id="orderForm">
-                            <div class="panel panel-default">
-                                <div class="panel-heading nameTableOrder" style="background: #ff00003b!important">
-                                    ` + nameTableOrder + `
-                                </div>
-                                <input type="hidden" name="idTableOrder" value="` + idTable + `">
-                                <div class="content-order">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Món</th>
-                                                <th width="27%" class="text-center">Số lượng</th>
-                                                <th>Ghi chú</th>
-                                                <th>Giá</th>
-                                                <th style="width:3px;"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="bodyTableOrder">
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row activities">
-                                    <div class="col-xs-12">
-                                        <button id="submitNewOrder" class="btn btn-success" style="width:100%">Lưu</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </form>`;
-            $('#tableOrder').append(order);
-            $('#orderForm').on('submit', function (e) {
-                e.preventDefault();
-                let token = $('meta[name="csrf-token"]').attr('content');
-                let arrDishes = $("input[name='idDish[]']").map(function () {
-                    return $(this).val();
-                }).get();
-                let arrQties = $("input[name='qty[]']").map(function () {
-                    return $(this).val();
-                }).get();
-                let arrNotes = $("input[name='note[]']").map(function () {
-                    return $(this).val();
-                }).get();
-                let table = document.getElementById('bodyTableOrder');
-                if (table.rows.length == 0) {
-                    alert('Vui lòng chọn món cho bàn');
-                    return false;
-                } else {
-                    $.ajax({
-                        url: "ajax/order/store",
-                        type: "POST",
-                        data: {
-                            _token: token,
-                            idTableOrder: idTable,
-                            idDish: arrDishes,
-                            qty: arrQties,
-                            note: arrNotes,
-                        },
-                        success: function () {
-                            alert('Order hoàn tất');
-                            location.reload()
-                        },
-                    });
-                }
-            });
-        } else if (statusTable == "1") {
-            const idBill = $(this).find('input[name="idBill"]').val();
-            $.ajax({
-                url: 'ajax/order/table/' + idBill,
-                method: 'GET',
-                dataType: 'JSON',
-                success: function (dishes) {
-                    $('#tableOrder').empty();
-                    let ordered = `<form id="orderedForm">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading nameTableOrder" style="background: #ff00003b!important">
-                                            ` + nameTableOrder + `
-                                        </div>
-                                        <input type="hidden" name="idTableOrder" value="` + idTable + `">
-                                        <div class="content-order">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Món</th>
-                                                        <th width="27%" class="text-center">Số lượng</th>
-                                                        <th>Ghi chú</th>
-                                                        <th>Giá</th>
-                                                        <th style="width:3px;"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="bodyTableOrder">`;
-                    $('#bodyTableOrdered').empty();
-                    dishes.map(function (dish) {
-                        if (dish.status == '0') {
-                            ordered += `<tr>
-                                        <td>` + dish.dish.name + `</td>
-                                        <td class="text-center">` + dish.qty + `</td>
-                                        <td>`;
-                                            if (dish.note == null) {
-                                                ordered += `-`;
-                                            } else {
-                                                ordered += dish.note;
-                                            }
-                            ordered += `</td>
-                                        <td>` + dish.price + `</td>
-                                        <td>`;
-                                            if (dish.status == '-1') {
-                                                ordered += `<i class="fa fa-pause text-danger" aria-hidden="true"></i>`;
-                                            } else if (dish.status == '0') { // chưa thực hiện
-                                                ordered += `<a href="order/deletedish/`+ dish.id +`" onclick="return confirm ('Bạn muốn hủy món này?')"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a>`;
-                                            }
-                            ordered += `</td>
-                                    </tr>`
-                            $('#bodyTableOrder').append(ordered);
-                        } else {
-                            ordered += `<tr>
-                                        <td>` + dish.dish.name + `</td>
-                                        <td class="text-center">` + dish.qty + `</td>
-                                        <td>`;
-                                            if (dish.note == null) {
-                                                ordered += `-`;
-                                            } else {
-                                                ordered += dish.note;
-                                            }
-                            ordered += `</td>
-                                        <td>` + dish.price + `</td>
-                                        <td>`;
-                                            if(dish.status == '-2'){
-                                                ordered += `Đã hủy`;
-                                            }
-                                            else if (dish.status == '-1') {
-                                                ordered += `<i class="fa fa-pause text-danger" aria-hidden="true"></i>`;
-                                            } else if (dish.status == '0') { // chưa thực hiện
-                                                ordered += `<i class="fa fa-battery-empty text-warning" aria-hidden="true"></i>`;
-                                            } else if (dish.status == '1') {
-                                                ordered += `<i class="fa fa-battery-half text-info" aria-hidden="true"></i>`;
-                                            } else if (dish.status == '2') {
-                                                ordered += `<i class="fa fa-battery-full text-success" aria-hidden="true"></i>`;
-                                            }
-                            ordered += `</td>
-                                    </tr>`
-                            $('#bodyTableOrder').append(ordered);
-                        }
-                    });
-                    ordered += `</tbody>
-                                            </table>
-                                        </div>
-                                        <div class="row activities">
-                                            <div class="col-xs-4" style="padding-right: 0px">
-                                                <button  class="btn btn-success" style="width:100%">Lưu</button>
-                                            </div>
-                                            <div class="col-xs-4" style="padding-right: 0px">
-                                                <a href="pay/index/` + idBill + `" class="btn btn-danger" style="width:100%">Thanh toán</a>
-                                            </div>
-                                            <div class="col-xs-4" style="padding-right: 0px">
-                                                <a href="order/delete/`+ idBill +`" class="btn btn-default" style="width:100%">Hủy bàn</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>`;
-                    $('#tableOrder').append(ordered);
-                    $('#orderedForm').on('submit', function (e) {
-                        e.preventDefault();
-                        let token = $('meta[name="csrf-token"]').attr('content');
-                        let arrDishes = $("input[name='idDish[]']").map(function () {
-                            return $(this).val();
-                        }).get();
-                        let arrQties = $("input[name='qty[]']").map(function () {
-                            return $(this).val();
-                        }).get();
-                        let arrNotes = $("input[name='note[]']").map(function () {
-                            return $(this).val();
-                        }).get();
-                        if (arrDishes == null || arrDishes == "") {
-                            alert('Vui lòng chọn thêm món cho bàn');
-                            return false;
-                        } else {
-                            $.ajax({
-                                url: 'ajax/order/update/' + idBill,
-                                type: "POST",
-                                data: {
-                                    _token: token,
-                                    idTableOrder: idTable,
-                                    idDish: arrDishes,
-                                    qty: arrQties,
-                                    note: arrNotes,
-                                },
-                                success: function () {
-                                    alert('Thêm món hoàn tất');
-                                    location.reload();
-                                },
-                            });
-                        }
-                    });
-                }
-            });
-
-        }
-    });
-
     $('#paymentVoucherForm').on('submit', function (e) {
         e.preventDefault();
         const dateStart = document.getElementById('dateStart').value;
@@ -853,5 +648,46 @@ $(document).ready(function () {
 
             }
         });
+    })
+
+    $(".checkNVL").click(function (e) {
+        const idDishOrder = this.id;
+        $.ajax({
+            url: 'ajax/checkNVL/' + idDishOrder, //Trang xử lý
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+                $('input#DqtyOrder'  + idDishOrder).val(data.qtyOrder);
+                $('input#DqtyEmptyCook' + idDishOrder).val(data.qtyEmptyCook);
+                $('input#DqtyEmptyWh' + idDishOrder).val(data.qtyEmptyWarehouse);
+                $('input#qtyOrder'  + idDishOrder).val(data.qtyOrder);
+                $('input#qtyEmptyCook' + idDishOrder).val(data.qtyEmptyCook);
+                $('input#qtyEmptyWh' + idDishOrder).val(data.qtyEmptyWarehouse);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+    });
+
+    $('#searchTable').keyup(function () {
+        var value = $(this).val();
+        if(value != null || value != ""){
+            $.ajax({
+                url: 'ajax/search/table/' + value, //Trang xử lý
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
     })
 });

@@ -9,6 +9,8 @@ use App\Material;
 use App\GroupMenu;
 use App\WarehouseCook;
 use App\MaterialDetail;
+use App\OrderDetailTable;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -229,6 +231,14 @@ class AppServiceProvider extends ServiceProvider
         {
             $getOldPw = $this->getPassword(auth()->user()->id);
             return Hash::check($value, $getOldPw, []) == true ? true : false ;
+        });
+
+        Validator::extend('check_to_cook', function ($attribute, $value, $parameters, $validator)
+        {
+            $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            $check = OrderDetailTable::selectRaw('count(id) as qty')->whereBetween('updated_at',[$today . " 00:00:00",$today . " 23:59:59"])
+                    ->where('status','1')->value('qty');
+            return $check == 0 ? true : false ;
         });
     }
 

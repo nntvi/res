@@ -96,7 +96,7 @@
                 <ul class="dropdown-menu extended finishDish inbox">
                     <div class="title-notify-finish-dish">
                         <li>
-                            <p>Có món mới vừa hoàn thành</p>
+                            <p>Thông báo trạng thái các món</p>
                         </li>
                     </div>
                 </ul>
@@ -134,10 +134,10 @@
             </li>
             <li class="notificationWhCook">
                 @if(auth()->user()->notifyQtyWarehouse() != null)
-                    <div class="alert alert-success" role="alert" style="margin-bottom: 0px; padding: 5px 5px; margin-top: 2px">
-                        <strong class="test1">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết
+                    <a href="{{ route('warehouse.index') }}" class="alert alert-success" role="alert" style="background: orange; margin-bottom: 0px; padding: 5px 5px; margin-top: 2px">
+                        <strong class="test1" style="color:white">Có {{ auth()->user()->notifyQtyWarehouse() }} NVL trong kho sắp hết
                         </strong>
-                    </div>
+                    </a>
                 @else
 
                 @endif

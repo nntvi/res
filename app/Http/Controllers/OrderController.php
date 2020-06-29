@@ -9,6 +9,7 @@ use App\Inventory;
 use App\MaterialAction;
 use App\Order;
 use App\OrderDetailTable;
+use App\OrderTable;
 use App\Table;
 use Illuminate\Http\Request;
 use App\Repositories\OrderRepository\IOrderRepository;
@@ -38,7 +39,6 @@ class OrderController extends Controller
 
     public function orderTablePost(Request $request)
     {
-        //$this->orderRepository->validatorOrder($request);
         return $this->orderRepository->orderTablePost($request);
     }
 
@@ -84,9 +84,36 @@ class OrderController extends Controller
             $idDishOrder = OrderDetailTable::where('id_bill',$idOrderTable)->get();
             $this->orderRepository->loopDishOrdertoDestroy($idDishOrder);
             Order::where('id',$idOrderTable)->update(['status' => '-1']);
+            OrderTable::where('id_order',$idOrderTable)->update(['status' => '-1']);
             return redirect(route('order.index'))->withSuccess('Hủy bàn thành công');
         }
 
+    }
+
+    public function matchTable(Request $request,$idBill)
+    {
+        $idTableMatch = $request->idMatchTables;
+        $length = $request->lengthMatchTable;
+        for ($i=0; $i < $length; $i++) {
+            $this->orderRepository->saveTable($idBill,$idTableMatch[$i]);
+        }
+        return redirect(route('order.index'));
+    }
+
+    public function destroyTable(Request $request,$idBill)
+    {
+        $idDestroyTables = $request->idDestroyTables;
+        $length = $request->lengthDestroyTables;
+        $countTableMatchOrder = OrderTable::selectRaw('count(id) as qty')->where('id_order',$idBill)->where('status','1')->value('qty');
+        if($length == $countTableMatchOrder){
+            $this->deleteOrderTable($idBill);
+            return 1;
+        }else{
+            for ($i=0; $i < $length; $i++) {
+                OrderTable::where('id_table',$idDestroyTables[$i])->delete();
+            }
+            return 0;
+        }
     }
     public function showBill()
     {

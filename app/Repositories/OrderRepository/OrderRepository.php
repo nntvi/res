@@ -14,6 +14,8 @@ use App\WarehouseCook;
 use App\MaterialAction;
 use App\OrderDetailTable;
 use App\Http\Controllers\Controller;
+use App\OrderTable;
+use App\WareHouse;
 
 class OrderRepository extends Controller implements IOrderRepository{
 
@@ -46,7 +48,7 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function getIdTableActive($date)
     {
-        $activeTables= Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])->where('status', '1')->get();
+        $activeTables = OrderTable::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])->where('status', '1')->get();
         return $activeTables;
     }
 
@@ -87,10 +89,16 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function findInWarehouseCook($idCook,$idMaterialDetails)
     {
-        $detailWarehouse = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)->orderBy('id_material_detail')->get();
-        return $detailWarehouse;
+        $detailWarehouseCook = WarehouseCook::where('cook',$idCook)->whereIn('id_material_detail',$idMaterialDetails)
+                                ->with('detailMaterial')->orderBy('id_material_detail')->get();
+        return $detailWarehouseCook;
     }
 
+    public function findInWarehouse($idMaterialDetails)
+    {
+        $detailWarehouse = WareHouse::whereIn('id_material_detail',$idMaterialDetails)->orderBy('id_material_detail')->get();
+        return $detailWarehouse;
+    }
     public function showTableInDay()
     {
         $tables = Table::where('status','1')->get();
@@ -108,12 +116,14 @@ class OrderRepository extends Controller implements IOrderRepository{
         }
         return $random_string;
     }
+
     public function createCodeBill()
     {
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $code = $this->generate_string($permitted_chars,7);
         return $code;
     }
+
     public function orderTable()
     {
         $date = $this->getDateNow();
@@ -132,11 +142,19 @@ class OrderRepository extends Controller implements IOrderRepository{
         return $idShift;
     }
 
+    public function saveTable($idOrderTable,$idTable)
+    {
+        $tableOrdered = new OrderTable();
+        $tableOrdered->id_order = $idOrderTable;
+        $tableOrdered->id_table = $idTable;
+        $tableOrdered->status = '1';
+        $tableOrdered->save();
+    }
     public function saveOrder($request)
     {
         $orderTable = new Order();
         $orderTable->code = $this->createCodeBill();
-        $orderTable->id_table = $request->idTableOrder;
+        //$orderTable->id_table = $request->idTableOrder;
         $orderTable->status = '1'; // đang order, chưa thanh toán
         $orderTable->created_by = auth()->user()->name;
         $orderTable->time_created = Carbon::now('Asia/Ho_Chi_Minh')->format('H:m:s');
@@ -145,50 +163,45 @@ class OrderRepository extends Controller implements IOrderRepository{
         return $orderTable->id;
     }
 
-    public function compare($materialInWarehouseCooks,$materialInActions)
-    {
-        $a = 0;
-        $b = 0;
-        foreach ($materialInWarehouseCooks as $key => $matCook) {
-            $a++;
-            foreach ($materialInActions as $key => $matAction) {
-                if($matCook->id_material_detail == $matAction->id_material_detail){
-                    if($matCook->qty - $matAction->qty >=0){
-                        $b++;
-                    }
-                }
-            }
-        }
-        return $a == $b ? true : false ;
-    }
     public function getSalePriceOfDish($idDish)
     {
         $price = Dishes::where('id',$idDish)->value('sale_price');
         return $price;
     }
-    public function addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request)
+    public function addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request,$qty)
     {
-        $price = $this->getSalePriceOfDish($idDish);
         $orderDetail = new OrderDetailTable();
         $orderDetail->id_bill = $idOrderTable;
         $orderDetail->id_dish = $idDish;
-        $orderDetail->qty = $request->qty[$key];
-        $orderDetail->price = $price;
+        $orderDetail->qty = $qty;
+        $orderDetail->price = $this->getSalePriceOfDish($idDish);
         $orderDetail->note = $request->note[$key];
         $orderDetail->status = '0'; // chưa làm
         $orderDetail->save();
         $this->notifyNewDishForCook($idCook,$idDish);
     }
-    public function addOrderTableFalse($idDish,$idOrderTable,$idCook,$key,$request)
+    public function addOrderTableFalse($idDish,$idOrderTable,$idCook,$key,$request,$qty)
     {
-        $price = $this->getSalePriceOfDish($idDish);
         $orderDetail = new OrderDetailTable();
         $orderDetail->id_bill = $idOrderTable;
         $orderDetail->id_dish = $idDish;
-        $orderDetail->qty = $request->qty[$key];
-        $orderDetail->price = $price;
+        $orderDetail->qty = $qty;
+        $orderDetail->price = $this->getSalePriceOfDish($idDish);
         $orderDetail->note = $request->note[$key];
-        $orderDetail->status = '-1'; // hết nvl phục vụ
+        $orderDetail->status = '-1'; // hết nvl trong bếp để làm món
+        $orderDetail->save();
+        $this->notifyNewDishForCook($idCook,$idDish);
+    }
+
+    public function addOrderTableFalseWarehouse($idDish,$idOrderTable,$idCook,$key,$request,$qty)
+    {
+        $orderDetail = new OrderDetailTable();
+        $orderDetail->id_bill = $idOrderTable;
+        $orderDetail->id_dish = $idDish;
+        $orderDetail->qty = $qty;
+        $orderDetail->price = $this->getSalePriceOfDish($idDish);
+        $orderDetail->note = $request->note[$key];
+        $orderDetail->status = '-3'; // hết nvl trong kho để làm
         $orderDetail->save();
         $this->notifyNewDishForCook($idCook,$idDish);
     }
@@ -242,28 +255,33 @@ class OrderRepository extends Controller implements IOrderRepository{
             $this->destroyDish($dish->id);
         }
     }
+
     public function addDishesOrder($request,$idOrderTable)
     {
         $idDishes = $request->idDish;
         foreach ($idDishes as $key => $idDish) {
-            $idGroupNVL = $this->findIdGroupNVL($idDish);
-            $idCook = $this->findIdCook($idDish);
-            $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL);
+            $idGroupNVL = $this->findIdGroupNVL($idDish); // tìm nhóm thực đơn của món đó
+            $idCook = $this->findIdCook($idDish); // id cook nào đảm nhiệm
+            $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL); // những NVL tạo nên món đó
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
+            $materialInWarehouse = $this->findInWarehouse($idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
-            if($this->compare($materialInWarehouseCooks,$materialInActions)){
-                $this->addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request);
-            }else{
-                $this->addOrderTableFalse($idDish,$idOrderTable,$idCook,$key,$request);
-            }
+            $qtyOrder = $request->qty[$key];
+            $this->addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request,$qtyOrder);
         }
     }
 
     public function orderTablePost($request)
     {
         $idOrderTable = $this->saveOrder($request);
+        $this->saveTable($idOrderTable,$request->idTableOrder);
         $this->addDishesOrder($request,$idOrderTable);
-        return redirect(route('order.index'))->withSuccess('Order thành công');
+        $status = Order::where('id',$idOrderTable)->value('status');
+        $data = [
+            'idOrderTable' => $idOrderTable,
+            'status' => $status
+        ];
+        return $data;
     }
 
     public function addMoreDish($request,$idBill)
@@ -274,12 +292,10 @@ class OrderRepository extends Controller implements IOrderRepository{
             $idCook = $this->findIdCook($idDish);
             $idMaterialDetails = $this->getOnlyIdMaterialAction($idGroupNVL);
             $materialInWarehouseCooks = $this->findInWarehouseCook($idCook,$idMaterialDetails);
+            $materialInWarehouse = $this->findInWarehouse($idMaterialDetails);
             $materialInActions = $this->getMaterialAction($idGroupNVL);
-            if($this->compare($materialInWarehouseCooks,$materialInActions)){
-                $this->addOrderTableTrue($idDish,$idBill,$idCook,$key,$request);
-            }else{
-                $this->addOrderTableFalse($idDish,$idBill,$idCook,$key,$request);
-            }
+            $qtyOrder = $request->qty[$key];
+            $this->addOrderTableTrue($idDish,$idBill,$idCook,$key,$request,$qtyOrder);
         }
     }
 
