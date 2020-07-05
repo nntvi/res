@@ -5,6 +5,7 @@ interface IReportRepository{
     function reportOrder($request);
     function reportTable($request);
     function reportDish($request);
+    function reportDestroyDish($request);
     function getToTalRevenueInYear();
     function getRevenueByMonth($startMonth,$endMonth);
     function getAllRevenue();

@@ -78,6 +78,35 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
             ['qtyOrder.check_to_cook' => 'Có món đang thực hiện, không thể sang món mới']
         );
     }
+
+    public function checkRoleDetail($results)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($results); $i++) {
+            if($results[$i] == "XEM_FULL"){
+                return 0;
+                break;
+            }else if($results[$i] == "XEM_BEP1"){
+                return 1;
+                break;
+            }
+            else if($results[$i] == "XEM_BEP2"){
+                return 2;
+                break;
+            }
+            else if($results[$i] == "XEM_BEP3"){
+                return 3;
+                break;
+            }
+            else{
+                $temp++;
+            }
+        }
+        if($temp != 0){
+            return 4;
+        }
+    }
+
     public function checkWarehouseCook($a,$b,$qtyOrder,$materialInWarehouseCooks,$materialInActions)
     {
         if($a != $b) { // ko đủ NVL thực hiện hết số sp order
@@ -301,7 +330,7 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         OrderDetailTable::where('id',$idDishOrder)->update(['status' => '2','cooked_by' => auth()->user()->name]);
         for ($i=0; $i < count($idMaterialDetails); $i++) {
             $temp = $this->getPrevQtyWarehouseCook($idCook,$idMaterialDetails[$i]);
-            //WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterialDetails[$i])->update(['qty' => $temp - ($qtyMethods[$i] * $qtyReals[$i])]);
+            WarehouseCook::where('cook',$idCook)->where('id_material_detail',$idMaterialDetails[$i])->update(['qty' => $temp - ($qtyMethods[$i] * $qtyReals[$i])]);
         }
         $this->notifyDish($dish->dish->id,$dish->qty,$this->getTableByIdOrder($dish->id_bill),'2',$idCook);
         return redirect(route('cook_screen.detail',['id' => $idCook]))->withSuccess('Đã thực hiện xong món: ' . $dish->dish->name . ' ' . $this->getTableByIdOrder($dish->id_bill));

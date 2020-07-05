@@ -46,7 +46,7 @@
                         <td>
                             @foreach ($exportCoupon->detailExportCoupon as $item)
                                 @if ($exportCoupon->id_type == '2')
-                                    {{ $item->supplier->status == '$item->name_object1' ?  : $item->name_object . '( ngưng hoạt động)' }}
+                                    {{ $item->supplier->status == '1' ? $item->name_object : $item->name_object . '( ngưng hoạt động)' }}
                                     @break
                                 @else
                                     {{ $item->name_object }}

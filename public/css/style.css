@@ -780,8 +780,8 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     font-weight: 400;
     padding: 0 16px;
     background:#ddede0;
-   border-top-right-radius: 2px;
-   border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
     text-transform: uppercase;
     text-align: center;
 }

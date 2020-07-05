@@ -11,18 +11,22 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group ">
-                            <label class="control-label">Báo cáo theo: </label>
-                            <select class="form-control m-bot15" id="timeReport">
-                                <option value="0">Hôm nay</option>
-                                <option value="1">Hôm qua</option>
-                                <option value="2">Tuần này</option>
-                                <option value="3">Tuần trước</option>
-                                <option value="4">Tháng này</option>
-                                <option value="5">Tháng trước</option>
-                                <option value="6">Quý này</option>
-                                <option value="7">Quý trước</option>
-                                <option value="8">Năm nay</option>
-                            </select>
+                            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                 <label class="control-label" style="cursor:pointer; color: black;">Chọn &nbsp;<i class="fa fa-angle-down" aria-hidden="true"></i> </label>
+                            </a>
+                            <div class="collapse" id="collapseExample">
+                                <select class="form-control m-bot15" id="timeReport">
+                                    <option value="0">Hôm nay</option>
+                                    <option value="1">Hôm qua</option>
+                                    <option value="2">Tuần này</option>
+                                    <option value="3">Tuần trước</option>
+                                    <option value="4">Tháng này</option>
+                                    <option value="5">Tháng trước</option>
+                                    <option value="6">Quý này</option>
+                                    <option value="7">Quý trước</option>
+                                    <option value="8">Năm nay</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
@@ -150,7 +154,7 @@
             </div>
             <div>
                 <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="example">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
@@ -176,6 +180,8 @@
                                             <td class="text-right">{{ $result['created_at'] }}</td>
                                         </tr>
                                     @endforeach
+                                </tbody>
+                                <tfoot>
                                     <tr class="bold">
                                         <td colspan="4" class="text-right">TỔNG: </td>
                                         <td>{{ number_format($footerTotalSupplier[0]['total']) . ' đ' }}
@@ -185,28 +191,21 @@
                                         <td>{{ number_format($footerTotalSupplier[0]['unPaid']) . ' đ' }}
                                         </td>
                                     </tr>
-                                </tbody>
+                                </tfoot>
                             </table>
                 </div>
-                <footer class="panel-footer">
-                    <div class="row">
-
-                        <div class="col-sm-5 text-center">
-                        <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                        </div>
-                        <div class="col-sm-7 text-right text-center-xs">
-                        <ul class="pagination pagination-sm m-t-none m-b-none">
-                            <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                            <li><a href="">1</a></li>
-                            <li><a href="">2</a></li>
-                            <li><a href="">3</a></li>
-                            <li><a href="">4</a></li>
-                            <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
-                        </ul>
-                        </div>
-                    </div>
-                </footer>
             </div>
+            <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+            <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+            <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+            <script>
+                $(document).ready( function () {
+                    $('#example').dataTable();
+                    $('#example_info').addClass('text-muted');
+                    $('#example_length').remove();
+                    $('#example_filter').remove();
+                } );
+            </script>
         </div>
     </div>
 </div>

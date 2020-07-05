@@ -14,6 +14,7 @@ class ExportCouponController extends Controller
     {
         $this->exportcouponRepository = $exportcouponRepository;
     }
+
     public function index()
     {
         return $this->exportcouponRepository->showIndex();

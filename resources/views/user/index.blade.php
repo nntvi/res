@@ -92,71 +92,77 @@
                             </td>
                             <td>{{ $user->email }}</td>
                             <td>
+                                @if (auth()->id() == $user->id)
+                                    Admin
+                                @else
                                 <a href="#position{{ $user->id }}" data-toggle="modal">
-                                    <i class="fa fa-pencil-square-o text-warning" aria-hidden="true"></i>
-                                </a>
-                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
-                                    id="position{{ $user->id }}" class="modal fade" style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button aria-hidden="true" data-dismiss="modal" class="close"
-                                                    type="button">×</button>
-                                                <h4 class="modal-title">Thay đổi chức vụ</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form role="form"
-                                                    action="{{ route('user.p_updateposition',['id' => $user->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <label>Chức vụ hiện tại</label>
-                                                        @if($user->position == null )
-                                                            <input type="text" class="form-control"
-                                                            value="Chưa có chức vụ" disabled>
-                                                        @else
-                                                            <input type="text" class="form-control"
-                                                            value="{{ $user->position->name }}" disabled>
-                                                        @endif
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Chức vụ mới</label>
-                                                        <select name="position" id="" class="form-control">
-                                                            @foreach ($positions as $position)
-                                                                <option value="{{ $position->id }}">{{ $position->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-default">Cập nhật</button>
-                                                </form>
+                                        <i class="fa fa-pencil-square-o text-warning" aria-hidden="true"></i>
+                                    </a>
+                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
+                                        id="position{{ $user->id }}" class="modal fade" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                        type="button">×</button>
+                                                    <h4 class="modal-title">Thay đổi chức vụ</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form role="form"
+                                                        action="{{ route('user.p_updateposition',['id' => $user->id]) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <div class="form-group">
+                                                            <label>Chức vụ hiện tại</label>
+                                                            @if($user->position == null )
+                                                                <input type="text" class="form-control"
+                                                                value="Chưa có chức vụ" disabled>
+                                                            @else
+                                                                <input type="text" class="form-control"
+                                                                value="{{ $user->position->name }}" disabled>
+                                                            @endif
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Chức vụ mới</label>
+                                                            <select name="position" id="" class="form-control">
+                                                                @foreach ($positions as $position)
+                                                                    <option value="{{ $position->id }}">{{ $position->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-default">Cập nhật</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                @if($user->position == null )
-                                    Chưa có chức vụ
-                                @else
-                                    {{ $user->position->name }}
+                                    @if($user->position == null )
+                                        Chưa có chức vụ
+                                    @else
+                                        {{ $user->position->name }}
+                                    @endif
                                 @endif
-                            </td>
-                            {{-- <td>
-                                @if($user->position == null )
-                                    Chưa có chức vụ
-                                @else
-                                    {{ number_format($user->position->salary) . ' đ/tháng' }}
-                                @endif
-                            </td> --}}
-                            <td>
-                                <a href="{{ route('user.updaterole',['id' => $user->id]) }}"
-                                    class="btn btn-xs btn-success">
-                                    <i class="fa fa-eye" aria-hidden="true"></i> Quyền truy cập
-                                </a>
+
                             </td>
                             <td>
-                                <a
-                                    href="{{ route('user.shift',['id' => $user->id]) }}">
-                                    <i class="fa fa-calendar text-info" aria-hidden="true"></i>
-                                </a>
+                                @if ((auth()->id() != $user->id))
+                                    <a href="{{ route('user.updaterole',['id' => $user->id]) }}"
+                                        class="btn btn-xs btn-success">
+                                        <i class="fa fa-eye" aria-hidden="true"></i> Quyền truy cập
+                                    </a>
+                                @else
+                                    Admin
+                                @endif
+                            </td>
+                            <td>
+                                @if ((auth()->id() == $user->id))
+                                    Admin
+                                @else
+                                    <a
+                                        href="{{ route('user.shift',['id' => $user->id]) }}">
+                                        <i class="fa fa-calendar text-info" aria-hidden="true"></i>
+                                    </a>
+                                @endif
                             </td>
                             <td>
                                 @if(auth()->id() == $user->id)

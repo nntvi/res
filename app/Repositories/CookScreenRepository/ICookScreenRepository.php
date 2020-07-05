@@ -4,6 +4,7 @@ namespace App\Repositories\CookScreenRepository;
 interface ICookScreenRepository{
     function getDishByIdDishOrder($idDishOrder);
     function getAllCookArea();
+    function checkRoleDetail($results);
     function getDetailCookScreen($id);
     function updateStatusWarehouseCook($idMaterial,$idCook);
     function updateFinishDish($idDishOrder,$idCook,$idMaterialDetails,$qtyMethods,$qtyReals,$dish);

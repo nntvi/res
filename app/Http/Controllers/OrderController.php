@@ -117,7 +117,7 @@ class OrderController extends Controller
     }
     public function showBill()
     {
-        $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('created_at','desc')->paginate(10);
+        $bills = Order::with('tableOrdered.table','user','shift','orderDetail.dish')->orderBy('created_at','desc')->paginate(10);
         return view('bill.index',compact('bills'));
     }
 

@@ -51,46 +51,67 @@ class PermissionRepository extends Controller implements IPermissionRepository
         return view('permission.search',compact('permissions','permissiondetails'));
     }
 
-    public function addPositionToSalary($idPosition)
-    {
-        $salary = new Salary();
-        $salary->id_position = $idPosition;
-        $salary->save();
+    function vn_to_str ($str){
+        $unicode = array(
+            'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
+            'd'=>'đ',
+            'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
+            'i'=>'í|ì|ỉ|ĩ|ị',
+            'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+            'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+            'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+            'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+            'D'=>'Đ',
+            'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+            'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
+            'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+            'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+            'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+        );
+        foreach($unicode as $nonUnicode=>$uni){
+            $str = preg_replace("/($uni)/i", $nonUnicode, $str);
+        }
+        $str  = strtoupper($str);
+        $str = str_replace(' ','_',$str);
+        return $str;
     }
 
-    public function convertActionCode($str)
+    public function add($arrPerDetail,$convertArrPerDetail,$idPermission)
     {
-        $s = strtoupper($str);
-        $s = str_replace(' ','_',$s);
-        return $s;
-    }
-
-    public function add($data,$idPermission)
-    {
-        for ($i=0; $i < count($data); $i++) {
-            $actionCode = $this->convertActionCode($data[$i]);
-            $temp = PermissionDetail::create(['name' => $data[$i],'action_code' => $actionCode]);
+        for ($i=0; $i < count($arrPerDetail); $i++) {
+            $temp = PermissionDetail::create(['name' => $arrPerDetail[$i],'action_code' => $convertArrPerDetail[$i]]);
             PermissionAction::create(['id_per' => $idPermission, 'id_per_detail' => $temp->id]);
         }
     }
     public function createPermissionDetail($namePermission)
     {
         $arrNameDetailPermission = array();
-        $newDetailView = "View " . $namePermission;
+        $newDetailView = "Xem " . $namePermission;
         array_push($arrNameDetailPermission,$newDetailView);
-        $newDetailCreate = "Create " . $namePermission;
+        $newDetailCreate = "Tạo " . $namePermission;
         array_push($arrNameDetailPermission,$newDetailCreate);
-        $newDetailDelete = "Delete " . $namePermission;
+        $newDetailDelete = "Xóa " . $namePermission;
         array_push($arrNameDetailPermission,$newDetailDelete);
-        $newDetailEdit = "Edit " . $namePermission;
+        $newDetailEdit = "Sửa " . $namePermission;
         array_push($arrNameDetailPermission,$newDetailEdit);
         return $arrNameDetailPermission;
+    }
+
+    public function createArrayVN($array)
+    {
+        $temp = array();
+        for ($i=0; $i < count($array); $i++) {
+            $string = $this->vn_to_str($array[$i]);
+            array_push($temp,$string);
+        }
+        return $temp;
     }
     public function addPermission($req)
     {
         $permission = Permission::create(['name'=> $req->name]);
         $arrPerDetail = $this->createPermissionDetail($req->name);
-        $this->add($arrPerDetail,$permission->id);
+        $convertArrPerDetail = $this->createArrayVN($arrPerDetail);
+        $this->add($arrPerDetail,$convertArrPerDetail,$permission->id);
         return redirect(route('permission.index'));
     }
     public function getPermissionDetail()
@@ -175,7 +196,6 @@ class PermissionRepository extends Controller implements IPermissionRepository
         PermissionAction::where('id_per', $id)->delete();
         Permission::find($id)->delete();
         UserPermission::where('id_per',$id)->delete();
-        Salary::where('id_position',$id)->delete();
         return redirect(route('permission.index'));
     }
 }

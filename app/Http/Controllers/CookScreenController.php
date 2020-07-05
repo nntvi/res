@@ -28,15 +28,15 @@ class CookScreenController extends Controller
         $cooks = $this->cookscreenRepository->getAllCookArea();
         foreach ($cooks as $cook) {
             foreach ($result as $rs) {
-                if($cook->id == 1 && $rs == "VIEW_COOK1" || $rs == "VIEW_FULL"){
+                if($cook->id == 1 && $rs == "XEM_BEP1" || $rs == "XEM_FULL"){
                     array_push($data,$cook);
                     break;
                 }
-                if($cook->id == 2 && $rs == "VIEW_COOK2" || $rs == "VIEW_FULL"){
+                if($cook->id == 2 && $rs == "XEM_BEP2" || $rs == "XEM_FULL"){
                     array_push($data,$cook);
                     break;
                 }
-                if($cook->id == 3 && $rs == "VIEW_COOK3" || $rs == "VIEW_FULL"){
+                if($cook->id == 3 && $rs == "XEM_BEP3" || $rs == "XEM_FULL"){
                     array_push($data,$cook);
                     break;
                 }
@@ -48,26 +48,34 @@ class CookScreenController extends Controller
     public function getDetail($id)
     {
         $results = $this->checkAction->getPermission(auth()->id());
-        $temp = 0;
-        foreach ($results as $key => $result) {
-            if($result == "VIEW_COOK1" || $result == "EDIT_COOK1" || $result == "VIEW_FULL"){
-                $temp++;
-                return $this->cookscreenRepository->getDetailCookScreen(1);
+        $check = $this->cookscreenRepository->checkRoleDetail($results);
+        switch ($check) {
+            case 0:
+                return $this->cookscreenRepository->getDetailCookScreen($id);
                 break;
-            }
-            else if($result == "VIEW_COOK2" || $result == "EDIT_COOK2" || $result == "VIEW_FULL"){
-                $temp++;
-                return $this->cookscreenRepository->getDetailCookScreen(2);
+            case 1:
+                if($id == 1){
+                    return $this->cookscreenRepository->getDetailCookScreen(1);
+                }else{
+                    return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+                }
                 break;
-            }
-            else if($result == "VIEW_COOK3" || $result == "EDIT_COOK3" || $result == "VIEW_FULL"){
-                $temp++;
-                return $this->cookscreenRepository->getDetailCookScreen(1);
+            case 2:
+                if($id == 2){
+                    return $this->cookscreenRepository->getDetailCookScreen(2);
+                }else{
+                    return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+                }
                 break;
-            }
-        }
-        if($temp == 0){
-            return view('layouts');
+            case 3:
+                if($id == 3){
+                    return $this->cookscreenRepository->getDetailCookScreen(3);
+                }else{
+                    return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+                }
+                break;
+            default:
+                return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
         }
     }
 
@@ -129,6 +137,10 @@ class CookScreenController extends Controller
         }else if($qtyCanDo != 0 && $qtyEmptyCook != 0 && $qtyEmptyWh == 0){
             $this->cookscreenRepository->updateStatusDish($id,$idCook,$dishOrder,$qtyCanDo,'1');
             $this->cookscreenRepository->createDishEmptyCook($dishOrder,$qtyEmptyCook,$idCook);
+            return redirect(route('cook_screen.detail',['id' => $idCook]));
+        }else if($qtyCanDo != 0 && $qtyEmptyCook == 0 && $qtyEmptyWh != 0){
+            $this->cookscreenRepository->updateStatusDish($id,$idCook,$dishOrder,$qtyCanDo,'1');
+            $this->cookscreenRepository->createDishEmptyWh($dishOrder,$qtyEmptyWh,$idCook);
             return redirect(route('cook_screen.detail',['id' => $idCook]));
         }
     }

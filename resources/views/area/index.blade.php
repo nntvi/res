@@ -68,18 +68,24 @@
                                                                 <input type="text" class="form-control" name="codeTable" min="3"  max="15" required>
                                                             </div>
                                                             <div class="col-xs-6 text-left">
-                                                                <label>Tên bàn</label>
+                                                                <label>Số lượng ghế</label>
                                                                 <input type="text" class="form-control" name="nameTable" min="3" max="30" required>
                                                             </div>
                                                         </div>
                                                         <div class="space"></div>
-                                                        <div class="form-group ">
-                                                            <label>Khu vực</label>
-                                                            <select name="idArea" class="form-control">
-                                                                @foreach($areaTables as $area)
-                                                                    <option id="{{ $area->id }}" value="{{ $area->id }}">{{ $area->name }}</option>
-                                                                @endforeach
-                                                            </select>
+                                                        <div class="form-group row">
+                                                            <div class="col-xs-6">
+                                                                <label>Tên bàn</label>
+                                                                <input type="number" min="1" max="8" class="form-control" value="2" name="qtyChairs" required>
+                                                            </div>
+                                                            <div class="col-xs-6">
+                                                                <label>Khu vực</label>
+                                                                <select name="idArea" class="form-control">
+                                                                    @foreach($areaTables as $area)
+                                                                        <option id="{{ $area->id }}" value="{{ $area->id }}">{{ $area->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                         <div class="space"></div>
                                                         <div class="form-group">
@@ -181,7 +187,7 @@
                                                                                     <input type="text" class="form-control" value="{{ $item->code }}" disabled>
                                                                                 </div>
                                                                                 <div class="col-xs-6">
-                                                                                    <label>Mã bàn</label>
+                                                                                    <label>Khu vực </label>
                                                                                     <input type="text" class="form-control" value="{{ $item->getArea->name }}" disabled>
                                                                                 </div>
                                                                             </div>
@@ -195,7 +201,51 @@
                                                                 </div>
                                                             </div>
                                                     </div>
-                                                    {{ $item->name }}
+                                                    {{ $item->name }} -
+                                                    {{ $item->chairs }} Ghế
+                                                        <a href="#chair{{ $item->id }}" data-toggle="modal">
+                                                            <i class="fa fa-pencil text-info" aria-hidden="true"></i>
+                                                        </a>
+                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="chair{{ $item->id }}" class="modal fade" style="display: none;">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                            <h4 class="modal-title">Chỉnh sửa số lượng ghế</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <form action="{{ route('table.p_updatechair',['id' => $item->id]) }}" method="POST">
+                                                                                @csrf
+                                                                                <div class="form-group row">
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Mã bàn</label>
+                                                                                        <input type="text" class="form-control" value="{{ $item->code }}" disabled>
+                                                                                    </div>
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Khu vực</label>
+                                                                                        <input type="text" class="form-control" value="{{ $item->getArea->name }}" disabled>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group row">
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Tên bàn</label>
+                                                                                        <input type="text" class="form-control" name="nameTable" value="{{ $item->name }}" disabled>
+                                                                                    </div>
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Số lượng ghế</label>
+                                                                                        <input type="number" min="1" max="8" class="form-control" name="qtyChairs" value="{{ $item->chairs }}" required>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xs-12 text-center">
+                                                                                        <button type="submit" class="btn btn-default">Cập nhật</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
                                                 </div>
                                                 <div class="col-xs-6 text-right">
                                                     <a class="text-right" href="{{ route('table.delete',['id' => $item->id]) }}"onclick="return confirm('Bạn muốn xóa khu vực này?')">
@@ -301,7 +351,50 @@
                                                                 </div>
                                                             </div>
                                                     </div>
-                                                    {{ $area->containTable[$i]->name }}
+                                                    {{ $area->containTable[$i]->name }} - {{ $area->containTable[$i]->chairs }} Ghế
+                                                    <a href="#chair{{ $area->containTable[$i]->id }}" data-toggle="modal">
+                                                            <i class="fa fa-pencil text-info" aria-hidden="true"></i>
+                                                        </a>
+                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="chair{{ $area->containTable[$i]->id }}" class="modal fade" style="display: none;">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                            <h4 class="modal-title">Chỉnh sửa số lượng ghế</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <form action="{{ route('table.p_updatechair',['id' => $area->containTable[$i]->id ]) }}" method="POST">
+                                                                                @csrf
+                                                                                <div class="form-group row">
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Mã bàn</label>
+                                                                                        <input type="text" class="form-control" value="{{ $area->containTable[$i]->code }}" disabled>
+                                                                                    </div>
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Khu vực</label>
+                                                                                        <input type="text" class="form-control" value="{{ $area->containTable[$i]->getArea->name }}" disabled>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group row">
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Tên bàn</label>
+                                                                                        <input type="text" class="form-control" name="nameTable" value="{{ $area->containTable[$i]->name }}" disabled>
+                                                                                    </div>
+                                                                                    <div class="col-xs-6">
+                                                                                        <label>Số lượng ghế</label>
+                                                                                        <input type="number" min="1" max="8" class="form-control" name="qtyChairs" value="{{ $area->containTable[$i]->chairs }}" required>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-xs-12 text-center">
+                                                                                        <button type="submit" class="btn btn-default">Cập nhật</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
                                             </div>
                                                 <div class="col-xs-6 text-right">
                                                     <a class="text-right" href="{{ route('table.delete',['id' => $area->containTable[$i]->id]) }}"onclick="return confirm('Bạn muốn xóa bàn này?')">

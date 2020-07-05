@@ -9,7 +9,7 @@ Route::group(['prefix' => 'ajax'], function() {
 
     Route::group(['prefix' => 'search'], function () {
         Route::get('paymentvoucher/{code}','AjaxController@searchPaymentVoucher');
-        Route::get('table/{name}','AjaxController@searchTables');
+        Route::get('dish/{name}','AjaxController@searchDish');
     });
     Route::group(['prefix' => 'order'], function () {
         Route::get('table/{idBill}/{idTable}','AjaxController@getDishOrderTable');
@@ -34,6 +34,7 @@ Route::group(['prefix' => 'ajax'], function() {
     });
 
     Route::group(['prefix' => 'report'], function() {
+        Route::get('dish/{dateStart}/{dateEnd}/{idGroupmenu}','AjaxController@reportDish');
         Route::get('getDateTime/{id}','AjaxController@getDateTimeToReport');
         Route::get('overview/{dateStart}/{dateEnd}','AjaxController@showOverview');
         Route::get('profit/{dateStart}/{dateEnd}','AjaxController@getProfit');

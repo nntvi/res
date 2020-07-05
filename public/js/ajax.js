@@ -179,7 +179,7 @@ $(document).ready(function () {
                 '</tbody>' +
                 '</table>';
                 $('#tableMaterialExportSupplier').append(tableMaterialExportSupplier);
-                $('#submit').append('<button type="submit" class="btn green-meadow radius">Tạo phiếu</button>');
+                $('#submit').append('<a href="warehouse/index" class="btn btn-default">Trở về</a>&nbsp;<button type="submit" class="btn green-meadow radius">Tạo phiếu</button>');
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -383,6 +383,16 @@ $(document).ready(function () {
         });
     });
 
+    function makeCode(length) {
+        var result           = 'PCN';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     $('#paymentVoucherForm').on('submit', function (e) {
         e.preventDefault();
         const dateStart = document.getElementById('dateStart').value;
@@ -402,7 +412,7 @@ $(document).ready(function () {
                     $('#formPaymentVoucherSupplier').empty();
                     let tableImportCoupons =
                     `<table class="table table-bordered" id="infoImportCoupons">
-                        <h3 class="typoh2">Phiếu nhập trong thời gian và NCC vừa chọn</h3>
+                        <h3 class="typoh2 text-center">Phiếu nhập trong thời gian và Nhà Cung Cấp vừa chọn</h3>
                         <thead>
                             <tr>
                                 <th>Mã phiếu nhập</th>
@@ -446,20 +456,28 @@ $(document).ready(function () {
                                 <td></td>
                             </tr>
                         </tbody>
-                    </table>`;
+                    </table>
+                    <div class="row">
+                        <div class="col-xs-12 text-center " data-toggle="collapse">
+                            <a class="btn btn-default" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                Tạo phiếu chi nợ &nbsp;
+                                <i class="fa fa-chevron-circle-down text-danger" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>`;
                     $('#leftTable').append(tableImportCoupons);
+                    let code = makeCode(5);
                     let formSubmit =
-                    `<h3 class="typoh2 text-right">Tạo phiếu chi</h3>
-                        <div class="list-group list-group-alternate">
+                        `<div class="list-group list-group-alternate">
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-4 control-label">Mã phiếu chi</label>
-                                <div class="col-xs-12 col-sm-8">
-                                    <input type="text" class="form-control" name="code" required>
+                                <label class="col-xs-12 col-sm-2 control-label">Mã phiếu chi</label>
+                                <div class="col-xs-12 col-sm-10">
+                                    <input type="text" class="form-control" name="code" value="`+ code +`" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-4 control-label">Nhà cung cấp</label>
-                                <div class="col-xs-12 col-sm-8">
+                                <label class="col-xs-12 col-sm-2 control-label">Nhà cung cấp</label>
+                                <div class="col-xs-12 col-sm-10">
                                     <input type="hidden" name="idSupplierChoosen" value="`+ idSupplier +`">
                                     <input type="hidden" name="dateStart" value="`+ dateStart +`">
                                     <input type="hidden" name="dateEnd" value="`+ dateEnd +`">
@@ -468,23 +486,23 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-4 control-label">Số tiền trả: </label>
-                                <div class="col-xs-12 col-sm-8">
+                                <label class="col-xs-12 col-sm-2 control-label">Số tiền trả: </label>
+                                <div class="col-xs-12 col-sm-10">
                                     <input class="form-control" type="number" name="pay_cash" id="payCash" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-4 control-label">Ghi chú: </label>
-                                <div class="col-xs-12 col-sm-8">
+                                <label class="col-xs-12 col-sm-2 control-label">Ghi chú: </label>
+                                <div class="col-xs-12 col-sm-10">
                                     <textarea class="form-control" name="note"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-xs-12 text-right">
-                                    <button type="submit" class="btn btn-success">Tạo phiếu</button>
+                                    <button type="submit" class="btn green-meadow radius">Tạo phiếu</button>
                                 </div>
                             </div>
-                        </div> `;
+                        </div>`;
                     $('#formPaymentVoucherSupplier').append(formSubmit);
                 }
             });
@@ -672,22 +690,4 @@ $(document).ready(function () {
         });
     });
 
-    $('#searchTable').keyup(function () {
-        var value = $(this).val();
-        if(value != null || value != ""){
-            $.ajax({
-                url: 'ajax/search/table/' + value, //Trang xử lý
-                method: 'GET',
-                dataType: 'JSON',
-                success: function (data) {
-                    console.log(data);
-
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
-                }
-            });
-        }
-    })
 });

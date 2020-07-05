@@ -24,18 +24,19 @@
                         <div class="row">
                             <div class="col-xs-6 col-sm-3">
                                 <div class="form-group ">
-                                    <label class="control-label">Báo cáo theo</label>
-                                    <select class="form-control" id="timeReport" name="timeReport">
-                                        <option value="0">Hôm nay</option>
-                                        <option value="1">Hôm qua</option>
-                                        <option value="2">Tuần này</option>
-                                        <option value="3">Tuần trước</option>
-                                        <option value="4">Tháng này</option>
-                                        <option value="5">Tháng trước</option>
-                                        {{-- <option value="6">Quý này</option>
-                                        <option value="7">Quý trước</option>
-                                        <option value="8">Năm nay</option> --}}
-                                    </select>
+                                    <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <label class="control-label" style="cursor:pointer; color: black;">Chọn &nbsp;<i class="fa fa-angle-down" aria-hidden="true"></i> </label>
+                                    </a>
+                                    <div class="collapse" id="collapseExample">
+                                        <select class="form-control m-bot15" id="timeReport">
+                                            <option value="0">Hôm nay</option>
+                                            <option value="1">Hôm qua</option>
+                                            <option value="2">Tuần này</option>
+                                            <option value="3">Tuần trước</option>
+                                            <option value="4">Tháng này</option>
+                                            <option value="5">Tháng trước</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-3">
@@ -191,8 +192,8 @@
                         </a>
                     </div>
                 </div>
-                <div class="table-responsive" style="border-top: 1px solid #ddd;">
-                    <table class="table table-striped b-t b-light">
+                <div class="table-responsive">
+                    <table class="table table-striped b-t b-light display" id="example" >
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -206,7 +207,7 @@
                                 <th>Lợi nhuận</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody >
                             @foreach($results as $item)
                                 <tr>
                                     <td>{{ $item['stt'] }}</td>
@@ -240,9 +241,18 @@
 
                 </div>
             </section>
-
         </div>
     </div>
     <!-- page end-->
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('#example_length').remove();
+            $('#example_filter').remove();
+        } );
+    </script>
 </div>
 @endsection

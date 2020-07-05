@@ -47,7 +47,12 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $bill->code }}</td>
-                            <td>{{ $bill->id_table }}</td>
+                            <td>
+                                @foreach ($bill->tableOrdered as $table)
+                                    {{ $table->table->name }}
+                                    {{ count($bill->tableOrdered) > 1 ? ', ' : '' }}
+                                @endforeach
+                            </td>
                             <td>{{ $bill->status == '0' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
                             </td>
                             <td>{{ number_format($bill->total_price) . ' đ' }}</td>

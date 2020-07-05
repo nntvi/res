@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('store', 'TableController@store')->name('table.p_store');
         Route::post('updateName/{id}', 'TableController@updateName')->name('table.p_updatename');
         Route::post('updateArea/{id}', 'TableController@updateArea')->name('table.p_updatearea');
+        Route::post('updateChair/{id}', 'TableController@updateChair')->name('table.p_updatechair');
         Route::get('delete/{id}', 'TableController@delete')->name('table.delete');
     });
 
@@ -179,7 +180,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'order'], function() {
         Route::get('index', 'OrderController@showTable')->name('order.index');
         Route::get('orderTable', 'OrderController@orderTable')->name('order.order');
-        //Route::post('tempOrder','OrderController@orderTablePost')->name('order.temporder');
+        Route::post('tempOrder','OrderController@orderTablePost')->name('order.temporder');
         Route::get('viewUpdate/{id}', 'OrderController@viewUpdate')->name('order.update');
         Route::post('update/{id}','OrderController@update')->name('order.p_update');
         Route::get('addmoredish/{id}','OrderController@viewaddMoreDish')->name('order.addmore');
@@ -316,11 +317,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('export/{dateStart}/{dateEnd}/{status}','ReportController@exportTableReport')->name('report.exporttable');
         });
 
-
         Route::group(['prefix' => 'dish'], function() {
             Route::get('view', 'ReportController@viewDish')->name('report.dish');
             Route::post('post', 'ReportController@reportDish')->name('report.p_dish');
             Route::get('export/{dateStart}/{dateEnd}/{idGroupMenu}','ReportController@exportDishReport')->name('report.exportdish');
+            Route::get('destroyView', 'ReportController@viewDestroyDish')->name('report.destroydish');
+            Route::post('destroyViewPost', 'ReportController@reportDestroyDish')->name('report.p_destroydish');
+            Route::get('exportdestroydish/{dateStart}/{dateEnd}/{idGroupMenu}','ReportController@exportDestroyDishReport')->name('report.exportdestroydish');
         });
 
         Route::group(['prefix' => 'supplier'], function () {

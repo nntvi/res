@@ -18,6 +18,13 @@
         <!--main content end-->
     </section>
     <script>
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                toastr.error('{{ $error }}')
+            @endforeach
+        @endif
+    </script>
+    <script>
         const roleViewWarehouseCook = JSON.parse(document.getElementById('viewWarehouseCook').value);
         var notificationsWrapper   = $('.notificationOutOfStockCook');
         var notificationsToggle    = notificationsWrapper.find('a[data-toggle]');

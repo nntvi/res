@@ -18,15 +18,26 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class UserRepository  extends Controller implements IUserRepository{
 
-    public function getAllUser($arr){
-        foreach ($arr as $name) {
-            if($name == "VIEW_USER" || $name = "VIEW_FULL"){
-                $users = User::with('userper.permissionDetail','position')->paginate(5);
-                $positions = Position::orderBy('name','asc')->get();
-                return view('user/index',compact('users','positions'));
+    public function checkRole($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_NHAN_VIEN"){
+                $temp++;
             }
         }
-        return view('layouts');
+        return $temp;
+    }
+
+    public function getAllUser($arr){
+        $check = $this->checkRole($arr);
+        if($check != 0){
+            $users = User::with('userper.permissionDetail','position')->paginate(5);
+            $positions = Position::orderBy('name','asc')->get();
+            return view('user/index',compact('users','positions'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function validatorRequestStore($req){

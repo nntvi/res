@@ -74,6 +74,25 @@ class ReportSupplier implements FromCollection, WithHeadings
 
     }
 
+    public function getTotal()
+    {
+        $imports = $this->getResultImports($this->dateStart,$this->dateEnd,$this->idSupplier);
+        $results = $this->createArrayReportSupplier($this->dateStart,$this->dateEnd,$imports);
+        $total = 0; $paid = 0; $unPaid = 0;
+        foreach ($results as $key => $result) {
+            $total += $result['total'];
+            $paid += $result['paid'];
+        }
+        $unPaid = $total - $paid;
+        $temp = [
+            'total' => $total,
+            'paid' => $paid,
+            'unPaid' => $unPaid
+        ];
+        $footerTotalSupplier = array();
+        array_push($footerTotalSupplier,$temp);
+        return $footerTotalSupplier;
+    }
     public function collection()
     {
         $imports = $this->getResultImports($this->dateStart,$this->dateEnd,$this->idSupplier);
@@ -95,11 +114,15 @@ class ReportSupplier implements FromCollection, WithHeadings
 
     public function headings() : array
     {
+        $footer = $this->getTotal();
         return [
             ['Báo cáo nợ/trả Nhà Cung cấp'],
             ['Từ',$this->dateStart],
             ['Đến',$this->dateEnd],
             ['NCC: ',$this->idSupplier == '0' ? 'Tất cả' : $this->getNameSupplier($this->idSupplier)],
+            ['Tổng tiền',$footer[0]['total']],
+            ['Đã trả',$footer[0]['paid']],
+            ['Còn nợ',$footer[0]['unPaid']],
             [],
             [
                 'STT',

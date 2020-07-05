@@ -16,11 +16,11 @@
     <div class="space"></div>
     <div class="panel panel-default">
         <div class="row" style="padding-top: 15px">
-            <div class="col-xs-12 text-center">
-                <h2>Restaurant</h2>
+            <div class="col-xs-5 text-right">
+                {!! QrCode::size(72)->generate($bill->code); !!}
             </div>
-            <div class="col-xs-12 text-center">
-                <div class="space"></div>
+            <div class="col-xs-7 text-left">
+                <h2>Restaurant</h2><Br>
                 <h4>Mã hóa đơn: {{ $bill->code }}</h4>
             </div>
         </div>
@@ -101,7 +101,7 @@
 <div id="printJS-form" style="visibility:hidden">
     <div id="mydiv">
         <div class="info">
-            <H4 style="font-weight:bold; text-align:center; font-size:13px;">HÓA ĐƠN THANH TOÁN</H4>
+            <H4 style="font-weight:bold; text-align:center; font-size:13px;">HÓA ĐƠN THANH TOÁN
         </div>
         <div class="info">
             <h5 style="font-weight:bold; text-align:center; font-size:13px;">Mã hóa đơn: {{ $bill->code }} -
@@ -114,6 +114,7 @@
                     @break
                 @endforeach
             </h5>
+
         </div>
         <div class="info">
             <h6>Giờ vào: {{ $bill->created_at }} - Giờ ra: {{ $bill->updated_at }}</h6>
@@ -173,6 +174,10 @@
             </table>
         </div>
         <br>
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {!! QrCode::size(50)->generate($bill->code); !!}
         <br>
         <br>
         <i style=" display:block;font-size:12px; text-align:center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hẹn

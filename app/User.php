@@ -81,7 +81,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleCook = array();
         foreach ($result as $key => $value) {
-            if($value == "VIEW_COOK1" || $value == "VIEW_COOK2" || $value == "VIEW_COOK3" || $value == "VIEW_FULL"){
+            if($value == "XEM_BEP1" || $value == "XEM_BEP2" || $value == "XEM_BEP3" || $value == "XEM_FULL"){
                 array_push($roleCook,$value);
             }
         }
@@ -93,7 +93,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleImportMaterialCook = array();
         foreach ($result as $key => $value) {
-           if($value == "VIEW_WHCOOK" || "VIEW_FULL"){
+           if($value == "XEM_KHO_BEP" || "XEM_FULL"){
                array_push($roleImportMaterialCook,$value);
            }
         }
@@ -105,7 +105,7 @@ class User extends Authenticatable
         $result = $this->getActionCode($this->id);
         $roleOrder = array();
         foreach ($result as $key => $value) {
-            if($value == "VIEW_ORDERS" || $value == "CREATE_ORDERS" || $value == "EDIT_ORDERS" || $value == "VIEW_FULL"){
+            if($value == "XEM_GOI_MON" || $value == "TAO_GOI_MON" || $value == "SUA_GOI_MON" || $value == "XEM_FULL"){
                 array_push($roleOrder,$value);
             }
         }
@@ -148,7 +148,7 @@ class User extends Authenticatable
         $roles = $this->getActionCode($idUser);
         $temp = 0;
         foreach ($roles as $key => $role) {
-            if($role == "VIEW_FULL"){
+            if($role == "XEM_FULL"){
                 $temp++;
             }
         }

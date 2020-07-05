@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportDestroyDish;
 use App\Supplier;
 use App\GroupMenu;
 use Carbon\Carbon;
@@ -28,6 +29,7 @@ class ReportController extends Controller
         $qtyCustomer = $this->reportRepository->getAllQtyCustomer();
         return view('overview.index',compact('allRevenue','qtyCustomer'));
     }
+    
     public function viewReportOrder()
     {
         return view('report.order');
@@ -60,7 +62,7 @@ class ReportController extends Controller
 
     public function viewDish()
     {
-        $groupMenus = GroupMenu::all();
+        $groupMenus = GroupMenu::where('status','1')->get();
         return view('report.dish',compact('groupMenus'));
     }
 
@@ -74,6 +76,21 @@ class ReportController extends Controller
         return Excel::download(new ReportDishExport($dateStart,$dateEnd,$idGroupMenu),'dish_report.xlsx');
     }
 
+    public function viewDestroyDish()
+    {
+        $groupMenus = GroupMenu::where('status','1')->get();
+        return view('report.destroydish',compact('groupMenus'));
+    }
+
+    public function reportDestroyDish(Request $request)
+    {
+        return $this->reportRepository->reportDestroyDish($request);
+    }
+
+    public function exportDestroyDishReport($dateStart,$dateEnd,$idGroupMenu)
+    {
+        return Excel::download(new ReportDestroyDish($dateStart,$dateEnd,$idGroupMenu),'destroydish_report.xlsx');
+    }
     public function viewReportSupplier()
     {
         $suppliers = Supplier::all();

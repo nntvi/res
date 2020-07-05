@@ -124,8 +124,8 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
                 'name_unit' => $history->detailMaterial->unit->name,
                 'tondauky' => $this->getQtyFirstPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook),
                 'toncuoiky' => $this->getQtyLastPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook),
-                'dasudung' => $this->getQtyFirstPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook)
-                             - $this->getQtyLastPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook),
+                'dasudung' => round(($this->getQtyFirstPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook)
+                - $this->getQtyLastPeriodById($history->id_material_detail,$dateStart,$dateEnd,$cook)),2) ,
             ];
             array_push($data,$temp);
             unset($temp);

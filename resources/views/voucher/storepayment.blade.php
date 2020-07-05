@@ -57,6 +57,7 @@
                                     </select>
                                 </div>
                             </div>
+
                             <script type="text/javascript">
                                 $('.date').datepicker({
                                     format: 'yyyy-mm-dd'
@@ -86,11 +87,14 @@
                             </div>
                         </div>
                     </form>
-                    <div class="grid_3 grid_5 wthree">
-                        <div class="col-md-7 agileits-w3layouts" id="leftTable">
+                    <div class="grid_3 grid_5 wthree" style="padding-bottom: 0px;">
+                        <div class="col-md-12 agileits-w3layouts" id="leftTable">
 
                         </div>
-                        <div class="col-md-5 w3-agileits">
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="panel-body collapse" id="collapseExample">
+                        <div class="position-center">
                             <form class="form-horizontal" action="{{ route('voucher.p_storepayment') }}" method="POST"
                             onsubmit="return validatePaymentVoucher()">
                                 @csrf
@@ -100,7 +104,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="clearfix"> </div>
+
                     </div>
                 </div>
             </section>

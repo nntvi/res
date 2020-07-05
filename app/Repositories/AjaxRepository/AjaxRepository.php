@@ -5,6 +5,7 @@ use App\Unit;
 use App\Order;
 use App\Method;
 use App\CookArea;
+use App\Dishes;
 use App\Supplier;
 use App\GroupMenu;
 use App\WareHouse;
@@ -93,10 +94,17 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         }
         return $data;
     }
+
     public function getAllCook()
     {
         $cooks = CookArea::get();
         return $cooks;
+    }
+
+    public function getDishToSearch($name)
+    {
+        $dishes = Dishes::where('name','LIKE',"%{$name}%")->where('stt','1')->with('unit')->get();
+        return $dishes;
     }
     public function getUnit()
     {
@@ -335,5 +343,24 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 21:00:00',$time['dateEnd'] . ' 21:59:59'));
         array_push($data,$this->createObjToPushQtyCustomer($time['dateStart'] . ' 22:00:00',$time['dateEnd'] . ' 22:59:59'));
         return $data;
+    }
+
+    // test report dish
+
+    public function getOrderByAllGroupMenu($dateStart,$dateEnd)
+    {
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                                    ->groupBy('id_dish')->get();
+        return $orders;
+    }
+
+    public function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu)
+    {
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                        ->groupBy('id_dish')
+                        ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
+                            $query->where('id',$idGroupMenu);
+                        })->get();
+        return $orders;
     }
 }

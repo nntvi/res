@@ -8,14 +8,15 @@ use App\Table;
 use App\Dishes;
 use App\Topping;
 use App\GroupMenu;
+use App\WareHouse;
 use Carbon\Carbon;
 use Pusher\Pusher;
+use App\OrderTable;
 use App\WarehouseCook;
 use App\MaterialAction;
 use App\OrderDetailTable;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
-use App\OrderTable;
-use App\WareHouse;
 
 class OrderRepository extends Controller implements IOrderRepository{
 
@@ -25,7 +26,7 @@ class OrderRepository extends Controller implements IOrderRepository{
     }
     public function getArea()
     {
-        $areas = Area::with('containTable')->get();
+        $areas = Area::where('status','1')->with('containTable')->get();
         return $areas;
     }
     public function getDateNow()
@@ -75,6 +76,7 @@ class OrderRepository extends Controller implements IOrderRepository{
         $qty = OrderDetailTable::selectRaw('count(id) as qty')->where('id_bill',$idOrderTable)->whereIn('status',['1','2'])->value('qty');
         return $qty;
     }
+
     public function findIdGroupNVL($idDish)
     {
         $idGroupNVL = Dishes::where('id',$idDish)->first('id_groupnvl');
@@ -101,10 +103,12 @@ class OrderRepository extends Controller implements IOrderRepository{
     }
     public function showTableInDay()
     {
+        $areas = $this->getArea();
         $tables = Table::where('status','1')->get();
         $activeTables = $this->getIdTableActive($this->getDateNow());
         $groupmenus = $this->getDishes();
-        return view('order.index',compact('tables','activeTables','groupmenus'));
+        //dd($groupmenus);
+        return view('order.index',compact('tables','activeTables','groupmenus','areas'));
     }
 
     public function generate_string($input, $strength) {
@@ -154,7 +158,6 @@ class OrderRepository extends Controller implements IOrderRepository{
     {
         $orderTable = new Order();
         $orderTable->code = $this->createCodeBill();
-        //$orderTable->id_table = $request->idTableOrder;
         $orderTable->status = '1'; // đang order, chưa thanh toán
         $orderTable->created_by = auth()->user()->name;
         $orderTable->time_created = Carbon::now('Asia/Ho_Chi_Minh')->format('H:m:s');

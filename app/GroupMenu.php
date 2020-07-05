@@ -53,6 +53,6 @@ class GroupMenu extends Model
 
     public function dishes()
     {
-        return $this->hasMany('App\Dishes','id_groupmenu');
+        return $this->hasMany('App\Dishes','id_groupmenu')->where('stt','1');
     }
 }

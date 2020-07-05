@@ -2,7 +2,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .card {
-        border: 3px solid #d7d7d7;
+        border: 2px solid #d7d7d7;
         text-align: center;
         padding: 5px;
         line-height: 29px;
@@ -49,91 +49,43 @@
     .activities .btn button.btn{
         height: 50px;
     }
+
     /* width */
-::-webkit-scrollbar {
-    width: 10px;
-  }
+    ::-webkit-scrollbar {
+        width: 0px;
+    }
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-  }
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
 
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    .tabbable{
+        margin-top: 5px
+    }
+    li#searchDish{
+        text-transform: none;
+    }
 </style>
 @section('content')
 <div class="form-w3layouts">
-    <!-- page start-->
-    <div class="row">
-        <div class="col-lg-12">
-            <section class="panel">
-                <header class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-9">Chọn bàn &nbsp;
-                            <span class="tools">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                            </span>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-3 text-right" style="margin: 10px 0px">
-                            <input type="text" id="searchTable" class="form-control">
-                        </div>
-                    </div>
-
-                </header>
-                <div class="panel-body tables">
-                    @foreach($tables  as $table)
-                        @php
-                            $temp = false
-                        @endphp
-                        @foreach($activeTables as $activeTable)
-                            @if($activeTable->id_table == $table->id)
-                                <div class="col-xs-4 col-sm-2 col-md-2 col-lg-1 m-b-xs" style="padding-right: 0px">
-                                    <div class="card" data-id="{{ $table->id }}" data-status="1"
-                                        style="background: rgba(254, 48, 48, 0.55);border: 3px solid #ff6d6d;">
-                                        <div class="card-body">
-                                            <input type="hidden" name="idBill" value="{{ $activeTable->id_order }}">
-                                            <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
-                                            <p class="card-text" >Có</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                @php
-                                    $temp = true
-                                @endphp
-                                @break
-                            @endif
-                        @endforeach
-                        @if($temp == false)
-                            <div class="col-xs-4 col-sm-2 col-md-2 col-lg-1 m-b-xs" style="padding-right: 0px">
-                                <div class="card" data-id="{{ $table->id }}" data-status="0" id="tbl{{ $table->id }}">
-                                    <div class="card-body">
-                                        <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
-                                        <p class="card-text">Trống</p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </section>
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-12">
             <div data-collapsed="0" class="panel">
-                <div class="panel-heading">
+                {{--  <div class="panel-heading">
                     <div class="panel-title">
-                        Gọi món
+                        Màn hình order
                     </div>
-                </div>
+                </div>  --}}
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-5 form-group " id="tableOrder">
@@ -157,37 +109,143 @@
                                 </div>
                         </div>
                         <div class="col-md-7 form-group">
-                            <ul class="nav nav-tabs">
-                                @foreach($groupmenus as $groupmenu)
-                                    <li><a data-toggle="tab" href="#{{ $groupmenu->id }}">{{ $groupmenu->name }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                            <div class="space"></div>
-                            <div class="tab-content">
-                                @foreach($groupmenus as $groupmenu)
-                                    <div id="{{ $groupmenu->id }}" class="tab-pane fade in ">
-                                        @foreach($groupmenu->dishes as $dish)
-                                            @if ($dish->stt == '1' && $dish->status == '1')
-                                                <div class="card col-xs-4 col-sm-2 m-b-xs cardDish">
-                                                    <img class="card-img-top img-responsive" src="img/{{ $dish->image }}">
-                                                    <div class="card-body row">
-                                                        <p class="card-title col-xs-12" data-dish="{{ $dish->id }}">{{ $dish->name }}<p>
-                                                        <h6 class="card-text col-xs-12">{{ $dish->sale_price }}</h6>
+                            <!-- Custom Tabs -->
+                            <div class="nav-tabs-custom panel-heading" style="background: lavender;">
+                                <ul class="nav nav-tabs" style="padding-top: 4px" id="main">
+                                    <li><a href="#area" data-toggle="tab" >Khu vực</a></li>
+                                    <li><a href="#groupmenu" data-toggle="tab" >Danh mục món ăn</a></li>
+                                    <li id="searchDish">
+                                        <a href="#search" data-toggle="modal">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="search" class="modal fade" style="display: none;">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title text-left">Tìm kiếm món ăn</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group text-left">
+                                                            <label>Nhập tên món ăn cần tìm</label>
+                                                            <input type="text" class="form-control" id="inputSearchDish">
+                                                        </div>
+                                                        <div class="form-group text-left">
+                                                            <div class="bs-docs-example">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Tên món</th>
+                                                                            <th>Giá bán</th>
+                                                                            <th>Đơn vị</th>
+                                                                            <th class="text-right"></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="tblSearchDish">
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-default" id="btnSubmitSearchDish">Submit</button>
                                                     </div>
                                                 </div>
-                                            @endif
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane fade in m-b-xs" id="area">
+                                    <div class="tabbable">
+                                        <ul class="nav nav-tabs middle" style="margin-bottom: 20px">
+                                                @foreach ($areas as $area)
+                                                    <li><a href="#area{{ $area->id }}" data-toggle="tab" >{{ $area->name }}</a></li>
+                                                @endforeach
+                                        </ul>
+                                        <div class="tab-content">
+                                            @foreach ($areas as $area)
+                                                <div class="tab-pane" id="area{{ $area->id }}">
+                                                    @foreach ($area->containTable as $table)
+                                                        @php
+                                                            $temp = false
+                                                        @endphp
+                                                        @foreach($activeTables as $activeTable)
+                                                            @if($activeTable->id_table == $table->id)
+                                                                <div class="col-xs-4 col-sm-3 col-md-3 m-b-xs" style="padding-left: 0px">
+                                                                    <div class="card" data-id="{{ $table->id }}" data-status="1"
+                                                                        style="background: rgba(254, 48, 48, 0.55);border: 2px solid #ff6d6d;">
+                                                                        <div class="card-body">
+                                                                            <input type="hidden" name="idBill" value="{{ $activeTable->id_order }}">
+                                                                            <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
+                                                                            <p class="card-text" >{{ $table->chairs }} ghế</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                @php
+                                                                    $temp = true
+                                                                @endphp
+                                                                @break
+                                                            @endif
+                                                        @endforeach
+                                                        @if($temp == false)
+                                                            <div class="col-xs-4 col-sm-3 col-md-3 m-b-xs" style="padding-left: 0px">
+                                                                <div class="card" data-id="{{ $table->id }}" data-status="0" id="tbl{{ $table->id }}">
+                                                                    <div class="card-body">
+                                                                        <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
+                                                                        <p class="card-text">{{ $table->chairs }} ghế</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade in" id="groupmenu">
+                                    <div class="tabbable">
+                                        <ul class="nav nav-tabs middle" style="margin-bottom: 20px">
+                                            @foreach($groupmenus as $groupmenu)
+                                                <li><a data-toggle="tab" href="#{{ $groupmenu->id }}">{{ $groupmenu->name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    <div class="tab-content">
+                                        @foreach($groupmenus as $groupmenu)
+                                            <div class="tab-pane" id="{{ $groupmenu->id }}">
+                                                @foreach($groupmenu->dishes as $dish)
+                                                    @if ($dish->id_groupmenu == $groupmenu->id)
+                                                        <div class="card col-xs-4 col-sm-2 m-b-xs cardDish">
+                                                            <img class="card-img-top img-responsive" src="img/{{ $dish->image }}">
+                                                            <div class="card-body row">
+                                                                <p class="card-title col-xs-12" data-dish="{{ $dish->id }}">{{ $dish->name }}<p>
+                                                                <h6 class="card-text col-xs-12">{{ $dish->sale_price }}</h6>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        @continue
+                                                    @endif
+                                                @endforeach
+                                            </div>
                                         @endforeach
                                     </div>
-                                @endforeach
+                                </div>
+                                </div>
+
                             </div>
+                        </div>
 
                             <script>
-
                                 $('ul.nav-tabs li:first-child').addClass('active');
                                 $('.tab-content div:first-child').addClass('active');
                                 function clickToRemove($id){
                                     var row = document.getElementById('row' + $id);
+                                    row.remove();
+                                }
+                                function clickToRemoveDishSearch($id){
+                                    var row = document.getElementById('rowSearch' + $id);
                                     row.remove();
                                 }
                                 function clickToPlus(id){
@@ -208,90 +266,6 @@
                                         document.getElementById('count' + $id).value = 1;
                                     }
                                 }
-                                $('.card.cardDish').click(function () {
-                                    var table = document.getElementById('bodyTableOrder');
-                                    if(table == null || table == ""){
-                                        alert('Vui lòng chọn bàn');
-                                    }
-                                    var idDish = $(this).find('p[data-dish]').data('dish'); // id dish
-                                    if(table.rows.length == 0){
-                                        var nameDish = $(this).find('.card-title').text();
-                                        var priceDish = $(this).find('.card-text').text();
-                                        let row =   `<tr id="row`+ idDish +`" data-row="`+ idDish +`">
-                                                        <td><input type="hidden" class="idDish" name="idDish[]" value="`+ idDish +`">`+ nameDish+`</td>
-                                                        <td>
-                                                            <div class="input-group">
-                                                                <span class="input-group-btn" onclick="clickToMinus(`+ idDish +`)">
-                                                                    <button type="button" class="btn btn-xs btn-danger btn-number">
-                                                                        <span class="glyphicon glyphicon-minus"></span>
-                                                                    </button>
-                                                                </span>
-                                                                <input type="text" name="qty[]" class="form-control input-number qty" value="1" id="count`+ idDish +`">
-                                                                <span class="input-group-btn btn-xs" onclick="clickToPlus(`+ idDish +`)">
-                                                                    <button type="button" class="btn btn-xs btn-success btn-number">
-                                                                        <span class="glyphicon glyphicon-plus"></span>
-                                                                    </button>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td><input type="text" name="note[]" class="form-control"></td>
-                                                        <td>`+ priceDish +`</td>
-                                                        <td style="width:5px; cursor:pointer">
-                                                            <a  onclick="clickToRemove(`+ idDish +`)">
-                                                                <i class="fa fa-times text-danger text"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>`
-                                        $('#bodyTableOrder').append(row);
-                                    }else{
-                                        var temp = 0;
-                                        for (var i = 0, row; row = table.rows[i]; i++) {
-                                            for (var j = 0, col; col = row.cells[j]; j++) {
-                                                if(j == 0){
-                                                    $('input[type="hidden"].idDish').each(function (index) {
-                                                        if(idDish == $(this).val() && index == i){
-                                                            temp++;
-                                                            var x = document.getElementById('count'+ idDish).value;
-                                                            x++;
-                                                            document.getElementById('count'+ idDish).value = x;
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-                                        if(temp == 0){
-                                            var nameDish = $(this).find('.card-title').text();
-                                            var priceDish = $(this).find('.card-text').text();
-                                            let row =   `<tr id="row`+ idDish +`" data-row="`+ idDish +`">
-                                                            <td><input type="hidden" class="idDish" name="idDish[]" value="`+ idDish +`">`+ nameDish+`</td>
-                                                                <td>
-                                                                    <div class="input-group">
-                                                                        <span class="input-group-btn" onclick="clickToMinus(`+ idDish +`)">
-                                                                            <button type="button" class="btn btn-xs btn-danger btn-number">
-                                                                                <span class="glyphicon glyphicon-minus"></span>
-                                                                            </button>
-                                                                        </span>
-                                                                        <input type="text" name="qty[]" class="form-control input-number qty" value="1" id="count`+ idDish +`">
-                                                                        <span class="input-group-btn btn-xs" onclick="clickToPlus(`+ idDish +`)">
-                                                                            <button type="button" class="btn btn-xs btn-success btn-number">
-                                                                                <span class="glyphicon glyphicon-plus"></span>
-                                                                            </button>
-                                                                        </span>
-                                                                    </div>
-                                                                </td>
-                                                                <td><input type="text" name="note[]" class="form-control"></td>
-                                                                <td>`+ priceDish +`</td>
-                                                                <td style="width:5px; cursor:pointer">
-                                                                    <a  onclick="clickToRemove(`+ idDish +`)">
-                                                                        <i class="fa fa-times text-danger text"></i>
-                                                                    </a>
-                                                                </td>
-                                                        </tr>`
-                                            $('#bodyTableOrder').append(row);
-                                        }
-                                    }
-                                });
-
                             </script>
                             <script>
                                 @if($errors->any())
@@ -306,12 +280,10 @@
                                     toastr.warning('{{ session('warning') }}')
                                 @endif
                             </script>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
-        <!-- page end-->
     </div>
-    @endsection
+</div>
+@endsection

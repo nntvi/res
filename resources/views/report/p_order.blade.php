@@ -2,7 +2,7 @@
 @section('content')
 <div class="table-agile-info">
     <div class="panel panel-default">
-        <div class="panel-heading" style="margin-bottom: 15px;">
+        <div class="panel-heading">
             <i class="fa fa-home"></i> Báo cáo theo đơn hàng
         </div>
         <div class="panel-body">
@@ -11,35 +11,33 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-4">
                         <div class="form-group ">
-                            <label for="cname" class="control-label col-lg-3">Chọn: </label>
-                            <div class="col-lg-9">
-                                <select class="form-control m-bot15" id="timeReport">
-                                    <option value="0">Hôm nay</option>
-                                    <option value="1">Hôm qua</option>
-                                    <option value="2">Tuần này</option>
-                                    <option value="3">Tuần trước</option>
-                                    <option value="4">Tháng này</option>
-                                    <option value="5">Tháng trước</option>
-                                </select>
-                            </div>
+                                <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <label class="control-label" style="cursor:pointer; color: black;">Chọn &nbsp;<i class="fa fa-angle-down" aria-hidden="true"></i> </label>
+                                    </a>
+                                    <div class="collapse" id="collapseExample">
+                                        <select class="form-control m-bot15" id="timeReport">
+                                            <option value="0">Hôm nay</option>
+                                            <option value="1">Hôm qua</option>
+                                            <option value="2">Tuần này</option>
+                                            <option value="3">Tuần trước</option>
+                                            <option value="4">Tháng này</option>
+                                            <option value="5">Tháng trước</option>
+                                        </select>
+                                    </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-4">
                         <div class="form-group ">
-                            <label for="cname" class="control-label col-lg-3">Từ:</label>
-                            <div class="col-lg-9">
+                            <label class="control-label">Từ:</label>
                                 <input class="date form-control" name="dateStart" type="text" id="dateStart"
                                     value="{{ $dateStart }}">
-                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-4">
                         <div class="form-group ">
-                            <label for="cname" class="control-label col-lg-3">Đến:</label>
-                            <div class="col-lg-9">
-                                <input class="date form-control" name="dateEnd" type="text" id="dateEnd"
+                            <label class="control-label">Đến:</label>
+                            <input class="date form-control" name="dateEnd" type="text" id="dateEnd"
                                     value="{{ $dateEnd }}">
-                            </div>
                         </div>
                         <script type="text/javascript">
                             $('.date').datepicker({
@@ -92,7 +90,7 @@
             </div>
             <hr>
             <div class="table-responsive">
-                    <table class="table">
+                    <table class="table" id="example">
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -112,8 +110,18 @@
                                 @foreach($orders as $key => $order)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $order->table->getArea->name }}</td>
-                                        <td>{{ $order->table->name }}</td>
+                                        <td>
+                                            @foreach ($order->tableOrdered as $table)
+                                                {{ $table->table->getArea->name }}
+                                                @break
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($order->tableOrdered as $table)
+                                                {{ $table->table->name }}
+                                                {{ count($order->tableOrdered) > 1 ? ', ' : '' }}
+                                            @endforeach
+                                        </td>
                                         <td>{{ $order->created_by }}</td>
                                         <td>{{ $order->payer }}</td>
                                         <td>{{ $order->shift->name }}</td>
@@ -147,24 +155,16 @@
                             </tfoot>
                         </table>
             </div>
-            <footer class="panel-footer">
-                <div class="row">
-
-                    <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                    </div>
-                    <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                        <li><a href="">1</a></li>
-                        <li><a href="">2</a></li>
-                        <li><a href="">3</a></li>
-                        <li><a href="">4</a></li>
-                        <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
-                    </ul>
-                    </div>
-                </div>
-                </footer>
+            <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+            <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+            <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+                $(document).ready( function () {
+                    $('#example').dataTable();
+                    $('#example_info').addClass('text-muted');
+                    $('#example_length').remove();
+                    $('#example_filter').remove();
+                } );
+            </script>
         </div>
     </div>
 </div>

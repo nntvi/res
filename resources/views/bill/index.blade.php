@@ -54,7 +54,12 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $bill->code }}</td>
-                            <td>{{ $bill->id_table }}</td>
+                            <td>
+                                @foreach ($bill->tableOrdered as $table)
+                                    {{ $table->table->name }}
+                                    {{ count($bill->tableOrdered) > 1 ? ', ' : '' }}
+                                @endforeach
+                            </td>
                             <td>
                                 @switch($bill->status)
                                     @case('0')
@@ -90,7 +95,9 @@
                                             <div class="modal-header">
                                                 <button aria-hidden="true" data-dismiss="modal" class="close"
                                                     type="button">×</button>
-                                                <h4 class="modal-title"> Chi tiết hóa đơn "<b>{{ $bill->code }}</b>"</h4>
+                                                <h4 class="modal-title"> Chi tiết hóa đơn "<b>{{ $bill->code }}</b>"
+                                                    <a href="{{ route('pay.bill',['id' => $bill->id]) }}"><i class="fa fa-print text-danger" aria-hidden="true"></i></a>
+                                                </h4>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="modal-body">

@@ -183,20 +183,11 @@ class AjaxController extends Controller
         return response()->json($materialDetails);
     }
 
-    // public function searchTables($name)
-    // {
-    //     $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-    //     $tables = Table::where('status','1')->where('name','LIKE',"%{$name}%")->get();
-    //     $activeTables = Order::whereBetween('created_at', [$date . ' 00:00:00', $date . ' 23:59:59'])->get();
-    //     foreach ($tables as $key => $table) {
-    //         foreach ($activeTables as $key => $activeTable) {
-    //             if($table->id == $activeTable->id){
-
-    //             }
-    //         }
-    //     }
-    //     return response()->json($tables);
-    // }
+    public function searchDish($name)
+    {
+        $dishes = $this->ajaxRepository->getDishToSearch($name);
+        return response()->json($dishes);
+    }
 
     public function getAreaByIdTable($idTable)
     {
@@ -207,5 +198,15 @@ class AjaxController extends Controller
             'tables' => $tables
         ];
         return response()->json($data);
+    }
+
+    public function reportDish($dateStart,$dateEnd,$idGroupmenu)
+    {
+        if ($idGroupmenu == 0) {
+            $results = $this->ajaxRepository->getOrderByAllGroupMenu($dateStart,$dateEnd);
+        } else {
+            $results = $this->ajaxRepository->getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupmenu);
+        }
+        return response()->json($results);
     }
 }

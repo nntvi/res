@@ -40,6 +40,11 @@ class TableController extends Controller
         return redirect(route('area.index'))->withSuccess('Chuyển khu vực thành công');
     }
 
+    public function updateChair(Request $request,$id)
+    {
+        $this->tableRepository->updateChair($request,$id);
+        return redirect(route('area.index'))->withSuccess('Cập nhật số lượng ghế thành công');
+    }
     public function search(Request $request)
     {
         return $this->tableRepository->searchTable($request);

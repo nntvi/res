@@ -35,6 +35,7 @@ class TableRepository extends Controller implements ITableRepository{
         $table->code = $request->codeTable;
         $table->name = $request->nameTable;
         $table->status = '1';
+        $table->chairs = $request->qtyChairs;
         $table->id_area = $request->idArea;
         $table->save();
         return redirect(route('area.index'))->withSuccess('Thêm bàn thành công');
@@ -48,6 +49,11 @@ class TableRepository extends Controller implements ITableRepository{
     public function updateAreaTable($request,$id)
     {
         Table::where('id',$id)->update(['id_area' => $request->changeArea]);
+    }
+
+    public function updateChair($request,$id)
+    {
+        Table::where('id',$id)->update(['chairs' => $request->qtyChairs]);
     }
 
     public function searchTable($request)

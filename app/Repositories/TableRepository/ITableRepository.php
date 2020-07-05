@@ -6,6 +6,7 @@ interface ITableRepository{
     function addTable($request);
     function updateNameTable($request,$id);
     function updateAreaTable($request,$id);
+    function updateChair($request,$id);
     function deleteTable($id);
     function validateCodeTable($request);
     function validatorNameTable($req);

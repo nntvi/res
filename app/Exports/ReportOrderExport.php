@@ -21,17 +21,60 @@ class ReportOrderExport implements FromCollection, WithHeadings
         $this->dateEnd = $dateEnd;
     }
 
-    public function collection()
+    public function getArea($areas)
+    {
+        $string = "";
+        foreach ($areas as $key => $area) {
+            $string = $area->table->getArea->name;
+            break;
+        }
+        return $string;
+    }
+    public function getTable($tables)
+    {
+        $string = "";
+        foreach ($tables as $key => $table) {
+            if(count($tables) == 1){
+                $string = $table->table->name;
+            }else{
+                $string = $string .  $table->table->name . ', ';
+            }
+        }
+        return $string;
+    }
+
+    public function getOrderByTime()
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
-        $orders = Order::whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])
-                        ->with('table.getArea','user','shift')->get();
+        $orders = Order::whereBetween('updated_at',[$this->dateStart . $s ,$this->dateEnd . $e])->with('tableOrdered.table.getArea','user','shift')->get();
+        return $orders;
+    }
+    public function getTotal()
+    {
+        $orders = $this->getOrderByTime();
+        $total = 0; $totalReceive = 0; $totalExcess = 0; $footerOrderReport = array();
+        foreach ($orders as $key => $order) {
+            $total += $order->total_price;
+            $totalReceive += $order->receive_cash;
+            $totalExcess += $order->excess_cash;
+        }
+        $temp = [
+            'total' => $total,
+            'totalReceive' => $totalReceive,
+            'totalExcess' => $totalExcess
+        ];
+        array_push($footerOrderReport,$temp);
+        return $footerOrderReport;
+    }
+    public function collection()
+    {
+        $orders = $this->getOrderByTime();
         foreach ($orders as $key => $order) {
             $row[] = array(
                 '0' => $key + 1,
-                '1' => $order->table->getArea->name,
-                '2' => $order->table->name,
+                '1' => $this->getArea($order->tableOrdered),
+                '2' => $this->getTable($order->tableOrdered),
                 '3' => $order->total_price,
                 '4' => $order->receive_cash,
                 '5' => $order->excess_cash,
@@ -46,10 +89,14 @@ class ReportOrderExport implements FromCollection, WithHeadings
 
     public function headings() : array
     {
+        $footer = $this->getTotal();
         return [
             ['Báo cáo hóa đơn'],
             ['Từ', $this->dateStart],
             ['Đến',$this->dateEnd],
+            ['Tổng tiền',$footer[0]['total']],
+            ['Tiền khách đưa',$footer[0]['totalReceive']],
+            ['Tiền hoàn lại',$footer[0]['totalExcess']],
             [],
             [
                 'STT',
@@ -63,6 +110,7 @@ class ReportOrderExport implements FromCollection, WithHeadings
                 'Thời gian thanh toán',
                 'Trạng thái',
             ],
+
         ];
     }
 

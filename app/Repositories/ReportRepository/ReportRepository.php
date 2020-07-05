@@ -12,10 +12,20 @@ use App\PaymentVoucher;
 use App\Supplier;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReportRepository extends Controller implements IReportRepository{
 
     private $getDateTime;
+
+    public function paginate($items, $perPage = 3, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
 
     public function __construct(IGetDateTime $getDateTime)
     {
@@ -44,13 +54,14 @@ class ReportRepository extends Controller implements IReportRepository{
         array_push($footerOrderReport,$temp);
         return $footerOrderReport;
     }
+
     public function reportOrder($request)
     {
         $s = " 00:00:00";
         $e = " 23:59:59";
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
-        $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])->with('table.getArea','user','shift')->get();
+        $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])->with('tableOrdered.table.getArea','user','shift')->get();
         $dateCreate = $this->getTimeNow();
         $footer = $this->createFooterOrderReport($orders);
         return view('report.p_order',compact('orders','dateStart','dateEnd','dateCreate','footer'));
@@ -116,16 +127,18 @@ class ReportRepository extends Controller implements IReportRepository{
         }
         return $arrChartBestSeller;
     }
-    public function getOrderByAllGroupMenu($dateStart,$dateEnd)
+
+    public function getOrderByAllGroupMenu($dateStart,$dateEnd,$status)
     {
         $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
-                        ->whereIn('status',['1','2'])->groupBy('id_dish')->get();
+                        ->whereIn('status',$status)->groupBy('id_dish')->get();
         return $orders;
     }
-    public function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu)
+
+    public function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu,$status)
     {
         $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
-                        ->whereIn('status',['1','2'])->groupBy('id_dish')
+                        ->whereIn('status',$status)->groupBy('id_dish')
                         ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
                             $query->where('id',$idGroupMenu);
                         })->get();
@@ -159,29 +172,88 @@ class ReportRepository extends Controller implements IReportRepository{
         return $results;
     }
 
+
     public function reportDish($request)
     {
         $dateCreate = $this->getTimeNow();
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
         $idGroupMenu = $request->groupMenu;
+        $status = ['1','2'];
         if($idGroupMenu == '0'){
-            $orders = $this->getOrderByAllGroupMenu($dateStart,$dateEnd);
+            $orders = $this->getOrderByAllGroupMenu($dateStart,$dateEnd,$status);
             $results = $this->createArrayReportDish($orders);
             $arrBestSeller = $this->createArrayChartBestSeller($results);
             $footerTotal = $this->createFooterTotal($results);
         }
         else{
-            $orders = $this->getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu);
+            $orders = $this->getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu,$status);
             $results = $this->createArrayReportDish($orders);
             $arrBestSeller = $this->createArrayChartBestSeller($results);
             $footerTotal = $this->createFooterTotal($results);
         }
         $groupMenuChoosen = GroupMenu::where('id',$idGroupMenu)->first();
         $listGroupMenuExcept = GroupMenu::whereNotIn('id',[$idGroupMenu])->get();
-        $listGroupMenu = GroupMenu::all();
+        $listGroupMenu = GroupMenu::where('status','1')->get();
+        //return $results;
         return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','groupMenuChoosen',
                     'listGroupMenuExcept','listGroupMenu','idGroupMenu','arrBestSeller','footerTotal'));
+    }
+
+    public function getDishDestroy($dateStart,$dateEnd,$status)
+    {
+        $dishEmpty = OrderDetailTable::selectRaw('id_dish, sum(qty) as qty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                            ->where('status',$status)->groupBy('id_dish')->with('dish.groupMenu.cookArea','dish.unit')->get();
+        return $dishEmpty;
+    }
+
+    public function getDishDestroyByIdGroupMenu($dateStart,$dateEnd,$status,$idGroupMenu)
+    {
+        $dishEmpty = OrderDetailTable::selectRaw('id_dish, sum(qty) as qty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+                            ->where('status',$status)->groupBy('id_dish')
+                            ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
+                                $query->where('id',$idGroupMenu);
+                            })->with('dish.groupMenu.cookArea','dish.unit')->get();
+        return $dishEmpty;
+    }
+
+    public function createArrayDestroyDish($array,$results,$status)
+    {
+        foreach ($array as $key => $item) {
+            $temp = [
+                'code' => $item->dish->code,
+                'name' => $item->dish->name,
+                'groupmenu' => $item->dish->groupMenu->name,
+                'cook' => $item->dish->groupMenu->cookArea->name,
+                'unit' => $item->dish->unit->name,
+                'qty' => $item->qty,
+                'status' => $status == '-3' ? 'Hết NVL ở kho' : ($status == '-2' ? 'Món hủy chọn' : 'Bếp hết NVL'),
+            ];
+            array_push($results,$temp);
+        }
+        return $results;
+    }
+
+    public function reportDestroyDish($request)
+    {
+        $dateCreate = $this->getTimeNow();
+        $dateStart = $request->dateStart;
+        $dateEnd = $request->dateEnd;
+        $idGroupMenu = $request->groupMenu;
+        $results = array();
+        if ($idGroupMenu == '0') {
+            $results = $this->createArrayDestroyDish($this->getDishDestroy($dateStart,$dateEnd,'-1'),$results,'-1');
+            $results = $this->createArrayDestroyDish($this->getDishDestroy($dateStart,$dateEnd,'-3'),$results,'-3');
+            $results = $this->createArrayDestroyDish($this->getDishDestroy($dateStart,$dateEnd,'-2'),$results,'-2');
+        } else {
+            $results = $this->createArrayDestroyDish($this->getDishDestroyByIdGroupMenu($dateStart,$dateEnd,'-1',$idGroupMenu),$results,'-1');
+            $results = $this->createArrayDestroyDish($this->getDishDestroyByIdGroupMenu($dateStart,$dateEnd,'-3',$idGroupMenu),$results,'-3');
+            $results = $this->createArrayDestroyDish($this->getDishDestroyByIdGroupMenu($dateStart,$dateEnd,'-2',$idGroupMenu),$results,'-2');
+        }
+        $groupMenuChoosen = GroupMenu::where('id',$idGroupMenu)->first();
+        $listGroupMenuExcept = GroupMenu::whereNotIn('id',[$idGroupMenu])->get();
+        $listGroupMenu = GroupMenu::where('status','1')->get();
+        return view('report.p_destroydish',compact('results','dateStart','dateEnd','groupMenuChoosen','listGroupMenuExcept','listGroupMenu','idGroupMenu'));
     }
 
     public function createFooterTotalSupplier($results)
@@ -354,6 +426,7 @@ class ReportRepository extends Controller implements IReportRepository{
         $dataChart = $this->getAllProfit();
         return view('report.profit',compact('revenue','expense','profit','firstMonth','endMonth','dataChart'));
     }
+
     public function getToTalRevenueInYear()
     {
         $firstYear = $this->getDateTime->getFirstOfJan();
@@ -430,6 +503,4 @@ class ReportRepository extends Controller implements IReportRepository{
         array_push($data,$this->createObjToPushQtyCustomer('22:00:00','22:59:59'));
         return $data;
     }
-
-
 }

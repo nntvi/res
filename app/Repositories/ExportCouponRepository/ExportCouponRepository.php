@@ -212,11 +212,10 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $slnhapsau = SettingPrice::where('id_material_detail',$request->idMaterial[$i])->value('slnhapsau');
         $gianhapsau = SettingPrice::where('id_material_detail',$request->idMaterial[$i])->value('gianhapsau');
         $giatra = $request->price[$i] / $request->oldQty[$i];
-        //dd($giatra);
         $price = (($sltontruoc * $giatontruoc) + ($slnhapsau * $gianhapsau) - ($request->qty[$i] * $giatra)) / ($sltontruoc + $slnhapsau - $request->qty[$i]);
-        SettingPrice::where('id_material_detail',$request->idMaterial[$i])
-                    ->update(['price' => round($price)]);
+        SettingPrice::where('id_material_detail',$request->idMaterial[$i])->update(['price' => round($price)]);
     }
+    
     public function updateSettingPrice($count,$request)
     {
         for ($i=0; $i < $count; $i++) {

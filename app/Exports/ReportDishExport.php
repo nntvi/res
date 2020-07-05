@@ -46,6 +46,36 @@ class ReportDishExport implements FromCollection, WithHeadings
         }
         return $results;
     }
+
+    public function getTotalQtyDishToReport($results)
+    {
+        $totalQty = 0;
+        foreach ($results as $key => $result) {
+            $totalQty += $result['qty'];
+        }
+        return $totalQty;
+    }
+
+    public function getTotal()
+    {
+        $results = $this->getResult();
+        $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;
+        foreach ($results as $key => $result) {
+            $totalCapitalPrice += $result->dish->capital_price;
+            $totalSalePrice += $result->dish->sale_price;
+            $totalInterest += (($result->dish->sale_price) - ($result->dish->capital_price)) * $result->sumQty;
+        }
+        $footerReportDish = array();
+        $temp = [
+            'qty' => $this->getTotalQtyDishToReport($results),
+            'totalCapital' => $totalCapitalPrice,
+            'totalSale' => $totalSalePrice,
+            'totalInterest' => $totalInterest
+        ];
+        array_push($footerReportDish,$temp);
+        return $footerReportDish;
+    }
+
     public function collection()
     {
         $results = $this->getResult();
@@ -67,10 +97,13 @@ class ReportDishExport implements FromCollection, WithHeadings
 
     public function headings() : array
     {
+        $footer = $this->getTotal();
         return [
             ['Báo cáo Món ăn'],
-            ['Từ',$this->dateStart],
-            ['Đến',$this->dateEnd],
+            ['Từ',$this->dateStart,'Đến',$this->dateEnd],
+            ['Tổng giá vốn',$footer[0]['totalCapital']],
+            ['Tổng giá bán',$footer[0]['totalSale']],
+            ['Tổng tiền lời',$footer[0]['totalInterest']],
             ['Danh mục',$this->idGroupMenu == '0' ? 'Tất cả' : $this->getNameGroupMenu($this->idGroupMenu)],
             [],
             [
