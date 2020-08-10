@@ -8,6 +8,28 @@ use App\WarehouseCook;
 
 class WarehouseCookRepository extends Controller implements IWarehouseCookRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_KHO_BEP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_KHO_BEP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getCookActive()
     {
         $cooks = CookArea::get();
@@ -56,6 +78,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
     public function showWarehouseCook()
     {
         $cookWarehouse = $this->getCookWarehouse();
+        //dd($cookWarehouse);
         $cooks = $this->getCookActive();
         return view('warehousecook.index',compact('cookWarehouse','cooks'));
     }

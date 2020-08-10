@@ -18,9 +18,9 @@
         <!--main content end-->
     </section>
     <script>
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                toastr.error('{{ $error }}')
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error('{{ $error }}');
             @endforeach
         @endif
     </script>
@@ -67,72 +67,150 @@
     </script>
     <script>
         const roleCook = JSON.parse(document.getElementById('roleCook').value);
+        var c1 = 0, c2 = 0, c3 = 0;
+        var i;
         var notifyWrapper = $('.notificationNewDishForCook');
         var notifyToggle = notifyWrapper.find('a[data-toggle]');
         var notifyCountElem = notifyToggle.find('i[data-count]');
         var notifyCount = parseInt(notifyCountElem.data('count'));
-        var listNotificationsNewDish = notifyWrapper.find('ul.dropdown-menu.notificationNewDish');
+        async function RenderInbox(){
+
+        }
+        for (i = 0; i < roleCook.length; i++) {
+            if(roleCook[i] == "XEM_BEP1"){
+                c1 = 1;
+                var listNotificationsNewDish = notifyWrapper.find('ul.dropdown-menu.notificationNewDish1');
+            }else if(roleCook[i] == "XEM_BEP2"){
+                c2 = 2;
+                var listNotificationsNewDish = notifyWrapper.find('ul.dropdown-menu.notificationNewDish2');
+            }else if(roleCook[i] == "XEM_BEP3"){
+                c3 = 3;
+                var listNotificationsNewDish = notifyWrapper.find('ul.dropdown-menu.notificationNewDish3');
+            }
+        }
 
         Pusher.logToConsole = true;
         var pusher = new Pusher('cc6422348edc9fbaff00', {
             cluster: 'ap1'
         });
 
+        var countC1 = 0, countC2 = 0, countC3 = 0;
         let channel = pusher.subscribe('NotifyCook');
         channel.bind('notify-cook', function(data){
-            //alert(JSON.stringify(data));
-            var existingNotifications = listNotificationsNewDish.html();
-            if(roleCook.length > 0){
-                if(data.type == '1'){
-                    var color = "";
-                    if(data.idCook == 1){
-                        color = "alert-danger";
-                    }else if(data.idCook == 2){
-                        color = "alert-success";
-                    }else{
-                        color = "alert-info";
-                    }
-                    var newNotifications =
+            if(data.type == '1'){
+                if(data.idCook == c1){
+                    var existingNotifications = listNotificationsNewDish.html();
+                    countC1 = countC1 + 1;
+                    var newNotifications1 =
                     `<li>
                         <audio autoplay> <source src="{{ asset('audio/ting.mp3') }}"></audio>
-                        <div class="alert `+ color +` clearfix">
+                        <div class="alert alert-danger clearfix">
                             <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                                <div class="noti-info">`;
-                                    if(data.idCook == 1){
-                                        newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 1]) }}" style="color:red;"> Bếp `+ data.idCook +` có món mới: `+ data.nameDish +`</a>`;
-                                    }else if(data.idCook == 2){
-                                        newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 2]) }}" style="color:red;"> Bếp `+ data.idCook +` có món mới: `+ data.nameDish +`</a>`;
-                                    }else{
-                                        newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 3]) }}" style="color:red;"> Bếp `+ data.idCook +` có món mới: `+ data.nameDish +`</a>`;
-                                    }
-                            newNotifications +=`</div>
+                                <div class="noti-info">
+                                    <a href="{{ route('cook_screen.detail',['id' => 1]) }}" style="color:red;"> Bếp `+ data.idCook +` : `+ data.nameDish +`</a>
+                                </div>
                         </div>
                     </li>`;
-                }else if(data.type == '0'){
-                    var newNotifications =
+                    listNotificationsNewDish.html(newNotifications1);
+                    listNotificationsNewDish.html(existingNotifications + newNotifications1);
+                    notifyCountElem.attr('data-count',countC1);
+                    notifyWrapper.find('.notify-count-new-dish').text(countC1);
+                    notifyWrapper.show();
+                }else if(data.idCook == c2){
+                    countC2 = countC2 + 1;
+                    var existingNotifications = listNotificationsNewDish.html();
+                    var newNotifications2 =
                     `<li>
                         <audio autoplay> <source src="{{ asset('audio/ting.mp3') }}"></audio>
-                            <div class="alert clearfix">
-                                <span class="alert-icon"><i class="fa fa-bolt"></i></span>
-                                    <div class="noti-info">`;
-                                        if(data.idCook == 1){
-                                            newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 1]) }}" style="color:red;"> Bếp `+ data.idCook +` hủy món: `+ data.nameDish +`</a>`;
-                                        }else if(data.idCook == 2){
-                                            newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 2]) }}" style="color:red;"> Bếp `+ data.idCook +` hủy món: `+ data.nameDish +`</a>`;
-                                        }else{
-                                            newNotifications += `<a href="{{ route('cook_screen.detail',['id' => 3]) }}" style="color:red;"> Bếp `+ data.idCook +` hủy món: `+ data.nameDish +`</a>`;
-                                        }
-                                newNotifications +=`</div>
-                            </div>
+                        <div class="alert alert-success clearfix">
+                            <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                                <div class="noti-info">
+                                    <a href="{{ route('cook_screen.detail',['id' => 2]) }}" style="color:red;"> Bếp `+ data.idCook +` : `+ data.nameDish +`</a>
+                                </div>
+                        </div>
                     </li>`;
+                    listNotificationsNewDish.html(newNotifications2);
+                    listNotificationsNewDish.html(existingNotifications + newNotifications2);
+                    notifyCountElem.attr('data-count',countC2);
+                    notifyWrapper.find('.notify-count-new-dish').text(countC2);
+                    notifyWrapper.show();
                 }
-
-                listNotificationsNewDish.html(newNotifications);
-                listNotificationsNewDish.html(existingNotifications + newNotifications);
-                notifyCount += 1;
-                notifyCountElem.attr('data-count',notifyCount);
-                notifyWrapper.find('.notify-count-new-dish').text(notifyCount);
-                notifyWrapper.show();
+                else if(data.idCook == c3){
+                    countC3 = countC3 + 1;
+                    var existingNotifications = listNotificationsNewDish.html();
+                    var newNotifications3 =
+                    `<li>
+                        <audio autoplay> <source src="{{ asset('audio/ting.mp3') }}"></audio>
+                        <div class="alert alert-info clearfix">
+                            <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                                <div class="noti-info">
+                                    <a href="{{ route('cook_screen.detail',['id' => 3]) }}" style="color:red;"> Bếp `+ data.idCook +` : `+ data.nameDish +`</a>
+                                </div>
+                        </div>
+                    </li>`;
+                    listNotificationsNewDish.html(newNotifications3);
+                    listNotificationsNewDish.html(existingNotifications + newNotifications3);
+                    notifyCountElem.attr('data-count',countC3);
+                    notifyWrapper.find('.notify-count-new-dish').text(countC3);
+                    notifyWrapper.show();
+                }
+            }
+            else if(data.type == '0'){
+                if(data.idCook == c1){
+                    countC1 = countC1 + 1;
+                    var existingNotifications = listNotificationsNewDish.html();
+                    var newNotifications1 =
+                    `<li>
+                            <audio autoplay> <source src="{{ asset('audio/ting.mp3') }}"></audio>
+                                <div class="alert alert-danger clearfix">
+                                    <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                                        <div class="noti-info">
+                                            <a href="{{ route('cook_screen.detail',['id' => 1]) }}" style="color:red;"> Bếp `+ data.idCook +` : `+ data.nameDish +`</a>
+                                        </div>
+                                </div>
+                    </li>`;
+                    listNotificationsNewDish.html(newNotifications1);
+                    listNotificationsNewDish.html(existingNotifications + newNotifications1);
+                    notifyCountElem.attr('data-count',countC1);
+                    notifyWrapper.find('.notify-count-new-dish').text(countC1);
+                    notifyWrapper.show();
+                }else if(data.idCook == c2){
+                    countC2 = countC2 + 1;
+                    var existingNotifications = listNotificationsNewDish.html();
+                    var newNotifications2 =
+                    `<li>
+                            <audio autoplay> <source src="{{ asset('audio/ting.mp3') }}"></audio>
+                                <div class="alert alert-danger clearfix">
+                                    <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                                        <div class="noti-info">
+                                            <a href="{{ route('cook_screen.detail',['id' => 2]) }}" style="color:red;"> Bếp `+ data.idCook +` hủy: `+ data.nameDish +`</a>
+                                        </div>
+                                </div>
+                    </li>`;
+                    listNotificationsNewDish.html(newNotifications2);
+                    listNotificationsNewDish.html(existingNotifications + newNotifications2);
+                    notifyCountElem.attr('data-count',countC2);
+                    notifyWrapper.find('.notify-count-new-dish').text(countC2);
+                    notifyWrapper.show();
+                }else if(data.idCook == c3){
+                    countC3 = countC3 + 1;
+                    var existingNotifications = listNotificationsNewDish.html();
+                    var newNotifications3 =
+                    `<li>
+                            <audio autoplay> <source src="{{ asset('audio/ting.mp3') }}"></audio>
+                                <div class="alert alert-danger clearfix">
+                                    <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                                        <div class="noti-info">
+                                            <a href="{{ route('cook_screen.detail',['id' => 3]) }}" style="color:red;"> Bếp `+ data.idCook +` hủy: `+ data.nameDish +`</a>
+                                        </div>
+                                </div>
+                    </li>`;
+                    listNotificationsNewDish.html(newNotifications3);
+                    listNotificationsNewDish.html(existingNotifications + newNotifications3);
+                    notifyCountElem.attr('data-count',countC3);
+                    notifyWrapper.find('.notify-count-new-dish').text(countC3);
+                    notifyWrapper.show();
+                }
             }
         });
     </script>
@@ -161,17 +239,15 @@
                             <span class="subject">
                             <span class="from"> Món: `+ data.nameDish +`</span>
                                 <span class="time">`+ data.nameTable +`</span>
-                            </span>
-                            <span class="message">`;
+                            </span>`;
                                 if(data.stt == '-1'){
-                                    newNotifications += `Số lượng ` + data.qty + ` - Bếp `+ data.idCook +` không đủ NVL thực hiện `;
+                                    newNotifications += `<span class="message" style="color: red;">Số lượng ` + data.qty + ` - Bếp `+ data.idCook +` không đủ NVL thực hiện </span>`;
                                 }else if(data.stt == '-3'){
-                                    newNotifications += `Số lượng ` + data.qty + ` - Kho không đủ NVL thực hiện `;
+                                    newNotifications += `<span class="message" style="color: red;">Số lượng ` + data.qty + ` - Kho không đủ NVL thực hiện </span>`;
                                 }else if(data.stt == '2'){
-                                    newNotifications += `Số lượng: ` + data.qty + ` - Bếp `+ data.idCook +` đã hoàn thành`;
+                                    newNotifications += `<span class="message">Số lượng: ` + data.qty + ` - Bếp `+ data.idCook +` đã hoàn thành </span>`;
                                 }
-                newNotifications += `</span>
-                        </a>
+    newNotifications += `</a>
                     </li>`;
                     notificationsFinishDish.html(newNotifications);
                     notificationsFinishDish.html(titleNotificationFinishDish + newNotifications);

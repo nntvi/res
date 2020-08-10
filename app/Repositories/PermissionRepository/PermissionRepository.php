@@ -43,13 +43,6 @@ class PermissionRepository extends Controller implements IPermissionRepository
         $req->validate(['permissiondetail' => 'required'],
                         ['permissiondetail.required' => 'Vui lòng chọn ít nhất một hành động cho quyền']);
     }
-    public function searchMaterial($request)
-    {
-        $name = $request->nameSearch;
-        $permissions = Permission::where('name','LIKE',"%{$name}%")->with('peraction.permissiondetail')->get();
-        $permissiondetails = $this->getAllPermissionDetails();
-        return view('permission.search',compact('permissions','permissiondetails'));
-    }
 
     function vn_to_str ($str){
         $unicode = array(

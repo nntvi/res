@@ -17,6 +17,7 @@ class UserController extends Controller
 {
     private $checkAction;
     private $userRepository;
+
     public function __construct(ICheckAction $checkAction, IUserRepository $userRepository)
     {
         $this->checkAction = $checkAction;
@@ -26,26 +27,60 @@ class UserController extends Controller
     public function index()
     {
         $result = $this->checkAction->getPermission(auth()->id());
-        return $this->userRepository->getAllUser($result);
+        $check = $this->userRepository->checkRoleIndex($result);
+        if($check != 0){
+            $users = User::with('userper.permissionDetail','position')->get();
+            $positions = Position::orderBy('name','asc')->get();
+            return view('user/index',compact('users','positions'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function viewstore()
     {
-        $permissions = Permission::with('peraction.permissiondetail')->orderBy('name','asc')->get();
+        $permissions = Permission::where('name','!=','FULL')->with('peraction.permissiondetail')->orderBy('name','asc')->get();
         $positions = Position::orderBy('name','asc')->get();
         return view('user/store',compact('permissions','positions'));
     }
 
+    public function checkRoleCook($request)
+    {
+        $temp = 0;
+        foreach ($request->permissiondetail as $key => $value) {
+            if($value == '132' || $value == '136' || $value == '140'){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function store(Request $request)
     {
-        $this->userRepository->validatorRequestStore($request);
-        return $this->userRepository->createUser($request);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->userRepository->checkRoleStore($result);
+        if($check != 0){
+            if($this->checkRoleCook($request) > 1){
+                return redirect(route('user.store'))->withErrors('Một nhân viên chỉ đảm nhận một bếp');
+            }else{
+                $this->userRepository->validatorRequestStore($request);
+                return $this->userRepository->createUser($request);
+            }
+        }else{
+            return view('layouts');
+        }
     }
 
     public function updateUsername(Request $request,$id)
     {
-        $this->userRepository->validateRequestUpdateUsername($request);
-        return $this->userRepository->updateUserName($request,$id);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->userRepository->checkRoleUpdate($result);
+        if($check != 0){
+            $this->userRepository->validateRequestUpdateUsername($request);
+            return $this->userRepository->updateUserName($request,$id);
+        }else{
+            return view('layouts');
+        }
     }
     public function viewShift($id)
     {
@@ -54,13 +89,21 @@ class UserController extends Controller
 
     public function updateShift(Request $request, $id)
     {
-        $this->userRepository->validatorRequestShift($request);
-        return $this->userRepository->updateShiftUser($request,$id);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->userRepository->checkRoleUpdate($result);
+        if($check != 0){
+            $this->userRepository->validatorRequestShift($request);
+            return $this->userRepository->updateShiftUser($request,$id);
+        }else{
+            return view('layouts');
+        }
     }
+
     public function viewUpdateRole($id)
     {
         return $this->userRepository->viewUpdateRole($id);
     }
+
     public function updateRole(Request $request, $id)
     {
         $this->userRepository->validatorUpdateRole($request);
@@ -82,15 +125,23 @@ class UserController extends Controller
 
     public function updatePosition(Request $request,$id)
     {
-        return $this->userRepository->updatePositionUser($request,$id);
-    }
-    public function search(Request $request)
-    {
-        return $this->userRepository->searchUser($request);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->userRepository->checkRoleUpdate($result);
+        if($check != 0){
+            return $this->userRepository->updatePositionUser($request,$id);
+        }else{
+            return view('layouts');
+        }
     }
 
     public function delete($id)
     {
-        return $this->userRepository->deleteUser($id);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->userRepository->checkRoleDelete($result);
+        if($check != 0){
+            return $this->userRepository->deleteUser($id);
+        }else{
+            return view('layouts');
+        }
     }
 }

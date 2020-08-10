@@ -5,84 +5,16 @@
         <div class="panel-heading">
             Thiết lập Ca làm việc cho nhân viên
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-3 m-b-xs">
-                <a href="#myModal" data-toggle="modal">
-                    <button class="btn btn-sm btn-success">Thêm mới</button>
-                </a>
-                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
-                    class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                <h4 class="modal-title">Thêm mới ca làm việc</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form role="form" action="{{ route('shift.p_store') }}" method="POST">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label>Tên ca</label>
-                                        <input class="form-control" name="nameShift" min="3" max="30" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-xs-6">
-                                                <label>Giờ bắt đầu</label>
-                                                <input type="time" class="time ui-timepicker-input form-control"
-                                                    name="hourStart" id="hourStart" required>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <label>Giờ kết thúc</label>
-                                                <input type="time" class="form-control" name="hourEnd" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="space"></div>
-                                    <div class="form-group">
-                                        <div class="col-xs-12 text-center">
-                                            <button type="submit" class="btn btn-info">Thêm mới</button>
-                                        </div>
-                                    </div>
-                                    <div class="space"></div>
-                                    <div class="space"></div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <script>
-                    @if($errors->any())
-                        @foreach($errors->all() as $error)
-                            toastr.error('{{ $error }}')
-                        @endforeach
-                    @endif
-                    @if(session('success'))
-                        toastr.success('{{ session('success') }}')
-                    @endif
-                    @if(session('info'))
-                        toastr.info('{{ session('info') }}')
-                    @endif
-                </script>
-            </div>
-            <div class="col-sm-4">
-
-            </div>
-        </div>
         <div class="space"></div>
         <div class="table-responsive">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead style="background: lightyellow;">
+            <table class="table table-hover" id="example">
+                    <thead>
                         <tr>
                             <th>STT</th>
                             <th>Tên ca làm việc</th>
                             <th class="text-center">Giờ bắt đầu</th>
                             <th class="text-center">Giờ kết thúc</th>
-                            <th>Cập nhật</th>
-                            <th>Xóa</th>
+                            <th class="text-center">Cập nhật</th>
                         </tr>
                     </thead>
                     <tbody id="tableGroupMenu">
@@ -137,10 +69,9 @@
                                 <td class="text-center">
                                     {{ $shift->hour_end }}
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <a href="#myModal-1{{ $shift->id }}" data-toggle="modal"
-                                        class="btn-sm btn-warning">
-                                        Sửa thời gian
+                                        <i class="fa fa-clock-o" aria-hidden="true"> </i>Thời gian
                                     </a>
                                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
                                         id="myModal-1{{ $shift->id }}" class="modal fade">
@@ -179,20 +110,29 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <a href="{{ route('shift.delete',['id' => $shift->id]) }}"
-                                        class="btn default btn-xs red radius"
-                                        onclick="return confirm('Bạn có chắc muốn xóa dữ liệu này?')">
-                                        <i class="fa fa-trash-o"></i>
-                                    </a>
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
-
     </div>
 </div>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('.dataTables_length').hide();
+        } );
+    </script>
 @endsection

@@ -9,6 +9,50 @@ use App\MaterialDetail;
 use App\Unit;
 
 class DishRepository extends Controller implements IDishRepository{
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_MON_AN"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_MON_AN"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_MON_AN"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_MON_AN"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getGroupMenu()
     {
         $groupmenus = GroupMenu::all();
@@ -23,7 +67,7 @@ class DishRepository extends Controller implements IDishRepository{
     public function getMaterial()
     {
         $idOldMaterials = Dishes::get('id_groupnvl');
-        $materials = Material::whereNotIn('id',$idOldMaterials)->get();
+        $materials = Material::whereNotIn('id',$idOldMaterials)->where('status','1')->get();
         return $materials;
     }
     public function getMaterialDetail()
@@ -34,19 +78,23 @@ class DishRepository extends Controller implements IDishRepository{
 
     public function validateImage($request)
     {
-        $request->validate(['file' => 'image'],['file.image' => 'File vừa chọn không phải file ảnh']);
+        $request->validate(['file' => 'image'],
+        ['file.image' => 'File vừa chọn không phải file ảnh']);
     }
+
     public function validatorRequestStore($req){
         $req->validate(
             [
                 'status' => 'required',
                 'codeDish' => 'unique:dishes,code',
                 'file' => 'image',
+                'capitalPriceHidden' => 'required',
             ],
             [
                 'status.required' => 'Chọn trạng thái hiển thị',
                 'codeDish.unique' => 'Mã sản phẩm đã tồn tại trong hệ thống',
                 'file.image' => 'File vừa chọn không phải file ảnh',
+                'capitalPriceHidden.required' => 'Vui lòng click chọn tên món ăn để giá vốn không bị trống',
             ]
         );
     }
@@ -128,14 +176,10 @@ class DishRepository extends Controller implements IDishRepository{
         return redirect(route('dishes.index'))->with('info','Cập nhật trạng thái thành công');
     }
 
-    public function searchDish($request)
+    public function updateNoteDish($request,$id)
     {
-        $count = Dishes::selectRaw('count(id) as qty')->where('stt','1')->where('name','LIKE',"%{$request->nameSearch}%")
-                        ->orWhere('code','LIKE',"%{$request->nameSearch}%")->value('qty');
-        $dishes = Dishes::with('material.groupMenu.cookArea','unit')->where('stt','1')->where('name','LIKE',"%{$request->nameSearch}%")
-                        ->orWhere('code','LIKE',"%{$request->nameSearch}%")->get();
-        $units = $this->getUnit();
-        return view('dishes.search',compact('dishes','units','count'));
+        Dishes::where('id',$id)->update(['describe' => $request->describe]);
+        return redirect(route('dishes.index'))->with('info','Cập nhật mô tả thành công');
     }
 
     public function deleteDish($id)

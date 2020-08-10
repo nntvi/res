@@ -5,43 +5,11 @@
         <div class="panel-heading">
             Nhân viên
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-3 m-b-xs">
-                <a href="{{ route('user.store') }}">
-                    <button class="btn btn-sm btn-default">Thêm mới</button>
-                </a>
-            </div>
-            <div class="col-sm-5">
-                <script>
-                    @if($errors->any())
-                        @foreach($errors->all() as $error)
-                            toastr.error('{{ $error }}')
-                        @endforeach
-                    @endif
-                    @if(session('success'))
-                        toastr.success('{{ session('success') }}')
-                    @endif
-                    @if(session('info'))
-                        toastr.info('{{ session('info') }}')
-                    @endif
-                </script>
-            </div>
-            <div class="col-sm-4">
-                <form action="{{ route('user.search') }}" method="get">
-                    @csrf
-                    <div class="input-group">
-                        <input type="text" class="input-sm form-control" name="nameSearch" required>
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-sm btn-default" type="button">Search!</button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
+
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table table-striped table-hover" id="example">
                 <thead>
-                    <tr style="background: #fafafa;">
+                    <tr>
                         <th>STT</th>
                         <th>Username</th>
                         <th>Email</th>
@@ -231,18 +199,28 @@
                 </tbody>
             </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-5 users</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{ $users->links() }}
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="{{ route('user.store') }}">
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
+                </a>`
+            )
+        } );
+    </script>
 @endsection

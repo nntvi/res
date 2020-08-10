@@ -13,13 +13,16 @@ use App\Exports\ReportSupplier;
 use App\Exports\ReportTableExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Repositories\ReportRepository\IReportRepository;
+use App\Helper\ICheckAction;
 
 class ReportController extends Controller
 {
     private $reportRepository;
+    private $checkAction;
 
-    public function __construct(IReportRepository $reportRepository)
+    public function __construct(ICheckAction $checkAction, IReportRepository $reportRepository)
     {
+        $this->checkAction = $checkAction;
         $this->reportRepository = $reportRepository;
     }
 
@@ -29,10 +32,16 @@ class ReportController extends Controller
         $qtyCustomer = $this->reportRepository->getAllQtyCustomer();
         return view('overview.index',compact('allRevenue','qtyCustomer'));
     }
-    
+
     public function viewReportOrder()
     {
-        return view('report.order');
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->reportRepository->checkRoleIndex($result);
+        if($check != 0){
+            return view('report.order');
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function reportOrder(Request $request)
@@ -50,20 +59,16 @@ class ReportController extends Controller
         return view('report.table');
     }
 
-    public function reportTable(Request $request)
-    {
-        return $this->reportRepository->reportTable($request);
-    }
-
-    public function exportTableReport($dateStart,$dateEnd,$status)
-    {
-        return Excel::download(new ReportTableExport($dateStart,$dateEnd,$status),'table_report.xlsx');
-    }
-
     public function viewDish()
     {
-        $groupMenus = GroupMenu::where('status','1')->get();
-        return view('report.dish',compact('groupMenus'));
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->reportRepository->checkRoleIndex($result);
+        if($check != 0){
+            $groupMenus = GroupMenu::where('status','1')->get();
+            return view('report.dish',compact('groupMenus'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function reportDish(Request $request)
@@ -78,8 +83,14 @@ class ReportController extends Controller
 
     public function viewDestroyDish()
     {
-        $groupMenus = GroupMenu::where('status','1')->get();
-        return view('report.destroydish',compact('groupMenus'));
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->reportRepository->checkRoleIndex($result);
+        if($check != 0){
+            $groupMenus = GroupMenu::where('status','1')->get();
+            return view('report.destroydish',compact('groupMenus'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function reportDestroyDish(Request $request)
@@ -91,10 +102,18 @@ class ReportController extends Controller
     {
         return Excel::download(new ReportDestroyDish($dateStart,$dateEnd,$idGroupMenu),'destroydish_report.xlsx');
     }
+
     public function viewReportSupplier()
     {
-        $suppliers = Supplier::all();
-        return view('report.supplier',compact('suppliers'));
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->reportRepository->checkRoleIndex($result);
+        if($check != 0){
+            $suppliers = Supplier::all();
+            return view('report.supplier',compact('suppliers'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
+
     }
 
     public function reportSupplier(Request $request)
@@ -109,6 +128,13 @@ class ReportController extends Controller
 
     public function profit()
     {
-        return $this->reportRepository->indexReportProfit();
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->reportRepository->checkRoleIndex($result);
+        if($check != 0){
+            return $this->reportRepository->indexReportProfit();
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
+
     }
 }

@@ -15,6 +15,11 @@ class DayController extends Controller
         $this->dayRepository = $dayRepository;
     }
 
+    public function hello()
+    {
+        return view('afterlogin.index');
+    }
+
     public function open()
     {
         return $this->dayRepository->startDay();

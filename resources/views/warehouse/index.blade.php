@@ -1,13 +1,13 @@
 @extends('layouts')
+<style>
+    .dataTables_length{
+        display: none;
+    }
+</style>
 @section('content')
 <div class="form-w3layouts">
     <h2 class="w3ls_head">Kho</h2>
     <script>
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                toastr.error('{{ $error }}')
-            @endforeach
-        @endif
         @if(session('success'))
             toastr.success('{{ session('success') }}')
         @endif
@@ -16,75 +16,99 @@
         @endif
     </script>
     <div class="row">
-        <div class="box_content" style="margin: 1em;">
-            <div class="icon-box col-md-3 col-sm-4">
-                <a class="agile-icon" href="{{ route('importcoupon.import') }}">
-                    <i class="fa fa-tasks"></i> Nhập kho
-                </a>
-            </div>
-            <div class="icon-box col-md-3 col-sm-4">
-                <a class="agile-icon" href="{{ route('importcoupon.index') }}">
-                    <i class="fa fa-wpforms">
-                    </i> Xem Phiếu Nhập
-                </a>
-            </div>
-            <div class="icon-box col-md-3 col-sm-4">
-                <a class="agile-icon" href="#myModal" data-toggle="modal">
-                    <i class="fa fa-stack-overflow">
-                    </i> Xuất kho
-                </a>
-                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
-                    class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                <h4 class="modal-title">Chọn loại xuất</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form role="form" action="{{ route('exportcoupon.export') }}"
-                                    method="GET">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="radio">
-                                            <div class="col-xs-5">
-                                                <label>
-                                                    <input type="radio" name="optionsRadios" id="optionsRadios1"
-                                                        value="1">
-                                                    Xuất Bếp
-                                                </label>
-                                            </div>
-                                            <div class="col-xs-5">
-                                                <label>
-                                                    <input type="radio" name="optionsRadios" id="optionsRadios2"
-                                                        value="2">
-                                                    Xuất Trả hàng
-                                                </label>
-                                            </div>
-                                            <div class="col-xs-2" style="margin-top: -10px">
-                                                <button type="submit" class="btn btn-info">Chọn</button>
+        <div class="col-xs-12 text-center">
+                <a href="#imp" class="btn btn-sm btn-default m-b-xs" data-toggle="modal">
+                        <i class="fa fa-tasks"></i> Nhập kho
+                    </a>
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="imp"
+                        class="modal fade" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                    <h4 class="modal-title">Chọn loại nhập</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form role="form" action="{{ route('importcoupon.gettype') }}"
+                                        method="GET">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="radio">
+                                                <div class="col-xs-6">
+                                                    <label>
+                                                        <input type="radio" name="typeImp"
+                                                            value="1" checked>
+                                                        Nhập thường
+                                                    </label>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <label>
+                                                        <input type="radio" name="typeImp"
+                                                            value="2">
+                                                        Nhập theo kế hoạch
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="space"></div>
-                                </form>
+                                        <div class="space"></div>
+                                        <div class="row">
+                                            <div class="col-xs-12 text-center">
+                                                <button type="submit" class="btn btn-default">Chọn</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
                 </div>
-            </div>
-            <div class="icon-box col-md-3 col-sm-4">
-                <a class="agile-icon" href="{{ route('exportcoupon.index') }}">
-                    <i class="fa fa-wpforms">
-                    </i> Xem Phiếu Xuất
+                <a class="btn btn-sm btn-default m-b-xs" href="#myModal" data-toggle="modal">
+                    <i class="fa fa-stack-overflow">
+                        </i> Xuất kho
                 </a>
-            </div>
-            <div class="icon-box col-md-3 col-sm-4">
-                <a class="agile-icon" href="{{ route('exportcoupon.destroywarehouse') }}">
-                    <i class="fa fa-trash-o">
-                    </i> Hủy hàng
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
+                        class="modal fade" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                    <h4 class="modal-title">Chọn loại xuất</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form role="form" action="{{ route('exportcoupon.export') }}" method="GET">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="radio">
+                                                <div class="col-xs-6">
+                                                    <label>
+                                                        <input type="radio" name="optionsRadios" id="optionsRadios1"
+                                                            value="1" checked>
+                                                        Xuất Bếp
+                                                    </label>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <label>
+                                                        <input type="radio" name="optionsRadios" id="optionsRadios2"
+                                                            value="2">
+                                                        Xuất Trả hàng
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="space"></div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <button type="submit" class="btn btn-default">Chọn</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <a class="btn btn-sm btn-default m-b-xs" href="{{ route('exportcoupon.destroywarehouse') }}">
+                        <i class="fa fa-trash-o">
+                        </i> Hủy kho
                 </a>
-            </div>
         </div>
     </div>
 
@@ -115,13 +139,13 @@
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
                                 <label class="control-label">Từ ngày:</label>
-                                <input class="date form-control" name="dateStart" type="text" id="dateStart">
+                                <input class="date form-control" name="dateStart" type="text" id="dateStart" required>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <div class="form-group ">
                                 <label class="control-label">Đến ngày:</label>
-                                <input class="date form-control" name="dateEnd" type="text" id="dateEnd">
+                                <input class="date form-control" name="dateEnd" type="text" id="dateEnd" required>
                             </div>
                             <script type="text/javascript">
                                 $('.date').datepicker({
@@ -131,13 +155,8 @@
                                 function validateForm() {
                                     var dateStart = document.getElementById('dateStart').value;
                                     var dateEnd = document.getElementById('dateEnd').value;
-
-                                    if (dateStart == null || dateStart == "") {
-                                        alert("Không để trống ngày bắt đầu");
-                                        return false;
-                                    }
-                                    if (dateEnd == null || dateEnd == "") {
-                                        alert("Không để trống ngày kết thúc");
+                                    if(dateStart > dateEnd){
+                                        alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                         return false;
                                     }
                                     return true;
@@ -162,13 +181,13 @@
                 <section class="panel">
                     <header class="panel-heading">
                         {{ $type->name }}
-                        <span class="tools pull-right">
+                        <span class="tools pull-right" style="padding-top: 17px">
                             <a class="fa fa-chevron-down" href="javascript:;"></a>
                         </span>
                     </header>
                     <div class="panel-body">
                         <div>
-                            <table class="table">
+                            <table class="table" id="table{{ $type->id }}">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
@@ -283,7 +302,7 @@
                                                         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"
                                                             tabindex="-1" id="updateLimit{{ $detail->id }}"
                                                             class="modal fade" style="display: none;">
-                                                            <div class="modal-dialog">
+                                                            <div class="modal-dialog text-left">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <button aria-hidden="true" data-dismiss="modal"
@@ -336,7 +355,7 @@
                                                                             <div class="row">
                                                                                 <div class="col-xs-12 text-center">
                                                                                     <button type="submit"
-                                                                                        class="btn btn-info">Lưu</button>
+                                                                                        class="btn btn-default">Cập nhật</button>
                                                                                 </div>
                                                                             </div>
                                                                         </form>
@@ -358,7 +377,19 @@
             </div>
         </div>
     @endforeach
-
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            @foreach($types as $key => $type)
+                $("table[id^='table{{ $type->id }}']").dataTable();
+            @endforeach
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+        });
+    </script>
     <!-- page end-->
 </div>
 @endsection
+

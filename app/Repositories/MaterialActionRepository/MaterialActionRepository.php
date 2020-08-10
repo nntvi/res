@@ -9,6 +9,7 @@ use App\MaterialDetail;
 use App\MaterialAction;
 use App\SettingPrice;
 use App\StartDay;
+use App\TypeMaterial;
 use App\WarehouseCook;
 use Carbon\Carbon;
 
@@ -25,6 +26,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         $material = Material::where('id',$id)->with('materialAction.materialDetail','materialAction.unit')->first();
         return $material;
     }
+
     public function getMaterialDetails($id)
     {
         $actions = MaterialAction::where('id_groupnvl',$id)->get('id_material_detail');
@@ -79,7 +81,8 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         $units = $this->getUnit();
         $materialDetails = $this->getMaterialDetails($id);
         $ingredients = $this->getMaterialAction($id);
-        return view('materialaction.store',compact('material','units','materialDetails','ingredients'));
+        $typeMaterialDetails = TypeMaterial::get();
+        return view('materialaction.store',compact('material','units','materialDetails','ingredients','typeMaterialDetails'));
     }
 
     public function getIdCookByIdMaterial($id_groupnvl)
@@ -160,14 +163,12 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
     public function getSameMaterial($arrayMaterial)
     {
         $temp = array();
-        for ($i=0; $i < count($arrayMaterial) - 2 ; $i++) {
-            $j = $i + 1;
-            while ($j < count($arrayMaterial) ) {
-                if($arrayMaterial[$i] == $arrayMaterial[$j]){
+        $n = count($arrayMaterial);
+        for ($i=0; $i < $n; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                if ($arrayMaterial[$i] == $arrayMaterial[$j] && $j != $i) {
                     array_push($temp,$j);
-                    $j++;
-                }else{
-                    $j++;
+                    $n--;
                 }
             }
         }
@@ -230,21 +231,10 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         return redirect(route('material_action.detail',['id' => $idGroupNVL->id_groupnvl]))->with('info','Cập nhật công thức thành công');
     }
 
-    public function searchMaterialAction($request)
-    {
-        $name = $request->nameSearch;
-        $materials = Material::with('materialAction.materialDetail')
-                                ->whereHas('materialAction', function ($query) use($name)
-                                {
-                                    $query->where('name','LIKE','%'. $name . '%');
-                                })->get();
-        return view('materialaction.search',compact('materials'));
-    }
-
     public function deleteMaterialAction($id)
     {
         $mat_detail = $this->findRowMaterialAction($id);
         $mat_detail->delete();
-        return redirect(route('material_action.detail',['id' => $mat_detail->id_groupnvl]))->withSuccess('info','Xóa NVL thành công');
+        return redirect(route('material_action.detail',['id' => $mat_detail->id_groupnvl]))->withSuccess('Xóa NVL thành công');
     }
 }

@@ -1,4 +1,10 @@
 @extends('layouts')
+<style>
+    div::-webkit-scrollbar {
+        width: 10px;
+        background: #f1f1f1;
+    }
+</style>
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -17,7 +23,6 @@
                                         <label class="control-label">Mã phiếu xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
                                         <input type="text" class="form-control" name="code" maxlength="200" id="codeExportSupplier" value="{{ $code }}"  required>
-
                                     </div>
                                     <div class="col-md-3">
                                         <input name="id_kind" value="2" hidden>
@@ -50,7 +55,7 @@
                                     </div>
                             </div>
                             <div class="grid_3 grid_5 wthree">
-                                <div class="col-md-12" id="tableMaterialExportSupplier">
+                                <div class="col-md-12" id="tableMaterialExportSupplier" style="height:500px; overflow:auto;">
                                     <div class="space"></div>
                                 </div>
                                 <script>

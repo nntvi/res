@@ -24,11 +24,6 @@ class PermissionController extends Controller
         return $this->permissionRepository->showAllPermission();
     }
 
-    public function search(Request $request)
-    {
-        return $this->permissionRepository->searchMaterial($request);
-    }
-
     public function store(Request $req){
         $this->permissionRepository->validatorRequestStore($req);
         return $this->permissionRepository->addPermission($req);

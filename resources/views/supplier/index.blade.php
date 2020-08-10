@@ -5,34 +5,13 @@
         <div class="panel-heading">
             Nhà cung cấp
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-5 m-b-xs">
-                <a href="{{ route('supplier.store') }}">
-                    <button class="btn btn-sm btn-default">Thêm mới</button>
-                </a>
-            </div>
-            <div class="col-sm-3">
-            </div>
-            <div class="col-sm-4">
-                <form action="{{ route('supplier.search') }}" method="get">
-                    @csrf
-                    <div class="input-group">
-                        <input type="text" class="input-sm form-control" name="search" required>
-                        <span class="input-group-btn">
-                            <button class="btn btn-sm btn-default" type="submit">Tìm kiếm</button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <div class="table-responsive">
-            <table class="table table-striped b-t b-light">
+            <table class="table table-striped b-t b-light" id="example">
                 <thead>
                     <tr>
                         <th>STT</th>
                         <th>Mã NCC</th>
-                        <th>Tên</th>
+                        <th>Tên Nhà cung cấp</th>
                         <th>Địa chỉ</th>
                         <th>Số điện thoại</th>
                         <th>Email</th>
@@ -106,32 +85,29 @@
                 </tbody>
             </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
-
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-5 nhà cung cấp</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{ $suppliers->links() }}
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
-<script>
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            toastr.error('{{ $error }}')
-        @endforeach
-    @endif
-    @if(session('success'))
-        toastr.success('{{ session('success') }}')
-    @endif
-    @if(session('info'))
-        toastr.info('{{ session('info') }}')
-    @endif
-</script>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="{{ route('supplier.store') }}">
+                        <button class="btn btn-sm btn-default">Thêm mới</button>
+                </a>`
+            );
+        });
+    </script>
 </div>
 @endsection

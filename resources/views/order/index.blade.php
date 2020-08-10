@@ -18,9 +18,10 @@
     }
     .tab-content .cardDish .card-title{
         height: 25px;
+        overflow: hidden;
     }
     .content-order, .tab-content {
-        height: 500px;
+        height: 480px;
         overflow: auto;
     }
     .card-text{
@@ -51,7 +52,7 @@
     }
 
     /* width */
-    ::-webkit-scrollbar {
+    div.tab-content::-webkit-scrollbar {
         width: 0px;
     }
 
@@ -74,6 +75,17 @@
     }
     li#searchDish{
         text-transform: none;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+    -moz-appearance: textfield;
     }
 </style>
 @section('content')
@@ -113,7 +125,7 @@
                             <div class="nav-tabs-custom panel-heading" style="background: lavender;">
                                 <ul class="nav nav-tabs" style="padding-top: 4px" id="main">
                                     <li><a href="#area" data-toggle="tab" >Khu vực</a></li>
-                                    <li><a href="#groupmenu" data-toggle="tab" >Danh mục món ăn</a></li>
+                                    <li><a href="#groupmenu" data-toggle="tab" class="groupmenu">Danh mục món ăn</a></li>
                                     <li id="searchDish">
                                         <a href="#search" data-toggle="modal">
                                             <i class="fa fa-search" aria-hidden="true"></i>
@@ -147,7 +159,7 @@
                                                                 </table>
                                                             </div>
                                                         </div>
-                                                        <button class="btn btn-default" id="btnSubmitSearchDish">Submit</button>
+                                                        <button class="btn btn-default" id="btnSubmitSearchDish">Chọn</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -217,11 +229,12 @@
                                             <div class="tab-pane" id="{{ $groupmenu->id }}">
                                                 @foreach($groupmenu->dishes as $dish)
                                                     @if ($dish->id_groupmenu == $groupmenu->id)
-                                                        <div class="card col-xs-4 col-sm-2 m-b-xs cardDish">
+                                                        <div class="card col-xs-4 col-sm-3 m-b-xs cardDish">
                                                             <img class="card-img-top img-responsive" src="img/{{ $dish->image }}">
                                                             <div class="card-body row">
                                                                 <p class="card-title col-xs-12" data-dish="{{ $dish->id }}">{{ $dish->name }}<p>
-                                                                <h6 class="card-text col-xs-12">{{ $dish->sale_price }}</h6>
+                                                                <h6 class="card-text col-xs-12">{{ number_format($dish->sale_price) . ' đ' }}</h6>
+                                                                <input type="hidden" class="price" value="{{ $dish->sale_price }}">
                                                             </div>
                                                         </div>
                                                     @else
@@ -236,43 +249,12 @@
 
                             </div>
                         </div>
-
                             <script>
                                 $('ul.nav-tabs li:first-child').addClass('active');
                                 $('.tab-content div:first-child').addClass('active');
-                                function clickToRemove($id){
-                                    var row = document.getElementById('row' + $id);
-                                    row.remove();
-                                }
-                                function clickToRemoveDishSearch($id){
-                                    var row = document.getElementById('rowSearch' + $id);
-                                    row.remove();
-                                }
-                                function clickToPlus(id){
-                                    var sl = document.getElementById('count'+ id).value;
-                                    if(sl < 20){
-                                        sl++;
-                                        document.getElementById('count' + id).value = sl;
-                                    }else if(sl == 20){
-                                        document.getElementById('count' + id).value = 20;
-                                    }
-                                }
-                                function clickToMinus($id){
-                                    var sl = document.getElementById('count'+$id).value;
-                                    if(sl > 1){
-                                        sl--;
-                                        document.getElementById('count' + $id).value = sl;
-                                    }else if(sl == 1){
-                                        document.getElementById('count' + $id).value = 1;
-                                    }
-                                }
+
                             </script>
                             <script>
-                                @if($errors->any())
-                                    @foreach($errors->all() as $error)
-                                        toastr.error('{{ $error }}')
-                                    @endforeach
-                                @endif
                                 @if(session('success'))
                                     toastr.success('{{ session('success') }}')
                                 @endif

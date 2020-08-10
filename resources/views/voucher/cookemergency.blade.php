@@ -1,5 +1,11 @@
 @extends('layouts')
 @section('content')
+<style>
+    div::-webkit-scrollbar {
+        width: 10px;
+        background: #f1f1f1;
+    }
+</style>
 <div class="row">
     <div class="col-lg-12">
         <section class="panel">
@@ -19,7 +25,7 @@
                                         <label class="control-label">Mã phiếu chi<span style="color: #ff0000">
                                                 *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" class="form-control" name="code" maxlength="200" id="codePaymentCE" required>
+                                        <input type="text" class="form-control" name="code" value="{{ $code }}" id="codePaymentCE" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="control-label">Chọn bếp<span style="color: #ff0000">
@@ -39,8 +45,7 @@
                                         <div class="space"></div>
                                         <label class="control-label">Lý do nhập khẩn</label>
                                         <div class="space"></div>
-                                        <textarea type="text" class="form-control" rows="1" name="note" required>
-                                        </textarea>
+                                        <textarea type="text" class="form-control" rows="1" name="note" required></textarea>
                                     </div>
                                     <div class="col-xs-6">
                                         <div class="space"></div>
@@ -53,15 +58,15 @@
                             <div class="col-md-12">
                                 <div class="space"></div>
                                 <div class="space"></div>
-                                <div id="material">
+                                <div id="material" style="height: 350px; overflow:auto;">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th width=25%>Tên mặt hàng</th>
-                                                <th width=15%>Sl hiện tại</th>
-                                                <th width=22%>Sl thêm</th>
-                                                <th width=17%>Đơn vị tính</th>
-                                                <th width=2%></th>
+                                                <th>Tên mặt hàng</th>
+                                                <th>Sl hiện tại</th>
+                                                <th>Sl thêm</th>
+                                                <th>Đơn vị</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody id="cookEmergencyTable">
@@ -89,11 +94,4 @@
         </section>
     </div>
 </div>
-<script>
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            toastr.error('{{ $error }}')
-        @endforeach
-    @endif
-</script>
 @endsection

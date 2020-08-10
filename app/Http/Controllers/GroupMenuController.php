@@ -6,20 +6,29 @@ use Illuminate\Http\Request;
 use App\Repositories\GroupMenuRepository\IGroupMenuRepository;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GroupMenuExport;
-
+use App\Helper\ICheckAction;
 class GroupMenuController extends Controller
 {
     private $groupmenuRepository;
+    private $checkAction;
 
-    public function __construct(IGroupMenuRepository $groupmenuRepository)
+    public function __construct(ICheckAction $checkAction, IGroupMenuRepository $groupmenuRepository)
     {
+        $this->checkAction = $checkAction;
         $this->groupmenuRepository = $groupmenuRepository;
     }
 
     public function index()
     {
-        return $this->groupmenuRepository->getAllGroupMenu();
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->groupmenuRepository->checkRoleIndex($result);
+        if($check != 0){
+            return $this->groupmenuRepository->getAllGroupMenu();
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
+
     public function viewStore()
     {
         $cooks = CookArea::all();
@@ -31,32 +40,50 @@ class GroupMenuController extends Controller
         }
         return view('groupmenu.store',compact('cook_active'));
     }
+
     public function store(Request $request)
     {
-        $this->groupmenuRepository->validatorRequestStore($request);
-        return $this->groupmenuRepository->addGroupMenu($request);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->groupmenuRepository->checkRoleStore($result);
+        if($check != 0){
+            $this->groupmenuRepository->validatorRequestStore($request);
+            return $this->groupmenuRepository->addGroupMenu($request);
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
-    public function search(Request $request)
-    {
-        return $this->groupmenuRepository->searchGroupMenu($request);
-    }
+
     public function updateName(Request $request, $id)
     {
-        $this->groupmenuRepository->validatorRequestUpadate($request);
-        return $this->groupmenuRepository->updateNameGroupMenu($request,$id);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->groupmenuRepository->checkRoleUpdate($result);
+        if($check != 0){
+            $this->groupmenuRepository->validatorRequestUpadate($request);
+            return $this->groupmenuRepository->updateNameGroupMenu($request,$id);
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
     public function updateCook(Request $request, $id)
     {
-        $this->groupmenuRepository->validatorRequestUpadate($request);
-        return $this->groupmenuRepository->updateCookGroupMenu($request,$id);
-    }
-    public function delete($id)
-    {
-        return $this->groupmenuRepository->deleteGroupMenu($id);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->groupmenuRepository->checkRoleUpdate($result);
+        if($check != 0){
+            $this->groupmenuRepository->validatorRequestUpadate($request);
+            return $this->groupmenuRepository->updateCookGroupMenu($request,$id);
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
-    public function exportExcel()
+    public function delete($id)
     {
-        return Excel::download(new GroupMenuExport,'groupmenu.xlsx');
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->groupmenuRepository->checkRoleDelete($result);
+        if($check != 0){
+            return $this->groupmenuRepository->deleteGroupMenu($id);
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 }

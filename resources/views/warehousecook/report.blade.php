@@ -3,7 +3,9 @@
     .datepicker.dropdown-menu {
         z-index: 1003;
     }
-
+    input[type=search] {
+        margin-bottom: 20px;
+    }
 </style>
 @section('content')
 <div class="form-w3layouts">
@@ -24,18 +26,22 @@
                         <div class="row">
                             <div class="col-xs-6 col-sm-3">
                                 <div class="form-group ">
-                                    <label class="control-label">Báo cáo theo</label>
-                                    <select class="form-control" id="timeReport" name="timeReport">
-                                        <option value="0">Hôm nay</option>
-                                        <option value="1">Hôm qua</option>
-                                        <option value="2">Tuần này</option>
-                                        <option value="3">Tuần trước</option>
-                                        <option value="4">Tháng này</option>
-                                        <option value="5">Tháng trước</option>
-                                        <option value="6">Quý này</option>
-                                        <option value="7">Quý trước</option>
-                                        <option value="8">Năm nay</option>
-                                    </select>
+                                    <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <label class="control-label" style="cursor:pointer; color: black;">Báo cáo theo</label>
+                                    </a>
+                                    <div class="collapse" id="collapseExample">
+                                        <select class="form-control" id="timeReport" name="timeReport">
+                                            <option value="0">Hôm nay</option>
+                                            <option value="1">Hôm qua</option>
+                                            <option value="2">Tuần này</option>
+                                            <option value="3">Tuần trước</option>
+                                            <option value="4">Tháng này</option>
+                                            <option value="5">Tháng trước</option>
+                                            <option value="6">Quý này</option>
+                                            <option value="7">Quý trước</option>
+                                            <option value="8">Năm nay</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-3">
@@ -103,8 +109,7 @@
                         <br>
                     </header>
                     <div class="panel-body1 row" style="display: block;">
-                        <div class="col-sm-3"></div>
-                        <div class="floatcharts_w3layouts_bottom col-xs-12 col-sm-6">
+                        <div class="floatcharts_w3layouts_bottom col-xs-12">
                             <h5 class="hdg text-center">Biểu đồ biểu thị mức tồn của bếp</h5>
                             <div id="graph8" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
                                 <div class="morris-hover morris-default-style" style="left: 312.508px; top: 137px;">
@@ -118,10 +123,10 @@
                                     xkey: 'name_detail_material',
                                     ykeys: ['tondauky', 'toncuoiky'],
                                     labels: ['Tồn đầu kỳ', 'Tồn cuối kỳ'],
+                                    xLabelAngle: '60',
                                     });
                             </script>
                         </div>
-                        <div class="col-sm-3"></div>
                     </div>
                     <script>
                         $('.panel1 ._tools .fa').parents(".panel1").children(".panel-body1").slideUp(200);
@@ -132,25 +137,16 @@
                     <i class="fa fa-edit"></i> Báo cáo
                 </header>
                 <div class="row w3-res-tb" style="padding: 15px">
-                    <div class="col-sm-7 bold">
+                    <div class="col-xs-12 bold text-center">
                         @if ($cookFind->status == '1')
                             {{ $cookFind->name }} - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
                         @else
                             {{ $cookFind->name }} - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }} (Bếp hiện tại ngưng hoạt động)
                         @endif
-
-                    </div>
-                    <div class="col-sm-2">
-                    </div>
-                    <div class="col-sm-3 text-right">
-                        <a href="{{ route('warehousecook.exportexcel',['cook' => $cookFind->id, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]) }}"
-                            class="btn btn-sm btn-default" type="button">
-                            <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                        </a>
                     </div>
                 </div>
-                <div class="table-responsive" style="border-top: 1px solid #ddd;">
-                    <table class="table bg-light table-bordered">
+                <div class="table-responsive">
+                    <table class="table bg-light table-bordered" id="example">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -182,9 +178,22 @@
 
         </div>
     </div>
-
-
-
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="{{ route('warehousecook.exportexcel',['cook' => $cookFind->id, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]) }}"
+                        class="btn btn-sm btn-default" type="button">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                    </a>`
+            )
+        });
+    </script>
     <!-- page end-->
 </div>
 @endsection

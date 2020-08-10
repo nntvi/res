@@ -9,7 +9,7 @@ class PositionRepository extends Controller implements IPositionRepository{
 
     public function show()
     {
-        $positions = Position::paginate(10);
+        $positions = Position::get(10);
         return view('position.index',compact('positions'));
     }
 

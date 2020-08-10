@@ -31,18 +31,21 @@ class ReportDishExport implements FromCollection, WithHeadings
     {
         if($this->idGroupMenu == '0'){
             $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
+                        ->selectRaw('sum(price * qty) as price')
+                        ->selectRaw('sum(capital * qty) as capital')
                         ->whereBetween('updated_at',[$this->dateStart,$this->dateEnd])
                         ->whereIn('status',['1','2'])->groupBy('id_dish')
-                        ->with('dish','dish.groupMenu','dish.unit')->get();
+                        ->with('dish.groupMenu','dish.unit')->get();
         }
         else{
             $results = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
+                        ->selectRaw('sum(price * qty) as price')
+                        ->selectRaw('sum(capital * qty) as capital')
                         ->whereBetween('updated_at',[$this->dateStart,$this->dateEnd])
                         ->whereIn('status',['1','2'])->groupBy('id_dish')
-                        ->with('dish','dish.groupMenu','dish.unit')
-                        ->whereHas('dish.groupMenu', function($query) {
+                        ->whereHas('dish.groupMenu', function($query){
                             $query->where('id',$this->idGroupMenu);
-                        })->get();
+                        })->with('dish.groupMenu','dish.unit')->get();
         }
         return $results;
     }
@@ -61,9 +64,9 @@ class ReportDishExport implements FromCollection, WithHeadings
         $results = $this->getResult();
         $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;
         foreach ($results as $key => $result) {
-            $totalCapitalPrice += $result->dish->capital_price;
-            $totalSalePrice += $result->dish->sale_price;
-            $totalInterest += (($result->dish->sale_price) - ($result->dish->capital_price)) * $result->sumQty;
+            $totalCapitalPrice += $result->price;
+            $totalSalePrice += $result->capital;
+            $totalInterest += ($result->price - $result->capital);
         }
         $footerReportDish = array();
         $temp = [
@@ -87,9 +90,9 @@ class ReportDishExport implements FromCollection, WithHeadings
                 '3' => $item->dish->stt == '1' ? $item->dish->name : $item->dish->name . '( ngưng phục vụ)',
                 '4' => $item->dish->unit->name,
                 '5' => $item->sumQty,
-                '6' => $item->dish->capital_price,
-                '7' => $item->dish->sale_price,
-                '8' => (($item->dish->sale_price) - ($item->dish->capital_price)) * $item->sumQty
+                '6' => $item->price,
+                '7' => $item->capital,
+                '8' => ($item->price - $item->capital),
             );
         }
         return collect($row);
@@ -113,8 +116,8 @@ class ReportDishExport implements FromCollection, WithHeadings
                 'Tên món',
                 'Đơn vị tính',
                 'Số lượng',
-                'Giá vốn',
                 'Giá bán',
+                'Giá vốn',
                 'Lợi nhuận',
             ],
         ];

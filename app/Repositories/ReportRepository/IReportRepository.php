@@ -2,8 +2,9 @@
 namespace App\Repositories\ReportRepository;
 
 interface IReportRepository{
+    function checkRoleIndex($arr);
+
     function reportOrder($request);
-    function reportTable($request);
     function reportDish($request);
     function reportDestroyDish($request);
     function getToTalRevenueInYear();

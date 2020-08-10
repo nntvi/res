@@ -2,6 +2,11 @@
 namespace App\Repositories\ImportCouponRepository;
 
 interface IImportCouponRepository{
+    function checkRoleIndex($arr);
+    function checkRoleStore($arr);
+    function checkRoleUpdate($arr);
+    function checkRoleDelete($arr);
+
     function getSuppliers();
     function getMaterialDetail();
     function getUnit();
@@ -9,6 +14,7 @@ interface IImportCouponRepository{
     function getOldQty($i,$request);
     function showIndex();
     function showViewImport();
+    function showViewImportPlan();
     function countMaterialImport($request);
     function createImportCouponDetail($request,$i,$idImportCoupon);
     function getTotalDetailImportCoupon($detailImports);

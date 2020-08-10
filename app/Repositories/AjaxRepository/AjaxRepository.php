@@ -3,25 +3,29 @@ namespace App\Repositories\AjaxRepository;
 
 use App\Unit;
 use App\Order;
+use App\Dishes;
 use App\Method;
 use App\CookArea;
-use App\Dishes;
 use App\Supplier;
 use App\GroupMenu;
 use App\WareHouse;
 use Carbon\Carbon;
 use App\Permission;
+use App\PlanDetail;
 use App\ImportCoupon;
 use App\TypeMaterial;
 use App\WarehouseCook;
 use App\MaterialAction;
+use App\MaterialDetail;
 use App\PaymentVoucher;
 use App\OrderDetailTable;
 use App\ExportCouponDetail;
 use App\ImportCouponDetail;
+use App\Helper\IGetDateTime;
+use App\ExportCouponSupplier;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Helper\IGetDateTime;
+
 class AjaxRepository extends Controller implements IAjaxRepository{
 
     private $ajaxRepository;
@@ -103,7 +107,7 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function getDishToSearch($name)
     {
-        $dishes = Dishes::where('name','LIKE',"%{$name}%")->where('stt','1')->with('unit')->get();
+        $dishes = Dishes::where('name','LIKE',"%{$name}%")->where('status','1')->where('stt','1')->with('unit')->get();
         return $dishes;
     }
     public function getUnit()
@@ -117,17 +121,53 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         return $materials;
     }
 
+    public function getMaterialByIdPlan($idPlan)
+    {
+        $materials = PlanDetail::where('id_plan',$idPlan)->with('materialDetail.unit')->get();
+        return $materials;
+    }
     public function getMaterialWarehouseCook($idCook)
     {
         $materials = WarehouseCook::where('cook',$idCook)->with('detailMaterial','unit')->get();
         return $materials;
     }
 
+    public function getMaterialByIdType($idType)
+    {
+        $type = MaterialDetail::where('id_type',$idType)->where('status','1')->with('unit')->get();
+        return $type;
+    }
+
+    public function getMaterialOfDish($idGroupNVL)
+    {
+        $dish = MaterialAction::where('id_groupnvl',$idGroupNVL)->with('materialDetail')->get();
+        return $dish;
+    }
+
+    public function checkSameMaterial($materialOfDish,$idMaterialDetail)
+    {
+        foreach ($materialOfDish as $key => $dish) {
+            if($idMaterialDetail == $dish->id_material_detail){
+               return true;
+               break;
+            }
+        }
+    }
+    public function createArrayMethodForDish($materialDetails,$materialOfDish)
+    {
+        foreach ($materialDetails as $key => $detail) {
+            if($this->checkSameMaterial($materialOfDish,$detail->id) == true){
+                unset($materialDetails[$key]);
+            }
+        }
+        return $materialDetails;
+    }
+
     public function getIdMaterialByIdCook($materials)
     {
         $idMaterialArray = array();
         foreach ($materials as $key => $material) {
-            if($material->detailMaterial->status == '1'){
+            if($material->detailMaterial != null){
                 $idMaterialArray[] = $material->id_material_detail;
             }
         }
@@ -229,13 +269,15 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         $arrayActions = MaterialAction::where('id_groupnvl',$idMaterial)->get();
         $data = array();
         $capitalPrice = 0;
+        $heso = $this->getEquation();
         foreach ($arrayActions as $key => $action) {
             $capitalPrice += $action->qty * $action->price;
         }
-        $salePrice = round(($capitalPrice / (float) $this->getEquation()));
+        $salePrice = round(($capitalPrice / (float) $heso));
         $data = [
             'capitalPrice' => $capitalPrice,
-            'salePrice' => $salePrice
+            'salePrice' => $salePrice,
+            'heso' => $heso,
         ];
         return $data;
     }
@@ -280,32 +322,40 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function getRevenue($dateStart,$dateEnd)
     {
-        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->where('status','0')->value('total');
+        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                            ->where('status','0')->value('total');
         return $revenue == null ? 0 : $revenue;
     }
 
     public function getCapitalPriceOfDish($dateStart,$dateEnd)
     {
-        $dishOrders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
-                                        ->whereIn('status',['1','2'])->groupBy('id_dish')->with('dish')->get();
-        $capitalPrice = 0;
-        foreach ($dishOrders as $key => $dishOrder) {
-            $capitalPrice += ($dishOrder->sumQty) * ($dishOrder->dish->capital_price);
-        }
-        return $capitalPrice;
+        $capitalPrice = OrderDetailTable::selectRaw('sum(capital * qty) as total')->
+                        whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                        ->whereIn('status',['1','2'])->value('total');
+        return $capitalPrice == null ? 0 : $capitalPrice ;
     }
 
     public function getTotalPayment($dateStart,$dateEnd)
     {
-        $payCash = PaymentVoucher::selectRaw('sum(pay_cash) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->value('total');
+        $payCash = PaymentVoucher::selectRaw('sum(pay_cash) as total')
+                    ->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])->value('total');
         return $payCash == null ? 0 : $payCash;
+    }
+
+    public function getPayReturnSupplier($dateStart,$dateEnd)
+    {
+        $payEmer = ExportCouponSupplier::selectRaw('sum(total) as total')
+                    ->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                    ->value('total');
+        return $payEmer == null ? 0 : $payEmer;
     }
 
     public function getExpense($dateStart,$dateEnd)
     {
         $capitalPrice = $this->getCapitalPriceOfDish($dateStart,$dateEnd);
         $payCash = $this->getTotalPayment($dateStart,$dateEnd);
-        return $capitalPrice + $payCash;
+        $payEmer = $this->getPayReturnSupplier($dateStart,$dateEnd);
+        return $capitalPrice + $payCash - $payEmer;
     }
 
     public function getQtyCustomerByTime($timeStart,$timeEnd)
@@ -363,4 +413,6 @@ class AjaxRepository extends Controller implements IAjaxRepository{
                         })->get();
         return $orders;
     }
+
+
 }

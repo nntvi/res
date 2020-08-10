@@ -5,42 +5,8 @@
         <div class="panel-heading">
             Đồ uống - Món Ăn
         </div>
-        <div class="row w3-res-tb">
-                <div class="col-sm-5 m-b-xs">
-                    <a href="{{ route('dishes.store') }}" class="btn btn-sm btn-default">Thêm mới</a>
-                    {{--  <a href="{{ route('dishes.exportexcel') }}" class="btn btn-sm btn-warning">
-                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                    </a>  --}}
-                </div>
-                <div class="col-sm-3">
-                    <script>
-                        @if($errors->any())
-                            @foreach($errors->all() as $error)
-                                toastr.error('{{ $error }}')
-                            @endforeach
-                        @endif
-                        @if(session('success'))
-                            toastr.success('{{ session('success') }}')
-                        @endif
-                        @if(session('info'))
-                            toastr.info('{{ session('info') }}')
-                        @endif
-                    </script>
-                </div>
-                <div class="col-sm-4">
-                    <form action="{{ route('dishes.search') }}" method="get">
-                        @csrf
-                        <div class="input-group">
-                            <input type="text" class="input-sm form-control" name="nameSearch" required>
-                            <span class="input-group-btn">
-                                <button class="btn btn-sm btn-default" type="submit">Tìm kiếm!</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-        </div>
         <div class="table-responsive">
-            <table class="table table-striped b-t b-light">
+            <table class="table table-striped b-t b-light" id="example">
                 <thead>
                     <tr>
                         <th>STT</th>
@@ -52,6 +18,7 @@
                         <th>Giá bán</th>
                         <th>Đơn vị tính</th>
                         <th>Trạng thái</th>
+                        <th>Ghi chú</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -118,7 +85,8 @@
                                                 <h4 class="modal-title">Chỉnh sửa giá món "<b>{{ $dish->name }}</b>"</h4>
                                             </div>
                                             <div class="modal-body">
-                                                <form action="{{ route('dishes.p_updatesaleprice',['id' => $dish->id]) }}" method="post">
+                                                <form action="{{ route('dishes.p_updatesaleprice',['id' => $dish->id]) }}" method="post"
+                                                    onsubmit="return checkPriceUpdateDish({{ $dish->material->id }})">
                                                     @csrf
                                                     <div class="form-group">
                                                         <div class="row">
@@ -140,8 +108,9 @@
                                                                 <input class="form-control" value="{{ $dish->sale_price }}" disabled>
                                                             </div>
                                                             <div class="col-xs-6">
-                                                                <label>Giá bán mới</label>
-                                                                <input type="number" min="0" class="form-control" id="newSalePriceUpdate{{ $dish->material->id }}" name="newSalePriceUpdate">
+                                                                <label>Giá bán mới (Hệ số: <span class="heso"></span>)</label>
+                                                                <input type="number" min="2000" class="form-control" id="newSalePriceUpdate{{ $dish->material->id }}"
+                                                                name="newSalePriceUpdate" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -257,6 +226,34 @@
                                     Hiện
                                 @endif
                             </td>
+                            <td class="text-center">
+                                <a href="#note{{ $dish->id }}" data-toggle="modal">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="note{{ $dish->id }}" class="modal fade">
+                                        <div class="modal-dialog text-left">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                    <h4 class="modal-title">Ghi chú món {{ $dish->name }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('dishes.p_updatenote',['id' => $dish->id]) }}" method="POST">
+                                                        @csrf
+                                                        <div class="form-group">
+                                                            <label>Ghi chú</label>
+                                                            <textarea name="describe" class="form-control" rows="3">
+                                                                {{ $dish->describe }}
+                                                            </textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-default">Cập nhật</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+
+                            </td>
                             {{-- <td>
                                 <a href="{{ route('dishes.delete',['id' => $dish->id]) }}"
                                     onclick="return confirm('Bạn muốn xóa dữ liệu này?')"><i
@@ -267,19 +264,27 @@
                 </tbody>
             </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
-
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-10 món ăn</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination  m-t-none m-b-none">
-                       {{ $dishes->links() }}
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="{{ route('dishes.store') }}" class="btn btn-sm btn-default">Thêm mới</a>`
+            );
+        });
+    </script>
 @endsection

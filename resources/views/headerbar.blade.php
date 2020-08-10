@@ -108,12 +108,33 @@
                     <i class="fa fa-bell-o" data-count="0"></i>
                     <span class="badge bg-warning notify-count-new-dish">0</span>
                 </a>
-                <ul class="dropdown-menu extended notificationNewDish">
-                    <li>
-                        <p>Thông báo có món mới cho bếp</p>
-                    </li>
 
-                </ul>
+                @foreach (json_decode(auth()->user()->checkCook()) as $item)
+                    @if ($item == "XEM_BEP1")
+                        <ul class="dropdown-menu extended notificationNewDish1">
+                            <li>
+                                <p>Thông báo có món mới cho bếp</p>
+                            </li>
+
+                        </ul>
+                    @endif
+                    @if ($item == "XEM_BEP2")
+                        <ul class="dropdown-menu extended notificationNewDish2">
+                            <li>
+                                <p>Thông báo có món mới cho bếp</p>
+                            </li>
+
+                        </ul>
+                    @endif
+                    @if ($item == "XEM_BEP3")
+                        <ul class="dropdown-menu extended notificationNewDish3">
+                            <li>
+                                <p>Thông báo có món mới cho bếp</p>
+                            </li>
+
+                        </ul>
+                    @endif
+                @endforeach
             </li>
 
             <!-- notification dropdown end -->

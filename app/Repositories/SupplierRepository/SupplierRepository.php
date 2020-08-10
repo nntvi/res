@@ -8,6 +8,50 @@ use App\TypeMaterial;
 
 class SupplierRepository extends Controller implements ISupplierRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getTypeMarial()
     {
         $types = TypeMaterial::all();
@@ -16,7 +60,7 @@ class SupplierRepository extends Controller implements ISupplierRepository{
 
     public function getAllSupplier()
     {
-        $suppliers = Supplier::with('typeMaterial')->paginate(5);
+        $suppliers = Supplier::with('typeMaterial')->get();
         return view('supplier.index',compact('suppliers'));
     }
 
@@ -85,7 +129,6 @@ class SupplierRepository extends Controller implements ISupplierRepository{
             'note' => $request->note,
             'id_type' => $request->typeMaterial
         ];
-        //dd($temp);
         Supplier::where('id',$id)->update($temp);
         return redirect(route('supplier.index'))->with('info','Cập nhật thông tin NCC thành công');
     }
@@ -96,15 +139,4 @@ class SupplierRepository extends Controller implements ISupplierRepository{
        return redirect(route('supplier.index'))->withSuccess('Xóa NCC thành công');
     }
 
-    public function countResultSearch($request)
-    {
-        $count = Supplier::selectRaw('count(code) as qty')->where('code','LIKE',"%{$request->search}%")
-                            ->orWhere('name','LIKE',"%{$request->search}%")->value('qty');
-        return $count;
-    }
-    public function searchSupplier($request)
-    {
-        $suppliers = Supplier::where('code','LIKE',"%{$request->search}%")->orWhere('name','LIKE',"%{$request->search}%")->get();
-        return $suppliers;
-    }
 }

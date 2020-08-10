@@ -13,6 +13,50 @@ use App\WarehouseCook;
 
 class MaterialDetailRepository extends Controller implements IMaterialDetailRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_NGUYEN_VAT_LIEU"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_NGUYEN_VAT_LIEU"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_NGUYEN_VAT_LIEU"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_NGUYEN_VAT_LIEU"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getTypeMaterial()
     {
         $types = TypeMaterial::all();
@@ -25,9 +69,15 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         return $units;
     }
 
+    public function getPrice()
+    {
+        $price = SettingPrice::get();
+        return $price;
+    }
+
     public function getMaterialDetail()
     {
-        $materialDetails = MaterialDetail::where('status','1')->orderBy('id','desc')->with('typeMaterial','unit')->paginate(10);
+        $materialDetails = MaterialDetail::where('status','1')->orderBy('id','desc')->with('typeMaterial','unit')->get();
         return $materialDetails;
     }
 
@@ -76,15 +126,6 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         return redirect(route('material_detail.index'))->withSuccess('Thêm NVL thành công');
     }
 
-    public function searchMaterialDetail($request)
-    {
-        $count = MaterialDetail::selectRaw('count(id) as qty')->where('name','LIKE',"%{$request->nameSearch}%")->where('status','1')->value('qty');
-        $materialDetails = MaterialDetail::where('name','LIKE',"%{$request->nameSearch}%")->where('status','1')->with('typeMaterial','unit')->get();
-        $types = $this->getTypeMaterial();
-        $units = $this->getUnit();
-        return view('materialdetail.search',compact('materialDetails','types','units','count'));
-    }
-
     public function updateNameMaterialDetail($request,$id)
     {
         MaterialDetail::where('id',$id)->update(['name' => $request->name]);
@@ -97,13 +138,11 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
         Warehouse::where('id_material_detail',$id)->update(['id_type' => $request->type]);
         return redirect(route('material_detail.index'))->with('info','Cập nhật nhóm thực đơn NVL thành công');
     }
+
     public function deleteMaterialDetail($id)
     {
         $materialAction = MaterialAction::where('id_material_detail',$id)->delete();
         MaterialDetail::where('id',$id)->update(['status' => '0']);
-        // $materialDetail = MaterialDetail::find($id)->delete();
-        // WareHouse::where('id_material_detail',$id)->delete();
-        // WarehouseCook::where('id_material_detail',$id)->delete();
         return redirect(route('material_detail.index'))->withSuccess('Xóa NVL thành công');
     }
 }

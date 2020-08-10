@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     // New day
     Route::group(['prefix' => 'day'], function () {
+        Route::get('hello', 'DayController@hello')->name('hello');
         Route::get('open', 'DayController@open')->name('day.open');
         Route::get('close', 'DayController@close')->name('day.close');
     });
@@ -30,7 +31,6 @@ Route::group(['middleware' => ['auth']], function() {
     // Permission
     Route::group(['prefix' => 'permission'], function() {
         Route::get('index', 'PermissionController@index')->name('permission.index');
-        Route::get('search', 'PermissionController@search')->name('permission.search');
         Route::post('store', 'PermissionController@store')->name('permission.p_store');
         Route::get('viewupdate/{id}','PermissionController@getEdit')->name('permission.update');
         Route::post('updateName/{id}','PermissionController@updateName')->name('permission.p_updatename');
@@ -47,7 +47,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('viewupdate/{id}','PermissionDetailController@getEdit')->name('perdetail.update');
         Route::post('update/{id}','PermissionDetailController@postEdit')->name('perdetail.p_update');
         Route::get('delete/{id}','PermissionDetailController@delete')->name('perdetail.delete');
-        Route::get('search/','PermissionDetailController@search')->name('perdetail.search');
     });
 
     // UserPermsision
@@ -64,7 +63,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('updateRole/{id}', 'UserController@updateRole')->name('user.p_updaterole');
         Route::post('updatePosition/{id}', 'UserController@updatePosition')->name('user.p_updateposition');
         Route::get('delete/{id}', 'UserController@delete')->name('user.delete');
-        Route::get('search/', 'UserController@search')->name('user.search');
     });
 
     // Area
@@ -90,8 +88,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('index', 'GroupMenuController@index')->name('groupmenu.index');
         Route::get('viewstore', 'GroupMenuController@viewStore')->name('groupmenu.v_store');
         Route::post('store', 'GroupMenuController@store')->name('groupmenu.store');
-        Route::get('search', 'GroupMenuController@search')->name('groupmenu.search');
-        Route::get('updatename/{id}', 'GroupMenuController@updateName')->name('groupmenu.updatename');
+        Route::post('updatename/{id}', 'GroupMenuController@updateName')->name('groupmenu.updatename');
         Route::post('updatecook/{id}', 'GroupMenuController@updateCook')->name('groupmenu.updatecook');
         Route::get('delete/{id}', 'GroupMenuController@delete')->name('groupmenu.delete');
         Route::get('export', 'GroupMenuController@exportExcel')->name('groupmenu.exportexcel');
@@ -100,7 +97,6 @@ Route::group(['middleware' => ['auth']], function() {
     // Topping
     Route::group(['prefix' => 'topping'], function() {
         Route::get('index', 'ToppingController@index')->name('topping.index');
-        Route::get('search', 'ToppingController@search')->name('topping.search');
         Route::post('store', 'ToppingController@store')->name('topping.p_store');
         Route::post('updatename/{id}', 'ToppingController@updateName')->name('topping.p_updatename');
         Route::post('updateprice/{id}', 'ToppingController@updatePrice')->name('topping.p_updateprice');
@@ -117,7 +113,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('update/{id}', 'SupplierController@update')->name('supplier.p_update');
         Route::post('updateName/{id}', 'SupplierController@updateName')->name('supplier.p_updatename');
         Route::get('delete/{id}', 'SupplierController@delete')->name('supplier.delete');
-        Route::get('search/', 'SupplierController@search')->name('supplier.search');
     });
 
     // Cook
@@ -137,15 +132,14 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('updateSalePrice/{id}', 'DishesController@updateSalePrice')->name('dishes.p_updatesaleprice');
         Route::post('updateUnit/{id}', 'DishesController@updateUnit')->name('dishes.p_updateunit');
         Route::post('updateStatus/{id}', 'DishesController@updateStatus')->name('dishes.p_updatestatus');
+        Route::post('updateNote/{id}', 'DishesController@updateNote')->name('dishes.p_updatenote');
         Route::get('delete/{id}', 'DishesController@delete')->name('dishes.delete');
-        Route::get('search', 'DishesController@search')->name('dishes.search');
         Route::get('export', 'DishesController@exportExcel')->name('dishes.exportexcel');
     });
 
     // Material
     Route::group(['prefix' => 'material'], function() {
         Route::get('index', 'MaterialController@index')->name('material.index');
-        Route::get('search', 'MaterialController@search')->name('material.search');
         Route::post('store', 'MaterialController@store')->name('material.store');
         Route::post('updatename/{id}', 'MaterialController@updateName')->name('material.updateName');
         Route::post('updategroup/{id}', 'MaterialController@updateGroup')->name('material.updateGroup');
@@ -162,7 +156,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('moreDetail/{id}', 'MaterialActionController@showMoreDetail')->name('material_action.detail');
         Route::post('update/{id}', 'MaterialActionController@update')->name('material_action.p_update');
         Route::get('delete/{id}', 'MaterialActionController@delete')->name('material_action.delete');
-        Route::post('search/', 'MaterialActionController@search')->name('material_action.search');
     });
 
     // Material Detail
@@ -172,7 +165,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('updateName/{id}', 'MaterialDetailController@updateName')->name('material_detail.p_updatename');
         Route::post('updateType/{id}', 'MaterialDetailController@updateType')->name('material_detail.p_updatetype');
         Route::get('delete/{id}', 'MaterialDetailController@delete')->name('material_detail.delete');
-        Route::get('search', 'MaterialDetailController@search')->name('material_detail.search');
         Route::get('export', 'MaterialDetailController@exportExcel')->name('material_detail.exportexcel');
     });
 
@@ -192,13 +184,13 @@ Route::group(['middleware' => ['auth']], function() {
     // Bill
     Route::group(['prefix' => 'bill'], function () {
         Route::get('index', 'OrderController@showBill')->name('bill.index');
-        Route::get('filter', 'OrderController@filterBill')->name('bill.filter');
-        Route::get('search', 'OrderController@searchBill')->name('bill.search');
+        Route::get('detail/{id}', 'OrderController@getDetailBill')->name('bill.detail');
     });
     // CookingScreen
     Route::group(['prefix' => 'cook_screen'], function() {
         Route::get('index', 'CookScreenController@index')->name('cook_screen.index');
         Route::get('detail/{id}', 'CookScreenController@getDetail')->name('cook_screen.detail');
+        Route::get('materialcook/{id}', 'CookScreenController@getMaterialByIdCook')->name('cook_screen.materialcook');
         Route::post('update/{id}/{idCook}', 'CookScreenController@update')->name('cook_screen.p_update');
         Route::post('updateFinish/{id}/{idCook}', 'CookScreenController@updateFinish')->name('cook_screen.updatefinish');
         Route::get('updateMaterialDetail/{idMaterial}/{idCook}', 'CookScreenController@updateMaterialDetail')
@@ -235,12 +227,13 @@ Route::group(['middleware' => ['auth']], function() {
     // Import Coupon
     Route::group(['prefix' => 'importcoupon'], function() {
         Route::get('index/', 'ImportCouponController@index')->name('importcoupon.index');
+        Route::get('typeimport/', 'ImportCouponController@getType')->name('importcoupon.gettype');
         Route::get('viewImport/', 'ImportCouponController@viewImport')->name('importcoupon.import');
         Route::post('import/', 'ImportCouponController@import')->name('importcoupon.p_import');
+        Route::post('importplan/', 'ImportCouponController@importPlan')->name('importcoupon.p_importplan');
         Route::get('detail/{id}', 'ImportCouponController@getDetail')->name('importcoupon.detail');
         Route::post('detail/{id}', 'ImportCouponController@updateDetail')->name('importcoupon.p_detail');
         Route::get('printdetail/{id}', 'ImportCouponController@printDetail')->name('importcoupon.print_detail');
-        Route::get('search', 'ImportCouponController@search')->name('importcoupon.search');
     });
 
     // Export Coupon
@@ -254,8 +247,8 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('destroyWarehouseCook/{id}', 'ExportCouponController@viewDestroyWarehouseCook')->name('exportcoupon.destroywarehousecook');
         Route::post('destroyWarehouseCook/', 'ExportCouponController@destroyWarehouseCook')->name('exportcoupon.p_destroywarehousecook');
         Route::get('detail/{id}', 'ExportCouponController@getDetail')->name('exportcoupon.detail');
+        Route::get('detailsupplier/{id}', 'ExportCouponController@getDetailExportSupplier')->name('exportcoupon.detailsupplier');
         Route::get('printdetail/{id}', 'ExportCouponController@printDetail')->name('exportcoupon.print_detail');
-        Route::get('search', 'ExportCouponController@search')->name('exportcoupon.search');
     });
 
     // WareHouse Export
@@ -342,7 +335,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'booking'], function () {
         Route::get('index', 'BookingController@index')->name('booking.index');
         Route::post('store', 'BookingController@store')->name('booking.store');
-        Route::get('search', 'BookingController@search')->name('booking.search');
     });
 
     // Method Math
@@ -354,6 +346,18 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('storeNumber/{id}','MethodController@storeNumber')->name('method.p_storeNumber');
         Route::get('update/{id}','MethodController@update')->name('method.update');
         Route::get('delete/{id}','MethodController@delete')->name('method.delete');
+    });
+
+    // Plan Import Material
+
+    Route::group(['prefix' => 'plan'], function() {
+        Route::group(['prefix' => 'import'], function() {
+            Route::get('index','PlanController@index')->name('importplan.index');
+            Route::get('viewstore','PlanController@viewStore')->name('importplan.viewstore');
+            Route::post('store','PlanController@store')->name('importplan.store');
+            Route::get('detail/{id}/{idSupplier}','PlanController@getDetail')->name('importplan.detail');
+            Route::post('detail','PlanController@postDetail')->name('importplan.p_detail');
+        });
     });
 
     // Ajax

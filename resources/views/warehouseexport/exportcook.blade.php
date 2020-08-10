@@ -1,4 +1,10 @@
 @extends('layouts')
+<style>
+    div::-webkit-scrollbar {
+        width: 10px;
+        background: #f1f1f1;
+    }
+</style>
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -16,7 +22,7 @@
                                     <div class="col-md-3">
                                         <label class="control-label">Mã phiếu xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" class="form-control" name="code" maxlength="200" id="codeExportCook" value="{{ $code }}">
+                                        <input type="text" class="form-control" name="code" maxlength="200" id="codeExportCook" value="{{ $code }}" required>
                                     </div>
                                     <div class="col-md-3">
                                         <input name="id_kind" value="1" hidden>
@@ -38,10 +44,8 @@
                                 </div>
                             </div>
                             <div class="grid_3 grid_5 wthree">
-                                <div class="col-md-4 agileits-w3layouts" id="warehouseCook">
-
-                                </div>
-                                <div class="col-md-8" id="warehouse">
+                                <div class="col-sm-1"></div>
+                                <div class="col-xs-12 col-sm-10" id="warehouse" style="height:500px; overflow:auto;">
 
                                 </div>
                                 <script type="text/javascript">
@@ -50,6 +54,7 @@
                                         row.remove();
                                     }
                                 </script>
+                                <div class="col-sm-1"></div>
                                <div class="clearfix"> </div>
                             </div>
                             <div class="col-xs-12 text-center" id="submit">

@@ -34,17 +34,25 @@ class ImportCoupon extends Model
      */
     protected $fillable = [
         'code',
+        'id_supplier',
         'total',
+        'paid',
+        'status',
         'note'
     ];
 
     public function detailImportCoupon()
     {
-        return $this->hasMany('App\ImportCouponDetail','code_import','code');
+        return $this->hasMany('App\ImportCouponDetail','id_imcoupon','id');
     }
 
     public function supplier()
     {
         return $this->belongsTo('App\Supplier','id_supplier');
+    }
+
+    public function exportSupplier()
+    {
+        return $this->hasMany('App\ExportCouponSupplier','id_coupon','id');
     }
 }

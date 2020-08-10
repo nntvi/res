@@ -50,13 +50,8 @@
                             function validateForm() {
                                 var dateStart = document.getElementById('dateStart').value;
                                 var dateEnd = document.getElementById('dateEnd').value;
-
-                                if (dateStart == null || dateStart == "") {
-                                    alert("Không để trống ngày bắt đầu");
-                                    return false;
-                                }
-                                if (dateEnd == null || dateEnd == "") {
-                                    alert("Không để trống ngày kết thúc");
+                                if(dateStart > dateEnd){
+                                    alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                     return false;
                                 }
                                 return true;
@@ -103,8 +98,8 @@
                 <br>
             </header>
             <div class="panel-body1 row" style="display: block;">
-                <div class="col-sm-3"></div>
-                <div class="floatcharts_w3layouts_bottom col-xs-12 col-sm-6">
+                <div class="col-sm-2"></div>
+                <div class="floatcharts_w3layouts_bottom col-xs-12 col-sm-8">
                     <h5 class="hdg text-center">Số tiền nợ/trả với tất cả NCC từ {{ $dateStart }} - {{ $dateEnd }}</h5>
                     <div id="supplier" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
                         <div class="morris-hover morris-default-style" style="left: 312.508px; top: 137px;">
@@ -118,12 +113,15 @@
                             xkey: 'name',
                             ykeys: ['total', 'paid','unpaid'],
                             labels: ['Tổng tiền', 'Đã trả','Nợ'],
-                            units: ' đ'
+                            units: ' đ',
+                            xLabelAngle: 25,
+                            resize: true,
+                            padding: 50
                         });
 
                     </script>
                 </div>
-                <div class="col-sm-3"></div>
+                <div class="col-sm-2"></div>
             </div>
             <script>
                 $('.panel1 ._tools .fa').parents(".panel1").children(".panel-body1").slideUp(200);
@@ -131,27 +129,10 @@
             </script>
         </section>
         <div class="panel panel-default">
-            <div class="panel-heading">
+            <div class="panel-heading" style="margin-bottom: 15px">
                 Kết quả
             </div>
-            <div class="row w3-res-tb" style="padding: 15px">
-                <div class="col-sm-8 bold">
-                    @if ($idSupplier == '0')
-                        NCC: Tất cả - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
-                    @else
-                        NCC: {{ $supplierChoosen->status == '1' ? $supplierChoosen->name : $supplierChoosen->name . '( ngưng hoạt động)' }}
-                        - Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
-                    @endif
-                </div>
-                <div class="col-sm-1">
-                </div>
-                <div class="col-sm-3 text-right">
-                    <a href="{{ route('report.exportsupplier',['dateStart' => $dateStart,'dateEnd' => $dateEnd, 'idSupplier' => $idSupplier]) }}"
-                        class="btn btn-sm btn-default" type="button">
-                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                    </a>
-                </div>
-            </div>
+
             <div>
                 <div class="table-responsive">
                         <table class="table" id="example">
@@ -184,12 +165,10 @@
                                 <tfoot>
                                     <tr class="bold">
                                         <td colspan="4" class="text-right">TỔNG: </td>
-                                        <td>{{ number_format($footerTotalSupplier[0]['total']) . ' đ' }}
-                                        </td>
-                                        <td>{{ number_format($footerTotalSupplier[0]['paid']) . ' đ' }}
-                                        </td>
-                                        <td>{{ number_format($footerTotalSupplier[0]['unPaid']) . ' đ' }}
-                                        </td>
+                                        <td>{{ number_format($footerTotalSupplier[0]['total']) . ' đ' }}</td>
+                                        <td>{{ number_format($footerTotalSupplier[0]['paid']) . ' đ' }}</td>
+                                        <td>{{ number_format($footerTotalSupplier[0]['unPaid']) . ' đ' }}</td>
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -202,8 +181,13 @@
                 $(document).ready( function () {
                     $('#example').dataTable();
                     $('#example_info').addClass('text-muted');
-                    $('#example_length').remove();
-                    $('#example_filter').remove();
+                    $('input[type="search"]').addClass('form-control');
+                    $('#example_length').html(
+                        `<a href="{{ route('report.exportsupplier',['dateStart' => $dateStart,'dateEnd' => $dateEnd, 'idSupplier' => $idSupplier]) }}"
+                                class="btn btn-sm btn-default" type="button">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                        </a>`
+                    )
                 } );
             </script>
         </div>

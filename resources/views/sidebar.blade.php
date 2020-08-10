@@ -19,54 +19,32 @@
                 <li class="sub-menu">
                     <a href="javascript:;">
                         <i class="fa fa-cube"></i>
-                        <span>Hàng hóa</span>
+                        <span>Quản lý</span>
                     </a>
                     <ul class="sub">
                         <li><a href="{{ route('groupmenu.index') }}">Nhóm thực đơn</a></li>
-                        <li><a href="{{ route('material.index') }}">Tên món và công thức</a></li>
                         <li><a href="{{ route('material_detail.index') }}">Nguyên vật liệu</a></li>
+                        <li><a href="{{ route('material.index') }}">Tên món và công thức</a></li>
                         <li><a href="{{ route('dishes.index') }}">Đồ uống - Món ăn</a></li>
-                        {{-- <li><a href="{{route('topping.index') }}">Topping,
-                            ghi chú món</a>
-                        </li> --}}
-                        {{-- <li><a href="{{ route('material_action.index') }}">Chi tiết NVL từng món</a>
-                        </li> --}}
-            </ul>
-            </li>
-            <li class="sub-menu">
-                <a href="javascript:;">
-                    <i class="fa fa-users"></i>
-                    <span>Phân quyền</span>
-                </a>
-                <ul class="sub">
-                    <li><a href="{{ route('permission.index') }}">Nhóm quyền</a></li>
-                    <li><a href="{{ route('perdetail.index') }}">Quyền hoạt động</a></li>
-                    <li><a href="{{ route('user.index') }}">Nhân viên</a></li>
-                </ul>
-            </li>
-            <li class="sub-menu">
-                <a href="javascript:;">
-                    <i class="fa fa-building-o"></i>
-                    <span>Nhà hàng</span>
-                </a>
-                <ul class="sub">
-                    <li><a href="{{ route('order.index') }}">Màn hình order</a></li>
-                    <li><a href="{{ route('cook_screen.index') }}">Màn hình khu vực bếp</a></li>
-                    <li><a href="{{ route('area.index') }}">Khu vực - Phòng bàn</a></li>
-                    {{-- <li><a href="{{ route('table.index') }}">Phòng bàn</a></li> --}}
-                    <li><a href="{{ route('cook.index') }}">Bếp</a></li>
-                </ul>
-            </li>
-            <li class="sub-menu">
-                <a href="javascript:;">
-                    <i class="fa fa-user"></i>
-                    <span>Đối tác</span>
-                </a>
-                <ul class="sub">
-                    {{--  <li><a href="{{ route('booking.index') }}">Khách hàng đặt bàn</a></li>  --}}
-                    <li><a href="{{ route('supplier.index') }}">Nhà cung cấp</a></li>
-                </ul>
-            </li>
+
+                        <li><a href="{{ route('area.index') }}">Khu vực - bàn</a></li>
+                        <li><a href="{{ route('cook.index') }}">Khu vực bếp</a></li>
+                        <li><a href="{{ route('supplier.index') }}">Nhà cung cấp</a></li>
+                        <li><a href="{{ route('user.index') }}">Nhân viên</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{ route('order.index') }}">
+                        <i class="fa fa-desktop"></i>
+                        <span>Màn hình order</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cook_screen.index') }}">
+                        <i class="fa fa-cutlery"></i>
+                        <span>Màn hình khu vực bếp</span>
+                    </a>
+                </li>
             <li class="sub-menu">
                 <a href="javascript:;">
                     <i class="fa fa-database"></i>
@@ -112,6 +90,7 @@
                     <li><a href="{{ route('shift.index') }}">Ca làm việc</a></li>
                     {{--  <li><a href="{{ route('position.index') }}">Chức vụ và tiền lương</a></li>  --}}
                     <li><a href="{{ route('method.index') }}">Hệ số giá bán</a></li>
+                    <li><a href="{{ route('importplan.index') }}">Kế hoạch nhập hàng</a></li>
                 </ul>
             </li>
             </ul>

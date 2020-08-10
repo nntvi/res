@@ -45,12 +45,6 @@ class PermissionDetailRepository extends Controller implements IPermissionDetail
         return redirect(route('perdetail.index'));
     }
 
-    public function searchPermissionDetail($request)
-    {
-        $name = $request->nameSearch;
-        $permissionDetails = PermissionDetail::where('name','LIKE',"%{$name}%")->get();
-        return view('permissiondetail.search',compact('permissionDetails'));
-    }
     public function deleteDetail($id)
     {
         PermissionDetail::find($id)->delete();

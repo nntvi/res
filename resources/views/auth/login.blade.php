@@ -1,7 +1,7 @@
 @include('header')
 <div class="log-w3">
     <div class="w3layouts-main">
-        <h2>Sign In Now</h2>
+        <h2>Đăng nhập</h2>
         <form action="{{ route('login') }}" method="POST">
             @csrf
             <input id="email" type="email" class="ggg @error('email') is-invalid @enderror" name="email"
@@ -19,17 +19,17 @@
                     <strong>{{ $message }}</strong>
                 </span>
             @enderror
-            <span><input class="form-check-input" type="checkbox" name="remember" id="remember"
+            {{--  <span><input class="form-check-input" type="checkbox" name="remember" id="remember"
                     {{ old('remember') ? 'checked' : '' }} />Remember
                 Me</span>
 
             @if(Route::has('password.request'))
                 <h6><a class="btn btn-link" href="{{ route('password.request') }}">Forgot
                         Password?</a></h6>
-            @endif
+            @endif  --}}
 
             <div class="clearfix"></div>
-            <input type="submit" value="Sign In" name="login">
+            <input type="submit" value="Đăng nhập" name="login">
             @if(session('fail'))
                 {{ session('fail') }}
             @endif

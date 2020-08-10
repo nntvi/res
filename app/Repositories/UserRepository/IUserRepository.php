@@ -3,7 +3,11 @@
 namespace App\Repositories\UserRepository;
 
 interface IUserRepository{
-    function getAllUser($arr);
+    function checkRoleIndex($arr);
+    function checkRoleStore($arr);
+    function checkRoleUpdate($arr);
+    function checkRoleDelete($arr);
+
     function validatorRequestStore($req);
     function validateRequestUpdateUsername($request);
     function validatorRequestShift($request);
@@ -14,7 +18,6 @@ interface IUserRepository{
     function updateRole($req,$id);
     function updatePasswordUser($request, $id);
     function validatorRequestUpdatePassword($req);
-    function searchUser($request);
     function deleteUser($id);
     function updateUserName($request ,$id);
     function validatorUpdateRole($request);

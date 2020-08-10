@@ -45,13 +45,8 @@
                             function validateForm() {
                                 var dateStart = document.getElementById('dateStart').value;
                                 var dateEnd = document.getElementById('dateEnd').value;
-
-                                if (dateStart == null || dateStart == "") {
-                                    alert("Không để trống ngày bắt đầu");
-                                    return false;
-                                }
-                                if (dateEnd == null || dateEnd == "") {
-                                    alert("Không để trống ngày kết thúc");
+                                if(dateStart > dateEnd){
+                                    alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                     return false;
                                 }
                                 return true;
@@ -91,22 +86,10 @@
             </form>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">
+            <div class="panel-heading" style="margin-bottom: 15px;">
                 Kết quả
             </div>
-            <div class="row w3-res-tb" style="padding: 15px">
-                <div class="col-sm-5 bold">
-                    Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
-                </div>
-                <div class="col-sm-4">
-                </div>
-                <div class="col-sm-3 text-right">
-                    <a href="{{ route('report.exportdestroydish',['dateStart' => $dateStart,'dateEnd' => $dateEnd,'idGroupMenu' => $idGroupMenu]) }}"
-                        class="btn btn-sm btn-default" type="button">
-                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                    </a>
-                </div>
-            </div>
+
             <div>
                 <table id="example" class="table">
                     <thead>
@@ -145,8 +128,13 @@
         $(document).ready( function () {
             $('#example').dataTable();
             $('#example_info').addClass('text-muted');
-            $('#example_length').remove();
-            $('#example_filter').remove();
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="{{ route('report.exportdestroydish',['dateStart' => $dateStart,'dateEnd' => $dateEnd,'idGroupMenu' => $idGroupMenu]) }}"
+                        class="btn btn-sm btn-default" type="button">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                </a>`
+            );
         } );
     </script>
 </div>

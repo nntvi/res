@@ -47,13 +47,6 @@ class ToppingRepository extends Controller implements IToppingRepository{
 
         return redirect(route('topping.index'));
     }
-    public function searchTopping($request)
-    {
-        $name = $request->nameSearch;
-        $toppings = Topping::where('name','LIKE',"%{$name}%")->with('groupMenu')->get();
-        $groupMenus = $this->getAllGroupMenu();
-        return view('topping.search',compact('toppings','groupMenus'));
-    }
 
     public function updateNameTopping($request,$id)
     {

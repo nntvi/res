@@ -1,19 +1,65 @@
 <?php
 namespace App\Repositories\ImportCouponRepository;
 
-use App\Http\Controllers\Controller;
-use App\ImportCoupon;
-use App\ImportCouponDetail;
-use App\MaterialAction;
+use App\Plan;
+use App\Unit;
 use App\Supplier;
-use App\MaterialDetail;
+use App\WareHouse;
+use Carbon\Carbon;
+use App\ImportCoupon;
 use App\SettingPrice;
 use App\TypeMaterial;
-use App\Unit;
-use App\WareHouse;
 use App\WarehouseCook;
+use App\MaterialAction;
+use App\MaterialDetail;
+use App\ImportCouponDetail;
+use App\Http\Controllers\Controller;
 
 class ImportCouponRepository extends Controller implements IImportCouponRepository{
+
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_PHIEU_NHAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_PHIEU_NHAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_PHIEU_NHAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_PHIEU_NHAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
 
     public function getSuppliers()
     {
@@ -45,7 +91,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
     }
     public function showIndex()
     {
-        $listImports = ImportCoupon::orderBy('created_at','desc')->with('supplier','detailImportCoupon')->paginate(10);
+        $listImports = ImportCoupon::orderBy('created_at','desc')->with('supplier','detailImportCoupon')->get();
         return view('importcoupon.index',compact('listImports'));
     }
 
@@ -71,10 +117,23 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         $units = $this->getUnit();
         $types = $this->getTypeMaterial();
         $material_details = $this->getMaterialDetail();
-        $code = $this->createCode("NK");
+        $code = $this->createCode("NH");
         return view('importcoupon.import',compact('suppliers','units','material_details','types','code'));
     }
 
+    public function getToday()
+    {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        return $today;
+    }
+
+    public function showViewImportPlan()
+    {
+        $code = $this->createCode("NKH");
+        $today = $this->getToday();
+        $plans = Plan::where('status','0')->where('date_create','>',$today)->with('supplier')->get();
+        return view('importcoupon.impplan',compact('code','plans'));
+    }
     public function countMaterialImport($request)
     {
         $count = count($request->id);
@@ -176,7 +235,7 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
 
     public function findDetailImportCouponByIdImport($id)
     {
-        $detailImport = ImportCoupon::where('id',$id)->with('detailImportCoupon.materialDetail','detailImportCoupon.unit','supplier')->get();
+        $detailImport = ImportCoupon::where('id',$id)->with('detailImportCoupon.materialDetail','detailImportCoupon.unit','supplier')->first();
         return $detailImport;
     }
 

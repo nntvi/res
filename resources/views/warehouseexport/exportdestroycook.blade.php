@@ -1,4 +1,10 @@
 @extends('layouts')
+<style>
+    div::-webkit-scrollbar {
+        width: 10px;
+        background: #f1f1f1;
+    }
+</style>
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -62,15 +68,15 @@
                                     <div class="col-md-12">
 
                                         <div class="space"></div>
-                                        <div id="material">
+                                        <div id="material" style="height:350px; overflow:auto;">
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th width=23%>Tên mặt hàng</th>
-                                                        <th width=25%>Sl trong bếp</th>
-                                                        <th width=24%>Số lượng xuất</th>
-                                                        <th width=15%>Đơn vị xuất</th>
-                                                        <th>Action</th>
+                                                        <th>Tên mặt hàng</th>
+                                                        <th>Sl trong bếp</th>
+                                                        <th>Số lượng xuất</th>
+                                                        <th>Đơn vị</th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="list" id="tableDestroyWarehouseCook">

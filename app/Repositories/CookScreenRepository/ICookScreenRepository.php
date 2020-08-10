@@ -22,5 +22,9 @@ interface ICookScreenRepository{
     function createDishEmptyWh($dishOrder,$qtyEmptyWh,$idCook);
     function validateToCook($request);
 
+    function checkDishDestroyOrNot($id);
+    function checkDishToDoFirst($idCook,$id);
+    function checkAnythingIsDoing($idCook);
     function updateStatusDish($idDishOrder,$idCook,$dishOrder,$qty,$status);
+    function getMaterialByIdCook($idCook);
 }

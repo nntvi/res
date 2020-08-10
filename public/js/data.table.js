@@ -3463,23 +3463,23 @@ $jscomp.polyfill("Array.prototype.find", function (f) {
             oPaginate: {
                 sFirst: "First",
                 sLast: "Last",
-                sNext: "Next",
-                sPrevious: "Previous"
+                sNext: "Sau",
+                sPrevious: "Trước"
             },
-            sEmptyTable: "No data available in table",
+            sEmptyTable: "Không tìm thấy dữ liệu",
             sInfo: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
             sInfoEmpty: "Hiển thị 0 đến 0 của 0 mục",
-            sInfoFiltered: "(filtered from _MAX_ total entries)",
+            sInfoFiltered: "",
             sInfoPostFix: "",
             sDecimal: "",
             sThousands: ",",
-            sLengthMenu: "Hiển thị _MENU_ mụck",
+            sLengthMenu: "Hiển thị _MENU_ mục",
             sLoadingRecords: "Loading...",
             sProcessing: "Processing...",
-            sSearch: "Search:",
+            sSearch: "",
             sSearchPlaceholder: "",
             sUrl: "",
-            sZeroRecords: "No matching records found"
+            sZeroRecords: "Không tìm thấy kết quả"
         },
         oSearch: f.extend({}, q.models.oSearch),
         sAjaxDataProp: "data",

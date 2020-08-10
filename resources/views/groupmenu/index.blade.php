@@ -5,88 +5,8 @@
         <div class="panel-heading">
             Nhóm Thực Đơn
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-3 m-b-xs">
-                <a href="#myModal-1" data-toggle="modal">
-                    <button class="btn btn-sm btn-default">Thêm mới</button>
-                </a>
-                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1"
-                    class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                <h4 class="modal-title">Thêm mới Nhóm thực đơn</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-horizontal" role="form"
-                                    action="{{ route('groupmenu.store') }}" method="POST">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label class="col-lg-2 col-sm-2 control-label">
-                                            Tên
-                                        </label>
-                                        <div class="col-lg-10">
-                                            <input type="text" class="form-control" min="2" max="60" name="name" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-lg-2 col-sm-2 control-label">Chọn bếp</label>
-                                        <div class="col-lg-10">
-                                            @foreach($cook_active as $item)
-                                                <label class="checkbox-inline">
-                                                    <input type="radio" id="cook{{ $item->id }}"
-                                                        value="{{ $item->id }}" name="idCook"> {{ $item->name }}
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-lg-offset-2 col-lg-10 text-right">
-                                            <button type="submit" class="btn btn-default">Thêm mới</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                {{-- <a href="{{ route('groupmenu.exportexcel')}}" class="btn btn-sm btn-default">
-                    <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                </a> --}}
-
-            </div>
-            <div class="col-sm-5">
-                <script>
-                    @if($errors->any())
-                        @foreach($errors->all() as $error)
-                            toastr.error('{{ $error }}')
-                        @endforeach
-                    @endif
-                    @if(session('success'))
-                        toastr.success('{{ session('success') }}')
-                    @endif
-                    @if(session('info'))
-                        toastr.info('{{ session('info') }}')
-                    @endif
-                </script>
-            </div>
-            <div class="col-sm-4">
-                <form action="{{ route('groupmenu.search') }}" method="GET">
-                    @csrf
-                    <div class="input-group">
-                        <input type="text" min="1" max="100" class="input-sm form-control" name="nameSearch" required>
-                        <span class="input-group-btn">
-                            <button class="btn btn-sm btn-default" type="submit">Tìm kiếm</button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
         <div class="table-responsive">
-            <div class="table-responsive">
-                <table class="table table-hover">
+            <table class="table table-hover" id="example">
                     <thead>
                         <tr>
                             <th>STT</th>
@@ -123,9 +43,9 @@
                                                         <div class="form-group">
                                                             <label>Action Name <span style="color: #ff0000">
                                                                     *</span></label>
-                                                            <input type="text" size="40" class="form-control"
-                                                                required="required" name="nameGroupMenu" maxlength="255"
-                                                                value="{{ $groupmenu->name }}">
+                                                            <input type="text" class="form-control"
+                                                             name="nameGroupMenu" maxlength="60"
+                                                                value="{{ $groupmenu->name }}" required>
                                                         </div>
                                                         <button type="submit" class="btn btn-default">Lưu</button>
                                                     </form>
@@ -257,22 +177,72 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
-
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">showing 1-10 nhóm thực đơn</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{ $groupmenus->links() }}
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="#myModal-1" data-toggle="modal">
+                    <button class="btn btn-sm btn-default">Thêm mới</button>
+                </a>
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1"
+                    class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h4 class="modal-title">Thêm mới Nhóm thực đơn</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form"
+                                    action="{{ route('groupmenu.store') }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label class="col-lg-2 col-sm-2 control-label">
+                                            Tên
+                                        </label>
+                                        <div class="col-lg-10">
+                                            <input type="text" class="form-control" maxlength="60" name="name" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 col-sm-2 control-label">Chọn bếp</label>
+                                        <div class="col-lg-10">
+                                            @foreach($cook_active as $item)
+                                                <label class="checkbox-inline">
+                                                    <input type="radio" id="cook{{ $item->id }}"
+                                                        value="{{ $item->id }}" name="idCook"> {{ $item->name }}
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-2 col-lg-10 text-right">
+                                            <button type="submit" class="btn btn-default">Thêm mới</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>`
+            )
+        } );
+    </script>
 @endsection

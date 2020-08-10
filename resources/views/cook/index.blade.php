@@ -41,7 +41,8 @@
                                 @endforeach
                             </td>
                             <form method="post"
-                                action="{{ route('cook.update',['id' => $cook->id]) }}">
+                                action="{{ route('cook.update',['id' => $cook->id]) }}"
+                                onsubmit="return confirm('Khi hủy hoạt động, tất cả nhóm thực đơn thuộc bếp sẽ bị hủy. Vui lòng chuyển các nhóm sang bếp khác trước khi thực hiện thao tác này!')">
                                 @csrf
                                 <td>
                                     @if($cook->status == '1')
@@ -74,11 +75,6 @@
     </div>
 </div>
 <script>
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            toastr.error('{{ $error }}')
-        @endforeach
-    @endif
     @if(session('success'))
         toastr.success('{{ session('success') }}')
     @endif

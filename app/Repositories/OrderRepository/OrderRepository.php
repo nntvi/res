@@ -20,6 +20,28 @@ use App\Http\Controllers\Controller;
 
 class OrderRepository extends Controller implements IOrderRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_GOI_MON"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleIndexBill($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_HOA_DON"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function validatorOrder($request)
     {
        $request->validate(['idDish' => 'required'],['idDish.required' => 'Vui lòng chọn ít nhất 1 món ăn']);
@@ -107,7 +129,6 @@ class OrderRepository extends Controller implements IOrderRepository{
         $tables = Table::where('status','1')->get();
         $activeTables = $this->getIdTableActive($this->getDateNow());
         $groupmenus = $this->getDishes();
-        //dd($groupmenus);
         return view('order.index',compact('tables','activeTables','groupmenus','areas'));
     }
 
@@ -143,7 +164,7 @@ class OrderRepository extends Controller implements IOrderRepository{
             ['hour_start', '<=', $timeUpdate],
             ['hour_end', '>=', $timeUpdate],
         ])->value('id');
-        return $idShift;
+        return $idShift == null ? null : $idShift;
     }
 
     public function saveTable($idOrderTable,$idTable)
@@ -154,6 +175,7 @@ class OrderRepository extends Controller implements IOrderRepository{
         $tableOrdered->status = '1';
         $tableOrdered->save();
     }
+
     public function saveOrder($request)
     {
         $orderTable = new Order();
@@ -171,6 +193,12 @@ class OrderRepository extends Controller implements IOrderRepository{
         $price = Dishes::where('id',$idDish)->value('sale_price');
         return $price;
     }
+
+    public function getCapitalPriceOfDish($idDish)
+    {
+        $capital = Dishes::where('id',$idDish)->value('capital_price');
+        return $capital;
+    }
     public function addOrderTableTrue($idDish,$idOrderTable,$idCook,$key,$request,$qty)
     {
         $orderDetail = new OrderDetailTable();
@@ -178,6 +206,7 @@ class OrderRepository extends Controller implements IOrderRepository{
         $orderDetail->id_dish = $idDish;
         $orderDetail->qty = $qty;
         $orderDetail->price = $this->getSalePriceOfDish($idDish);
+        $orderDetail->capital = $this->getCapitalPriceOfDish($idDish);
         $orderDetail->note = $request->note[$key];
         $orderDetail->status = '0'; // chưa làm
         $orderDetail->save();

@@ -5,6 +5,16 @@ use App\Http\Controllers\Controller;
 use App\Method;
 
 class MethodRepository extends Controller implements IMethodRepository{
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
 
     public function checkMethod($temp)
     {
@@ -156,7 +166,7 @@ class MethodRepository extends Controller implements IMethodRepository{
         $arrNumTu = $request->numTu; // số đc nhập
         $arrCalNumTu = $request->calNumTu; // phép tính đc nhập
         if($arrCalNumTu == null){
-            return $arrNumTu;
+            return $arrNumTu[0];
         }else{
             $checkMulDiv = $this->checkMultipandDiv($arrCalNumTu);
             $arrTempNumTu = array();
@@ -172,7 +182,7 @@ class MethodRepository extends Controller implements IMethodRepository{
         $arrNumMau = $request->numMau; // số đc nhập
         $arrCalNumMau = $request->calNumMau; // phép tính đc nhập
         if($arrCalNumMau == null){
-            return $arrCalNumMau;
+            return $arrCalNumMau[0];
         }else{
             $checkMulDiv = $this->checkMultipandDiv($arrCalNumMau);
             $arrTempNumMau = array();

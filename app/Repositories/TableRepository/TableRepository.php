@@ -8,6 +8,50 @@ use App\Table;
 
 class TableRepository extends Controller implements ITableRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getAllArea()
     {
         $areas = Area::all();
@@ -15,7 +59,7 @@ class TableRepository extends Controller implements ITableRepository{
     }
     public function getAllTable()
     {
-        $tables = Table::with('getArea')->paginate(8);
+        $tables = Table::with('getArea')->get();
         $areas = $this->getAllArea();
         return view('table/index',compact('tables','areas'));
     }
@@ -25,8 +69,14 @@ class TableRepository extends Controller implements ITableRepository{
         $request->validate(['codeTable' => 'code_table'],['codeTable.code_table' => 'Mã bàn đã tồn tại trong hệ thống']);
     }
 
-    public function validatorNameTable($req){
-        $req->validate(['nameTable' => 'status_table'],['nameTable.status_table' => 'Tên bàn đã tồn tại trong hệ thống']);
+    public function validateNameTable($req){
+        $req->validate(
+            ['nameTable' => 'status_table|regex:[\w\s]'],
+            [
+                'nameTable.status_table' => 'Tên bàn đã tồn tại trong hệ thống',
+                'nameTable.regex' => 'Tên bàn không chứa kí tự đặc biệt'
+            ],
+        );
     }
 
     public function addTable($request)
@@ -56,16 +106,8 @@ class TableRepository extends Controller implements ITableRepository{
         Table::where('id',$id)->update(['chairs' => $request->qtyChairs]);
     }
 
-    public function searchTable($request)
-    {
-        $search = $request->nameSearch;
-        $tables = Table::where('name','LIKE',"%{$search}%")->orwhere('code','LIKE',"{$search}")->get();
-        $areas = $this->getAllArea();
-        return view('table.search',compact('tables','areas'));
-    }
     public function deleteTable($id)
     {
         Table::where('id',$id)->update(['status' => '0']);
-        return redirect(route('area.index'))->withSuccess('Xóa bàn thành công');
     }
 }

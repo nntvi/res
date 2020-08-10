@@ -4,12 +4,16 @@ namespace App\Repositories\AjaxRepository;
 interface IAjaxRepository{
     function getDateTime($id);
     function getMaterialBySupplier($idSupplier);
+    function getMaterialByIdPlan($idPlan);
     function getDishToSearch($name);
     function getUnit();
     function getMaterialWarehouseCook($idCook);
     function getIdMaterialByIdCook($materials);
     function findMaterialInWarehouse($idMaterialArray);
     function getMaterialInWarehouseByType($type);
+    function getMaterialByIdType($idType);
+    function getMaterialOfDish($idGroupNVL);
+    function createArrayMethodForDish($materialDetails,$materialOfDish);
     function searchMaterialDestroy($name);
     function searchMaterialDestroyCook($id,$name);
     function getCapitalPriceByIdMaterial($idMaterial);

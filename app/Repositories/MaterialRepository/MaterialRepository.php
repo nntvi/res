@@ -12,6 +12,50 @@ use App\WarehouseCook;
 
 class MaterialRepository extends Controller implements IMaterialRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_TEN_MON_CT"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_TEN_MON_CT"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_TEN_MON_CT"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_TEN_MON_CT"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getCategoryDish()
     {
         $groupMenu = GroupMenu::where('status','1')->get();
@@ -20,13 +64,18 @@ class MaterialRepository extends Controller implements IMaterialRepository{
 
     public function showMaterial()
     {
-        $materials = Material::with('groupMenu','materialAction.materialDetail')->where('status','1')->orderBy('id','desc')->paginate(10);
+        $materials = Material::with('groupMenu','materialAction.materialDetail')->where('status','1')->orderBy('id','desc')->get();
         $groupMenus = $this->getCategoryDish();
         return view('material.index',compact('materials','groupMenus'));
     }
 
     public function validatorRequestStore($req){
-        $req->validate([ 'name' => 'status_material'], ['name.status_material' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống']);
+        $req->validate(
+            [ 'name' => 'status_material|regex:/^[\pL\s]+$/u'],
+            [   'name.status_material' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
+                'name.regex' => 'Tên món ăn không được là số'
+            ]
+        );
     }
 
     public function addMaterial($request)
@@ -45,17 +94,10 @@ class MaterialRepository extends Controller implements IMaterialRepository{
             ['nameMaterial.unique' => 'Tên vừa thay đổi đã tồn tại trong hệ thống']);
     }
 
-    public function searchMaterial($request)
-    {
-        $name = $request->nameSearch;
-        $count = Material::selectRaw('count(id) as qty')->where('name','LIKE',"%{$name}%")->where('status','1')->value('qty');
-        $materials = Material::where('name','LIKE',"%{$name}%")->where('status','1')->with('groupMenu','materialAction.materialDetail')->get();
-        $groupMenus = $this->getCategoryDish();
-        return view('material.search',compact('materials','groupMenus','count'));
-    }
     public function updateNameMaterial($request, $id)
     {
         Material::where('id',$id)->update(['name' => $request->nameMaterial]);
+        Dishes::where('id_groupnvl',$id)->update(['name' => $request->nameMaterial]);
         return redirect(route('material.index'))->with('info','Cập nhật nhóm thực đơn thành công');
     }
 
@@ -66,6 +108,7 @@ class MaterialRepository extends Controller implements IMaterialRepository{
             $warehousecook->cook = $tempCook;
             $warehousecook->id_material_detail = $value->id_material_detail;
             $warehousecook->qty = 0.00;
+            $warehousecook->status = '0';
             $warehousecook->id_unit = $value->id_dvt;
             $warehousecook->save();
         }
@@ -96,7 +139,8 @@ class MaterialRepository extends Controller implements IMaterialRepository{
         // nếu khác, phải thêm nvl tạo thành món đó vào bếp vừa thay đổi
         $this->checkCook($idcook,$tempCook,$id);
         Material::where('id',$id)->update(['id_groupmenu' => $request->idGroupMenu]);
-        return redirect(route('material.index'))->with('infor','Cập nhật nhóm thực đơn thành công');
+        Dishes::where('id_groupnvl',$id)->update(['id_groupmenu' => $request->idGroupMenu]);
+        return redirect(route('material.index'))->with('info','Cập nhật nhóm thực đơn thành công');
     }
 
     public function deleteMaterial($id)

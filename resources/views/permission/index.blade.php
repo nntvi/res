@@ -45,7 +45,7 @@
                 <span class="error-message">{{ $errors->first('name') }}</span></p>
             </div>
             <div class="col-xs-12 col-sm-5">
-                <form action="{{ route('permission.search') }}" method="GET">
+                {{--  <form action="{{ route('permission.search') }}" method="GET">
                     @csrf
                     <div class="input-group">
                         <input type="text" class="input-sm form-control" name="nameSearch" required>
@@ -53,7 +53,7 @@
                             <button class="btn btn-sm btn-default" type="submit">Tìm kiếm!</button>
                         </span>
                     </div>
-                </form>
+                </form>  --}}
             </div>
             <div class="col-sm-7">
                 <span class="error-message">{{ $errors->first('namePermissionUpdate') }}</span>

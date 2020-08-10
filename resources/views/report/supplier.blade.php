@@ -44,13 +44,8 @@
                             function validateForm() {
                                 var dateStart = document.getElementById('dateStart').value;
                                 var dateEnd = document.getElementById('dateEnd').value;
-
-                                if (dateStart == null || dateStart == "") {
-                                    alert("Không để trống ngày bắt đầu");
-                                    return false;
-                                }
-                                if (dateEnd == null || dateEnd == "") {
-                                    alert("Không để trống ngày kết thúc");
+                                if(dateStart > dateEnd){
+                                    alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                     return false;
                                 }
                                 return true;

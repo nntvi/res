@@ -107,7 +107,7 @@
         </section>
         <script>
             $('.panel1 ._tools .fa').parents(".panel1").children(".panel-body1").slideDown(200);
-            Morris.Area({
+            Morris.Bar({
                 element: 'area-chart',
                 data: @json($dataChart),
                 xkey: 'month',
@@ -119,7 +119,8 @@
                 resize: true,
                 pointFillColors:['#ffffff'],
                 pointStrokeColors: ['black'],
-                lineColors:['green','gray','red']
+                barColors:['green','gray','red'],
+                xLabelAngle: '40',
             });
         </script>
     </div>

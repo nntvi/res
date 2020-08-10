@@ -2,6 +2,8 @@
 namespace App\Repositories\MethodRepository;
 
 interface IMethodRepository{
+    function checkRoleIndex($arr);
+
     function checkMethod($temp);
     function createStringTu($qtyTu,$textTu,$calTu);
     function createStringMau($qtyMau,$textMau,$calMau);

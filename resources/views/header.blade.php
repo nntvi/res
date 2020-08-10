@@ -46,7 +46,6 @@
     <script src="{{ asset('js/report.js') }}"></script>
     <script src="{{ asset('js/validate.js') }}"></script>
 
-
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>

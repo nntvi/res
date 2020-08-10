@@ -7,24 +7,39 @@ use App\WarehouseCook;
 use Illuminate\Http\Request;
 use App\Repositories\WarehouseCookRepository\IWarehouseCookRepository;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Helper\ICheckAction;
 
 class WarehouseCookController extends Controller
 {
     private $warehousecookRepository;
+    private $checkAction;
 
-    public function __construct(IWarehouseCookRepository $warehousecookRepository)
+    public function __construct(ICheckAction $checkAction, IWarehouseCookRepository $warehousecookRepository)
     {
+        $this->checkAction = $checkAction;
         $this->warehousecookRepository = $warehousecookRepository;
     }
 
     public function index()
     {
-        return $this->warehousecookRepository->showWarehouseCook();
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->warehousecookRepository->checkRoleIndex($result);
+        if($check != 0){
+            return $this->warehousecookRepository->showWarehouseCook();
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function reset()
     {
-        return $this->warehousecookRepository->resetWarehouseCook();
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->warehousecookRepository->checkRoleUpdate($result);
+        if($check != 0){
+            return $this->warehousecookRepository->resetWarehouseCook();
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function report(Request $request)

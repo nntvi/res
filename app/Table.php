@@ -35,11 +35,12 @@ class Table extends Model
     protected $fillable = [
         'code',
         'name',
+        'status',
         'id_area'
     ];
 
     public function getArea()
     {
-        return $this->belongsTo('App\Area','id_area');
+        return $this->belongsTo('App\Area','id_area','id');
     }
 }

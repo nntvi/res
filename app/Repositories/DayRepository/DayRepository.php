@@ -79,6 +79,7 @@ class DayRepository extends Controller implements IDayRepository{
             }
         }
     }
+    
     public function endDay()
     {
         $check = $this->checkEndDay();

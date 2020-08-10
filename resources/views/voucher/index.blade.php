@@ -2,69 +2,18 @@
 @section('content')
 <div class="table-agile-info">
     <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-heading" style="margin-bottom: 15px">
             Danh sách phiếu chi
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-5 m-b-xs">
-                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
-                    <i class="fa fa-file-text-o" aria-hidden="true"></i> Tạo phiếu chi
-                </a>
-                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
-                    class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                <h4 class="modal-title">Chọn đối tượng chi</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{ route('voucher.payment') }}" method="GET">
-                                    @csrf
-                                    <div class="form-group row">
-                                        <div class="col-xs-5">
-                                            <input type="radio" name="object" value="1">
-                                            <label for="">Trả nợ nhà cung cấp</label>
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <input type="radio" name="object" value="2">
-                                            <label for="">Mua gấp NVL</label>
-                                        </div>
-                                        <div class="col-xs-3 text-right">
-                                            <button type="submit" class="btn btn-default">Chọn</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <script>
-                    @if(session('success'))
-                        toastr.success('{{ session('success') }}')
-                    @endif
-                </script>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <input type="text" class="input-sm form-control" id="codeSearchPaymentVc">
-                    <span class="input-group-btn">
-                        <button class="btn btn-sm btn-default" type="button" id="btnSearchPaymentVc">Tìm kiếm</button>
-                    </span>
-                </div>
-            </div>
-        </div>
         <div class="table-responsive">
-            <table class="table table-striped b-t b-light">
+            <table class="table table-striped b-t b-light" id="example">
                 <thead>
                     <tr>
                         <th style="width:20px;">STT</th>
                         <th>Mã phiếu chi</th>
                         <th>Lý do chi</th>
                         <th>Đối tượng</th>
-                        <th>Số tiền</th>
+                        <th>Tổng tiền</th>
                         <th>Ghi chú</th>
                         <th>Người tạo</th>
                         <th></th>
@@ -82,9 +31,7 @@
                             <td>{{ $payment->note }}</td>
                             <td>{{ $payment->created_by }}</td>
                             <td>
-                                @if ($payment->type == '1')
-
-                                @else
+                                @if ($payment->type != '1')
                                     <a href="#payment{{ $payment->id }}" data-toggle="modal">
                                         <i class="fa fa-pencil text-success" aria-hidden="true"></i>
                                     </a>
@@ -152,15 +99,58 @@
                 </tbody>
             </table>
         </div>
-        <footer class="panel-footer">
-            <div class="row">
-                <div class="col-sm-7 text-right text-center-xs">
-                    <ul class="pagination pagination-sm m-t-none m-b-none">
-                        {{ $payments->links() }}
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
+                        <i class="fa fa-file-text-o" aria-hidden="true"></i> Tạo phiếu chi
+                    </a>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
+                        class="modal fade" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                    <h4 class="modal-title">Chọn đối tượng chi</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('voucher.payment') }}" method="GET">
+                                        @csrf
+                                        <div class="form-group row">
+                                            <div class="col-xs-5">
+                                                <input type="radio" name="object" value="1" checked>
+                                                <label for="">Trả nợ nhà cung cấp</label>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <input type="radio" name="object" value="2">
+                                                <label for="">Mua gấp NVL</label>
+                                            </div>
+                                            <div class="col-xs-3 text-right">
+                                                <button type="submit" class="btn btn-default">Chọn</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+            )
+        } );
+    </script>
 @endsection

@@ -3,21 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\ImportCoupon;
+use App\Plan;
 use Illuminate\Http\Request;
 use App\Repositories\ImportCouponRepository\IImportCouponRepository;
+use App\Helper\ICheckAction;
 
 class ImportCouponController extends Controller
 {
     private $importcouponRepository;
+    private $checkAction;
 
-    public function __construct(IImportCouponRepository $importcouponRepository)
+    public function __construct(ICheckAction $checkAction, IImportCouponRepository $importcouponRepository)
     {
+        $this->checkAction = $checkAction;
         $this->importcouponRepository = $importcouponRepository;
     }
 
     public function index()
     {
-        return $this->importcouponRepository->showIndex();
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->importcouponRepository->checkRoleIndex($result);
+        if($check != 0){
+            return $this->importcouponRepository->showIndex();
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
+    }
+
+    public function gettype(Request $request)
+    {
+        $type = $request->typeImp;
+        if($type == '1'){
+           return $this->viewImport();
+        }else{
+            return $this->importcouponRepository->showViewImportPlan();
+        }
     }
 
     public function viewImport()
@@ -27,10 +47,28 @@ class ImportCouponController extends Controller
 
     public function import(Request $request)
     {
-        $this->importcouponRepository->validateCreatImportCoupon($request);
-        return $this->importcouponRepository->import($request);
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->importcouponRepository->checkRoleStore($result);
+        if($check != 0){
+            $this->importcouponRepository->validateCreatImportCoupon($request);
+            return $this->importcouponRepository->import($request);
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
+    public function importPlan(Request $request)
+    {
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->importcouponRepository->checkRoleStore($result);
+        if($check != 0){
+            $this->importcouponRepository->validateCreatImportCoupon($request);
+            Plan::where('id',$request->idPlan)->update(['status' => '1']);
+            return $this->importcouponRepository->import($request);
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
+    }
     public function getDetail($id)
     {
         return $this->importcouponRepository->getDetailImportCouponById($id);
@@ -46,13 +84,6 @@ class ImportCouponController extends Controller
         return $this->importcouponRepository->printDetailByCode($id);
     }
 
-    public function search(Request $request)
-    {
-        $search = $request->searchImC;
-        $count = ImportCoupon::selectRaw('count(code) as qty')->where('code','LIKE',"%{$search}%")->orWhere('total','LIKE',"%{$search}%")->value('qty');
-        $listImports = ImportCoupon::where('code','LIKE',"%{$search}%")->orWhere('total','LIKE',"%{$search}")->with('supplier','detailImportCoupon')->get();
-        return view('importcoupon.search',compact('listImports','count'));
-    }
     // public function substractMaterial()
     // {
 

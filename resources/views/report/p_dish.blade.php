@@ -3,7 +3,10 @@
     .datepicker.dropdown-menu {
         z-index: 1003;
     }
-
+    svg text{
+        font-size: 14px!important;
+        font-family: "Roboto"!important;
+    }
 </style>
 @section('content')
 <div class="form-w3layouts">
@@ -43,14 +46,14 @@
                                 <div class="form-group ">
                                     <label class="control-label">Từ ngày:</label>
                                     <input class="date form-control" name="dateStart" value="{{ $dateStart }}"
-                                        type="text" id="dateStart">
+                                        type="text" id="dateStart" required>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-3">
                                 <div class="form-group ">
                                     <label class="control-label">Đến ngày:</label>
                                     <input class="date form-control" name="dateEnd" value="{{ $dateEnd }}" type="text"
-                                        id="dateEnd">
+                                        id="dateEnd" required>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-3">
@@ -85,18 +88,16 @@
                             function validateForm() {
                                 var dateStart = document.getElementById('dateStart').value;
                                 var dateEnd = document.getElementById('dateEnd').value;
-
-                                if (dateStart == null || dateStart == "") {
-                                    alert("Không để trống ngày bắt đầu");
-                                    return false;
-                                }
-                                if (dateEnd == null || dateEnd == "") {
-                                    alert("Không để trống ngày kết thúc");
+                                if(dateStart > dateEnd){
+                                    alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                     return false;
                                 }
                                 return true;
                             }
-
+                            $('div svg text').css({
+                                "font-family" : "'Roboto' !important",
+                                "font-size" : "13px"
+                            });
                         </script>
                         <div class="row">
                             <div class="col-xs-12 text-center">
@@ -116,15 +117,10 @@
                         <br>
                     </header>
                     <div class="panel-body1 row" style="display: block;">
-                        <div class="col-sm-1"></div>
-                        <div class="col-xs-12 col-sm-5">
-                            <h3 class="hdg">Lợi nhuận</h3>
+                        <div class="col-xs-12 col-sm-7">
+                            <h3 class="hdg text-center">Lợi nhuận</h3>
                             <div id="money"></div>
                             <script>
-                                    Number.prototype.format = function(n, x) {
-                                        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
-                                        return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
-                                    };
                                 // Use Morris.Bar
                                 Morris.Bar({
                                     element: 'money',
@@ -133,26 +129,23 @@
                                     ykeys: ['interest'],
                                     labels: ['Lợi nhuận'],
                                     units: ' đ',
+                                    xLabelAngle: '70',
+    parseTime: false,
+    verticalGrid: false,
+    resize: false,
+    padding: 60,
                                     barColors: function (row, series, type) {
                                         if (type === 'bar') {
-                                            var red = Math.ceil(255 * row.y / this.ymax);
-                                            return 'rgb(' + red + ',0,0)';
-                                        } else {
-                                            return '#001';
+                                        var red = Math.ceil(255 * row.y / this.ymax);
+                                        return 'rgb(' + red + ',0,0)';
                                         }
-                                    },
-                                    hoverCallback: function (index, options, content, row) {
-                                        var hover = `<div class='morris-hover-row-label'>` + row.name + `</div>
-                                                    <div class='morris-hover-point bold' style='color: darkgreen;'><p >Lợi nhuận:` +  row.interest.format(3) + ` đ</p></div>
-                                                    <div class='morris-hover-point' style='color: black;'><p>Giá bán:` +  row.sale.format(3) + ` đ</p></div>
-                                                    <div class='morris-hover-point' style='color: darkblue;'><p>Giá vốn:` + row.capital.format(3) + ` đ</p></div>`;
-                                        return hover;
+                                        else {
+                                        return '#000';
+                                        }
                                     }
                                 });
-
-                            </script>
+                                </script>
                         </div>
-                        <div class="col-sm-1"></div>
                         <div class="col-xs-12 col-sm-5">
                             <h3 class="hdg">Best Seller</h3>
                             <div id="bestSeller">
@@ -176,22 +169,9 @@
                     </script>
                     <div class="space"></div>
                 </section>
-                <header class="panel-heading" style="text-align:left">
+                <header class="panel-heading" style="text-align:left;">
                     <i class="fa fa-edit"></i> Báo cáo
                 </header>
-                <div class="row w3-res-tb" style="padding: 15px">
-                    <div class="col-sm-5 bold">
-                        Từ: {{ $dateStart }} - Đến: {{ $dateEnd }}
-                    </div>
-                    <div class="col-sm-4">
-                    </div>
-                    <div class="col-sm-3 text-right">
-                        <a href="{{ route('report.exportdish',['dateStart' => $dateStart,'dateEnd' => $dateEnd,'idGroupMenu' => $idGroupMenu]) }}"
-                            class="btn btn-sm btn-default" type="button">
-                            <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                        </a>
-                    </div>
-                </div>
                 <div class="table-responsive">
                     <table class="table table-striped b-t b-light display" id="example" >
                         <thead>
@@ -246,12 +226,18 @@
     <!-- page end-->
     <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
-	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
         $(document).ready( function () {
             $('#example').dataTable();
             $('#example_info').addClass('text-muted');
-            $('#example_length').remove();
-            $('#example_filter').remove();
+            $('input[type="search"]').addClass('form-control');
+            $('#example_length').html(
+                `<a href="{{ route('report.exportdish',['dateStart' => $dateStart,'dateEnd' => $dateEnd,'idGroupMenu' => $idGroupMenu]) }}"
+                        class="btn btn-sm btn-default" type="button">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                </a>`
+            )
         } );
     </script>
 </div>

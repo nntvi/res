@@ -432,12 +432,12 @@
 
 @media (max-width: 2560px){
     .tab-content .cardDish{
-        height: 128px;
+        height: 150px;
         border: 1px groove gray;
         padding: 0;
     }
     .tab-content .card-img-top{
-        height: 80px;
+        height: 108px;
         width: 100%;
         overflow: hidden;
     }

@@ -75,7 +75,7 @@ class GetDateTime implements IGetDateTime{
     }
     public function getEndOfJul()
     {
-        return $this->getFirstOfYear()->addMonth(6)->endOfMonth()->format('Y-m');
+        return $this->getFirstOfYear()->addMonth(6)->endOfMonth()->format('Y-m-d');
     }
     public function getFirstOfAug()
     {
@@ -83,7 +83,7 @@ class GetDateTime implements IGetDateTime{
     }
     public function getEndOfAug()
     {
-        return $this->getFirstOfYear()->addMonth(7)->format('Y-m-d');
+        return $this->getFirstOfYear()->addMonth(7)->endOfMonth()->format('Y-m-d');
     }
     public function getFirstOfSep()
     {

@@ -2,6 +2,9 @@
 namespace App\Repositories\WarehouseCookRepository;
 
 interface IWarehouseCookRepository{
+    function checkRoleIndex($arr);
+    function checkRoleUpdate($arr);
+
     function getMaterialFromCook();
     function addMaterial($data,$cookwarehouse);
     function createWarehouseCook();

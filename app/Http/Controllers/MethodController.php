@@ -5,20 +5,28 @@ namespace App\Http\Controllers;
 use App\Method;
 use App\Repositories\MethodRepository\IMethodRepository;
 use Illuminate\Http\Request;
+use App\Helper\ICheckAction;
 
 class MethodController extends Controller
 {
     private $methodRepository;
-
-    public function __construct(IMethodRepository $methodRepository)
+    private $checkAction;
+    public function __construct(ICheckAction $checkAction, IMethodRepository $methodRepository)
     {
+        $this->checkAction = $checkAction;
         $this->methodRepository = $methodRepository;
     }
 
     public function index()
     {
-        $methods = Method::paginate(5);
-        return view('method.index',compact('methods'));
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->methodRepository->checkRoleIndex($result);
+        if($check != 0){
+            $methods = Method::get();
+            return view('method.index',compact('methods'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function viewStoreText()
@@ -48,8 +56,8 @@ class MethodController extends Controller
 
     public function storeNumber(Request $request,$id)
     {
-        $tu = $this->methodRepository->createNumTu($request,$id);
-        $mau =  $this->methodRepository->createNumMau($request,$id);
+        $tu = (float) $this->methodRepository->createNumTu($request,$id);
+        $mau = (float) $this->methodRepository->createNumMau($request,$id);
         if($mau == 0 ){
             return redirect(route('method.index'))->withErrors('Vui lòng thiết lập mẫu số > 0');
         }else{

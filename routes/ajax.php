@@ -7,6 +7,8 @@ Route::group(['prefix' => 'ajax'], function() {
     Route::get('checkNVL/{idDishOrder}','CookScreenController@checkNVL');
     Route::get('getArea/{idTable}','AjaxController@getAreaByIdTable');
 
+    Route::get('getDishInCook/{idCook}','CookScreenController@getDetail');
+
     Route::group(['prefix' => 'search'], function () {
         Route::get('paymentvoucher/{code}','AjaxController@searchPaymentVoucher');
         Route::get('dish/{name}','AjaxController@searchDish');
@@ -21,11 +23,16 @@ Route::group(['prefix' => 'ajax'], function() {
 
     Route::group(['prefix' => 'getMaterial'], function() {
         Route::get('bySupplier/{idSupplier}','AjaxController@getMaterialBySupplier');
+        Route::get('byIdPlan/{idPlan}','AjaxController@getMaterialByIdPlan');
+        Route::get('byIdType/{idType}/{idGroupNVL}','AjaxController@getMaterialByIdType');
+        Route::get('byIdMaterial/{idMaterial}','AjaxController@getMaterialByIdMaterial');
         Route::get('cookemergency/{idCook}','AjaxController@getMaterialByIdCook');
+
         Route::group(['prefix' => 'export'], function() {
             Route::get('cook/{idObjectCook}','AjaxController@getMaterialToExportCook');
             Route::get('supplier/{idSupplier}','AjaxController@getImportCouponByIdSupplier');
         });
+
         Route::group(['prefix' => 'destroy'], function() {
             Route::get('warehouse/{name}','AjaxController@searchMaterialDestroy');
             Route::get('cook/{id}/{name}','AjaxController@searchMaterialDestroyCook');

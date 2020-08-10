@@ -1,169 +1,237 @@
 @extends('layouts')
+<style>
+    div#example_length {
+        padding-left: 5px!important;
+    }
+    a.fa-chevron-down{
+        line-height: 47px;
+    }
+    #exportSupplier_filter input[type=search]{
+        margin-left: 0px;
+    }
+</style>
 @section('content')
-<div class="table-agile-info">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Các Phiếu Xuất Kho
-            </div>
-            <div class="row w3-res-tb">
-                    <div class="col-sm-5 m-b-xs">
-                        <a href="{{ route('warehouse.index') }}" class="btn btn-sm btn-default">Về trang kho</a>
-                    </div>
-                    <div class="col-sm-3">
-                    </div>
-                    <div class="col-sm-4">
-                            <form action="{{ route('exportcoupon.search') }}" method="get">
-                                    @csrf
-                                    <div class="input-group">
-                                        <input type="text" class="input-sm form-control" name="searchExC" required>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-sm btn-default" type="submit">Tìm kiếm</button>
-                                        </span>
-                                    </div>
-                                </form>
-                    </div>
-                </div>
-            <div class="table-responsive">
-            <table class="table table-striped b-t b-light">
-                <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Mã phiếu</th>
-                    <th>Loại xuất</th>
-                    <th>Đối tượng xuất</th>
-                    <th>Ghi chú</th>
-                    <th>Ngày tạo</th>
-                    <th>Người tạo</th>
-                    <th>Chi tiết</th>
-                </tr>
-                </thead>
-                <tbody>
-                   @foreach ($exportCoupons as $key => $exportCoupon)
-                   <tr>
-                        <td>{{$key+1}}</td>
-                        <td>{{$exportCoupon->code}}</td>
-                        <td>{{$exportCoupon->typeExport->name}}</td>
-                        <td>
-                            @foreach ($exportCoupon->detailExportCoupon as $item)
-                                @if ($exportCoupon->id_type == '2')
-                                    {{ $item->supplier->status == '1' ? $item->name_object : $item->name_object . '( ngưng hoạt động)' }}
-                                    @break
-                                @else
-                                    {{ $item->name_object }}
-                                    @break
-                                @endif
-                            @endforeach
-                        </td>
-                        <td>{{$exportCoupon->note}}</td>
-                        <td>{{$exportCoupon->created_at}}</td>
-                        <td>{{$exportCoupon->created_by}}</td>
-                        <td>
-                            <a href="#export{{ $exportCoupon->id }}" data-toggle="modal">Xem chi tiết</a>
-                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
-                                    id="export{{ $exportCoupon->id }}" class="modal fade" style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button aria-hidden="true" data-dismiss="modal" class="close"
-                                                    type="button">×</button>
-                                                <h4 class="modal-title">Chi tiết phiếu xuất {{ $exportCoupon->code }} <button style="background: white;
-                                                    border: none;" onclick="printJS({ printable: 'printExportCoupon{{ $exportCoupon->id }}', type: 'html', header: 'Restaurant' })">
-                                                        <i class="fa fa-print text-danger" aria-hidden="true"></i>
-                                                    </button> </h4>
-                                            </div>
-                                            <div class="modal-body" id="printExportCoupon{{ $exportCoupon->id }}">
-                                                <div class="titleImportCoupon">
-                                                    <div class="leftTitle">
-                                                        Đối tượng: <span class="bold">
-                                                            @foreach ($exportCoupon->detailExportCoupon as $item)
-                                                                @if ($exportCoupon->id_type == '2')
-                                                                    {{ $item->supplier->status == '$item->name_object1' ?  : $item->name_object . '( ngưng hoạt động)' }}
-                                                                    @break
-                                                                @else
-                                                                    {{ $item->name_object }}
-                                                                    @break
-                                                                @endif
-                                                            @endforeach</span>
-                                                        - Ghi chú: <span class="bold">{{ $exportCoupon->note }}</span>
-                                                    </div>
-                                                    <br>
-                                                    <div class="rightTittle">
-                                                        Người tạo: {{ $exportCoupon->created_by }} - Ngày tạo: <span class="bold">{{ $exportCoupon->created_at }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <div class="bs-docs-example">
-                                                            <table class="table table-striped">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>STT</th>
-                                                                        <th>Tên mặt hàng</th>
-                                                                        <th>Số lượng xuất</th>
-                                                                        <th>Đơn vị tính</th>
-                                                                        {{--  <th style="width:30px;"></th>  --}}
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    @foreach ($exportCoupon->detailExportCoupon as $key => $detail)
-                                                                        {{--  <form role="form" action="{{route('importcoupon.p_detail',['id' => $detail->id])}}" method="POST">
-                                                                            @csrf  --}}
-                                                                            <tr>
-                                                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$key+1}}</td>
-                                                                                <td>&nbsp;&nbsp;&nbsp;{{ $detail->materialDetail->status == '1' ? $detail->materialDetail->name : $detail->materialDetail->name .' (ko còn sử dụng)'}}</td>
-                                                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $detail->qty }}</td>
-                                                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $detail->unit->name}}</td>
-                                                                                {{--  <td><input type="number" min="0" value="{{ $detail->price }}" name="price"></td>
-                                                                                <td>
-                                                                                    <button type="submit"><i class="fa fa-pencil text-success"></i></button>
-                                                                                </td>  --}}
-                                                                            </tr>
+<div class="form-w3layouts">
+    <!-- page start-->
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    Các phiếu xuất kho/bếp
+                    <span class="tools pull-right" >
+                        <a class="fa fa-chevron-down" href="javascript:;"></a>
+                    </span>
+                </header>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped b-t b-light" id="example">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã phiếu</th>
+                                    <th>Loại xuất</th>
+                                    <th>Đối tượng xuất</th>
+                                    <th>Ghi chú</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Người tạo</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @foreach ($exportCoupons as $key => $exportCoupon)
+                               <tr>
+                                    <td>{{$key+1}}</td>
+                                    <td>{{$exportCoupon->code}}</td>
+                                    <td>{{$exportCoupon->typeExport->name}}</td>
+                                    <td>
+                                        @foreach ($exportCoupon->detailExportCoupon as $item)
+                                            @if ($exportCoupon->id_type == '2')
+                                                {{ $item->supplier->status == '1' ? $item->name_object : $item->name_object . '( ngưng hoạt động)' }}
+                                                @break
+                                            @else
+                                                {{ $item->name_object }}
+                                                @break
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>{{$exportCoupon->note}}</td>
+                                    <td>{{$exportCoupon->created_at}}</td>
+                                    <td>{{$exportCoupon->created_by}}</td>
+                                    <td>
+                                        <a href="{{ route('exportcoupon.detail', ['id' => $exportCoupon->id]) }}" data-toggle="modal">Xem chi tiết</a>
 
-                                                                        {{--  </form>  --}}
-                                                                    @endforeach
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </td>
-                   </tr>
-                   @endforeach
-                </tbody>
-            </table>
-            </div>
-            <footer class="panel-footer">
-            <div class="row">
-                <div class="col-sm-5 text-center">
-                    <small class="text-muted inline m-t-sm m-b-sm">Hiển thị 1-10 phiếu xuất</small>
+                                    </td>
+                               </tr>
+                               @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                <ul class="pagination pagination-sm m-t-none m-b-none">
-                    {{ $exportCoupons->links() }}
-                </ul>
-                </div>
-            </div>
-            </footer>
+            </section>
         </div>
     </div>
-
-        <script>
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        toastr.error('{{ $error }}')
-                    @endforeach
-                @endif
-                @if(session('success'))
-                    toastr.success('{{ session('success') }}')
-                @endif
-                @if(session('info'))
-                    toastr.info('{{ session('info') }}')
-                @endif
-        </script>
-
-<div class="clearfix"></div>
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    Các phiếu xuất trả hàng nhà cung cấp
+                    <span class="tools pull-right">
+                        <a class="fa fa-chevron-down" href="javascript:;"></a>
+                    </span>
+                </header>
+                <div class="panel-body">
+                    <div class="table-responsive" >
+                        <table class="table table-striped b-t b-light" id="exportSupplier">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã phiếu xuất</th>
+                                    <th>Nhà cung cấp</th>
+                                    <th>Mã phiếu nhập</th>
+                                    <th>Tổng tiền trả</th>
+                                    <th>Ghi chú</th>
+                                    <th>Người tạo</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($exSuppliers as $key => $exsupplier)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $exsupplier->code }}</td>
+                                        <td>{{ $exsupplier->importCoupon->supplier->name }}</td>
+                                        <td>{{ $exsupplier->importCoupon->code }}</td>
+                                        <td>{{ number_format($exsupplier->total) . ' đ' }}</td>
+                                        <td>{{ $exsupplier->note }}</td>
+                                        <td>{{ $exsupplier->created_by }}</td>
+                                        <td>{{ $exsupplier->created_at }}</td>
+                                        <td>
+                                            <a href="{{ route('exportcoupon.detailsupplier',['id' => $exsupplier->id]) }}">Xem chi tiết</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- page end-->
+</div>
+<script>
+    @if(session('success'))
+        toastr.success('{{ session('success') }}')
+    @endif
+    @if(session('info'))
+        toastr.info('{{ session('info') }}')
+    @endif
+</script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+<script>
+$(document).ready( function () {
+    $('#example').dataTable();
+    $('#exportSupplier').dataTable();
+    @foreach ($exportCoupons as $exportCoupon)
+        $('#detail{{ $exportCoupon->id }}').dataTable();
+        $('#detail{{ $exportCoupon->id }}_filter').remove();
+        $('#detail{{ $exportCoupon->id }}_length').remove();
+    @endforeach
+    $('#example_info').addClass('text-muted');
+    $('input[type="search"]').addClass('form-control');
+    $('#example_length').html(
+        `<a class="btn btn-sm btn-default" href="#myModal" data-toggle="modal">
+                <i class="fa fa-stack-overflow">
+                </i> Xuất kho
+        </a>
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
+        class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">Chọn loại xuất</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" action="{{ route('exportcoupon.export') }}"
+                        method="GET">
+                        @csrf
+                        <div class="row">
+                            <div class="radio">
+                                <div class="col-xs-5">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1"
+                                            value="1" checked>
+                                        Xuất Bếp
+                                    </label>
+                                </div>
+                                <div class="col-xs-5">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios2"
+                                            value="2">
+                                        Xuất Trả hàng
+                                    </label>
+                                </div>
+                                <div class="col-xs-2" style="margin-top: -10px">
+                                    <button type="submit" class="btn btn-info">Chọn</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>`
+    );
+    $('#exportSupplier_length').html(
+        `<a class="btn btn-sm btn-default" href="#myModal" data-toggle="modal">
+                <i class="fa fa-stack-overflow">
+                </i> Xuất kho
+        </a>
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
+        class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">Chọn loại xuất</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" action="{{ route('exportcoupon.export') }}"
+                        method="GET">
+                        @csrf
+                        <div class="row">
+                            <div class="radio">
+                                <div class="col-xs-5">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1"
+                                            value="1" checked>
+                                        Xuất Bếp
+                                    </label>
+                                </div>
+                                <div class="col-xs-5">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios2"
+                                            value="2">
+                                        Xuất Trả hàng
+                                    </label>
+                                </div>
+                                <div class="col-xs-2" style="margin-top: -10px">
+                                    <button type="submit" class="btn btn-info">Chọn</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>`
+    );
+});
+</script>
 @endsection

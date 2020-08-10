@@ -231,7 +231,7 @@ table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3 {
 }
 
 table.dataTable.no-footer {
-    border-bottom: 1px solid #111
+    border-bottom: none;
 }
 
 table.dataTable.nowrap th,
@@ -378,6 +378,12 @@ table.dataTable td {
     float: right;
     text-align: right;
     padding-top: 0.25em
+}
+div#example_filter {
+    padding-right: 20px;
+}
+div#example_length {
+    padding-left: 20px;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {

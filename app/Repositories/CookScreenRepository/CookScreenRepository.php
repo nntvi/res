@@ -12,10 +12,8 @@ use App\MaterialAction;
 use App\MaterialDetail;
 use App\OrderDetailTable;
 use App\Http\Controllers\Controller;
+use App\Order;
 use App\OrderTable;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class CookScreenRepository extends Controller implements ICookScreenRepository{
@@ -25,6 +23,7 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         $dish = OrderDetailTable::where('id',$idDishOrder)->with('dish','order.tableOrdered.table')->first();
         return $dish;
     }
+
     public function getIdDishByIdDishOrder($idDishOrder)
     {
         $idDish = OrderDetailTable::where('id',$idDishOrder)->value('id_dish');
@@ -53,18 +52,55 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         return $date;
     }
-    public function getDishesByDate($date)
+
+    public function checkAnythingIsDoing($idCook)
     {
-        $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])->orderBy('updated_at','desc')
-                                    ->with('dish.groupMenu.cookArea','order.tableOrdered.table', 'dish.material.materialAction.materialDetail',
-                                            'dish.material.materialAction.unit')->get();
+        $today = $this->getDateNow();
+        $qty = OrderDetailTable::selectRaw('count(id) as qty')->whereBetween('updated_at',[$today . " 00:00:00",$today . " 23:59:59"])
+                ->whereHas('dish.groupMenu.cookArea', function ($q) use ($idCook)
+                {
+                    $q->where('id',$idCook);
+                })->where('status','1')->value('qty');
+        return $qty;
+    }
+
+    public function checkDishToDoFirst($idCook,$id)
+    {
+        $today = $this->getDateNow();
+        $timeCreateOfDish = OrderDetailTable::where('id',$id)->value('created_at');
+        $count = OrderDetailTable::selectRaw('count(id) as qty')->whereBetween('created_at',[$today . " 00:00:00",$today . " 23:59:59"])
+                    ->whereHas('dish.groupMenu.cookArea', function ($q) use ($idCook)
+                    {
+                        $q->where('id',$idCook);
+                    })->where('status','0')->where('created_at','<',$timeCreateOfDish)->value('qty');
+        return $count;
+    }
+
+    public function getDishesByDate($date,$id)
+    {
+        $dishes = OrderDetailTable::whereBetween('created_at',[$date . ' 00:00:00', $date . ' 23:59:59'])
+                                    ->orderBy('created_at','desc')->whereIn('status',['0','1'])
+                                    ->with('dish.groupMenu.cookArea','dish.material.materialAction.materialDetail',
+                                            'dish.material.materialAction.unit','order.tableOrdered.table')
+                                    ->whereHas('dish.groupMenu.cookArea', function ($query) use ($id)
+                                    {
+                                        $query->where('id',$id);
+                                    })->get();
         return $dishes;
     }
+
     public function getMaterialInWarehouseCook($idCook)
     {
         $materials = WarehouseCook::where('cook',$idCook)->with('detailMaterial','unit')->get();
         return $materials;
     }
+
+    public function checkDishDestroyOrNot($id)
+    {
+        $status = OrderDetailTable::where('id',$id)->value('status');
+        return $status;
+    }
+
     public function findCookAreaById($id)
     {
         $cook = CookArea::where('id',$id)->first();
@@ -167,32 +203,20 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         return $this->checkWarehouse($a,$b,$qtyNotEnough,$materialInWarehouse,$materialInActions);
     }
 
-    public function addDishesToArray($dishes,$id)
-    {
-        $data = array();
-        foreach ($dishes as $key => $dish) {
-            if($dish->dish->groupMenu->cookArea->id == $id){
-                array_push($data,$dish);
-            }
-        }
-        return $data;
-    }
-
-    public function paginate($items, $perPage = 10, $page = null, $options = [])
-    {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
-    }
-
     public function getDetailCookScreen($id)
     {
         $cook = $this->findCookAreaById($id);
         $date = $this->getDateNow();
-        $dishes = $this->getDishesByDate($date);
-        $data = $this->paginate($this->addDishesToArray($dishes,$id))->setPath(route('cook_screen.detail',['id' => $id]));
+        $data = $this->getDishesByDate($date,$id);
         $materials = $this->getMaterialInWarehouseCook($id);
         return view('cookscreen.detail',compact('data','cook','materials'));
+    }
+
+    public function getMaterialByIdCook($idCook)
+    {
+        $materials = $this->getMaterialInWarehouseCook($idCook);
+        $cook = $this->findCookAreaById($idCook);
+        return view('cookscreen.material',compact('materials','cook'));
     }
 
     public function updateStatusWarehouseCook($idMaterial,$idCook)
@@ -212,6 +236,7 @@ class CookScreenRepository extends Controller implements ICookScreenRepository{
         );
         $pusher->trigger('NotifyOutOfStock', 'need-import-cook', $data);
     }
+
     public function findIdGroupNVL($idDish)
     {
         $idGroupNVL = Dishes::where('id',$idDish)->value('id_groupnvl');

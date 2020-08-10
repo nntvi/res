@@ -47,7 +47,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <label class="control-label">
-                                    PasswordConfirm<span style="color: #ff0000"> *</span>
+                                    Xác nhận password mới<span style="color: #ff0000"> *</span>
                                 </label>
                                 <input type="password" class="form-control" name="passwordconfirm" min="3" max="15" required>
                             </div>
@@ -66,11 +66,6 @@
     </div>
     <!-- page end-->
     <script>
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                toastr.error('{{ $error }}')
-            @endforeach
-        @endif
         @if(session('success'))
             toastr.success('{{ session('success') }}')
         @endif

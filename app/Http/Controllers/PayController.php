@@ -11,14 +11,17 @@ use App\Repositories\PayRepository\IPayRepository;
 use App\WareHouseDetail;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Helper\ICheckAction;
 class PayController extends Controller
 
 {
     private $payRepository;
+    private $checkAction;
 
-    public function __construct(IPayRepository $payRepository)
+    public function __construct(ICheckAction $checkAction, IPayRepository $payRepository)
     {
-       $this->payRepository = $payRepository;
+        $this->checkAction = $checkAction;
+        $this->payRepository = $payRepository;
     }
 
     public function index($id)
@@ -32,7 +35,11 @@ class PayController extends Controller
     }
     public function update(Request $request,$id)
     {
-        return $this->payRepository->updateStatusOrder($request,$id);
+        if($request->receiveCash < $request->total){
+            return redirect(route('pay.index',['id' => $id]))->withErrors('Tiền khách trả không được nhỏ hơn tiền hóa đơn');
+        }else{
+            return $this->payRepository->updateStatusOrder($request,$id);
+        }
     }
 
     public function showBill($id)

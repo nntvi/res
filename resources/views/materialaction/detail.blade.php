@@ -1,16 +1,9 @@
 @extends('layouts')
 @section('content')
 <div class="table-agile-info">
-    <div class="row">
-        <div class="col-xs-12">
-            <a href="{{ route('material.index') }}" class="btn btn-default btn-sm  radius">
-                Trở về
-            </a>
-        </div>
-    </div>
     <div class="space"></div>
     <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-heading" style="margin-bottom: 15px">
             Chi tiết công thức món: <b>{{ $material->name }}</b>
         </div>
         <div>
@@ -23,7 +16,7 @@
                 },
                 &quot;sorting&quot;: {
                 &quot;enabled&quot;: true
-                }}">
+                }}" id="example">
                 <thead>
                     <tr>
                         <th scope="col">STT</th>
@@ -83,15 +76,19 @@
                                                             </div>
                                                             <div class="col-xs-6">
                                                                 <label>Số lượng</label>
-                                                                <input class="form-control" name="qty" type="number"
-                                                                    step="0.001" value="{{ $item->qty }}" required>
+                                                                @if ($item->unit->name == "Lon" || $item->unit->name == "Chai" )
+                                                                    <input class="form-control" name="qty" type="number" min="1" value="{{ $item->qty }}" required>
+                                                                @else
+                                                                    <input class="form-control" name="qty" type="number" min="0" step="any" value="{{ $item->qty }}" required>
+                                                                @endif
+
                                                             </div>
                                                         </div>
                                                         <div class="space"></div>
                                                         <div class="space"></div>
                                                         <div class="form-group">
                                                             <div class="col-xs-12 text-center">
-                                                                <button type="submit" class="btn btn-info">Chỉnh
+                                                                <button type="submit" class="btn btn-default">Chỉnh
                                                                     sửa</button>
                                                             </div>
                                                         </div>
@@ -119,11 +116,6 @@
     </div>
 </div>
 <script>
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            toastr.error('{{ $error }}')
-        @endforeach
-    @endif
     @if(session('success'))
         toastr.success('{{ session('success') }}')
     @endif
@@ -131,4 +123,16 @@
         toastr.info('{{ session('info') }}')
     @endif
 </script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('input[type="search"]').addClass('form-control');
+            $('.dataTables_length').html(`<a href="{{ route('material.index') }}" class="btn btn-default btn-sm  radius">
+                Trở về
+            </a>`)
+        } );
+    </script>
 @endsection

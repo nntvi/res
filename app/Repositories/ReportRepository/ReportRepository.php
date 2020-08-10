@@ -11,20 +11,22 @@ use App\OrderDetailTable;
 use App\PaymentVoucher;
 use App\Supplier;
 use Carbon\Carbon;
+use App\ExportCouponSupplier;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReportRepository extends Controller implements IReportRepository{
 
     private $getDateTime;
 
-    public function paginate($items, $perPage = 3, $page = null, $options = [])
+    public function checkRoleIndex($arr)
     {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL"){
+                $temp++;
+            }
+        }
+        return $temp;
     }
 
     public function __construct(IGetDateTime $getDateTime)
@@ -61,50 +63,44 @@ class ReportRepository extends Controller implements IReportRepository{
         $e = " 23:59:59";
         $dateStart = $request->dateStart;
         $dateEnd = $request->dateEnd;
-        $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])->with('tableOrdered.table.getArea','user','shift')->get();
+        $orders = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])->get();
         $dateCreate = $this->getTimeNow();
         $footer = $this->createFooterOrderReport($orders);
         return view('report.p_order',compact('orders','dateStart','dateEnd','dateCreate','footer'));
-    }
-
-    public function reportTable($request)
-    {
-        $s = " 00:00:00";
-        $e = " 23:59:59";
-        $dateStart = $request->dateStart;
-        $dateEnd = $request->dateEnd;
-        $status = $request->statusTable;
-        if($status == '2'){
-            $results = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
-                        ->with('table.getArea','orderDetail.dish')->get();
-        }else{
-            $results = Order::whereBetween('updated_at',[$dateStart . $s ,$dateEnd . $e])
-                        ->where('status', $status)->with('table.getArea','orderDetail.dish')->get();
-        }
-        $dateCreate = $this->getTimeNow();
-        return view('report.p_table',compact('results','dateStart','dateEnd','dateCreate','status'));
     }
 
     public function getTotalQtyDishToReport($results)
     {
         $totalQty = 0;
         foreach ($results as $key => $result) {
-            $totalQty += $result['qty'];
+            if($result['group_menu'] != "Thức uống"){
+                $totalQty += $result['qty'];
+            }
+        }
+        return $totalQty;
+    }
+
+    public function getTotalQtyDishToReportTU($results)
+    {
+        $totalQty = 0;
+        foreach ($results as $key => $result) {
+                $totalQty += $result['qty'];
         }
         return $totalQty;
     }
 
     public function createFooterTotal($results)
     {
-        $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;
+        $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;$qty = 0;
         foreach ($results as $key => $result) {
+            $qty += $result['qty'];
             $totalCapitalPrice += $result['capital'];
             $totalSalePrice += $result['sale'];
             $totalInterest += $result['interest'];
         }
         $footerReportDish = array();
         $temp = [
-            'qty' => $this->getTotalQtyDishToReport($results),
+            'qty' => $qty,
             'totalCapital' => $totalCapitalPrice,
             'totalSale' => $totalSalePrice,
             'totalInterest' => $totalInterest
@@ -118,60 +114,72 @@ class ReportRepository extends Controller implements IReportRepository{
         $totalQty = $this->getTotalQtyDishToReport($results);
         $arrChartBestSeller = array();
         foreach ($results as $key => $result) {
-            $temp = [
-                'value' => round((($result['qty'] * 100) / $totalQty),2),
-                'label' => $result['name'],
-            ];
-            array_push($arrChartBestSeller,$temp);
-            unset($temp);
+                $temp = [
+                    'value' => round((($result['qty'] * 100) / $totalQty),2),
+                    'label' => $result['name'],
+                ];
+                array_push($arrChartBestSeller,$temp);
+        }
+        return $arrChartBestSeller;
+    }
+
+    public function createArrayChartBestSellerTU($results)
+    {
+        $totalQty = $this->getTotalQtyDishToReportTU($results);
+        $arrChartBestSeller = array();
+        foreach ($results as $key => $result) {
+                $temp = [
+                    'value' => round((($result['qty'] * 100) / $totalQty),2),
+                    'label' => $result['name'],
+                ];
+                array_push($arrChartBestSeller,$temp);
         }
         return $arrChartBestSeller;
     }
 
     public function getOrderByAllGroupMenu($dateStart,$dateEnd,$status)
     {
-        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
-                        ->whereIn('status',$status)->groupBy('id_dish')->get();
+        $orders = OrderDetailTable::selectRaw('id_dish,sum(qty) as sumQty')
+                ->selectRaw('sum(price * qty) as price')
+                ->selectRaw('sum(capital * qty) as capital')
+                ->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                ->whereIn('status',$status)->groupBy('id_dish')
+                ->with('dish.groupMenu','dish.unit')->get();
         return $orders;
     }
 
     public function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu,$status)
     {
-        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
-                        ->whereIn('status',$status)->groupBy('id_dish')
-                        ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
-                            $query->where('id',$idGroupMenu);
-                        })->get();
+        $orders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')
+                ->selectRaw('sum(price * qty) as price')
+                ->selectRaw('sum(capital * qty) as capital')
+                ->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                ->whereIn('status',$status)->groupBy('id_dish')
+                    ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
+                        $query->where('id',$idGroupMenu);
+                })->with('dish.groupMenu','dish.unit')->get();
         return $orders;
     }
 
     public function createArrayReportDish($orders)
     {
-        $dishes = Dishes::with('groupMenu','unit','material')->get();
         $results = array();
-        foreach ($dishes as $key => $dish) {
-            foreach ($orders as $key => $order) {
-                if($order->id_dish == $dish->id){
-                    $temp = [
-                        'stt' => $key + 1,
-                        'code' => $dish->code,
-                        'name' => $dish->stt == '1' ? $dish->name : $dish->name . ' (ngưng phục vụ)',
-                        'group_menu' => $dish->groupMenu->name,
-                        'unit' => $dish->unit->name,
-                        'qty' => $order->sumQty,
-                        'capital' => $dish->capital_price,
-                        'sale' => $dish->sale_price,
-                        'interest' => ($dish->sale_price - $dish->capital_price) *  $order->sumQty
-                    ];
-                    array_push($results,$temp);
-                    unset($temp);
-                    break;
-                }
-            }
+        foreach ($orders as $key => $order) {
+            $temp = [
+                'stt' => $key + 1,
+                'code' => $order->dish->code,
+                'name' => $order->dish->stt == '1' ? $order->dish->name : $order->dish->name . ' (ngưng phục vụ)',
+                'group_menu' => $order->dish->groupMenu->name,
+                'unit' => $order->dish->unit->name,
+                'qty' => $order->sumQty,
+                'capital' => $order->capital,
+                'sale' => $order->price,
+                'interest' => ($order->price - $order->capital),
+            ];
+            array_push($results,$temp);
         }
         return $results;
     }
-
 
     public function reportDish($request)
     {
@@ -189,27 +197,26 @@ class ReportRepository extends Controller implements IReportRepository{
         else{
             $orders = $this->getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu,$status);
             $results = $this->createArrayReportDish($orders);
-            $arrBestSeller = $this->createArrayChartBestSeller($results);
+            $arrBestSeller = $this->createArrayChartBestSellerTU($results);
             $footerTotal = $this->createFooterTotal($results);
         }
         $groupMenuChoosen = GroupMenu::where('id',$idGroupMenu)->first();
-        $listGroupMenuExcept = GroupMenu::whereNotIn('id',[$idGroupMenu])->get();
+        $listGroupMenuExcept = GroupMenu::whereNotIn('id',[$idGroupMenu])->where('status','1')->get();
         $listGroupMenu = GroupMenu::where('status','1')->get();
-        //return $results;
         return view('report.p_dish',compact('results','dateStart','dateEnd','dateCreate','groupMenuChoosen',
                     'listGroupMenuExcept','listGroupMenu','idGroupMenu','arrBestSeller','footerTotal'));
     }
 
     public function getDishDestroy($dateStart,$dateEnd,$status)
     {
-        $dishEmpty = OrderDetailTable::selectRaw('id_dish, sum(qty) as qty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+        $dishEmpty = OrderDetailTable::selectRaw('id_dish, sum(qty) as qty')->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
                             ->where('status',$status)->groupBy('id_dish')->with('dish.groupMenu.cookArea','dish.unit')->get();
         return $dishEmpty;
     }
 
     public function getDishDestroyByIdGroupMenu($dateStart,$dateEnd,$status,$idGroupMenu)
     {
-        $dishEmpty = OrderDetailTable::selectRaw('id_dish, sum(qty) as qty')->whereBetween('updated_at',[$dateStart,$dateEnd])
+        $dishEmpty = OrderDetailTable::selectRaw('id_dish, sum(qty) as qty')->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
                             ->where('status',$status)->groupBy('id_dish')
                             ->whereHas('dish.groupMenu', function($query) use($idGroupMenu){
                                 $query->where('id',$idGroupMenu);
@@ -222,7 +229,7 @@ class ReportRepository extends Controller implements IReportRepository{
         foreach ($array as $key => $item) {
             $temp = [
                 'code' => $item->dish->code,
-                'name' => $item->dish->name,
+                'name' => $item->dish->stt == '1' ? $item->dish->name : $item->dish->name . ' (ngưng phục vụ)',
                 'groupmenu' => $item->dish->groupMenu->name,
                 'cook' => $item->dish->groupMenu->cookArea->name,
                 'unit' => $item->dish->unit->name,
@@ -276,9 +283,9 @@ class ReportRepository extends Controller implements IReportRepository{
 
     public function createArrayChartSupplier($dateStart,$dateEnd)
     {
-        $getTotalByTimeAllSupplier = ImportCoupon::selectRaw('id_supplier,sum(total) as Total')->whereBetween('created_at',[$dateStart,$dateEnd])
+        $getTotalByTimeAllSupplier = ImportCoupon::selectRaw('id_supplier,sum(total) as Total')->whereBetween('created_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
                                     ->groupBy('id_supplier')->orderBy('id_supplier')->with('supplier')->get();
-        $getTotalPaidByTimeAllSupplier = ImportCoupon::selectRaw('id_supplier,sum(paid) as Paid')->whereBetween('created_at',[$dateStart,$dateEnd])
+        $getTotalPaidByTimeAllSupplier = ImportCoupon::selectRaw('id_supplier,sum(paid) as Paid')->whereBetween('created_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
                                         ->groupBy('id_supplier')->orderBy('id_supplier')->get();
         $dataChart = array();
             foreach ($getTotalByTimeAllSupplier as $total) {
@@ -302,9 +309,10 @@ class ReportRepository extends Controller implements IReportRepository{
     public function getResultImports($dateStart,$dateEnd, $idSupplier)
     {
         if($idSupplier == 0){
-            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->orderBy('id_supplier','asc')->with('supplier')->get();
+            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])->orderBy('id_supplier','asc')
+                            ->with('supplier')->get();
         }else{
-            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)
+            $resultImports = ImportCoupon::whereBetween('created_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])->where('id_supplier',$idSupplier)
                                             ->orderBy('id_supplier','asc')->with('supplier')->get();
         }
         return $resultImports;
@@ -312,7 +320,7 @@ class ReportRepository extends Controller implements IReportRepository{
 
     public function getPaidByIdCoupon($dateStart,$dateEnd,$idImportCoupon)
     {
-        $paid = ImportCoupon::whereBetween('updated_at',[$dateStart,$dateEnd])->where('id',$idImportCoupon)->value('paid');
+        $paid = ImportCoupon::whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])->where('id',$idImportCoupon)->value('paid');
         return $paid == null ? 0 : $paid;
     }
 
@@ -326,7 +334,7 @@ class ReportRepository extends Controller implements IReportRepository{
                 $temp = [
                     'STT' => $key + 1,
                     'code' => $import->code,
-                    'name' => $import->supplier->name,
+                    'name' => $import->supplier->status == '1' ? $import->supplier->name : $import->supplier->name . ' (ngưng hđ)',
                     'total' => $import->total,
                     'paid' => $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
                     'unpaid' => $import->total - $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
@@ -358,32 +366,41 @@ class ReportRepository extends Controller implements IReportRepository{
 
     public function getRevenue($dateStart,$dateEnd)
     {
-        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->where('status','0')->value('total');
+        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                        ->where('status','0')->value('total');
         return $revenue == null ? 0 : $revenue;
     }
 
     public function getCapitalPriceOfDish($dateStart,$dateEnd)
     {
-        $dishOrders = OrderDetailTable::selectRaw('id_dish, sum(qty) as sumQty')->whereBetween('updated_at',[$dateStart,$dateEnd])
-                                        ->whereIn('status',['1','2'])->groupBy('id_dish')->with('dish')->get();
-        $capitalPrice = 0;
-        foreach ($dishOrders as $key => $dishOrder) {
-            $capitalPrice += ($dishOrder->sumQty) * ($dishOrder->dish->capital_price);
-        }
-        return $capitalPrice;
+        $capitalPrice = OrderDetailTable::selectRaw('sum(capital * qty) as total')->
+                        whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                        ->whereIn('status',['1','2'])->value('total');
+        return $capitalPrice == null ? 0 : $capitalPrice ;
+    }
+
+    public function getPayReturnSupplier($dateStart,$dateEnd)
+    {
+        $payEmer = ExportCouponSupplier::selectRaw('sum(total) as total')
+                    ->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])
+                    ->value('total');
+        return $payEmer == null ? 0 : $payEmer;
     }
 
     public function getTotalPayment($dateStart,$dateEnd)
     {
-        $payCash = PaymentVoucher::selectRaw('sum(pay_cash) as total')->whereBetween('created_at',[$dateStart,$dateEnd])->value('total');
+        $payCash = PaymentVoucher::selectRaw('sum(pay_cash) as total')
+                    ->whereBetween('updated_at',[$dateStart . ' 00:00:00',$dateEnd . ' 23:59:59'])->value('total');
         return $payCash == null ? 0 : $payCash;
     }
 
     public function getExpense($dateStart,$dateEnd)
     {
+        // chi phí: tiền vốn món ăn, tiền chi trả ncc, tiền chi khẩn
         $capitalPrice = $this->getCapitalPriceOfDish($dateStart,$dateEnd);
         $payCash = $this->getTotalPayment($dateStart,$dateEnd);
-        return $capitalPrice + $payCash;
+        $payEmer = $this->getPayReturnSupplier($dateStart,$dateEnd);
+        return $capitalPrice + $payCash - $payEmer; // tiền vốn món ăn + tiền trả ncc/chi khẩn - tiền trả lại hàng ncc(nếu có)
     }
 
     public function createDataChartProfitIndex($dateStart,$dateEnd)
@@ -418,8 +435,8 @@ class ReportRepository extends Controller implements IReportRepository{
     public function indexReportProfit()
     {
         $now = Carbon::now('Asia/Ho_Chi_Minh');
-        $firstMonth = $now->firstOfMonth()->format('Y-m-d');
-        $endMonth = $now->endOfMonth()->format('Y-m-d');
+        $firstMonth = $now->firstOfMonth()->format('Y-m-d');    // đầu tháng hiện tại
+        $endMonth = $now->endOfMonth()->format('Y-m-d');        // cuối tháng hiện tại
         $revenue = $this->getRevenue($firstMonth,$endMonth);
         $expense = $this->getExpense($firstMonth,$endMonth);
         $profit = $revenue - $expense;
@@ -431,13 +448,13 @@ class ReportRepository extends Controller implements IReportRepository{
     {
         $firstYear = $this->getDateTime->getFirstOfJan();
         $lastYear = $this->getDateTime->getEndOfDec();
-        $totalRevenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$firstYear,$lastYear])->value('total');
+        $totalRevenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$firstYear . ' 00:00:00',$lastYear . ' 23:59:59'])->value('total');
         return $totalRevenue;
     }
 
     public function getRevenueByMonth($startMonth,$endMonth)
     {
-        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$startMonth,$endMonth])->value('total');
+        $revenue = Order::selectRaw('sum(total_price) as total')->whereBetween('created_at',[$startMonth . ' 00:00:00',$endMonth . ' 23:59:59'])->value('total');
         return $revenue == null ? 0 : (integer) $revenue;
     }
 

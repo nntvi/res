@@ -15,7 +15,7 @@
                     <form action="{{ route('material_action.search') }}" method="post">
                         @csrf
                         <div class="input-group">
-                        <input type="text" class="input-sm form-control" name="nameSearch" required>
+                        <input type="text" min="3" max="40" class="input-sm form-control" name="nameSearch" required>
                         <span class="input-group-btn">
                             <button class="btn btn-sm btn-danger" type="submit">Search!</button>
                         </span>

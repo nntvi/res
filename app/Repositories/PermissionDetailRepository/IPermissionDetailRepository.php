@@ -8,5 +8,4 @@ interface IPermissionDetailRepository{
     function validatorRequestStore($req);
     function storePermissionDetail($request);
     function updatePermissionDetail($request, $id);
-    function searchPermissionDetail($request);
 }

@@ -1,4 +1,9 @@
 @extends('layouts')
+<style>
+    #infoImportCoupons_filter, #infoImportCoupons_length{
+        display: none;
+    }
+</style>
 @section('content')
 <div class="form-w3layouts">
     <!-- page start-->
@@ -6,22 +11,15 @@
         <div class="col-lg-12">
             <section class="panel">
                 <header class="panel-heading">
-                    Phiếu chi
+                    Tạo phiếu chi
                 </header>
                 <div class="panel-body">
-                    <script>
-                        @if($errors->any())
-                            @foreach($errors->all() as $error)
-                                toastr.error('{{ $error }}')
-                            @endforeach
-                        @endif
-                    </script>
                     <div class="space"></div>
                     <form id="paymentVoucherForm">
                         <div class="row">
                             <div class="col-xs-6 col-sm-3">
                                 <div class="form-group ">
-                                    <label class="control-label">Báo cáo theo</label>
+                                    <label class="control-label">Chọn thời gian</label>
                                     <select class="form-control" id="timeReport">
                                         <option value="0">Hôm nay</option>
                                         <option value="1">Hôm qua</option>
@@ -38,13 +36,13 @@
                             <div class="col-xs-6 col-sm-3">
                                 <div class="form-group ">
                                     <label class="control-label">Từ ngày:</label>
-                                    <input class="date form-control" type="text" id="dateStart">
+                                    <input class="date form-control" type="text" id="dateStart" required>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-3">
                                 <div class="form-group ">
                                     <label class="control-label">Đến ngày:</label>
-                                    <input class="date form-control" type="text" id="dateEnd">
+                                    <input class="date form-control" type="text" id="dateEnd" required>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-3">
@@ -52,7 +50,7 @@
                                     <label class="control-label">Chọn NCC:</label>
                                     <select class="form-control" id="idSupplier">
                                         @foreach($suppliers as $supplier)
-                                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                            <option value="{{ $supplier->id }}">{{ $supplier->status == '1' ? $supplier->name : $supplier->name . ' (ngưng hđ)' }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -62,22 +60,6 @@
                                 $('.date').datepicker({
                                     format: 'yyyy-mm-dd'
                                 });
-
-                                function validateForm() {
-                                    var dateStart = document.getElementById('dateStart').value;
-                                    var dateEnd = document.getElementById('dateEnd').value;
-
-                                    if (dateStart == null || dateStart == "") {
-                                        alert("Không để trống ngày bắt đầu");
-                                        return false;
-                                    }
-                                    if (dateEnd == null || dateEnd == "") {
-                                        alert("Không để trống ngày kết thúc");
-                                        return false;
-                                    }
-                                    return true;
-                                }
-
                             </script>
                         </div>
                         <div class="row">
@@ -112,4 +94,7 @@
     </div>
     <!-- page end-->
 </div>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 @endsection

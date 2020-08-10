@@ -17,5 +17,4 @@ interface IMaterialActionRepository{
     function showMoreDetailById($id);
     function updateMaterialAction($request,$id);
     function deleteMaterialAction($id);
-    function searchMaterialAction($request);
 }

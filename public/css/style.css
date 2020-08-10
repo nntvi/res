@@ -16,6 +16,10 @@ html, body{
     background: url(../images/bg.jpg) no-repeat 0px 0px;
 	background-size:cover;
 }
+.datepicker.dropdown-menu{
+    z-index: 9999;
+}
+
 body a{
 	transition: 0.5s all ease;
 	-webkit-transition: 0.5s all ease;
@@ -784,6 +788,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     border-top-left-radius: 2px;
     text-transform: uppercase;
     text-align: center;
+    margin-bottom: 10px;
 }
 .panel {
     border: none ! important;

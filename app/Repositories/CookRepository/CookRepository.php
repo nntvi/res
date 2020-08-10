@@ -7,6 +7,28 @@ use App\GroupMenu;
 
 class CookRepository extends Controller implements ICookRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getAllCook()
     {
         $groupmenus = GroupMenu::all();

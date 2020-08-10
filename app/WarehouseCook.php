@@ -41,7 +41,7 @@ class WarehouseCook extends Model
 
     public function detailMaterial()
     {
-        return $this->belongsTo('App\MaterialDetail','id_material_detail','id');
+        return $this->belongsTo(MaterialDetail::class,'id_material_detail')->where('status','1');
     }
 
     public function unit()

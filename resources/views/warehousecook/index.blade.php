@@ -28,13 +28,13 @@
                                 <div class="col-xs-6 col-sm-3">
                                     <div class="form-group ">
                                         <label class="control-label">Từ ngày:</label>
-                                        <input class="date form-control" name="dateStart" type="text" id="dateStart">
+                                        <input class="date form-control" name="dateStart" type="text" id="dateStart" required>
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-sm-3">
                                     <div class="form-group ">
                                         <label class="control-label">Đến ngày:</label>
-                                        <input class="date form-control" name="dateEnd" type="text" id="dateEnd">
+                                        <input class="date form-control" name="dateEnd" type="text" id="dateEnd" required>
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-sm-3">
@@ -55,13 +55,8 @@
                                     function validateForm() {
                                         var dateStart = document.getElementById('dateStart').value;
                                         var dateEnd = document.getElementById('dateEnd').value;
-
-                                        if (dateStart == null || dateStart == "") {
-                                            alert("Không để trống ngày bắt đầu");
-                                            return false;
-                                        }
-                                        if (dateEnd == null || dateEnd == "") {
-                                            alert("Không để trống ngày kết thúc");
+                                        if(dateStart > dateEnd){
+                                            alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                             return false;
                                         }
                                         return true;
@@ -89,16 +84,9 @@
                              </span>
                         </header>
                         <div class="panel-body">
-                            <div class="row">
-                                <div class="col-xs-12 text-right">
-                                    <a href="{{ route('exportcoupon.destroywarehousecook',['id' => $cookwarehouse->id]) }}" class="btn btn-danger">
-                                        Hủy NVL
-                                    </a>
-                                </div>
-                            </div>
                             <div class="space"></div>
-                                <div class="table-responsive">
-                                        <table class="table table-striped b-t b-light">
+                                <div>
+                                        <table class="table table-striped b-t b-light" id="example{{ $cookwarehouse->id }}">
                                               <thead>
                                                 <tr>
                                                   <th>STT</th>
@@ -110,12 +98,13 @@
                                                 </tr>
                                               </thead>
                                               <tbody>
-                                                @foreach ($cookwarehouse->warehouseCook as $key => $warehouseCook)
-                                                    @switch($warehouseCook->detailMaterial->status)
-                                                        @case('1')
-                                                            @if ($warehouseCook->status == '0')
+                                                @php $stt = 0; @endphp
+                                                @foreach ($cookwarehouse->warehouseCook as $warehouseCook)
+                                                    @if ($warehouseCook->detailMaterial != null)
+                                                        @php ++$stt @endphp
+                                                        @if ($warehouseCook->status == '0')
                                                                 <tr style="background: #fbff0094">
-                                                                    <td>{{$key+1}}</td>
+                                                                    <td>{{ $stt }}</td>
                                                                     <td>{{$warehouseCook->detailMaterial->name}}</td>
                                                                     <td>{{$warehouseCook->qty}}</td>
                                                                     <td>
@@ -130,7 +119,7 @@
                                                                 </tr>
                                                             @else
                                                                 <tr>
-                                                                    <td>{{$key+1}}</td>
+                                                                    <td>{{ $stt }}</td>
                                                                     <td>{{$warehouseCook->detailMaterial->name}}</td>
                                                                     <td>{{$warehouseCook->qty}}</td>
                                                                     <td>
@@ -144,9 +133,7 @@
                                                                     <td> </td>
                                                                 </tr>
                                                             @endif
-                                                            @break
-                                                        @default
-                                                    @endswitch
+                                                    @endif
                                                 @endforeach
                                               </tbody>
                                         </table>
@@ -157,17 +144,31 @@
             </div>
         @endforeach
         <script>
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        toastr.error('{{ $error }}')
-                    @endforeach
-                @endif
                 @if(session('success'))
                     toastr.success('{{ session('success') }}')
                 @endif
                 @if(session('info'))
                     toastr.info('{{ session('info') }}')
                 @endif
+        </script>
+        <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+        <script>
+            $(document).ready( function () {
+                @foreach($cookWarehouse as $cookwarehouse)
+                    $("table[id^='example{{ $cookwarehouse->id }}']").dataTable();
+                @endforeach
+                $('#example_info').addClass('text-muted');
+                $('input[type="search"]').addClass('form-control');
+                @foreach($cookWarehouse as $cookwarehouse)
+                    $("#example{{ $cookwarehouse->id  }}_length").html(
+                        `<a href="{{ route('exportcoupon.destroywarehousecook',['id' => $cookwarehouse->id]) }}" class="btn btn-sm btn-default">
+                            Hủy NVL
+                        </a>`
+                    );
+                @endforeach
+            });
         </script>
         <!-- page end-->
     </div>

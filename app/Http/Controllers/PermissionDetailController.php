@@ -38,10 +38,6 @@ class PermissionDetailController extends Controller
         return $this->permissionDetailRepository->updatePermissionDetail($req,$id);
     }
 
-    public function search(Request $request)
-    {
-        return $this->permissionDetailRepository->searchPermissionDetail($request);
-    }
     public function delete($id)
     {
        return $this->permissionDetailRepository->deleteDetail($id);

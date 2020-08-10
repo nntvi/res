@@ -43,10 +43,12 @@ class MaterialDetail extends Model
     {
         return $this->belongsTo('App\TypeMaterial','id_type');
     }
+
     public function unit()
     {
         return $this->belongsTo('App\Unit','id_unit');
     }
+
     public function warehouse()
     {
         return $this->hasMany('App\Warehouse','id_material_detail','id');

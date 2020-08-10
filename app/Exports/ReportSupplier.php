@@ -58,7 +58,7 @@ class ReportSupplier implements FromCollection, WithHeadings
                 $temp = [
                     'STT' => $key + 1,
                     'code' => $import->code,
-                    'name' => $import->supplier->name,
+                    'name' => $import->supplier->status == '1' ? $import->supplier->name : $import->supplier->name . ' (ngưng hđ)',
                     'total' => $import->total,
                     'paid' => $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),
                     'unpaid' => $import->total - $this->getPaidByIdCoupon($dateStart,$dateEnd,$import->id),

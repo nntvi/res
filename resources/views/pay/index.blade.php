@@ -3,15 +3,18 @@
 <div class="mail-w3agile">
     <!-- page start-->
     <div class="row">
-        <div class="col-sm-8 mail-w3agile">
+        <div class="col-sm-8 mail-w3agile just">
             <section class="panel">
                 <div class="panel-heading">
-                    Hóa đơn {{ $idBillTable->code }} --
+                    Hóa đơn tạm {{ $idBillTable->code }} --
                     @foreach ($idBillTable->tableOrdered as $key => $item)
                         {{ $item->table->name }}
                         {{ count($idBillTable->tableOrdered) != $key+1 ? ', ' : '' }}
                     @endforeach
-
+                    <button class="btn btn-xs btn-default"
+                        onclick="printJS({ printable: 'printJS-form', type: 'html', header: 'Restaurant' })">
+                        <i class="fa fa-print" aria-hidden="true"></i>
+                    </button>
                 </div>
                 {{-- <header class="panel-heading wht-bg">
                     <h5 class="gen-case ">
@@ -59,6 +62,72 @@
                     </table>
                 </div>
             </section>
+            <div id="printJS-form" style="visibility:hidden">
+                <div id="mydiv">
+                    <div class="info">
+                        <H4 style="font-weight:bold; text-align:center; font-size:13px;">HÓA ĐƠN TẠM
+                    </div>
+                    <div class="info">
+                        <h5 style="font-weight:bold; text-align:center; font-size:13px;">Mã hóa đơn: {{ $idBillTable->code }} -
+                            @foreach ($idBillTable->tableOrdered as $key => $item)
+                                {{ $item->table->name }}
+                                {{ count($idBillTable->tableOrdered) != $key+1 ? ', ' : '' }}
+                            @endforeach
+                            @foreach ($idBillTable->tableOrdered as $table)
+                                {{ $table->table->getArea->name }}
+                                @break
+                            @endforeach
+                        </h5>
+                    </div>
+                    <div class="info">
+                        <h6>Giờ vào: {{ $idBillTable->created_at }} - Giờ ra: {{ $idBillTable->updated_at }}</h6>
+                    </div>
+                    <div>
+                        <h6>Người tạo: {{ $idBillTable->created_by }} - Ca:  {{ $idBillTable->shift->name }}
+                        </h6>
+                    </div>
+                    <hr>
+                    <div class="product">
+                            <table class="tb2" style="display: block; width: 100%;">
+                                <tr style="font-weight: bold">
+                                    <td align="right">STT </td>
+                                    <td style="padding:5px;">Tên món </td>
+                                    <td align="right" style="padding:5px;">Sl </td>
+                                    <td align="right" style="padding:5px;">Đơn giá </td>
+                                    <td align="right" style="padding:5px;">Thành tiền </td>
+                                </tr>
+                                <tbody>
+                                    @foreach($bill as $key => $item)
+                                        <tr>
+                                            <td align="right" style="padding:5px;">{{ $key+1 }}</td>
+                                            <td align="right" style="padding:5px;">{{ $item->dish->name }}</td>
+                                            <td align="right" style="padding:5px;">{{ $item->amount }}</td>
+                                            <td align="right" style="padding:5px;">{{ number_format($item->dish->sale_price) . ' đ' }}
+                                            </td>
+                                            <td align="right" style="padding:5px;">
+                                                {{ number_format($item->dish->sale_price * $item->amount) . ' đ' }}</td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="4">Tổng cộng: </td>
+                                        <td align="right" style="font-weight: bold">
+                                            {{ number_format($totalPrice). ' đ' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    <br>
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {!! QrCode::size(50)->generate($idBillTable->code); !!}
+                    <br>
+                    <br>
+                    <i style=" display:block;font-size:12px; text-align:center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Cám ơn và Hẹn gặp lại Quý khách!</i>
+
+                </div>
+            </div>
         </div>
         <div class="col-sm-4 com-w3ls">
             <form
@@ -96,13 +165,13 @@
                                     <label for="">Tiền khách đưa: </label>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 form-group">
-                                    <input type="text" class="form-control receive" name="receiveCash" required>
+                                    <input type="text" class="form-control receive" name="receiveCash" min="0" required>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-6">
-                                    <label for="">Tiền thừa: </label>
+                                    <label for="">Tiền hoàn lại: </label>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 form-group">
                                     <input name="excessCash" id="excessCash" hidden>

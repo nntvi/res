@@ -17,19 +17,28 @@ use App\Topping;
 use App\WareHouseDetail;
 use Carbon\Carbon;
 use Pusher\Pusher;
+use App\Helper\ICheckAction;
 
 class OrderController extends Controller
 {
     private $orderRepository;
+    private $checkAction;
 
-    public function __construct(IOrderRepository $orderRepository)
+    public function __construct(ICheckAction $checkAction, IOrderRepository $orderRepository)
     {
+        $this->checkAction = $checkAction;
         $this->orderRepository = $orderRepository;
     }
 
     public function showTable()
     {
-        return $this->orderRepository->showTableInDay();
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->orderRepository->checkRoleIndex($result);
+        if($check != 0){
+            return $this->orderRepository->showTableInDay();
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+        }
     }
 
     public function orderTable()
@@ -87,7 +96,6 @@ class OrderController extends Controller
             OrderTable::where('id_order',$idOrderTable)->update(['status' => '-1']);
             return redirect(route('order.index'))->withSuccess('Hủy bàn thành công');
         }
-
     }
 
     public function matchTable(Request $request,$idBill)
@@ -115,37 +123,23 @@ class OrderController extends Controller
             return 0;
         }
     }
+
     public function showBill()
     {
-        $bills = Order::with('tableOrdered.table','user','shift','orderDetail.dish')->orderBy('created_at','desc')->paginate(10);
-        return view('bill.index',compact('bills'));
-    }
-
-    public function filterBill(Request $request)
-    {
-        $type = $request->typeFilter;
-        switch ($type) {
-            case 0:
-                $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('created_at','asc')->paginate(10);
-                return view('bill.arrange',compact('bills'));
-                break;
-            case 1:
-                $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('total_price','asc')->paginate(10);
-                return view('bill.arrange',compact('bills'));
-                break;
-            case 2:
-                $bills = Order::with('table','user','shift','orderDetail.dish')->orderBy('id_shift','asc')->paginate(10);
-                return view('bill.arrange',compact('bills'));
-                break;
-            default:
+        $result = $this->checkAction->getPermission(auth()->id());
+        $check = $this->orderRepository->checkRoleIndexBill($result);
+        if($check != 0){
+            $bills = Order::with('tableOrdered.table','user','shift','orderDetail.dish')->orderBy('created_at','desc')->get();
+            return view('bill.index',compact('bills'));
+        }else{
+            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
         }
     }
 
-    public function searchBill(Request $request)
+    public function getDetailBill($id)
     {
-        $count = Order::selectRaw('count(code) as qty')->where('code','LIKE',"%{$request->searchBill}%")->orWhere('total_price','LIKE',"%{$request->searchBill}")->value('qty');
-        $bills = Order::where('code','LIKE',"%{$request->searchBill}%")->orWhere('total_price','LIKE',"%{$request->searchBill}")
-                ->with('table','user','shift','orderDetail.dish')->paginate(10);
-        return view('bill.search',compact('bills','count'));
+        $detailBill = Order::where('id',$id)->with('tableOrdered.table','user','shift','orderDetail.dish')->first();
+        //dd($detailBill);
+        return view('bill.detail',compact('detailBill'));
     }
 }

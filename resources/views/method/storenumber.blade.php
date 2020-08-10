@@ -16,10 +16,7 @@
                                     </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="text-center">{{ $stringTu }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">{{ $stringMau }}</td>
+                                                <td class="text-center">({{ $stringTu }}) / ({{ $stringMau }})</td>
                                             </tr>
                                         </tbody>
                                 </table>
@@ -129,11 +126,6 @@
     </div>
 </div>
     <script>
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                toastr.error('{{ $error }}')
-            @endforeach
-        @endif
         @if(session('success'))
             toastr.success('{{ session('success') }}')
         @endif

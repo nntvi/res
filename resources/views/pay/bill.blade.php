@@ -93,6 +93,9 @@
                         <td class="text-center">
                             {{ number_format($bill->excess_cash) . ' đ' }}</td>
                     </tr>
+                    @if ($bill->note != "")
+                        <td colspan="4"> <i><b>Ghi chú: </b>{{ $bill->note }}</i> </td>
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -114,7 +117,6 @@
                     @break
                 @endforeach
             </h5>
-
         </div>
         <div class="info">
             <h6>Giờ vào: {{ $bill->created_at }} - Giờ ra: {{ $bill->updated_at }}</h6>
@@ -146,15 +148,6 @@
                                 {{ number_format($item->dish->sale_price * $item->amount) }}</td>
                         </tr>
                     @endforeach
-                    @if($bill->note != null)
-                        <tr>
-                            <td colspan="4">Ghi chú: </td>
-                            <td>{{ $bill->note }}</td>
-                        </tr>
-                    @else
-
-                    @endif
-
                     <tr>
                         <td colspan="4">Tổng cộng: </td>
                         <td align="right" style="font-weight: bold">
@@ -170,6 +163,9 @@
                         <td align="right" style="font-weight: bold">
                             {{ number_format($bill->excess_cash). ' đ' }}</td>
                     </tr>
+                    @if ($bill->note != "")
+                        <td colspan="4"> <i><b>Ghi chú: </b>{{ $bill->note }}</i> </td>
+                    @endif
                 </tbody>
             </table>
         </div>

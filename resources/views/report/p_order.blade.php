@@ -30,14 +30,14 @@
                         <div class="form-group ">
                             <label class="control-label">Từ:</label>
                                 <input class="date form-control" name="dateStart" type="text" id="dateStart"
-                                    value="{{ $dateStart }}">
+                                    value="{{ $dateStart }}" required>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-4">
                         <div class="form-group ">
                             <label class="control-label">Đến:</label>
                             <input class="date form-control" name="dateEnd" type="text" id="dateEnd"
-                                    value="{{ $dateEnd }}">
+                                    value="{{ $dateEnd }}" required>
                         </div>
                         <script type="text/javascript">
                             $('.date').datepicker({
@@ -47,13 +47,8 @@
                             function validateForm() {
                                 var dateStart = document.getElementById('dateStart').value;
                                 var dateEnd = document.getElementById('dateEnd').value;
-
-                                if (dateStart == null || dateStart == "") {
-                                    alert("Không để trống ngày bắt đầu");
-                                    return false;
-                                }
-                                if (dateEnd == null || dateEnd == "") {
-                                    alert("Không để trống ngày kết thúc");
+                                if(dateStart > dateEnd){
+                                    alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                     return false;
                                 }
                                 return true;
@@ -72,28 +67,15 @@
             </form>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">
+            <div class="panel-heading" style="margin-bottom: 15px">
                 Kết quả
             </div>
-            <div class="row w3-res-tb">
-                <div class="col-sm-5 bold">
-                    Ngày lập : {{ $dateCreate }}
-                </div>
-                <div class="col-sm-4">
-                </div>
-                <div class="col-sm-3 text-right">
-                    <a href="{{ route('report.exportorder',['dateStart' => $dateStart, 'dateEnd' => $dateEnd]) }}"
-                        class="btn btn-sm btn-default" type="button">
-                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
-                    </a>
-                </div>
-            </div>
-            <hr>
             <div class="table-responsive">
                     <table class="table" id="example">
                             <thead>
                                 <tr>
                                     <th>STT</th>
+                                    <th>Mã hóa đơn</th>
                                     <th>Khu vực</th>
                                     <th>Bàn</th>
                                     <th>Người tạo</th>
@@ -110,15 +92,16 @@
                                 @foreach($orders as $key => $order)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
+                                        <td>{{ $order->code }}</td>
                                         <td>
                                             @foreach ($order->tableOrdered as $table)
-                                                {{ $table->table->getArea->name }}
+                                                {{ $table->table->status == '1' ? $table->table->getArea->name : $table->table->getArea->name . ' (đã xóa)'}}
                                                 @break
                                             @endforeach
                                         </td>
                                         <td>
                                             @foreach ($order->tableOrdered as $table)
-                                                {{ $table->table->name }}
+                                                {{ $table->table->status == '1' ? $table->table->name : $table->table->name . ' (đã xóa)' }}
                                                 {{ count($order->tableOrdered) > 1 ? ', ' : '' }}
                                             @endforeach
                                         </td>
@@ -147,13 +130,13 @@
                             </tbody>
                             <tfoot>
                                 <tr class="bold">
-                                    <td colspan="8" class="text-right">TỔNG: </td>
+                                    <td colspan="9" class="text-right">TỔNG: </td>
                                     <td>{{ number_format($footer[0]['total']) . ' đ' }}</td>
                                     <td>{{ number_format($footer[0]['totalReceive']) . ' đ' }}</td>
                                     <td>{{ number_format($footer[0]['totalExcess']) . ' đ' }}</td>
                                 </tr>
                             </tfoot>
-                        </table>
+                    </table>
             </div>
             <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
             <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
@@ -161,9 +144,12 @@
                 $(document).ready( function () {
                     $('#example').dataTable();
                     $('#example_info').addClass('text-muted');
-                    $('#example_length').remove();
-                    $('#example_filter').remove();
-                } );
+                    $('input[type="search"]').addClass('form-control');
+                    $('#example_length').html(`<a href="{{ route('report.exportorder',['dateStart' => $dateStart, 'dateEnd' => $dateEnd]) }}"
+                            class="btn btn-sm btn-default" type="button">
+                            <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel
+                        </a>`);
+                });
             </script>
         </div>
     </div>

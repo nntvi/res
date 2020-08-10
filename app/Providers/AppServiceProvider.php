@@ -182,6 +182,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\MethodRepository\IMethodRepository',
             'App\Repositories\MethodRepository\MethodRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\PlanRepository\IPlanRepository',
+            'App\Repositories\PlanRepository\PlanRepository'
+        );
     }
 
     /**
@@ -193,14 +198,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Validator::extend('status_area', function ($attribute, $value, $parameters, $validator)
         {
-            $check = Area::where('name',$value)->where('status','1')->get();
-            return count($check) == 0 ? true : false ;
+            $check = Area::selectRaw('count(id) as qty')->where('name',$value)->where('status','1')->value('qty');
+            return $check == 0 ? true : false ;
         });
 
         Validator::extend('code_table', function ($attribute, $value, $parameters, $validator)
         {
-            $check = Table::where('code',$value)->where('status','1')->get();
-            return count($check) == 0 ? true : false ;
+            $check = Table::selectRaw('count(id) as qty')->where('code',$value)->where('status','1')->value('qty');
+            return $check == 0 ? true : false ;
         });
 
         Validator::extend('status_table', function ($attribute, $value, $parameters, $validator)
@@ -235,10 +240,11 @@ class AppServiceProvider extends ServiceProvider
 
         Validator::extend('check_to_cook', function ($attribute, $value, $parameters, $validator)
         {
-            $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-            $check = OrderDetailTable::selectRaw('count(id) as qty')->whereBetween('updated_at',[$today . " 00:00:00",$today . " 23:59:59"])
-                    ->where('status','1')->value('qty');
-            return $check == 0 ? true : false ;
+            dd($value);
+            // $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            // $check = OrderDetailTable::selectRaw('count(id) as qty')->whereBetween('updated_at',[$today . " 00:00:00",$today . " 23:59:59"])
+            //         ->where('status','1')->value('qty');
+            // return $check == 0 ? true : false ;
         });
     }
 

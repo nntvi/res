@@ -25,7 +25,7 @@ class ReportOrderExport implements FromCollection, WithHeadings
     {
         $string = "";
         foreach ($areas as $key => $area) {
-            $string = $area->table->getArea->name;
+            $string = $area->status == '1' ? $area->table->getArea->name : $area->table->getArea->name . ' (đã xóa)';
             break;
         }
         return $string;
@@ -33,12 +33,17 @@ class ReportOrderExport implements FromCollection, WithHeadings
     public function getTable($tables)
     {
         $string = "";
+        $temp = 0;
         foreach ($tables as $key => $table) {
+            $table->getArea->status != 0 ? $temp++ : $temp = 0 ;
             if(count($tables) == 1){
                 $string = $table->table->name;
             }else{
                 $string = $string .  $table->table->name . ', ';
             }
+        }
+        if($temp != 0){
+            $string = $string . ' (đã xóa)';
         }
         return $string;
     }

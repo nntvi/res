@@ -44,13 +44,8 @@
                             function validateForm() {
                                 var dateStart = document.getElementById('dateStart').value;
                                 var dateEnd = document.getElementById('dateEnd').value;
-
-                                if (dateStart == null || dateStart == "") {
-                                    alert("Không để trống ngày bắt đầu");
-                                    return false;
-                                }
-                                if (dateEnd == null || dateEnd == "") {
-                                    alert("Không để trống ngày kết thúc");
+                                if(dateStart > dateEnd){
+                                    alert("Ngày bắt đầu không nhỏ hơn ngày kết thúc");
                                     return false;
                                 }
                                 return true;
@@ -84,6 +79,7 @@
                     <thead>
                         <tr>
                             <th>STT</th>
+                            <th>Mã hóa đơn</th>
                             <th>Khu vực</th>
                             <th>Bàn</th>
                             <th>Người tạo</th>
@@ -93,7 +89,7 @@
                             <th>Thời gian thanh toán</th>
                             <th>Tổng tiền</th>
                             <th>Tiền khách đưa</th>
-                            <th>Tiền thừa</th>
+                            <th>Tiền hoàn lại</th>
                         </tr>
                     </thead>
                     <tbody>

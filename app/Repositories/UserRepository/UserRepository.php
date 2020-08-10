@@ -18,7 +18,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class UserRepository  extends Controller implements IUserRepository{
 
-    public function checkRole($arr)
+    public function checkRoleIndex($arr)
     {
         $temp = 0;
         for ($i=0; $i < count($arr); $i++) {
@@ -29,15 +29,37 @@ class UserRepository  extends Controller implements IUserRepository{
         return $temp;
     }
 
-    public function getAllUser($arr){
-        $check = $this->checkRole($arr);
-        if($check != 0){
-            $users = User::with('userper.permissionDetail','position')->paginate(5);
-            $positions = Position::orderBy('name','asc')->get();
-            return view('user/index',compact('users','positions'));
-        }else{
-            return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_NHAN_VIEN"){
+                $temp++;
+            }
         }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_NHAN_VIEN"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_NHAN_VIEN"){
+                $temp++;
+            }
+        }
+        return $temp;
     }
 
     public function validatorRequestStore($req){
@@ -67,22 +89,14 @@ class UserRepository  extends Controller implements IUserRepository{
         }
     }
 
-    public function addUserPosition($idUser,$idPosition)
-    {
-        $position = new UserPosition();
-        $position->id_user = $idUser;
-        $position->id_position = $idPosition;
-        $position->save();
-    }
-
     public function createUser($request){
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->id_position = $request->position;
         $user->save();
         $this->addUserPermission($request->permissiondetail,$user->id);
-        $this->addUserPosition($user->id,$request->position);
         return redirect(route('user.index'))->withSuccess('Thêm nhân viên thành công');
     }
 
@@ -151,7 +165,7 @@ class UserRepository  extends Controller implements IUserRepository{
     public function viewUpdateRole($id)
     {
         $user = User::where('id',$id)->with('userper.permissionDetail')->first();
-        $permissions = Permission::with('peraction.permissiondetail')->orderBy('name','asc')->get();
+        $permissions = Permission::where('name','!=','FULL')->with('peraction.permissiondetail')->orderBy('name','asc')->get();
         return view('user/update',compact('user','permissions'));
     }
 
@@ -196,15 +210,6 @@ class UserRepository  extends Controller implements IUserRepository{
     {
         User::where('id',$id)->update(['id_position' => $request->position]);
         return redirect(route('user.index'))->with('info','Cập nhật vị trí thành công');
-    }
-
-    public function searchUser($request)
-    {
-        $name = $request->nameSearch;
-        $count = User::selectRaw('count(id) as qty')->where('name','LIKE',"%{$name}%")->value('qty');
-        $users = User::where('name','LIKE',"%{$name}%")->with('userper.permissionDetail','position')->get();
-        $positions = Position::orderBy('name','asc')->get();
-        return view('user.search',compact('users','positions','count'));
     }
 
     public function deleteUser($id)
