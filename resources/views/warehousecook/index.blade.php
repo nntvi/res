@@ -94,7 +94,7 @@
                                                   <th>Số lượng hiện có</th>
                                                   <th>Đơn vị</th>
                                                   <th>Ngày cập nhật</th>
-                                                  <th></th>
+                                                  <th class="text-center">Trạng thái</th>
                                                 </tr>
                                               </thead>
                                               <tbody>
@@ -115,7 +115,7 @@
                                                                         @endif
                                                                     </td>
                                                                     <td>{{$warehouseCook->updated_at}}</td>
-                                                                    <td class="text-right" style="color:red;font-weight: bold">Cần nhập thêm</td>
+                                                                    <td class="text-center" style="color:red;font-weight: bold">Cần nhập thêm</td>
                                                                 </tr>
                                                             @else
                                                                 <tr>
@@ -130,7 +130,9 @@
                                                                         @endif
                                                                     </td>
                                                                     <td>{{$warehouseCook->updated_at}}</td>
-                                                                    <td> </td>
+                                                                    <td class="text-center">
+                                                                        <i class="fa fa-check text-success" aria-hidden="true"></i>
+                                                                    </td>
                                                                 </tr>
                                                             @endif
                                                     @endif

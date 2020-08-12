@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $('.pagination').addClass('pagination-sm');
+
     // ajax get material by id_supplierto import
     $("#idSupplier").click(function () {
         var idSupplier = $(this).val();
@@ -532,7 +533,9 @@ $(document).ready(function () {
                         </div>
                     </div>`;
                     $('#leftTable').append(tableImportCoupons);
-                    $('#infoImportCoupons').DataTable();
+                    $('#infoImportCoupons').DataTable({
+                        "bSort": false
+                    });
                     let code = makeCode(5);
                     let formSubmit =
                         `<div class="list-group list-group-alternate">
@@ -701,11 +704,13 @@ $(document).ready(function () {
             method: 'GET',
             dataType: 'JSON',
             success: function (results) {
-                console.log(results);
-
                 $("div#revenue").text(results.revenue);
                 $("div#expense").text(results.expense);
                 $("div#profit").text(results.profit);
+                $("span.von").text(results.capital);
+                $("span.pay").text(results.payment);
+                $("span.returnpay").text(results.returnpay);
+                $("span.tong").text(results.expense);
             }
         });
     })
@@ -723,7 +728,7 @@ $(document).ready(function () {
                         let row =   `<tr id="row`+ data.id +`">
                                     <td><input type="hidden" name="idMaterialDetail[]" value="`+ data.detail_material.id +`">`+ data.detail_material.name +`</td>
                                     <td>`+ data.qty +`</td>
-                                    <td><input type="number" class="form-control" name="qty[]" required></td>
+                                    <td><input type="number" class="form-control" name="qty[]" min="1" required></td>
                                     <td>`+ data.unit.name +`</td>
                                     <td>
                                         <span class="input-group-btn" onclick="clickToRemove(`+ data.id +`)">
@@ -847,7 +852,6 @@ $(document).ready(function () {
                                     </div>
                                 </div>`;
                 });
-
     content +=  `<div class="row">
                     <div class="col-xs-12 text-center">
                         <div class="space"></div>

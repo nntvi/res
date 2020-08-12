@@ -29,4 +29,8 @@ interface IAjaxRepository{
     // test report dish
     function getOrderByAllGroupMenu($dateStart,$dateEnd);
     function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu);
+
+    function getCapitalPriceOfDish($dateStart,$dateEnd);
+    function getTotalPayment($dateStart,$dateEnd);
+    function getPayReturnSupplier($dateStart,$dateEnd);
 }

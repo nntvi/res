@@ -346,6 +346,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('storeNumber/{id}','MethodController@storeNumber')->name('method.p_storeNumber');
         Route::get('update/{id}','MethodController@update')->name('method.update');
         Route::get('delete/{id}','MethodController@delete')->name('method.delete');
+        Route::get('reset','MethodController@reset')->name('method.reset');
     });
 
     // Plan Import Material
@@ -355,8 +356,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('index','PlanController@index')->name('importplan.index');
             Route::get('viewstore','PlanController@viewStore')->name('importplan.viewstore');
             Route::post('store','PlanController@store')->name('importplan.store');
-            Route::get('detail/{id}/{idSupplier}','PlanController@getDetail')->name('importplan.detail');
-            Route::post('detail','PlanController@postDetail')->name('importplan.p_detail');
+            Route::post('store2','PlanController@store2')->name('importplan.store2');
+            Route::post('addmore','PlanController@addMore')->name('importplan.addMore');
+            Route::post('postaddmore','PlanController@addMorePost')->name('importplan.p_addMore');
+            Route::get('detail/{id}','PlanController@getDetail')->name('importplan.detail');
+            Route::post('update/{idPlan}/{idMaterial}','PlanController@update')->name('importplan.update');
+            Route::get('delete/{idPlan}/{idMaterial}','PlanController@delete')->name('importplan.delete');
+            Route::get('deletePlan/{id}','PlanController@deletePlan')->name('importplan.deleteplan');
         });
     });
 

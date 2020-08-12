@@ -29,7 +29,7 @@
                     <div class="form-group ">
                         <label for="cname" class="control-label col-lg-2">Từ:</label>
                         <div class="col-lg-10">
-                            <input class="date form-control" name="dateStart" id="dateStart" value="{{ $firstMonth }}" disabled>
+                            <input class="date form-control" name="dateStart" id="dateStart" value="{{ $firstMonth }}">
                         </div>
                     </div>
                 </div>
@@ -37,10 +37,15 @@
                     <div class="form-group ">
                         <label for="cname" class="control-label col-lg-2">Đến:</label>
                         <div class="col-lg-10">
-                            <input class="date form-control" name="dateEnd" id="dateEnd" value="{{ $endMonth }}" disabled>
+                            <input class="date form-control" name="dateEnd" id="dateEnd" value="{{ $endMonth }}">
                         </div>
                     </div>
                 </div>
+                <script type="text/javascript">
+                    $('.date').datepicker({
+                        format: 'yyyy-mm-dd'
+                    });
+                </script>
                 <div class="col-xs-12 col-sm-2">
                     <div class="form-group">
                         <button class="btn btn-default" style="width:100%" id="btnProfit">
@@ -73,7 +78,51 @@
                     <div class="absolute">
                         <div class="details">
                             <div class="number" id="expense">{{ number_format($expense) . ' đ' }}</div>
-                            <div class="desc">Chi phí</div>
+                            <div class="desc">
+                                <a href="#myModal" data-toggle="modal" style="color:white">
+                                    Chi phí
+                                </a>
+                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade" style="display: none;">
+                                        <div class="modal-dialog text-left" style="color:black">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                    <h4 class="modal-title" >Các chi phí trong khoảng thời gian vừa chọn</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Tên chi phí</th>
+                                                                <th class="text-center">Số tiền</th>
+                                                            </tr>
+                                                        </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Vốn món ăn</td>
+                                                                    <td class="text-center"><span class="von">{{ number_format($capital) . ' đ' }}</span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Trả nhà cung cấp</td>
+                                                                    <td class="text-center"><span class="pay">{{ number_format($payment) . ' đ' }}</span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Trả lại hàng</td>
+                                                                    <td class="text-center"><span class="returnpay">{{ number_format($payemer) . ' đ' }}</span></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr class="bold">
+                                                                    <td>Tổng</td>
+                                                                    <td class="text-center"><span class="tong">{{ number_format($capital + $payment - $payemer) . ' đ' }}</span></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
                         </div>
                     </div>
                 </div>

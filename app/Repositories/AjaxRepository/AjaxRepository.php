@@ -301,7 +301,8 @@ class AjaxRepository extends Controller implements IAjaxRepository{
 
     public function getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier)
     {
-        $coupons = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->where('id_supplier',$idSupplier)->with('detailImportCoupon')->get();
+        $coupons = ImportCoupon::whereBetween('created_at',[$dateStart,$dateEnd])->orderBy('created_at','asc')->where('id_supplier',$idSupplier)
+                    ->with('detailImportCoupon')->get();
         return $coupons;
     }
 

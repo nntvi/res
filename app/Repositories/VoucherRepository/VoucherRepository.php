@@ -99,8 +99,19 @@ class VoucherRepository extends Controller implements IVoucherRepository{
     public function getImportCouponsByTime($request)
     {
         $importCoupons = ImportCoupon::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
-                                    ->where('id_supplier',$request->idSupplierChoosen)->orderBy('created_at','asc')->get();
+                        ->where('id_supplier',$request->idSupplierChoosen)->orderBy('created_at','asc')->get();
         return $importCoupons;
+    }
+
+    public function getPaidImportCoupon($idImportCoupon)
+    {
+        $paid = ImportCoupon::where('id',$idImportCoupon)->value('paid');
+        return $paid;
+    }
+    public function updatePaid($id,$money)
+    {
+        $paid = $this->getPaidImportCoupon($id);
+        ImportCoupon::where('id',$id)->update(['paid' => $paid + $money]);
     }
 
     public function updateImportCoupon($arrImportCoupons,$payCash)
@@ -110,18 +121,23 @@ class VoucherRepository extends Controller implements IVoucherRepository{
             if($item->status == '2'){ // có phiếu đã trả hết
                 continue;
             }else{ // trả 1 ít hoặc chưa trả
-                if($temp >= $item->total){ // tiền nhập trả >= phiếu
+                $paid = $this->getPaidImportCoupon($item->id); // lấy số tiền đã trả
+                $tempTotal = $paid + $temp; // đã trả + mới nhập
+                $x = ($paid + $temp) - $item->total;
+                if($tempTotal >= $item->total){ // tiền nhập trả >= phiếu
                     $item->paid = $item->total;
                     $item->status = '2'; // trả hết
                     $item->save();
-                    $temp -= $item->total;
-                }else if($temp < $item->total){
-                    $item->paid = $temp;
-                    $item->status = '1'; // trả một ít
-                    $item->save();
-                    $temp = 0;
-                }else if($temp == 0){
-                    break;
+                    $temp = $x;
+                }else{ // tiền nhập trả < phiếu
+                    if($temp != 0 &&  $temp < $item->total){
+                        $this->updatePaid($item->id,$temp);
+                        $item->status = '1'; // trả một ít
+                        $item->save();
+                        $temp = 0;
+                    }else if($temp == 0){
+                        break;
+                    }
                 }
             }
         }

@@ -86,7 +86,7 @@
                                     <th width="15%">Mã phiếu</th>
                                     <th width="10%">Đối tượng</th>
                                     <th>Loại phiếu</th>
-                                    <th width="10%">Ngày tạo</th>
+                                    <th width="10%">Người tạo</th>
                                     <th width="10%">Chi tiết kho</th>
                                 </tr>
                             </thead>
@@ -111,7 +111,7 @@
                                             <td>{{ $item->code }}</td>
                                             <td>{{ $item->supplier->name }}</td>
                                             <td>Phiếu nhập hàng</td>
-                                            <td>{{ $item->created_at }}</td>
+                                            <td>{{ $item->created_by }}</td>
                                             <td>
                                                 <a href="#myModal{{ $item->code }}" data-toggle="modal" class="btn default btn-xs yellow-crusta radius">
                                                     <i class="fa fa-eye"></i> Xem

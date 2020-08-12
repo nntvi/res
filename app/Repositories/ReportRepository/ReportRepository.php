@@ -348,6 +348,7 @@ class ReportRepository extends Controller implements IReportRepository{
             return $data;
         }
     }
+
     public function reportSupplier($request)
     {
         $dateStart = $request->dateStart;
@@ -440,8 +441,11 @@ class ReportRepository extends Controller implements IReportRepository{
         $revenue = $this->getRevenue($firstMonth,$endMonth);
         $expense = $this->getExpense($firstMonth,$endMonth);
         $profit = $revenue - $expense;
+        $capital = $this->getCapitalPriceOfDish($firstMonth,$endMonth);
+        $payment = $this->getTotalPayment($firstMonth,$endMonth);
+        $payemer = $this->getPayReturnSupplier($firstMonth,$endMonth);
         $dataChart = $this->getAllProfit();
-        return view('report.profit',compact('revenue','expense','profit','firstMonth','endMonth','dataChart'));
+        return view('report.profit',compact('revenue','expense','profit','firstMonth','endMonth','dataChart','capital','payment','payemer'));
     }
 
     public function getToTalRevenueInYear()

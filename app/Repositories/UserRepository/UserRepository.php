@@ -203,7 +203,8 @@ class UserRepository  extends Controller implements IUserRepository{
     public function updatePasswordUser($request, $id)
     {
         User::where('id',$id)->update(['password' => bcrypt($request->passwordconfirm)]);
-        return redirect(route('user.index'))->with('info','Đổi password thành công');
+        $user = User::where('id',$id)->first();
+        return view('user.success',compact('user'))->with('success','Đổi password thành công');
     }
 
     public function updatePositionUser($request,$id)

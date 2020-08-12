@@ -97,4 +97,5 @@
     <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
 @endsection

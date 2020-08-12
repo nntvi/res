@@ -54,7 +54,10 @@ class AreaRepository extends Controller implements IAreaRepository{
 
     public function getAllArea()
     {
-        $areas = Area::where('status','1')->orderBy('name', 'asc')->with('containTable.getArea')->get();
+        $areas = Area::where('status','1')->with(['containTable' => function ($query)
+                {
+                    $query->where('status','1');
+                }])->orderBy('name', 'asc')->get();
         return $areas;
     }
 

@@ -38,13 +38,13 @@
                                         @break
                                     @default
                                 @endswitch
-                                <td><a href="{{ route('importplan.detail',['id' => $plan->id, 'idSupplier' => $plan->supplier->id]) }}">Xem chi tiết</a></td>
+                                <td><a href="{{ route('importplan.detail',['id' => $plan->id ]) }}">Xem chi tiết</a></td>
                                 @if ($plan->status == '0')
-                                    <td><a href=""><i class="fa fa-times text-danger text"></i></a></td>
+                                    <td><a href="{{ route('importplan.deleteplan',['id' => $plan->id]) }}"
+                                        onclick="return confirm('Bạn muốn xóa kế hoạch này?')"><i class="fa fa-times text-danger text"></i></a></td>
                                 @else
                                     <td></td>
                                 @endif
-
                             </tr>
                         @endforeach
                     </tbody>

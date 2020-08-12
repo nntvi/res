@@ -3,9 +3,6 @@
     .table-responsive {
         overflow-x: inherit !important;
     }
-    #example_length{
-        display: none;
-    }
     input[type="search"] {
         height: 29px;
     }
@@ -22,8 +19,6 @@
                 </header>
                 <div class="panel-body">
                     <div class="position-center">
-                        <form action="{{ route('importplan.p_detail') }}" method="POST" onsubmit="return validateImportPlan()">
-                            @csrf
                             <div class="row form-group">
                                 <div class="col-xs-12 col-sm-6">
                                     <label>Kế hoạch ngày</label>
@@ -44,67 +39,67 @@
                                 <table class="table" id="example">
                                     <thead>
                                         <tr>
-                                            <th style="width:20px;">
-                                                <label class="i-checks m-b-none">
-                                                    <input type="checkbox" id="checkAll"<i></i>
-                                                </label>
-                                            </th>
+                                            <th>STT</th>
                                             <th class="text-center">Tên Nguyên Vật Liệu</th>
                                             <th class="text-center">Đơn vị</th>
-                                            <th class="text-right">Số lượng dự tính</th>
+                                            <th class="text-center">Số lượng dự tính</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="bodyImportPlan">
-                                        @foreach ($materialDetails->typeMaterial->materialDetail as $detail)
-                                            @php
-                                                $temp = false;
-                                            @endphp
-                                            @foreach ($materialChoosen as $item)
-                                                @if ($item->id_material_detail == $detail->id && $detail->status == '1')
-                                                    <tr>
-                                                        <td>
-                                                            <label class="i-checks m-b-none">
-                                                                <input type="checkbox" class="idmatdetail" value="{{ $detail->id }}" name="idMaterialDetail[]" checked><i></i>
-                                                            </label>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="hidden" class="namematdetail" value="{{ $detail->name }}">
-                                                            {{ $detail->name }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $detail->unit->name }}
-                                                        </td>
-                                                        <td class="text-right">
-                                                            <input type="number" name="qty[]" min="1" value="{{ $item->qty }}">
-                                                        </td>
-                                                    </tr>
-                                                    @php
-                                                        $temp = true;
-                                                    @endphp
-                                                    @break
-                                                @endif
-                                            @endforeach
-                                            @if ($temp == false)
-                                                @if ($detail->status == '1')
-                                                    <tr>
-                                                        <td>
-                                                            <label class="i-checks m-b-none">
-                                                                <input type="checkbox" class="idmatdetail" value="{{ $detail->id }}" name="idMaterialDetail[]"><i></i>
-                                                            </label>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="hidden" class="namematdetail" value="{{ $detail->name }}">
-                                                            {{ $detail->name }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $detail->unit->name }}
-                                                        </td>
-                                                        <td class="text-right">
-                                                            <input type="number" name="qty[]" min="1">
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endif
+                                            @foreach ($materialChoosen as $key => $item)
+                                                <tr>
+                                                    <td>{{ $key + 1 }}</td>
+                                                    <td class="text-center">
+                                                        <input type="hidden" class="namematdetail" value="{{ $item->materialDetail->name }}">
+                                                        {{ $item->materialDetail->name }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ $item->materialDetail->unit->name }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="#updateQty{{ $item->materialDetail->id }}" data-toggle="modal">
+                                                            <i class="fa fa-pencil-square-o text-success" aria-hidden="true"></i>
+                                                        </a>
+                                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="updateQty{{ $item->materialDetail->id }}" class="modal fade" style="display: none;">
+                                                                <div class="modal-dialog text-left">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                            <h4 class="modal-title">Cập nhật số lượng nhập</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <form action="{{ route('importplan.update',['idPlan' => $id, 'idMaterial' => $item->materialDetail->id]) }}" method="POST">
+                                                                                @csrf
+                                                                                <div class="form-group">
+                                                                                    <div class="row">
+                                                                                        <div class="col-xs-6">
+                                                                                            <label>Tên NVL</label>
+                                                                                            <input class="form-control" value="{{ $item->materialDetail->name }}" disabled>
+                                                                                        </div>
+                                                                                        <div class="col-xs-6">
+                                                                                            <label>Số lượng hiện tại</label>
+                                                                                            <input class="form-control" value="{{ $item->qty }}" disabled>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label>Số lượng cần thay đổi</label>
+                                                                                    <input class="form-control" min="1" name="qty" value="{{ $item->qty }}" required>
+                                                                                </div>
+                                                                                <button type="submit" class="btn btn-default">Cập nhật</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {{ $item->qty }}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <a href="{{ route('importplan.delete',['idPlan' => $id, 'idMaterial' => $item->materialDetail->id]) }}"
+                                                            onclick="return confirm('Bạn muốn xóa NVL này khỏi kế hoạch?')"><i class="fa fa-times text-danger" aria-hidden="true"></i></a>
+                                                    </td>
+                                                </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -113,19 +108,9 @@
                                 <div class="space"></div>
                                 <div class="space"></div>
                                 <div class="col-xs-12 text-center">
-                                    @if ($plan->date_create > $today)
-                                        @if ($plan->status == '0')
-                                            <a href="{{ route('importplan.index') }}" class="btn btn-default">Trở về</a>
-                                            <button type="submit" class="btn green-meadow">Lưu Thông Tin</button>
-                                        @else
-                                            <a href="{{ route('importplan.index') }}" class="btn btn-default">Trở về</a>
-                                        @endif
-                                    @else
-                                        <a href="{{ route('importplan.index') }}" class="btn btn-default">Trở về</a>
-                                    @endif
+                                    <a href="{{ route('importplan.index') }}" class="btn btn-default">Trở về</a>
                                 </div>
                             </div>
-                        </form>
                     </div>
                 </div>
             </section>
@@ -148,9 +133,48 @@
             $('#example').dataTable();
             $('#example_info').addClass('text-muted');
             $('input[type="search"]').addClass('form-control');
-        });
-        $("#checkAll").click(function(){
-            $('input:checkbox').not(this).prop('checked', this.checked);
+            let content =
+                `<a href="#myModal" data-toggle="modal" class="btn btn-sm btn-default">
+                    Thêm NVL
+                </a>
+                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                    <h4 class="modal-title">Thêm Nguyên vật liệu cho kế hoạch</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('importplan.addMore') }}" role="form" method="POST">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label>Nhà cung cấp</label>
+                                            <input type="hidden" name="id_plan" value="{{ $id }}">
+                                            <input class="form-control" value="{{ $plan->supplier->name }}" disable>
+                                        </div>
+                                        <div class="form-group">
+                                            <label></label>`;
+                                                @foreach ($materialDetails as $detail)
+                                        content += `<div class="col-xs-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" value="{{ $detail->id }}" name="idMaterialDetail[]">
+                                                            <label style="font-weight: normal">{{ $detail->name }}</label>
+                                                        </div>
+                                                    </div>`;
+                                                @endforeach
+                            content +=  `</div>
+                                    <div class="row">
+                                        <div class="col-xs-12 text-center">
+                                            <div class="space"></div>
+                                            <button type="submit" class="btn btn-default">Thêm</button>
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            $('#example_length').html(content);
         });
     </script>
 </div>

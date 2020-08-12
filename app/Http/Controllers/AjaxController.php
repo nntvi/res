@@ -263,10 +263,16 @@ class AjaxController extends Controller
         $revenue = $this->ajaxRepository->getRevenue($dateStart,$dateEnd);
         $expense = $this->ajaxRepository->getExpense($dateStart,$dateEnd);
         $profit = $revenue - $expense;
+        $capital = $this->ajaxRepository->getCapitalPriceOfDish($dateStart,$dateEnd);
+        $payment = $this->ajaxRepository->getTotalPayment($dateStart,$dateEnd);
+        $returnpay = $this->ajaxRepository->getPayReturnSupplier($dateStart,$dateEnd);
         $data = [
             'revenue' => number_format($revenue) . ' đ',
             'expense' => number_format($expense) . ' đ',
-            'profit' => number_format($profit) . ' đ'
+            'profit' => number_format($profit) . ' đ',
+            'capital' => number_format($capital) . ' đ',
+            'payment' => number_format($payment) . ' đ',
+            'returnpay' => number_format($returnpay) . ' đ',
         ];
         return response()->json($data);
     }

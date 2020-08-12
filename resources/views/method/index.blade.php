@@ -5,7 +5,6 @@
         <div class="panel-heading">
             Công thức tính hệ số giá bán món ăn
         </div>
-
         <div>
             <table class="table table-responsive table-striped b-t b-light" id="example">
                 <thead>
@@ -88,7 +87,10 @@
                                     </div>
                                 </div>
                             </div>
-                    </div>`
+                    </div>
+                <a href="{{ route('method.reset') }}" onclick="return confirm('Bạn có chắc muốn hủy kích hoạt các hệ số hiện tại?')" class="btn btn-sm btn-default">
+                    Reset
+                </a>`
             );
         } );
     </script>

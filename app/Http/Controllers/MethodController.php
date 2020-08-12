@@ -80,4 +80,14 @@ class MethodController extends Controller
         Method::where('id',$id)->delete();
         return redirect(route('method.index'))->withSuccess('Xóa công thức thành công');
     }
+
+    public function reset()
+    {
+        $methods = Method::all();
+        foreach ($methods as $key => $method) {
+            $method->status = '0';
+            $method->save();
+        }
+        return redirect(route('method.index'))->withSuccess('Reset thành công');
+    }
 }
