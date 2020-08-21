@@ -71,10 +71,9 @@ class MaterialRepository extends Controller implements IMaterialRepository{
 
     public function validatorRequestStore($req){
         $req->validate(
-            [ 'name' => 'status_material|regex:/^[\pL\s]+$/u'],
+            [ 'name' => 'status_material|special_character'],
             [   'name.status_material' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
-                'name.regex' => 'Tên món ăn không được là số'
-            ]
+                'name.special_character' => 'Tên vừa nhập không được chứa kí tự đặc biệt']
         );
     }
 

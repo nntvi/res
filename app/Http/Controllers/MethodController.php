@@ -63,7 +63,7 @@ class MethodController extends Controller
         }else{
             $stringNumTu = $this->methodRepository->createStringTu($request->qtyTu,$request->numTu,$request->calNumTu);
             $stringNumMau = $this->methodRepository->createStringMau($request->qtyTu,$request->numMau,$request->calNumMau);
-            Method::where('id',$id)->update(['result' => round(($tu/$mau),2),'tuso' => $stringNumTu, 'mauso' => $stringNumMau]);
+            Method::where('id',$id)->update(['result' => round(($tu/$mau),2),'tuso' => $stringNumTu, 'mauso' => $stringNumMau,'status' => '0']);
             return redirect(route('method.index'))->withSuccess('Tạo công thức thành công');
         }
     }

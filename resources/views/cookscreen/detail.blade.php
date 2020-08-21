@@ -44,6 +44,7 @@
                             @endswitch
                         </td>
                         <td class="text-center">
+                            {{-- món chưa làm  --}}
                             @if ($dish->status == 0)
                                 <a href="#myModal{{ $dish->id }}" data-toggle="modal" class="btn btn-xs btn-danger checkNVL" id="{{ $dish->id }}">
                                     Xem xét
@@ -77,21 +78,21 @@
                                                         <tbody>
                                                             @foreach ($dish->dish->material->materialAction as $key => $item)
                                                                 <tr>
-                                                                    <td>{{ $key + 1 }}</td>
-                                                                    <td>{{ $item->materialDetail->name }} ({{ ($item->unit->name) }})</td>
-                                                                    <td>{{ $item->qty }}</td>
-                                                                    <td>{{ $dish->qty }}</td>
-                                                                    <td>{{ $item->qty * $dish->qty }}</td>
-                                                                    @foreach ($materials as $material)
-                                                                        @if ($material->id_material_detail == $item->materialDetail->id)
-                                                                            @if ($material->qty < $item->qty * $dish->qty)
-                                                                                <td style="color:red">{{ $material->qty }}</td>
-                                                                            @else
-                                                                                <td>{{ $material->qty }}</td>
+                                                                        <td>{{ $key + 1 }}</td>
+                                                                        <td>{{ $item->materialDetail->name }} ({{ ($item->unit->name) }})</td>
+                                                                        <td>{{ $item->qty }}</td>
+                                                                        <td>{{ $dish->qty }}</td>
+                                                                        <td>{{ $item->qty * $dish->qty }}</td>
+                                                                        @foreach ($materials as $material)
+                                                                            @if ($material->id_material_detail == $item->materialDetail->id)
+                                                                                @if ($material->qty < $item->qty * $dish->qty)
+                                                                                    <td style="color:red">{{ $material->qty }}</td>
+                                                                                @else
+                                                                                    <td>{{ $material->qty }}</td>
+                                                                                @endif
+                                                                                @break
                                                                             @endif
-                                                                            @break
-                                                                        @endif
-                                                                    @endforeach
+                                                                        @endforeach
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
@@ -122,77 +123,119 @@
                                         </div>
                                     </div>
                                 </div>
+                            {{--  cập nhật để báo làm xong  --}}
                             @else
-                                <a href="#finish{{ $dish->id }}" data-toggle="modal" class="btn btn-xs btn-warning">
-                                    Cập nhật
-                                </a>
-                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="finish{{ $dish->id }}" class="modal fade" style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                                <h4 class="modal-title text-left">Xem xét NVL thực hiện món {{ $dish->dish->name }} -
-                                                    @foreach ($dish->order->tableOrdered as $item)
-                                                        {{ $item->table->name }}
-                                                        {{ count($dish->order->tableOrdered) > 1 ? ',' : '' }}
-                                                    @endforeach
-                                                </h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                @if ($dish->note != null)
-                                                    <div class="alert alert-xs alert-info text-left" role="alert">
-                                                        Ghi chú: <strong>{{ $dish->note }}</strong>
-                                                        </div>
-                                                @endif
-                                                <form action="{{ route('cook_screen.updatefinish',['id' => $dish->id,'idCook' => $cook->id]) }}" method="post">
-                                                    @csrf
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>STT</th>
-                                                                <th>Tên NVL</th>
-                                                                <th>Công thức</th>
-                                                                <th>SL Đặt</th>
-                                                                <th>Cần</th>
-                                                                <th>Chỉnh sửa</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($dish->dish->material->materialAction as $key => $item)
+                                {{--  nếu có ghi chú => có cập nhật số lượng  --}}
+                                @if ($dish->note != null)
+                                    <a href="#finish{{ $dish->id }}" data-toggle="modal" class="btn btn-xs btn-warning">
+                                        Cập nhật
+                                    </a>
+                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="finish{{ $dish->id }}" class="modal fade" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                    <h4 class="modal-title text-left">Xem xét NVL thực hiện món {{ $dish->dish->name }} -
+                                                        @foreach ($dish->order->tableOrdered as $item)
+                                                            {{ $item->table->name }}
+                                                            {{ count($dish->order->tableOrdered) > 1 ? ',' : '' }}
+                                                        @endforeach
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @if ($dish->note != null)
+                                                        <div class="alert alert-xs alert-info text-left" role="alert">
+                                                            Ghi chú: <strong>{{ $dish->note }}</strong>
+                                                            </div>
+                                                    @endif
+                                                    <form action="{{ route('cook_screen.updatefinish',['id' => $dish->id,'idCook' => $cook->id]) }}" method="post">
+                                                        @csrf
+                                                        <table class="table table-bordered">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>{{ $key + 1 }}</td>
-                                                                    <td>
-                                                                        <input type="hidden" name="idMaterialDetail[]" value="{{ $item->materialDetail->id }}">
-                                                                        {{ $item->materialDetail->name }} ({{ ($item->unit->name) }})
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="hidden" name="qtyMethod[]" value="{{ $item->qty }}">
-                                                                        {{ $item->qty }}
-                                                                    </td>
-                                                                    <td>{{ $dish->qty }}</td>
-                                                                    <td>{{ $item->qty * $dish->qty }}</td>
-                                                                    <td>
-                                                                        @if ($item->unit->id == 16)
-                                                                            <input type="hidden" name="qtyReal[]" value="{{ $dish->qty }}">
-                                                                            <input value="{{ $dish->qty }}" disabled>
-                                                                        @else
-                                                                            <input type="number" name="qtyReal[]" min="0" max="{{ $dish->qty * 2 }}" value="{{ $dish->qty }}" required>
-                                                                        @endif
-                                                                    </td>
+                                                                    <th>STT</th>
+                                                                    <th>Tên NVL</th>
+                                                                    <th>Công thức</th>
+                                                                    <th>SL Đặt</th>
+                                                                    <th>Cần</th>
+                                                                    <th>Chỉnh sửa</th>
                                                                 </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="row">
-                                                        <div class="col-xs-12 text-center">
-                                                            <button type="submit" class="btn btn-default">Hoàn thành</button>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if ($dish->note != null)
+                                                                    @foreach ($dish->dish->material->materialAction as $key => $item)
+                                                                        <tr>
+                                                                            <td>{{ $key + 1 }}</td>
+                                                                            <td>
+                                                                                <input type="hidden" name="idMaterialDetail[]" value="{{ $item->materialDetail->id }}">
+                                                                                {{ $item->materialDetail->name }} ({{ ($item->unit->name) }})
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="hidden" name="qtyMethod[]" value="{{ $item->qty }}">
+                                                                                {{ $item->qty }}
+                                                                            </td>
+                                                                            <td>{{ $dish->qty }}</td>
+                                                                            <td>{{ $item->qty * $dish->qty }}</td>
+                                                                            <td>
+                                                                                @if ($item->unit->id == 16)
+                                                                                    <input type="hidden" name="qtyReal[]" value="{{ $dish->qty }}">
+                                                                                    <input value="{{ $dish->qty }}" disabled>
+                                                                                @else
+                                                                                    <input type="number" name="qtyReal[]" min="0" max="{{ $dish->qty * 2 }}" value="{{ $dish->qty }}" required>
+                                                                                @endif
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                @else
+                                                                    @foreach ($dish->dish->material->materialAction as $key => $item)
+                                                                        <tr>
+                                                                            <td>{{ $key + 1 }}</td>
+                                                                            <td>
+                                                                                <input type="hidden" name="idMaterialDetail[]" value="{{ $item->materialDetail->id }}">
+                                                                                {{ $item->materialDetail->name }} ({{ ($item->unit->name) }})
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="hidden" name="qtyMethod[]" value="{{ $item->qty }}">
+                                                                                {{ $item->qty }}
+                                                                            </td>
+                                                                            <td>{{ $dish->qty }}</td>
+                                                                            <td>{{ $item->qty * $dish->qty }}</td>
+                                                                            <td>
+                                                                                @if ($item->unit->id == 16)
+                                                                                    <input type="hidden" name="qtyReal[]" value="{{ $dish->qty }}">
+                                                                                    {{ $dish->qty }}
+                                                                                @else
+                                                                                    <input type="hidden" name="qtyReal[]" min="0" max="{{ $dish->qty * 2 }}" value="{{ $dish->qty }}">
+                                                                                    {{ $dish->qty }}
+                                                                                @endif
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                @endif
+                                                            </tbody>
+                                                        </table>
+                                                        <div class="row">
+                                                            <div class="col-xs-12 text-center">
+                                                                <button type="submit" class="btn btn-default">Hoàn thành</button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </form>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                @else
+                                {{--  ko có ghi chú => click vào button chọn hoàn thành  --}}
+                                    <form action="{{ route('cook_screen.updatefinish',['id' => $dish->id,'idCook' => $cook->id]) }}" method="post">
+                                        @csrf
+                                        @foreach ($dish->dish->material->materialAction as $key => $item)
+                                            <input type="hidden" name="idMaterialDetail[]" value="{{ $item->materialDetail->id }}">
+                                            <input type="hidden" name="qtyMethod[]" value="{{ $item->qty }}">
+                                            <input type="hidden" name="qtyReal[]" min="0" max="{{ $dish->qty * 2 }}" value="{{ $dish->qty }}">
+                                        @endforeach
+                                        <button type="submit" class="btn btn-xs btn-success">Hoàn thành</button>
+                                    </form>
+                                @endif
                             @endif
                         </td>
                     </tr>

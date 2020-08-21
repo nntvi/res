@@ -93,8 +93,10 @@ class PlanRepository extends Controller implements IPlanRepository{
 
     public function validateStore($request)
     {
-        $request->validate( ['dateStart' => 'after:today'],
-                            ['dateStart.after' => "Ngày lập phải sau ngày hôm nay"]);
+        $request->validate( ['dateStart' => 'after:today','idMaterialDetail' => 'required'],
+                            ['dateStart.after' => "Ngày lập phải sau ngày hôm nay",
+                                'idMaterialDetail.required' => "Vui lòng chọn ít nhất một NVL",
+                            ]);
     }
 
     public function getNameSupplier($idSupplier)
@@ -136,7 +138,7 @@ class PlanRepository extends Controller implements IPlanRepository{
             $detailPlan->qty = $request->qty[$i];
             $detailPlan->save();
         }
-        return redirect(route('importplan.index'))->withSuccess('Thêm kế hoạc thành công');
+        return redirect(route('importplan.index'))->withSuccess('Thêm kế hoạch thành công');
     }
 
     public function createTempArrayMaterialPlan($request)

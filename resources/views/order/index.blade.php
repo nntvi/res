@@ -10,6 +10,9 @@
         background: rgba(149, 149, 149, 0.09);
         cursor: pointer;
     }
+    .card.table{
+        line-height: 45px;
+    }
     .tab-content .cardDish{
         border-radius: 0px;
     }
@@ -26,6 +29,9 @@
     }
     .card-text{
         font-size: 13.5px;
+    }
+    .card-text.chair{
+        font-size: 15px;
     }
     button .btn-number{
         border-radius: 50%;
@@ -185,12 +191,12 @@
                                                         @foreach($activeTables as $activeTable)
                                                             @if($activeTable->id_table == $table->id)
                                                                 <div class="col-xs-4 col-sm-3 col-md-3 m-b-xs" style="padding-left: 0px">
-                                                                    <div class="card" data-id="{{ $table->id }}" data-status="1"
+                                                                    <div class="card table" data-id="{{ $table->id }}" data-status="1"
                                                                         style="background: rgba(254, 48, 48, 0.55);border: 2px solid #ff6d6d;">
                                                                         <div class="card-body">
                                                                             <input type="hidden" name="idBill" value="{{ $activeTable->id_order }}">
-                                                                            <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
-                                                                            <p class="card-text" >{{ $table->chairs }} ghế</p>
+                                                                            <h5 class="card-title" style="overflow: hidden;">{{ $table->name }}</h5>
+                                                                            <p class="card-text chair" >{{ $table->chairs }} ghế</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -202,10 +208,10 @@
                                                         @endforeach
                                                         @if($temp == false)
                                                             <div class="col-xs-4 col-sm-3 col-md-3 m-b-xs" style="padding-left: 0px">
-                                                                <div class="card" data-id="{{ $table->id }}" data-status="0" id="tbl{{ $table->id }}">
+                                                                <div class="card table" data-id="{{ $table->id }}" data-status="0" id="tbl{{ $table->id }}">
                                                                     <div class="card-body">
-                                                                        <h6 class="card-title" style="height: 12px; overflow: hidden;">{{ $table->name }}</h6>
-                                                                        <p class="card-text">{{ $table->chairs }} ghế</p>
+                                                                        <h5 class="card-title" style="overflow: hidden;">{{ $table->name }}</h5>
+                                                                        <p class="card-text chair">{{ $table->chairs }} ghế</p>
                                                                     </div>
                                                                 </div>
                                                             </div>

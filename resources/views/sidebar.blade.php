@@ -42,7 +42,7 @@
                 <li>
                     <a href="{{ route('cook_screen.index') }}">
                         <i class="fa fa-cutlery"></i>
-                        <span>Màn hình khu vực bếp</span>
+                        <span>Màn hình bếp</span>
                     </a>
                 </li>
             <li class="sub-menu">

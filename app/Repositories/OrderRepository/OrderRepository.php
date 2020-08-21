@@ -48,7 +48,10 @@ class OrderRepository extends Controller implements IOrderRepository{
     }
     public function getArea()
     {
-        $areas = Area::where('status','1')->with('containTable')->get();
+        $areas = Area::where('status','1')->with(['containTable' => function ($query)
+                        {
+                            $query->where('status','1');
+                        }])->orderBy('name', 'desc')->get();
         return $areas;
     }
     public function getDateNow()
@@ -65,7 +68,10 @@ class OrderRepository extends Controller implements IOrderRepository{
 
     public function getDishes()
     {
-        $groupmenus = GroupMenu::where('status','1')->where('id_cook','!=','0')->with('dishes')->get();
+        $groupmenus = GroupMenu::where('status','1')->where('id_cook','!=','0')->with(['dishes' => function ($query)
+                                {
+                                    $query->orderBy('name','asc');
+                                }])->get();
         return $groupmenus;
     }
 

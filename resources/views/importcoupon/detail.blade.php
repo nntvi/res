@@ -19,7 +19,7 @@
                         <th>Tên mặt hàng</th>
                         <th>Số lượng nhập</th>
                         <th>Đơn vị</th>
-                        <th class="text-right">Giá nhập</th>
+                        <th class="text-right">Tổng giá nhập</th>
                     </tr>
                 </thead>
                 <tbody>

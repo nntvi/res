@@ -112,7 +112,7 @@
                     <header class="panel-heading" style="background:white;line-height: 35px">
                         Xem biểu đồ &nbsp;
                         <span class="_tools pull-center">
-                            <a class="fa fa-chevron-circle-up" href="javascript:;"></a>
+                            <a class="fa fa-chevron-circle-down" href="javascript:;"></a>
                         </span>
                         <br>
                     </header>
@@ -164,7 +164,7 @@
                         </div>
                     </div>
                     <script>
-                        $('.panel1 ._tools .fa').parents(".panel1").children(".panel-body1").slideUp(200);
+                        $('.panel1 ._tools .fa').parents(".panel1").children(".panel-body1").slideDown(200);
 
                     </script>
                     <div class="space"></div>

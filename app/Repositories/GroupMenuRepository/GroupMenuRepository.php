@@ -62,7 +62,7 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
 
     public function getAllGroupMenu()
     {
-        $groupmenus = GroupMenu::with('cookArea')->where('status','1')->get();
+        $groupmenus = GroupMenu::with('cookArea')->where('status','1')->orderBy('name','asc')->get();
         $cooks = CookArea::all();
         $cook_active = array();
         foreach ($cooks as $key => $cook) {
@@ -75,19 +75,20 @@ class GroupMenuRepository extends Controller implements IGroupMenuRepository{
 
     public function validatorRequestStore($req){
         $req->validate(
-            [   'name' => 'status_groupmenu|regex:[\w\s]',
+            [   'name' => 'status_groupmenu|special_character',
                 'idCook' =>'required',
             ],
             [   'name.status_groupmenu' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
-                'name.regex' => 'Tên nhóm thực đơn không được chứa kí tự đặc biệt',
+                'name.special_character' => 'Tên nhóm thực đơn không được chứa kí tự đặc biệt',
                 'idCook.required' => 'Vui lòng chọn bếp cho nhóm thực đơn'
             ],
         );
     }
+
     public function validatorRequestUpadate($req){
-        $req->validate(['nameGroupMenu' => 'status_groupmenu|regex:[\w\s]',],
+        $req->validate(['nameGroupMenu' => 'status_groupmenu|special_character'],
                         ['nameGroupMenu.status_groupmenu' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
-                            'nameGroupMenu.regex' => 'Tên nhóm thực đơn không được chứa kí tự đặc biệt',
+                            'nameGroupMenu.special_character' => 'Tên nhóm thực đơn không được chứa kí tự đặc biệt',
                         ]);
     }
 

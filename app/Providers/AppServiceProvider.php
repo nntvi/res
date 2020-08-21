@@ -194,8 +194,21 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    public function checkSpecialCharacter($value)
+    {
+        $illegal = "#$%^&*()+=-[]';,./{}|:<>?~";
+            // 1: ko có chứa ký tự đặc biệt
+        return (false === strpbrk($value, $illegal)) ? 1 : 0;
+    }
+
     public function boot()
     {
+        Validator::extend('special_character',function ($attribute,$value,$parameters,$validator)
+        {
+            $check = $this->checkSpecialCharacter($value);
+            return $check == 1 ? true : false;
+        });
+
         Validator::extend('status_area', function ($attribute, $value, $parameters, $validator)
         {
             $check = Area::selectRaw('count(id) as qty')->where('name',$value)->where('status','1')->value('qty');

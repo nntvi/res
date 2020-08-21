@@ -71,10 +71,10 @@ class TableRepository extends Controller implements ITableRepository{
 
     public function validateNameTable($req){
         $req->validate(
-            ['nameTable' => 'status_table|regex:[\w\s]'],
+            ['nameTable' => 'status_table|special_character'],
             [
                 'nameTable.status_table' => 'Tên bàn đã tồn tại trong hệ thống',
-                'nameTable.regex' => 'Tên bàn không chứa kí tự đặc biệt'
+                'nameTable.special_character' => 'Tên bàn không chứa kí tự đặc biệt'
             ],
         );
     }

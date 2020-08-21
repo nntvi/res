@@ -29,6 +29,47 @@ function validateFormMaterialAction() {
         return true;
     }
 }
+
+function removeAscent (str) {
+    if (str === null || str === undefined) return str;
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    return str;
+}
+function isValid (string) {
+    return !/[~`!#$%\^&*+=\-\[\]\\';,./{}|\\":<>\?0-9]/g.test(removeAscent(string));
+}
+function checkSpecialCharacter(arr) {
+    var temp = 0;
+    for (let i = 0; i < arr.length; i++) {
+        if(isValid(arr[i]) == false)
+        temp +=1 ;
+    }
+    return temp;
+}
+// bắt lỗi công thức
+function validateMethod() {
+    let textTu = $("input[name='textTu[]']").map(function () {
+        return $(this).val();
+    }).get();
+    let textMau = $("input[name='textMau[]']").map(function () {
+        return $(this).val();
+    }).get();
+    let tempTu = checkSpecialCharacter(textTu);
+    let tempMau = checkSpecialCharacter(textMau);
+    if(tempTu == 0 && tempMau == 0){
+        return true;
+    }else{
+        alert('Tên công thức không được chứa số hoặc ký tự đặc biệt')
+        return false;
+    }
+}
 // bắt lỗi form nhập kho chính
 function validateFormImportCoupon() {
     const code = document.getElementById('codeImportCoupon').value;

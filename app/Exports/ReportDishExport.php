@@ -64,8 +64,8 @@ class ReportDishExport implements FromCollection, WithHeadings
         $results = $this->getResult();
         $totalCapitalPrice = 0;$totalSalePrice = 0;$totalInterest = 0;
         foreach ($results as $key => $result) {
-            $totalCapitalPrice += $result->price;
-            $totalSalePrice += $result->capital;
+            $totalCapitalPrice += $result->capital;
+            $totalSalePrice += $result->price;
             $totalInterest += ($result->price - $result->capital);
         }
         $footerReportDish = array();

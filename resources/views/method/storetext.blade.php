@@ -6,7 +6,7 @@
             <i class="fa fa-home"></i> Thiết lập công thức
         </div>
         <div class="panel-body">
-            <form action="{{ route('method.p_storeText') }}" method="post">
+            <form action="{{ route('method.p_storeText') }}"  onsubmit="return validateMethod()" method="post">
                 @csrf
                 <input type="hidden" name="qtyTu" value="{{ $qtyTu }}">
                 <input type="hidden" name="qtyMau" value="{{ $qtyMau }}">
@@ -85,4 +85,7 @@
         </div>
     </div>
 </div>
+<script>
+
+</script>
 @endsection

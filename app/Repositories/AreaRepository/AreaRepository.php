@@ -57,17 +57,17 @@ class AreaRepository extends Controller implements IAreaRepository{
         $areas = Area::where('status','1')->with(['containTable' => function ($query)
                 {
                     $query->where('status','1');
-                }])->orderBy('name', 'asc')->get();
+                }])->orderBy('name', 'desc')->get();
         return $areas;
     }
 
     public function validatorArea($request)
     {
         $request->validate(
-            ['nameArea' => 'status_area|regex:[\w\s]'],
+            ['nameArea' => 'status_area|special_character'],
             [
                 'nameArea.status_area' => 'Tên khu vực đã tồn tại trong hệ thống',
-                'nameArea.regex' => 'Tên khu vực không chứa các ký tự đặc biệt'
+                'nameArea.special_character' => 'Tên khu vực không chứa các ký tự đặc biệt'
             ]
         );
     }

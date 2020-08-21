@@ -4,7 +4,7 @@
 <div class="table-agile-info" style="padding: 2em;">
     <div class="position-center">
         <div class="text-center ">
-            <button class="btn btn-success"
+            <button class="btn btn-success" id="btnPrintBill"
                 onclick="printJS({ printable: 'printJS-form', type: 'html', header: 'Restaurant' })">
                 <i class="fa fa-print" aria-hidden="true"></i> In Hóa đơn
             </button>

@@ -75,11 +75,11 @@
                                             <div class="form-group row">
                                                 <div class="col-xs-6">
                                                     <label>Số lượng phần tử trên tử</label>
-                                                    <input type="number" class="form-control" name="qtyTu" required>
+                                                    <input type="number" min="1" class="form-control" name="qtyTu" required>
                                                 </div>
                                                 <div class="col-xs-6">
                                                     <label>Số lượng phần tử dưới mẫu</label>
-                                                    <input type="number" class="form-control" name="qtyMau" required>
+                                                    <input type="number" min="1" class="form-control" name="qtyMau" required>
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-default">Tạo</button>

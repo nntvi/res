@@ -42,11 +42,9 @@ class WarehouseRepository extends Controller implements IWarehouseRepository{
         return $temp;
     }
 
-
-
     public function getTypes()
     {
-        $types = TypeMaterial::with('warehouse')->get();
+        $types = TypeMaterial::with('warehouse.detailMaterial')->get();
         return $types;
     }
     public function showIndex()

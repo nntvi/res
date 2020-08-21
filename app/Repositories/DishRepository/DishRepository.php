@@ -89,8 +89,10 @@ class DishRepository extends Controller implements IDishRepository{
                 'codeDish' => 'unique:dishes,code',
                 'file' => 'image',
                 'capitalPriceHidden' => 'required',
+                'idMaterial' => 'required',
             ],
             [
+                'idMaterial.required' => 'Không để trống tên món',
                 'status.required' => 'Chọn trạng thái hiển thị',
                 'codeDish.unique' => 'Mã sản phẩm đã tồn tại trong hệ thống',
                 'file.image' => 'File vừa chọn không phải file ảnh',

@@ -62,7 +62,7 @@ class ImportCouponController extends Controller
         $result = $this->checkAction->getPermission(auth()->id());
         $check = $this->importcouponRepository->checkRoleStore($result);
         if($check != 0){
-            $this->importcouponRepository->validateCreatImportCoupon($request);
+            $this->importcouponRepository->validateCreatImportCouponPlan($request);
             Plan::where('id',$request->idPlan)->update(['status' => '1']);
             return $this->importcouponRepository->import($request);
         }else{

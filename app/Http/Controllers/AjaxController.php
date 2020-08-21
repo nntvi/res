@@ -16,7 +16,6 @@ use App\ImportCoupon;
 use App\TypeMaterial;
 use App\WarehouseCook;
 
-
 use App\MaterialDetail;
 use App\PaymentVoucher;
 use App\OrderDetailTable;

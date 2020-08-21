@@ -503,7 +503,7 @@ $(document).ready(function () {
     $(".card").click(function () { // chọn bàn
         $('.groupmenu').click();
         var idTable = $(this).attr('data-id');
-        var nameTableOrder = $(this).find('h6.card-title').text();
+        var nameTableOrder = $(this).find('h5.card-title').text();
         var statusTable = $(this).attr('data-status'); // lấy status có khách or not
         if (statusTable == "0") { // ko có khách
             $('#tableOrder').empty();

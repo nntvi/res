@@ -83,8 +83,9 @@ class MaterialDetailRepository extends Controller implements IMaterialDetailRepo
 
     public function validatorName($req){
         $req->validate(
-            ['name' => 'check_status_mat_detail'],
-            ['name.check_status_mat_detail' => 'Tên NVL đã tồn tại trong hệ thống']
+            ['name' => 'check_status_mat_detail|special_character'],
+            [   'name.check_status_mat_detail' => 'Tên NVL đã tồn tại trong hệ thống',
+                'name.special_character' => 'Tên NVL không chứa các ký tự đặc biệt']
         );
     }
 

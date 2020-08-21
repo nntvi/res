@@ -87,8 +87,21 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
 
     public function validateCreatImportCoupon($request)
     {
-        $request->validate(['code' => 'unique:import_coupons,code'],['code.unique' => "Mã phiếu nhập bị trùng"]);
+        $request->validate(
+            ['code' => 'unique:import_coupons,code'],
+            ['code.unique' => "Mã phiếu nhập bị trùng",]
+        );
     }
+
+    public function validateCreatImportCouponPlan($request)
+    {
+        $request->validate(
+            ['code' => 'unique:import_coupons,code','idPlan' => 'required'],
+            ['code.unique' => "Mã phiếu nhập bị trùng",
+            'idPlan.required' => "Không để trống kế hoạch nhập"]
+        );
+    }
+
     public function showIndex()
     {
         $listImports = ImportCoupon::orderBy('created_at','desc')->with('supplier','detailImportCoupon')->get();

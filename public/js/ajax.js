@@ -10,19 +10,19 @@ $(document).ready(function () {
             dataType: 'JSON',
             success: function (data) {
                 $('.list').empty();
-                            data.type_material.warehouse.map(function (detail) {
-                                if (detail.detail_material.status != 0) {
-                                    var row = `<tr id="row` + detail.id + `">
+                    data.type_material.warehouse.map(function (detail) {
+                        if (detail.detail_material.status != 0) {
+                                var row = `<tr id="row` + detail.id + `">
                                                 <td><input name="id[]" value=" ` + detail.id + `" hidden>
                                                     <input name="idMaterial[]" value="` + detail.id_material_detail + `" hidden>
                                                     <input type="hidden" class="nameMat" value="` + detail.detail_material.name + `">
                                                         `+ detail.detail_material.name + `
                                                 </td>
                                                 <td>` + detail.qty + `</td>`;
-                                                if (detail.detail_material.unit.name == "Lon" || detail.detail_material.unit.name == "Chai") {
-                                                    row += `<td><input type="number" min="1" class="qty form-control" name="qty[]" ></td>`;
-                                                } else {
+                                                if (detail.detail_material.unit.name == "Kg" || detail.detail_material.unit.name == "Lít") {
                                                     row += `<td><input type="number" min="0.01" step="any" class="qty form-control" name="qty[]" ></td>`;
+                                                } else {
+                                                    row += `<td><input type="number" min="1" class="qty form-control" name="qty[]" ></td>`;
                                                 }
                                         row +=
                                                 `<td><input value="` + detail.detail_material.unit.id + `" name="id_unit[]" hidden></input>
@@ -35,9 +35,9 @@ $(document).ready(function () {
                                                     </span>
                                                 </td>
                                             </tr>`;
-                                $('.list').append(row);
-                                }
-                            });
+                            $('.list').append(row);
+                        }
+                    });
             },
         });
     });
@@ -116,10 +116,10 @@ $(document).ready(function () {
                         </td>
                         <td>`+ detail.qtyWhC +`</td>
                         <td><input type="number" name="oldQty[]" value="` + detail.qtyWh + `" class="oldQty" hidden>` + detail.qtyWh + `</td>`;
-                        if (detail.unit == "Lon" || detail.unit == "Chai") {
-                            tableWarehouse += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
-                        } else {
+                        if (detail.unit == "Kg" || detail.unit == "Lít") {
                             tableWarehouse += `<td><input type="number" min="0.001" step="any" class="qty form-control" name="qty[]" required></td>`;
+                        } else {
+                            tableWarehouse += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
                         }
                     tableWarehouse += `<td><input value="`+detail.idunit +`" name="id_unit[]" hidden>` + detail.unit + `</td>
                             <td><span class="input-group-btn" onclick="clickToRemove(` + detail.idWh + `)">
@@ -211,10 +211,10 @@ $(document).ready(function () {
                             <input type="hidden" class="qtyWh form-control" value="` + detail.qtyWh + `">
                             ` + detail.qtyWh + `
                         </td>`;
-                        if (detail.unit == "Lon" || detail.unit == "Chai") {
-                            tableMaterialExportSupplier += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
-                        } else {
+                        if (detail.unit == "Kg" || detail.unit == "Lít") {
                             tableMaterialExportSupplier += `<td><input type="number" min="0.01" step="any" class="qty form-control" name="qty[]" required></td>`;
+                        } else {
+                            tableMaterialExportSupplier += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
                         }
     tableMaterialExportSupplier += `<td><input name="id_unit[]" value="` + detail.idunit + `" hidden>` + detail.unit + `</td>
                                     <td><input name="price[]" value="` + detail.price + `" hidden>` + detail.price + `</td>
@@ -280,10 +280,10 @@ $(document).ready(function () {
                                 <input type="hidden" name="oldQty[]" class="oldQty form-control" value="` + detail.qty + `">
                                 `+ detail.qty +`
                             </td>`;
-                            if (detail.unit.name == "Lon" || detail.unit.name == "Chai") {
-                                row += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
-                            } else {
+                            if (detail.unit.name == "Kg" || detail.unit.name == "Lít") {
                                 row += `<td><input type="number" step="0.001" min="0.01" class="qty form-control" name="qty[]" required></td>`;
+                            } else {
+                                row += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
                             }
                     row += `<td><input value="` + detail.unit.id + `" name="id_unit[]" hidden></input>` + detail.unit.name + `</td>
                             <td>
@@ -333,10 +333,10 @@ $(document).ready(function () {
                                             <input type="hidden" class="oldQty form-control" value="` + detail.qty + `">
                                             ` + detail.qty + `
                                         </td>`;
-                                        if (detail.unit.name == "Lon" || detail.unit.name == "Chai") {
-                                            row += `<td><input type="number" min="1" class="qty form-control" name="qty[]"></td>`;
-                                        } else {
+                                        if (detail.unit.name == "Kg" || detail.unit.name == "Lít") {
                                             row += `<td><input type="number" min="0.001" step="any" class="qty form-control" name="qty[]"></td>`;
+                                        } else {
+                                            row += `<td><input type="number" min="1" class="qty form-control" name="qty[]"></td>`;
                                         }
                             row += `<td><input value="` + detail.unit.id + `" name="id_unit[]" hidden> ` + detail.unit.name + `</td>
                                     <td>
@@ -727,9 +727,13 @@ $(document).ready(function () {
                     if (data.detail_material != null) {
                         let row =   `<tr id="row`+ data.id +`">
                                     <td><input type="hidden" name="idMaterialDetail[]" value="`+ data.detail_material.id +`">`+ data.detail_material.name +`</td>
-                                    <td>`+ data.qty +`</td>
-                                    <td><input type="number" class="form-control" name="qty[]" min="1" required></td>
-                                    <td>`+ data.unit.name +`</td>
+                                    <td>`+ data.qty +`</td>`;
+                                    if (data.unit.name == "Kg" || data.unit.name == "Lít") {
+                                        row += `<td><input type="number" class="form-control" name="qty[]" step="any" min="0.001" required></td>`;
+                                    } else {
+                                        row += `<td><input type="number" class="form-control" name="qty[]" min="1" required></td>`;
+                                    }
+                            row +=  `<td>`+ data.unit.name +`</td>
                                     <td>
                                         <span class="input-group-btn" onclick="clickToRemove(`+ data.id +`)">
                                             <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>
@@ -809,11 +813,16 @@ $(document).ready(function () {
                                         <td><input type="hidden" name="id_material[]" value="`+ detail.id +`">
                                             `+ detail.name +` (`+ detail.unit +`)
                                         </td>`;
-                                        if (detail.unit == "Lon" || detail.unit == "Chai") {
-                                            item += `<td><input type="number" name="qty[]" min="1" required></td>`;
+                                        if (detail.unit == "Lít" || detail.unit == "Kg") {
+                                            item += `<td><input type="number" name="qty[]" min="0.001" step="any" required></td>`;
                                         } else {
-                                            item += `<td><input type="number" name="qty[]" min="0" step="any" required></td>`;
+                                            item += `<td><input type="number" name="qty[]" min="1" required></td>`;
                                         }
+                                        // if (detail.unit == "Lon" || detail.unit == "Chai") {
+                                        //     item += `<td><input type="number" name="qty[]" min="1" required></td>`;
+                                        // } else {
+                                        //     item += `<td><input type="number" name="qty[]" min="0.001" step="any" required></td>`;
+                                        // }
                             item += `<td>
                                             <span class="input-group-btn" onclick="clickToRemove(`+ detail.id +`)">
                                                 <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>

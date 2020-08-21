@@ -27,4 +27,5 @@ interface IImportCouponRepository{
     function findDetailImportCouponByCode($code);
     function printDetailByCode($code);
     function validateCreatImportCoupon($request);
+    function validateCreatImportCouponPlan($request);
 }

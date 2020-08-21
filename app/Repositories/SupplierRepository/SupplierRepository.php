@@ -71,7 +71,11 @@ class SupplierRepository extends Controller implements ISupplierRepository{
 
     public function validateName($request)
     {
-        $request->validate(['name' => 'unique:suppliers,name'],['name.unique' => 'Tên nhà cung cấp đã tồn tại trong hệ thống']);
+        $request->validate(
+            ['name' => 'unique:suppliers,name|special_character'],
+            ['name.unique' => 'Tên nhà cung cấp đã tồn tại trong hệ thống',
+            'name.special_character' => 'Tên NCC không chứa kí tự đặc biệt']
+        );
     }
 
     public function validateEmail($request)
