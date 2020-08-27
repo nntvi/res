@@ -228,7 +228,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'importcoupon'], function() {
         Route::get('index/', 'ImportCouponController@index')->name('importcoupon.index');
         Route::get('typeimport/', 'ImportCouponController@getType')->name('importcoupon.gettype');
-        Route::get('viewImport/', 'ImportCouponController@viewImport')->name('importcoupon.import');
+        Route::get('viewImport/', 'ImportCouponController@chooseMaterial')->name('importcoupon.import');
+        Route::post('tempviewImport/', 'ImportCouponController@viewImport')->name('importcoupon.importtemp');
         Route::post('import/', 'ImportCouponController@import')->name('importcoupon.p_import');
         Route::post('importplan/', 'ImportCouponController@importPlan')->name('importcoupon.p_importplan');
         Route::get('detail/{id}', 'ImportCouponController@getDetail')->name('importcoupon.detail');
@@ -240,6 +241,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'exportcoupon'], function() {
         Route::get('index/', 'ExportCouponController@index')->name('exportcoupon.index');
         Route::get('viewExport/', 'ExportCouponController@viewExport')->name('exportcoupon.export');
+        Route::post('chooseExport/', 'ExportCouponController@exportTemp')->name('exportcoupon.p_chooseexport');
         Route::post('export/', 'ExportCouponController@export')->name('exportcoupon.p_export');
         Route::post('exportSupplier/', 'ExportCouponController@exportSupplier')->name('exportcoupon.p_exportSupplier');
         Route::get('destroyWarehouse/', 'ExportCouponController@viewDestroyWarehouse')->name('exportcoupon.destroywarehouse');
@@ -285,9 +287,9 @@ Route::group(['middleware' => ['auth']], function() {
 
         Route::group(['prefix' => 'payment'], function () {
             Route::get('object', 'VoucherController@chooseObject')->name('voucher.payment');
-            //Route::get('store', 'VoucherController@storePaymentView')->name('voucher.storepayment');
             Route::post('store', 'VoucherController@storePayment')->name('voucher.p_storepayment');
             Route::post('storeemergency', 'VoucherController@storePaymentEmergency')->name('voucher.p_storepaymentemergency');
+            Route::post('storetempemergency', 'VoucherController@storePaymentEmergencyTemp')->name('voucher.p_storepaymentemergencytemp');
         });
     });
 

@@ -1,8 +1,10 @@
 <?php
 namespace App\Repositories\ShiftRepository;
 
-use App\Http\Controllers\Controller;
+use DateTime;
 use App\Shift;
+use Carbon\Carbon;
+use App\Http\Controllers\Controller;
 
 class ShiftRepository extends Controller implements IShiftRepository{
 
@@ -24,9 +26,11 @@ class ShiftRepository extends Controller implements IShiftRepository{
     }
     public function validateUnique($request)
     {
-        $request->validate(['nameShift' => 'unique:shifts,name'],
-                            ['nameShift.unique' => 'Tên vừa nhập đã có trong hệ thống']);
+        $request->validate(['nameShift' => 'unique:shifts,name','timeEnd' => 'after:timeStart'],
+                            ['nameShift.unique' => 'Tên vừa nhập đã có trong hệ thống',
+                            'timeEnd.after' => 'Giờ kết thúc không nhỏ hơn hoặc bằng giờ bắt đầu' ]);
     }
+
     public function storeShift($request)
     {
         $shift = new Shift();
@@ -46,8 +50,9 @@ class ShiftRepository extends Controller implements IShiftRepository{
     public function checkStartTime($shifts,$request)
     {
         $temp = 0;
+        $startTime = Carbon::parse($request->timeStart)->format('H:i');
         foreach ($shifts as $key => $shift) {
-            if($request->timeStart > $shift->hour_start && $request->timeStart < $shift->hour_end){
+            if($startTime > Carbon::parse($shift->hour_start)->format('H:i') && $startTime < Carbon::parse($shift->hour_end)->format('H"i')){
                 $temp++;
             }
         }
@@ -57,24 +62,50 @@ class ShiftRepository extends Controller implements IShiftRepository{
     public function checkEndTime($shifts,$request)
     {
         $temp = 0;
+        $endTime = Carbon::parse($request->timeEnd)->format('H:i');
         foreach ($shifts as $key => $shift) {
-            if($request->timeEnd > $shift->hour_start && $request->timeEnd < $shift->hour_end){
+            if($endTime > Carbon::parse($shift->hour_start)->format('H:i') && $endTime < Carbon::parse($shift->hour_end)->format('H"i')){
                 $temp++;
             }
         }
         return $temp;
     }
 
+    public function substractTime($timeStart,$timeEnd)
+    {
+        $a = new DateTime($timeStart);
+        $b = new DateTime($timeEnd);
+        $interval = $a->diff($b);
+        dd($interval->format("%H"));
+    }
+
+    public function containAnotherShift($request,$shifts)
+    {
+        $temp = 0;
+        $startTime = Carbon::parse($request->timeStart)->format('H:i');
+        $endTime = Carbon::parse($request->timeEnd)->format('H:i');
+        foreach ($shifts as $key => $shift) {
+            if(Carbon::parse($shift->hour_start)->format('H:i') > $startTime && Carbon::parse($shift->hour_end)->format('H"i') < $endTime){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
     public function updateTimeShift($request,$id)
     {
         $shifts = Shift::where('id','!=',$id)->get();
         $checkStart = $this->checkStartTime($shifts,$request);
         $checkEnd = $this->checkEndTime($shifts,$request);
-        if($checkStart == 0 && $checkEnd == 0){
-            Shift::where('id',$id)->update(['hour_start' => $request->timeStart,'hour_end' => $request->timeEnd]);
-            return redirect(route('shift.index'))->with('info','Cập nhật thời gian thành công');
+        $contain = $this->containAnotherShift($request,$shifts);
+        if($contain == 0){
+            if($checkStart == 0 && $checkEnd == 0){
+                Shift::where('id',$id)->update(['hour_start' => $request->timeStart,'hour_end' => $request->timeEnd]);
+                return redirect(route('shift.index'))->with('info','Cập nhật thời gian thành công');
+            }else{
+                return redirect(route('shift.index'))->withErrors('Thời gian thay đổi bị trùng với khoảng thời gian khác');
+            }
         }else{
-            return redirect(route('shift.index'))->withErrors('Thời gian thay đổi bị trùng với khoảng thời gian khác');
+            return redirect(route('shift.index'))->withErrors('Thời gian thay đổi chứa ca làm việc khác');
         }
     }
 }

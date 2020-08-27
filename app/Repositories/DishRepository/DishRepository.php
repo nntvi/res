@@ -90,6 +90,7 @@ class DishRepository extends Controller implements IDishRepository{
                 'file' => 'image',
                 'capitalPriceHidden' => 'required',
                 'idMaterial' => 'required',
+                'salePrice' => 'sale_price'
             ],
             [
                 'idMaterial.required' => 'Không để trống tên món',
@@ -97,6 +98,7 @@ class DishRepository extends Controller implements IDishRepository{
                 'codeDish.unique' => 'Mã sản phẩm đã tồn tại trong hệ thống',
                 'file.image' => 'File vừa chọn không phải file ảnh',
                 'capitalPriceHidden.required' => 'Vui lòng click chọn tên món ăn để giá vốn không bị trống',
+                'salePrice.sale_price' => 'Giá bán là số tròn nghìn hoặc tròn trăm'
             ]
         );
     }

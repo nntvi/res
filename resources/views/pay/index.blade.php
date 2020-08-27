@@ -83,7 +83,7 @@
                         <h6>Giờ vào: {{ $idBillTable->created_at }} - Giờ ra: {{ $idBillTable->updated_at }}</h6>
                     </div>
                     <div>
-                        <h6>Người tạo: {{ $idBillTable->created_by }} - Ca:  {{ $idBillTable->shift->name }}
+                        <h6>Người tạo: {{ $idBillTable->created_by }} - Ca:  {{ $idBillTable->shift == null ? 'Ngoại lệ' : $idBillTable->shift->name }}
                         </h6>
                     </div>
                     <hr>

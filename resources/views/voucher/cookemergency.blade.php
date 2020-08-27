@@ -55,31 +55,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="space"></div>
-                                <div class="space"></div>
-                                <div id="material" style="height: 350px; overflow:auto;">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Tên mặt hàng</th>
-                                                <th>Sl hiện tại</th>
-                                                <th>Sl thêm</th>
-                                                <th>Đơn vị</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="cookEmergencyTable">
+                            <div class="chooseMaterial">
 
-                                        </tbody>
-                                        <script type="text/javascript">
-                                            function clickToRemove($id) {
-                                                var row = document.getElementById('row' + $id);
-                                                row.remove();
-                                            }
-                                        </script>
-                                    </table>
-                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-12 text-center">
@@ -94,4 +71,10 @@
         </section>
     </div>
 </div>
+<script type="text/javascript">
+    function clickToRemove($id) {
+        var row = document.getElementById('row' + $id);
+        row.remove();
+    }
+</script>
 @endsection

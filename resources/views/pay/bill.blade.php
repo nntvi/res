@@ -35,7 +35,7 @@
                         {{ $table->table->getArea->name }}
                         @break
                     @endforeach
-                    - Ca: {{ $bill->shift->name }}
+                    - Ca: {{ $bill->shift == null ? 'Ngoại lệ' : $bill->shift->name }}
                 </h6><br>
                 <h6>Khu vực:
                     @foreach ($bill->tableOrdered as $table)
@@ -123,7 +123,7 @@
         </div>
         <div>
             <h6>Nhân viên: {{ $bill->created_by }} - Thu ngân: {{ $bill->payer }} - Ca:
-                {{ $bill->shift->name }}
+                {{ $bill->shift == null ? 'Ngoại lệ' : $bill->shift->name }}
             </h6>
         </div>
         <hr>

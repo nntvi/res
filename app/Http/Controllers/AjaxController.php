@@ -70,17 +70,11 @@ class AjaxController extends Controller
     {
         $data = array();
         $materailWarehouseCook = $this->ajaxRepository->getMaterialWarehouseCook($idObjectCook);
-        $idMaterialArray = $this->ajaxRepository->getIdMaterialByIdCook($materailWarehouseCook);
-        $materialWarehouse = $this->ajaxRepository->findMaterialInWarehouse($idMaterialArray);
         foreach ($materailWarehouseCook as $key => $item) {
             $temp = [
-                'idWh' => Warehouse::where('id_material_detail',$item->id_material_detail)->value('id'),
                 'idMatDet' => $item->id_material_detail,
-                'qtyWh' => Warehouse::where('id_material_detail',$item->id_material_detail)->value('qty'),
-                'qtyWhC' => $item->qty,
-                'unit' => $item->unit->name,
-                'idunit' => $item->unit->id,
                 'name' => $item->detailMaterial->name,
+                'status' => WarehouseCook::where('cook',$idObjectCook)->where('id_material_detail',$item->id_material_detail)->value('status')
             ];
             array_push($data,$temp);
         }
@@ -162,15 +156,17 @@ class AjaxController extends Controller
         }
     }
 
-    public function searchMaterialDestroy($name)
+    public function searchMaterialDestroy($arrIdMaterial)
     {
-        $material = $this->ajaxRepository->searchMaterialDestroy($name);
+        $arrayMaterial = explode(',',$arrIdMaterial);
+        $material = $this->ajaxRepository->searchMaterialDestroy($arrayMaterial);
         return response()->json($material);
     }
 
-    public function searchMaterialDestroyCook($id,$name)
+    public function searchMaterialDestroyCook($id,$arr)
     {
-        $material = $this->ajaxRepository->searchMaterialDestroyCook($id,$name);
+        $arrIdMaterial = explode(',',$arr);
+        $material = $this->ajaxRepository->searchMaterialDestroyCook($id,$arrIdMaterial);
         return response()->json($material);
     }
 

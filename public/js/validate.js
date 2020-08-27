@@ -42,9 +42,11 @@ function removeAscent (str) {
     str = str.replace(/đ/g, "d");
     return str;
 }
+
 function isValid (string) {
     return !/[~`!#$%\^&*+=\-\[\]\\';,./{}|\\":<>\?0-9]/g.test(removeAscent(string));
 }
+
 function checkSpecialCharacter(arr) {
     var temp = 0;
     for (let i = 0; i < arr.length; i++) {
@@ -53,6 +55,7 @@ function checkSpecialCharacter(arr) {
     }
     return temp;
 }
+
 // bắt lỗi công thức
 function validateMethod() {
     let textTu = $("input[name='textTu[]']").map(function () {
@@ -70,67 +73,7 @@ function validateMethod() {
         return false;
     }
 }
-// bắt lỗi form nhập kho chính
-function validateFormImportCoupon() {
-    const code = document.getElementById('codeImportCoupon').value;
-    let table = document.getElementById('myTable');
-    let name;let emptyInput;
-    let data = [];
-    if (code == null || code == "") {
-        data.push("Không để trống mã phiếu nhập \n");
-    }
-    if (table.rows.length != 0) {
-        for (var i = 0, row; row = table.rows[i]; i++) {
-            for (var j = 0, col; col = row.cells[j]; j++) {
-                if(j == 0){
-                    $('input[type="hidden"].nameMat').each(function (index) {
-                        if (index == i) {
-                            name = $(this).val();
-                        }
-                    });
-                }
-                if (j == 2) {
-                    $('input[type="number"].qty').each(function (index) {
-                        if (index == i) {
-                            if ($(this).val() == null || $(this).val() == "") {
-                               emptyInput = name + " trống sl nhập";
-                            }else{
-                                emptyInput = '';
-                            }
-                        }
-                    });
-                }
-                if (j == 4) {
-                    $('input[type="number"].price').each(function (index) {
-                        if (index == i) {
-                            price = $(this).val();
-                            if(emptyInput != ''){ // sl nhập trống
-                                if (price == null || price == "") { // giá trống
-                                    data.push(emptyInput + " và giá \n");
-                                }else{ // sl trống giá ko trống
-                                    data.push(name + " trống số lượng nhập \n");
-                                }
-                            }else{ // sl ko trống
-                                if (price == null || price == "") { // giá trống
-                                    data.push(name + " trống giá \n");
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
-    else {
-        data.push("Chưa có mặt hàng nào trong bảng");
-    }
-    if (data.length > 0) {
-        alert(data);
-        return false;
-    } else {
-        return true;
-    }
-}
+
 // bắt lỗi form xuất bếp
 function validateFormExportCook() {
     var data = [];
@@ -175,7 +118,6 @@ function validateFormExportCook() {
     } else {
         return true;
     }
-
 }
 
 // bắt lỗi form xuất trả hàng cho nhà cung cấp
@@ -456,13 +398,16 @@ function validatePaymentVoucher() {
 }
 
 function validateCookEmer() {
-    let tableCookEmer = document.getElementById('cookEmergencyTable');
-    if(tableCookEmer.rows.length == 0){
-        alert('Chưa có NVL để tạo phiếu');
+    let idMatDet = $("input[name='idMaterialDetail[]']:checked").map(function () {
+        return $(this).val();
+    }).get();
+    if (idMatDet.length == 0) {
+        alert('Vui lòng chọn nguyên vật liệu');
         return false;
-    }else{
+    } else {
         return true;
     }
+
 }
 
 function checkPriceStoreDish() {
@@ -483,6 +428,13 @@ function checkPriceUpdateDish(id) {
         alert("Giá bán phải lớn hơn giá vốn");
         return false;
     }else{
-        return true;
+        $temp = parseFloat(salePrice) % 1000;
+        if($temp != 0){
+            alert("Giá bán phải là số tròn nghìn hoặc tròn trăm");
+            return false;
+        }else{
+            return true;
+        }
+
     }
 }

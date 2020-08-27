@@ -62,7 +62,8 @@
                     {
                         extend: 'excel',
                         messageTop: 'Mã phiếu xuất "{{ $exportCoupon->code }}" - Ngày xuất: {{ $exportCoupon->created_at }} ',
-                        messageBottom: 'Loại xuất: {{ $exportCoupon->typeExport->name }} - Đối tượng xuất:  {{ $objectExport }} '
+                        messageBottom: 'Loại xuất: {{ $exportCoupon->typeExport->name }} - Đối tượng xuất:  {{ $objectExport }} ',
+                        title: 'Phiếu Xuất',
                     },
                     {
                         extend: 'pdf',
@@ -72,7 +73,8 @@
                     {
                         extend: 'print',
                         messageTop: 'Mã phiếu xuất "{{ $exportCoupon->code }}" - <br>Ngày xuất: {{ $exportCoupon->created_at }} ',
-                        messageBottom: 'Nhà cung cấp: {{ $exportCoupon->typeExport->name }} - Đối tượng xuất:  {{ $objectExport }} '
+                        messageBottom: 'Nhà cung cấp: {{ $exportCoupon->typeExport->name }} - Đối tượng xuất:  {{ $objectExport }} ',
+                        title: 'Phiếu Xuất',
                     },
                 ]
             });

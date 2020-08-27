@@ -8,6 +8,7 @@ interface IImportCouponRepository{
     function checkRoleDelete($arr);
 
     function getSuppliers();
+    function getNameSupplierById($idSupplier);
     function getMaterialDetail();
     function getUnit();
     function getTypeMaterial();
@@ -28,4 +29,6 @@ interface IImportCouponRepository{
     function printDetailByCode($code);
     function validateCreatImportCoupon($request);
     function validateCreatImportCouponPlan($request);
+
+    function createArrayChooseMaterial($arrIdMaterial);
 }

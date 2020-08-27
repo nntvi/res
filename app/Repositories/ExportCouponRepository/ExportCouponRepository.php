@@ -9,14 +9,16 @@ use App\WareHouse;
 use Carbon\Carbon;
 use App\TypeExport;
 use App\ExportCoupon;
+use App\ImportCoupon;
 use App\SettingPrice;
 use App\HistoryWhCook;
 use App\WarehouseCook;
+use App\MaterialDetail;
 use App\ExportCouponDetail;
-use App\Http\Controllers\Controller;
 use App\ExportCouponSupplier;
 use App\ExportCouponSupplierDetail;
-use App\ImportCoupon;
+use App\Http\Controllers\Controller;
+use App\Unit;
 
 class ExportCouponRepository extends Controller implements IExportCouponRepository{
     public function checkRoleIndex($arr)
@@ -40,7 +42,6 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         }
         return $temp;
     }
-
     public function getTypeExport()
     {
         $types = TypeExport::all();
@@ -309,11 +310,11 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $this->updateSettingPrice($count,$request);
         return redirect(route('exportcoupon.index'))->withSuccess('Tạo phiếu xuất thành công');
     }
+
     public function showIndex()
     {
         $exportCoupons = $this->getExportCoupons();
         $exSuppliers = $this->getExportCouponSupplier();
-        //dd($exSuppliers);
         return view('exportcoupon.index',compact('exportCoupons','exSuppliers'));
     }
 
@@ -325,8 +326,9 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
     public function viewDestroyCook($id)
     {
         $cook = CookArea::where('id',$id)->first();
+        $materials = WarehouseCook::where('cook',$id)->with('detailMaterial')->get();
         $code = $this->createCode("XHB");
-        return view('warehouseexport.exportdestroycook',compact('cook','code'));
+        return view('warehouseexport.exportdestroycook',compact('cook','code','materials'));
     }
     public function addDetailExportCouponDestroyCook($request,$count,$idExportCoupon)
     {
@@ -343,6 +345,7 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
             $detailExportCoupon->save();
         }
     }
+
     public function destroyCook($request)
     {
         $count = $this->countMaterialExport($request);
@@ -350,11 +353,29 @@ class ExportCouponRepository extends Controller implements IExportCouponReposito
         $this->addDetailExportCouponDestroyCook($request,$count,$idExportCoupon);
         return redirect(route('exportcoupon.index'))->withSuccess('Tạo phiếu hủy thành công');
     }
+
     public function printDetailExport($id)
     {
         $exportCoupon = ExportCoupon::where('id',$id)->with('typeExport', 'detailExportCoupon.unit','detailExportCoupon.materialDetail')->first();
         return view('exportcoupon.print',compact('exportCoupon'));
     }
 
-
+    public function createTempMaterialToExport($arr,$idCook)
+    {
+        $temp = array();
+        foreach ($arr as $key => $value) {
+            $warehouse = Warehouse::where('id_material_detail',$value)->first();
+            $t = [
+                'idWh' => $warehouse->id,
+                'idMaterial' => $value,
+                'nameMaterial' => MaterialDetail::where('id',$value)->value('name'),
+                'qtyWhC' => WarehouseCook::where('cook',$idCook)->where('id_material_detail',$value)->value('qty'),
+                'qtyWh' => $warehouse->qty,
+                'idUnit' => $warehouse->id_unit,
+                'nameUnit' => Unit::where('id',$warehouse->id_unit)->value('name')
+            ];
+            array_push($temp,$t);
+        }
+        return $temp;
+    }
 }

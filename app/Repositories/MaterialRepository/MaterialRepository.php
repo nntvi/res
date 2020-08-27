@@ -72,7 +72,7 @@ class MaterialRepository extends Controller implements IMaterialRepository{
     public function validatorRequestStore($req){
         $req->validate(
             [ 'name' => 'status_material|special_character'],
-            [   'name.status_material' => 'Tên thực đơn vừa nhập đã tồn tại trong hệ thống',
+            [   'name.status_material' => 'Tên vừa nhập đã tồn tại trong hệ thống',
                 'name.special_character' => 'Tên vừa nhập không được chứa kí tự đặc biệt']
         );
     }
@@ -89,8 +89,9 @@ class MaterialRepository extends Controller implements IMaterialRepository{
 
     public function validatorRequestUpdate($req){
         $req->validate(
-            ['nameMaterial' => 'unique:materials,name'],
-            ['nameMaterial.unique' => 'Tên vừa thay đổi đã tồn tại trong hệ thống']);
+            ['nameMaterial' => 'unique:materials,name|special_character'],
+            ['nameMaterial.unique' => 'Tên thay đổi đã tồn tại trong hệ thống',
+            'nameMaterial.special_character' => 'Tên thay đổi không chứa kí tự đặc biệt']);
     }
 
     public function updateNameMaterial($request, $id)

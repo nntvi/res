@@ -54,15 +54,20 @@ class MethodRepository extends Controller implements IMethodRepository{
     public function createStringMau($qtyMau,$textMau,$calMau)
     {
         $stringMau = "";
-        for ($i=0; $i < $qtyMau; $i++) {
-            if($i == 0){
-                $stringMau = $stringMau . $textMau[$i];
-            }else{
-                $stringMau = $stringMau . " " . $this->checkMethod($calMau[$i-1]) . " ";
-                $stringMau = $stringMau . $textMau[$i];
+        if(count($textMau) == 1){
+            $stringMau = $stringMau . $textMau[0];
+            return $stringMau;
+        }else{
+            for ($i=0; $i < $qtyMau; $i++) {
+                if($i == 0){
+                    $stringMau = $stringMau . $textMau[$i];
+                }else{
+                    $stringMau = $stringMau . " " . $this->checkMethod($calMau[$i-1]) . " ";
+                    $stringMau = $stringMau . $textMau[$i];
+                }
             }
+            return $stringMau;
         }
-        return $stringMau;
     }
 
     public function saveTextMethod($stringTu,$stringMau,$qtyTu,$qtyMau,$arrCalTu,$arrCalMau)
@@ -182,7 +187,7 @@ class MethodRepository extends Controller implements IMethodRepository{
         $arrNumMau = $request->numMau; // số đc nhập
         $arrCalNumMau = $request->calNumMau; // phép tính đc nhập
         if($arrCalNumMau == null){
-            return $arrCalNumMau[0];
+            return $arrNumMau[0];
         }else{
             $checkMulDiv = $this->checkMultipandDiv($arrCalNumMau);
             $arrTempNumMau = array();
@@ -190,5 +195,6 @@ class MethodRepository extends Controller implements IMethodRepository{
             $resutlMau = $this->getResult($checkMulDiv,$qtyMau,$arrNumMau,$arrCalNumMau,$arrTempNumMau, $arrTempCalMau);
             return $resutlMau;
         }
+
     }
 }

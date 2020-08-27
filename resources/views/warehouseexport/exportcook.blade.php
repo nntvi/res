@@ -1,10 +1,4 @@
 @extends('layouts')
-<style>
-    div::-webkit-scrollbar {
-        width: 10px;
-        background: #f1f1f1;
-    }
-</style>
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -15,7 +9,7 @@
             <div class="pannel-body">
                     <div class="form">
                         <form class="panel-body" role="form" onsubmit="return validateFormExportCook()"
-                         action="{{route('exportcoupon.p_export')}}" method="POST">
+                         action="{{route('exportcoupon.p_chooseexport')}}" method="POST">
                             @csrf
                             <div class="col-md-12" style="margin-bottom: 20px">
                                 <div class="row">
@@ -43,21 +37,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="grid_3 grid_5 wthree">
-                                <div class="col-sm-1"></div>
-                                <div class="col-xs-12 col-sm-10" id="warehouse" style="height:500px; overflow:auto;">
-
-                                </div>
-                                <script type="text/javascript">
-                                    function clickToRemove($id){
-                                        var row = document.getElementById('row'+$id);
-                                        row.remove();
-                                    }
-                                </script>
-                                <div class="col-sm-1"></div>
-                               <div class="clearfix"> </div>
-                            </div>
-                            <div class="col-xs-12 text-center" id="submit">
+                            <div class="position-center" id="content">
 
                             </div>
                         </form>

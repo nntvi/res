@@ -41,23 +41,45 @@
                                         <div class="space"></div>
                                         <div class="space"></div>
                                         <div class="row">
-                                            <div class="col-xs-3">
-                                                <label class="control-label">Tìm mặt hàng trong kho cần hủy</label>
-                                            </div>
                                             <div class="col-xs-9">
-                                                <div class="input-group m-bot15">
-                                                    <input type="text" class="form-control" id="nameMaterial" value="">
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-success" type="button"
-                                                            id="searchMaterial">Search!</button>
-                                                    </span>
+                                                <label class="control-label">Chọn mặt hàng trong kho cần hủy</label>
+                                            </div>
+                                            <div class="col-xs-3 text-right">
+                                                <a href="#myModal" data-toggle="modal" class="btn btn-sm btn-success">
+                                                    Chọn
+                                                </a>
+                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade" style="display: none;">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                <h4 class="modal-title text-left">Chọn nguyên vật liệu từ danh mục</h4>
+                                                            </div>
+                                                            <div class="modal-body text-left">
+                                                                <div class="form-group">
+                                                                    <label>Chọn danh mục</label>
+                                                                    <select class="form-control" id="idTypeMaterialDetail">
+                                                                        @foreach ($types as $type)
+                                                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="space"></div>
+                                                                <div class="form-group row" id="areaNVL">
+
+                                                                </div>
+                                                                <div class="row">
+                                                                <div class="col-xs-12 text-center">
+                                                                <span id="getNVLToDestroy" class="btn btn-default">Chọn</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-
-                                        <div class="space"></div>
+                                            <div class="space"></div>
                                         <div id="material" style="height:350px; overflow:auto;">
                                             <table class="table table-bordered">
                                                 <thead>

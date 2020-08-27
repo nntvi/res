@@ -66,18 +66,20 @@
                     {
                         extend: 'excel',
                         messageTop: 'Mã phiếu nhập "{{ $importCoupon->code }}" - Ngày nhập: {{ $importCoupon->created_at }} ',
-                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} '
+                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} ',
+                        title: 'Phiếu Nhập',
                     },
                     {
                         extend: 'pdf',
                         messageTop: 'Mã phiếu nhập "{{ $importCoupon->code }}" - Ngày nhập: {{ $importCoupon->created_at }} ',
-                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} '
+                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} ',
                     },
                     {
                         extend: 'print',
                         header: 'oo',
                         messageTop: 'Mã phiếu nhập "{{ $importCoupon->code }}" - <br>Ngày nhập: {{ $importCoupon->created_at }} ',
-                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - <br> Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} '
+                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - <br> Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} ',
+                        title: 'Phiếu Nhập',
                     },
                 ]
             });

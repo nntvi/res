@@ -18,4 +18,5 @@ interface IExportCouponRepository{
     function createCode($random_string);
 
     function getDetailExportSupplier($id);
+    function createTempMaterialToExport($arr,$idCook);
 }

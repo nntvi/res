@@ -42,6 +42,7 @@ class ShiftController extends Controller
 
     public function updateTime(Request $request,$id)
     {
+        $this->shiftRepository->validateUnique($request);
         return $this->shiftRepository->updateTimeShift($request,$id);
     }
 }

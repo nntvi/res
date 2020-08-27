@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\CookArea;
 use App\ExportCoupon;
+use App\TypeMaterial;
+use App\Helper\ICheckAction;
 use Illuminate\Http\Request;
 use App\Repositories\ExportCouponRepository\IExportCouponRepository;
-use App\Helper\ICheckAction;
+
 class ExportCouponController extends Controller
 {
     private $exportcouponRepository;
@@ -33,6 +36,17 @@ class ExportCouponController extends Controller
         return $this->exportcouponRepository->showViewExport($request);
     }
 
+    public function exportTemp(Request $request)
+    {
+        $code = $request->code;
+        $idKind = $request->id_kind;
+        $idObject = $request->type_object;
+        $nameCook = CookArea::where('id',$request->type_object)->value('name');
+        $note = $request->note;
+        $arr = $this->exportcouponRepository->createTempMaterialToExport($request->idMaterialDetail,$request->type_object);
+        return view('warehouseexport.exportcook2',compact('code','idKind','idObject','nameCook','note','arr'));
+    }
+
     public function export(Request $request)
     {
         $result = $this->checkAction->getPermission(auth()->id());
@@ -44,7 +58,6 @@ class ExportCouponController extends Controller
             return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
         }
     }
-
     public function exportSupplier(Request $request)
     {
         $result = $this->checkAction->getPermission(auth()->id());
@@ -73,7 +86,8 @@ class ExportCouponController extends Controller
     public function viewDestroyWarehouse()
     {
         $code = $this->exportcouponRepository->createCode("XHK");
-        return view('warehouseexport.exportdestroy',compact('code'));
+        $types = TypeMaterial::all();
+        return view('warehouseexport.exportdestroy',compact('code','types'));
     }
 
     public function destroyWarehouse(Request $request)

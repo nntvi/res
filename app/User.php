@@ -114,8 +114,18 @@ class User extends Authenticatable
 
     public function notifyQtyOfCook()
     {
-        $count = WarehouseCook::selectRaw('count(status) as qty')->where('status','0')->value('qty');
-        return $count;
+        $matWhCook = WarehouseCook::with(['cookArea' => function ($query)
+                            {
+                                $query->where('status','1');
+                            }])->where('status','0')->get();
+        $temp = 0;
+        foreach ($matWhCook as $key => $value) {
+            $status = MaterialDetail::where('id',$value->id_material_detail)->value('status');
+            if($status != 0){
+                $temp++;
+            }
+        }
+        return $temp;
     }
 
     public function notifyQtyWarehouse()

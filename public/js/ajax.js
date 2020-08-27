@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    $('.pagination').addClass('pagination-sm');
-
     // ajax get material by id_supplierto import
     $("#idSupplier").click(function () {
         var idSupplier = $(this).val();
@@ -9,35 +7,44 @@ $(document).ready(function () {
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                $('.list').empty();
-                    data.type_material.warehouse.map(function (detail) {
-                        if (detail.detail_material.status != 0) {
-                                var row = `<tr id="row` + detail.id + `">
-                                                <td><input name="id[]" value=" ` + detail.id + `" hidden>
-                                                    <input name="idMaterial[]" value="` + detail.id_material_detail + `" hidden>
-                                                    <input type="hidden" class="nameMat" value="` + detail.detail_material.name + `">
-                                                        `+ detail.detail_material.name + `
-                                                </td>
-                                                <td>` + detail.qty + `</td>`;
-                                                if (detail.detail_material.unit.name == "Kg" || detail.detail_material.unit.name == "Lít") {
-                                                    row += `<td><input type="number" min="0.01" step="any" class="qty form-control" name="qty[]" ></td>`;
-                                                } else {
-                                                    row += `<td><input type="number" min="1" class="qty form-control" name="qty[]" ></td>`;
-                                                }
-                                        row +=
-                                                `<td><input value="` + detail.detail_material.unit.id + `" name="id_unit[]" hidden></input>
-                                                    ` +detail.detail_material.unit.name + `
-                                                </td>
-                                                <td><input type="number" min="1" class="price form-control" name="price[]" value=""></td>
-                                                <td>
-                                                    <span class="input-group-btn" onclick="clickToRemove(` + detail.id + `)">
-                                                        <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>' +
-                                                    </span>
-                                                </td>
-                                            </tr>`;
-                            $('.list').append(row);
-                        }
-                    });
+                console.log(data);
+                $('#content').empty();
+                let content =
+                `<div class="row">
+                    <div class="col-xs-12 text-center">
+                        <div class="space"></div>
+                        <h3 class="bars">Nguyên vật liệu thuộc nhà cung cấp</h3>
+                        <hr>
+                    </div>
+                </div>`;
+                data.type_material.warehouse.map(function (detail) {
+                    if (detail.qty - detail.limit_stock <= 0) {
+                        content += `<div class="col-xs-6 col-sm-3">
+                                        <div class="checkbox">
+                                            <label class="bold" style="color:red">
+                                                <input type="checkbox" value="`+ detail.id_material_detail +`" name="idMaterialDetail[]">
+                                                `+ detail.detail_material.name +`
+                                            </label>
+                                        </div>
+                                    </div>`;
+                    } else {
+                        content += `<div class="col-xs-6 col-sm-3">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" value="`+ detail.id_material_detail +`" name="idMaterialDetail[]">
+                                                `+ detail.detail_material.name +`
+                                            </label>
+                                        </div>
+                                    </div>`;
+                    }
+                })
+                content += `<div class="row">
+                                <div class="col-xs-12 text-center">
+                                    <div class="space"></div>
+                                    <button type="submit" class="btn btn-danger">Lưu</button>
+                                </div>
+                            </div>`;
+                $('#content').append(content);
             },
         });
     });
@@ -67,11 +74,6 @@ $(document).ready(function () {
                                             ` + detail.unit + `
                                         </td>
                                         <td><input type="number" min="1" class="price form-control" name="price[]" required></td>
-                                        <td>
-                                            <span class="input-group-btn" onclick="clickToRemove(` + detail.id + `)">
-                                                <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>' +
-                                            </span>
-                                        </td>
                                     </tr>`;
                         $('.list').append(row);
                     });
@@ -91,49 +93,40 @@ $(document).ready(function () {
             method: 'GET',
             dataType: 'JSON',
             success: function (data) {
-                $('#warehouse').empty();
-                $('#submit').empty();
-                let tableWarehouse = `<h4 class="hdg text-center">Danh sách NVL của bếp cần xuất</h4>
-                                        <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Tên mặt hàng</th>
-                                                <th>Sl trong bếp</th>
-                                                <th>Sl trong kho</th>
-                                                <th>Sl cần xuất</th>
-                                                <th>Đơn vị</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="bodyWarehouseExportCook">`;
-                data.map(function (detail) {
-                    tableWarehouse +=
-                    `<tr id="row` + detail.idWh + `">
-                        <td><input name="id[]" value="` + detail.idWh + `" hidden>
-                            <input name="idMaterial[]" value="` + detail.idMatDet + `" hidden>
-                            <input type="hidden" class="nameMatDet" value="` + detail.name + `" >
-                            `+ detail.name + `
-                        </td>
-                        <td>`+ detail.qtyWhC +`</td>
-                        <td><input type="number" name="oldQty[]" value="` + detail.qtyWh + `" class="oldQty" hidden>` + detail.qtyWh + `</td>`;
-                        if (detail.unit == "Kg" || detail.unit == "Lít") {
-                            tableWarehouse += `<td><input type="number" min="0.001" step="any" class="qty form-control" name="qty[]" required></td>`;
-                        } else {
-                            tableWarehouse += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
-                        }
-                    tableWarehouse += `<td><input value="`+detail.idunit +`" name="id_unit[]" hidden>` + detail.unit + `</td>
-                            <td><span class="input-group-btn" onclick="clickToRemove(` + detail.idWh + `)">
-                                    <button class="btn btn-xs btn-danger" type="button">
-                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                    </button>
-                                </span>
-                            </td>
-                        </tr>`;
-                })
-                tableWarehouse += `</tbody></table>`;
-                $('#warehouse').append(tableWarehouse);
-                $('#submit').append(`<a href="warehouse/index" class="btn btn-default">Trở về</a>&nbsp;
-                                    <button type="submit" class="btn green-meadow radius">Tạo phiếu</button>`);
+                console.log(data);
+                $('#content').empty();
+                let content =   `<div class="row">
+                                    <div class="col-xs-12 text-center">
+                                        <h3 class="hdg text-center">Danh sách NVL của bếp cần xuất</h3>
+                                    </div>
+                                </div>`;
+                                data.map(function (detail) {
+                                    if (detail.status == 0) { // đủ
+                                        content +=  `<div class="col-xs-6 col-sm-3">
+                                                        <div class="checkbox">
+                                                            <label class="bold" style="color:red">
+                                                                <input type="checkbox" value="`+ detail.idMatDet +`" name="idMaterialDetail[]">
+                                                                `+ detail.name +`
+                                                            </label>
+                                                        </div>
+                                                    </div>`;
+                                    } else {
+                                        content +=  `<div class="col-xs-6 col-sm-3">
+                                                        <div class="checkbox">
+                                                            <label class="bold">
+                                                                <input type="checkbox" value="`+ detail.idMatDet +`" name="idMaterialDetail[]">
+                                                                `+ detail.name +`
+                                                            </label>
+                                                        </div>
+                                                    </div>`;
+                                    }
+                                })
+                    content += `<div class="row">
+                                    <div class="col-xs-12 text-center">
+                                        <button type="submit" class="btn green-meadow radius">Lưu</button>
+                                    </div>
+                                </div>`
+                    $('#content').append(content);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -258,16 +251,72 @@ $(document).ready(function () {
     });
 
     // search Material to Destroy In Warehouse
-    $("#searchMaterial").click(function () {
-        const name = document.getElementById('nameMaterial').value;
-        $.ajax({
-            url: 'ajax/getMaterial/destroy/warehouse/' + name, //Trang xử lý
-            method: 'GET',
-            dataType: 'JSON',
-            success: function (data) {
-                if (data.length == 0) {
-                    alert("Không có sp này");
-                } else {
+    $("#getNVLToDestroy").click(function () {
+        let idMatDet = $("input[name='nvl[]']:checked").map(function () {
+            return $(this).val();
+        }).get();
+
+        if(idMatDet.length == 0 ){
+            alert('Vui lòng chọn nguyên vật liệu');
+        }else{
+            $.ajax({
+                url: 'ajax/getMaterial/destroy/warehouse/' + idMatDet, //Trang xử lý
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (data) {
+                        data.map(function (detail) {
+                            let row =
+                            `<tr id="row` + detail.id + `">
+                                <td>
+                                    <input name="idMaterial[]" value="` + detail.detail_material.id + `" hidden>
+                                    <input type="hidden" class="nameMatDet" value="` + detail.detail_material.name + `">
+                                    ` + detail.detail_material.name + `
+                                </td>
+                                <td>
+                                    <input type="hidden" name="oldQty[]" class="oldQty form-control" value="` + detail.qty + `">
+                                    `+ detail.qty +`
+                                </td>`;
+                                if (detail.unit.name == "Kg" || detail.unit.name == "Lít") {
+                                    row += `<td><input type="number" step="0.001" min="0.01" class="qty form-control" name="qty[]" required></td>`;
+                                } else {
+                                    row += `<td><input type="number" min="1" class="qty form-control" name="qty[]" required></td>`;
+                                }
+                        row += `<td><input value="` + detail.unit.id + `" name="id_unit[]" hidden></input>` + detail.unit.name + `</td>
+                                <td>
+                                    <span class="input-group-btn" onclick="clickToRemove(` + detail.id + `)">
+                                        <button class="btn btn-xs btn-danger" type="button">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>`;
+                            $('#myModal').modal('hide');
+                            $('#tableDestroyWarehouse').append(row);
+                        })
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    });
+
+    // search Material to Destroy in Cook
+    $("#getNVLToDestroyCook").click(function () {
+        let idCook = document.getElementById('idCookDestroy').value;
+        let idMatDet = $("input[name='nvl[]']:checked").map(function () {
+            return $(this).val();
+        }).get();
+
+        if(idMatDet.length == 0 ){
+            alert('Vui lòng chọn nguyên vật liệu');
+        }else{
+            $.ajax({
+                url: 'ajax/getMaterial/destroy/cook/' + idCook + '/' + idMatDet, //Trang xử lý
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (data) {
                     data.map(function (detail) {
                         let row =
                         `<tr id="row` + detail.id + `">
@@ -294,60 +343,9 @@ $(document).ready(function () {
                                 </span>
                             </td>
                         </tr>`;
-                        $('.list').append(row);
+                        $('#myModal').modal('hide');
+                        $('#tableDestroyWarehouseCook').append(row);
                     })
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    });
-
-    // search Material to Destroy in Cook
-    $("#searchDestroyCook").click(function () {
-        const idCook = document.getElementById('idCookDestroy').value;
-        const nameMaterial = document.getElementById('nameMaterial').value;
-        if (nameMaterial == null || nameMaterial == "") {
-            alert("Chưa nhập tên NVL");
-        } else {
-            $.ajax({
-                url: 'ajax/getMaterial/destroy/cook/' + idCook + '/' + nameMaterial, //Trang xử lý
-                method: 'GET',
-                dataType: 'JSON',
-                success: function (data) {
-                    console.log(data);
-                    if (data.length == 0) {
-                        alert("Không có sp vừa nhập trong bếp này");
-                    }
-                    else {
-                        data.map(function (detail) {
-                            let row = `<tr id="row` + detail.id + `">
-                                        <td>
-                                            <input type="hidden" class="nameMatDet" value="` + detail.detail_material.name + `">
-                                            <input name="idMaterial[]" value="` + detail.detail_material.id + `" hidden>
-                                            ` + detail.detail_material.name + `
-                                        </td>
-                                        <td>
-                                            <input type="hidden" class="oldQty form-control" value="` + detail.qty + `">
-                                            ` + detail.qty + `
-                                        </td>`;
-                                        if (detail.unit.name == "Kg" || detail.unit.name == "Lít") {
-                                            row += `<td><input type="number" min="0.001" step="any" class="qty form-control" name="qty[]"></td>`;
-                                        } else {
-                                            row += `<td><input type="number" min="1" class="qty form-control" name="qty[]"></td>`;
-                                        }
-                            row += `<td><input value="` + detail.unit.id + `" name="id_unit[]" hidden> ` + detail.unit.name + `</td>
-                                    <td>
-                                        <span class="input-group-btn" onclick="clickToRemove(` + detail.id + `)">
-                                            <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>
-                                        </span>
-                                    </td>
-                            </tr>`;
-                            $('.list').append(row);
-                        })
-                    }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     alert(xhr.status);
@@ -722,27 +720,27 @@ $(document).ready(function () {
             method: 'GET',
             dataType: 'JSON',
             success: function (materialDetail) {
-                $('#cookEmergencyTable').empty();
+                $('.chooseMaterial').empty();
+                console.log(materialDetail);
+                let content =   `<div class="row">
+                                        <div class="col-xs-12 text-center">
+                                            <div class="space"></div>
+                                            <div class="space"></div>
+                                            <h4 class="hdg">Chọn Nguyên Vật Liệu</h4>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>`;
                 materialDetail.map(function (data) {
-                    if (data.detail_material != null) {
-                        let row =   `<tr id="row`+ data.id +`">
-                                    <td><input type="hidden" name="idMaterialDetail[]" value="`+ data.detail_material.id +`">`+ data.detail_material.name +`</td>
-                                    <td>`+ data.qty +`</td>`;
-                                    if (data.unit.name == "Kg" || data.unit.name == "Lít") {
-                                        row += `<td><input type="number" class="form-control" name="qty[]" step="any" min="0.001" required></td>`;
-                                    } else {
-                                        row += `<td><input type="number" class="form-control" name="qty[]" min="1" required></td>`;
-                                    }
-                            row +=  `<td>`+ data.unit.name +`</td>
-                                    <td>
-                                        <span class="input-group-btn" onclick="clickToRemove(`+ data.id +`)">
-                                            <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>
-                                        </span>
-                                    </td>
-                                </tr>`;
-                        $('#cookEmergencyTable').append(row);
-                    }
+                    content += `<div class="col-xs-6 col-sm-3">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" value="`+ data.id +`" name="idMaterialDetail[]">
+                                                `+ data.detail_material.name +`
+                                        </label>
+                                    </div>
+                                </div>`;
                 })
+                $('.chooseMaterial').append(content);
             }
         });
     })
@@ -818,11 +816,6 @@ $(document).ready(function () {
                                         } else {
                                             item += `<td><input type="number" name="qty[]" min="1" required></td>`;
                                         }
-                                        // if (detail.unit == "Lon" || detail.unit == "Chai") {
-                                        //     item += `<td><input type="number" name="qty[]" min="1" required></td>`;
-                                        // } else {
-                                        //     item += `<td><input type="number" name="qty[]" min="0.001" step="any" required></td>`;
-                                        // }
                             item += `<td>
                                             <span class="input-group-btn" onclick="clickToRemove(`+ detail.id +`)">
                                                 <button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i></button>

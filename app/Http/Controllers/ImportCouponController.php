@@ -34,15 +34,25 @@ class ImportCouponController extends Controller
     {
         $type = $request->typeImp;
         if($type == '1'){
-           return $this->viewImport();
+           return $this->chooseMaterial();
         }else{
             return $this->importcouponRepository->showViewImportPlan();
         }
     }
 
-    public function viewImport()
+    public function chooseMaterial()
     {
         return $this->importcouponRepository->showViewImport();
+    }
+
+    public function viewImport(Request $request)
+    {
+        $code = $request->code;
+        $note = $request->note;
+        $idSupplier = $request->idSupplier;
+        $nameSupplier = $this->importcouponRepository->getNameSupplierById($idSupplier);
+        $arr = $this->importcouponRepository->createArrayChooseMaterial($request->idMaterialDetail);
+        return view('importcoupon.temp',compact('code','note','idSupplier','nameSupplier','arr'));
     }
 
     public function import(Request $request)

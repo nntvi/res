@@ -49,9 +49,22 @@ class VoucherController extends Controller
         $result = $this->checkAction->getPermission(auth()->id());
         $check = $this->voucherRepository->checkRoleStore($result);
         if($check != 0){
-            return $this->voucherRepository->createPaymentVcEmergency($request);
+            $type = $request->type;
+            $code = $request->code;
+            $idCook = $request->idCook;
+            $nameCook = $this->voucherRepository->getCookById($idCook);
+            $note = $request->note;
+            $pay_cash = $request->pay_cash;
+            $arrEmer = $this->voucherRepository->createArrayEmer($request->idMaterialDetail,$idCook);
+            return view('voucher.cookemer2',compact('type','code','idCook','nameCook','note','pay_cash','arrEmer'));
         }else{
             return view('layouts')->withErrors('Bạn không thuộc quyền truy cập chức năng này');
         }
+    }
+
+    public function storePaymentEmergencyTemp(Request $request)
+    {
+        //dd($request->all());
+        return $this->voucherRepository->createPaymentVcEmergency($request);
     }
 }

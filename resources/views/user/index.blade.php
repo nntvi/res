@@ -60,7 +60,7 @@
                             </td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @if (auth()->id() == $user->id)
+                                @if ($user->name == 'tuongvi' || $user->name == 'tuongvi')
                                     Admin
                                 @else
                                 <a href="#position{{ $user->id }}" data-toggle="modal">
@@ -113,27 +113,27 @@
 
                             </td>
                             <td>
-                                @if ((auth()->id() != $user->id))
+                                @if ($user->name == 'tuongvi')
+                                    Admin
+                                @else
                                     <a href="{{ route('user.updaterole',['id' => $user->id]) }}"
                                         class="btn btn-xs btn-success">
                                         <i class="fa fa-eye" aria-hidden="true"></i> Quyền truy cập
                                     </a>
-                                @else
-                                    Admin
                                 @endif
                             </td>
                             <td>
-                                @if ((auth()->id() == $user->id))
+                                @if ($user->name == 'tuongvi')
                                     Admin
                                 @else
                                     <a
-                                        href="{{ route('user.shift',['id' => $user->id]) }}">
-                                        <i class="fa fa-calendar text-info" aria-hidden="true"></i>
-                                    </a>
+                                    href="{{ route('user.shift',['id' => $user->id]) }}">
+                                    <i class="fa fa-calendar text-info" aria-hidden="true"></i>
+                                </a>
                                 @endif
                             </td>
                             <td>
-                                @if(auth()->id() == $user->id)
+                                @if(auth()->id() == $user->id || $user->name == 'tuongvi')
 
                                 @else
                                     <a

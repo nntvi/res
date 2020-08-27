@@ -6,7 +6,7 @@
             <i class="fa fa-home"></i> Báo cáo những món đã hủy
         </div>
         <div class="panel-body">
-            <form action="{{ route('report.p_dish') }}" method="post">
+            <form action="{{ route('report.p_destroydish') }}" method="post">
                 @csrf
                 <div class="row">
                     <div class="col-xs-12 col-sm-3">

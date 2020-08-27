@@ -59,7 +59,6 @@
                                                 <th>Sl cần nhập</th>
                                                 <th>Đơn vị</th>
                                                 <th>Tổng Giá</th>
-                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody class="list" id="myTable">

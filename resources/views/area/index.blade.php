@@ -124,22 +124,18 @@
                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                                         <h4 class="modal-title">Chỉnh sửa tên khu vực</h4>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body text-left">
                                         <form class="form-horizontal" role="form"  action="{{ route('area.update',['id' => $area->id]) }}" method="POST">
                                             @csrf
-                                            <div class="form-group">
-                                                <label class="col-lg-3 col-sm-3 control-label">
-                                                    Tên hiện tại
-                                                </label>
-                                                <div class="col-lg-9">
+                                            <div class="form-group row">
+                                                <div class="col-xs-12">
+                                                    <label class="control-label">Tên hiện tại</label>
                                                     <input type="text" class="form-control" value="{{ $area->name }}" disabled>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 col-sm-3 control-label">
-                                                    Tên thay đổi
-                                                </label>
-                                                <div class="col-lg-9">
+                                            <div class="form-group row">
+                                                <div class="col-xs-12">
+                                                    <label class="control-label">Tên thay đổi</label>
                                                     <input type="text" class="form-control" name="nameArea"
                                                     value="{{ $area->name }}" required>
                                                 </div>

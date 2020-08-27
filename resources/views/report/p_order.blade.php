@@ -107,7 +107,9 @@
                                         </td>
                                         <td>{{ $order->created_by }}</td>
                                         <td>{{ $order->payer }}</td>
-                                        <td>{{ $order->shift->name }}</td>
+                                        <td>
+                                            {{ $order->shift == null ? 'Ngoại lệ' : $order->shift->name }}
+                                        </td>
                                         <td>
                                             @switch($order->status)
                                                 @case('0')

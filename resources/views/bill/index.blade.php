@@ -59,7 +59,17 @@
                             <td>{{ number_format($bill->excess_cash) . ' đ' }}</td>
                             <td>{{ $bill->created_by }}</td>
                             <td>{{ $bill->payer }}</td>
-                            <td>{{ $bill->id_shift == null ? 'Chưa thanh toán' : $bill->shift->name }}</td>
+                            <td>
+                                @if ($bill->id_shift == null)
+                                    @if ($bill->receive_cash != null)
+                                        Ngoại lệ
+                                    @else
+                                        Chưa thanh toán
+                                    @endif
+                                @else
+                                    {{ $bill->shift->name }}
+                                @endif
+                            </td>
                             <td>{{ $bill->created_at }}</td>
                             <td>{{ $bill->updated_at }}</td>
                             <td>

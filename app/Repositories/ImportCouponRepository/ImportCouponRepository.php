@@ -85,6 +85,12 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
         return $types;
     }
 
+    public function getNameSupplierById($idSupplier)
+    {
+        $name = Supplier::where('id',$idSupplier)->value('name');
+        return $name;
+    }
+
     public function validateCreatImportCoupon($request)
     {
         $request->validate(
@@ -279,5 +285,24 @@ class ImportCouponRepository extends Controller implements IImportCouponReposito
     {
         $importCoupon = $this->findDetailImportCouponByIdImport($id);
         return view('importcoupon.print',compact('importCoupon'));
+    }
+
+    public function createArrayChooseMaterial($arrIdMaterial)
+    {
+        $temp = array();
+        foreach ($arrIdMaterial as $value) {
+            $warehouse = Warehouse::where('id_material_detail',$value)->first();
+            $t = [
+                'id' => $warehouse->id,
+                'idMaterial' => $value,
+                'name' => MaterialDetail::where('id',$value)->value('name'),
+                'qtyWh' => $warehouse->qty,
+                'limit' => $warehouse->limit_stock,
+                'idUnit' => $warehouse->id_unit,
+                'unitName' => Unit::where('id',$warehouse->id_unit)->value('name')
+            ];
+            array_push($temp,$t);
+        }
+        return $temp;
     }
 }

@@ -30,6 +30,7 @@ class UserController extends Controller
         $check = $this->userRepository->checkRoleIndex($result);
         if($check != 0){
             $users = User::with('userper.permissionDetail','position')->get();
+            //dd($users);
             $positions = Position::orderBy('name','asc')->get();
             return view('user/index',compact('users','positions'));
         }else{

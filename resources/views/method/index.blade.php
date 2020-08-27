@@ -14,7 +14,7 @@
                         <th class="text-center">Công thức bằng số</th>
                         <th class="text-center">Kết quả</th>
                         <th class="text-center">Trạng thái</th>
-                        <th></th>
+                        <th width="2%" ></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,11 +25,16 @@
                             <td class="text-center">({{ $method->tuso }}) / ({{ $method->mauso  }})</td>
                             <td class="text-center">{{ $method->result }}</td>
                             <td class="text-center">{{ $method->status == '1' ? 'Đang sử dụng' : 'Chưa được sử dụng' }}</td>
-                            <td>
-                                @if ($method->status == '0')
+                            <td width="2%">
+                                @if ($method->status == '0' && $method->status != null)
                                     <a href="{{ route('method.update',['id' => $method->id ]) }}" class="active" ui-toggle-class="" onclick="return confirm('Bạn muốn kích hoạt công thức này?')">
                                         <i class="fa fa-check text-success text-active"></i>
                                     </a>
+                                    <a href="{{ route('method.delete',['id' => $method->id ]) }}" class="active" ui-toggle-class="" onclick="return confirm('Bạn muốn xóa công thức này?')">
+                                            <i class="fa fa-times text-danger"></i>
+                                    </a>
+                                @endif
+                                @if ($method->status != '0' && $method->status == null)
                                     <a href="{{ route('method.delete',['id' => $method->id ]) }}" class="active" ui-toggle-class="" onclick="return confirm('Bạn muốn xóa công thức này?')">
                                             <i class="fa fa-times text-danger"></i>
                                     </a>

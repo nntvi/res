@@ -56,6 +56,7 @@ class MethodController extends Controller
 
     public function storeNumber(Request $request,$id)
     {
+        //dd($request->all());
         $tu = (float) $this->methodRepository->createNumTu($request,$id);
         $mau = (float) $this->methodRepository->createNumMau($request,$id);
         if($mau == 0 ){

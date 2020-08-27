@@ -95,12 +95,12 @@
                                                         <div class="form-group">
                                                             <label>Thời gian bắt đầu</label>
                                                             <input type="time" class="form-control" name="timeStart"
-                                                                value="{{ $shift->hour_start }}" required>
+                                                                value="{{ $shift->hour_start }}" min="06:00" max="01:00" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Thời gian kết thúc</label>
                                                             <input type="time" class="form-control" name="timeEnd"
-                                                                value="{{ $shift->hour_end }}" required>
+                                                                value="{{ $shift->hour_end }}" min="06:00" max="01:00" required>
                                                         </div>
                                                         <button type="submit"
                                                             class="btn btn-default text-center">Lưu</button>

@@ -34,8 +34,8 @@ Route::group(['prefix' => 'ajax'], function() {
         });
 
         Route::group(['prefix' => 'destroy'], function() {
-            Route::get('warehouse/{name}','AjaxController@searchMaterialDestroy');
-            Route::get('cook/{id}/{name}','AjaxController@searchMaterialDestroyCook');
+            Route::get('warehouse/{arrIdMaterial}','AjaxController@searchMaterialDestroy');
+            Route::get('cook/{cook}/{arrIdMaterial}','AjaxController@searchMaterialDestroyCook');
 
         });
     });

@@ -65,7 +65,8 @@
                     {
                         extend: 'excel',
                         messageTop: 'Mã phiếu xuất "{{ $exSupplierDt->code }}" - Ngày xuất: {{ $exSupplierDt->created_at }} ',
-                        messageBottom: 'Nhà cung cấp: {{ $exSupplierDt->importCoupon->supplier->name }} - Tổng tiền:  {{ number_format($exSupplierDt->total) . ' đ' }} '
+                        messageBottom: 'Nhà cung cấp: {{ $exSupplierDt->importCoupon->supplier->name }} - Tổng tiền:  {{ number_format($exSupplierDt->total) . ' đ' }} ',
+                        title: 'Phiếu Xuất',
                     },
                     {
                         extend: 'pdf',
@@ -75,7 +76,8 @@
                     {
                         extend: 'print',
                         messageTop: 'Mã phiếu xuất "{{ $exSupplierDt->code }}" - <br>Ngày xuất: {{ $exSupplierDt->created_at }} ',
-                        messageBottom: 'Nhà cung cấp: {{ $exSupplierDt->importCoupon->supplier->name }} - Tổng tiền:  {{ number_format($exSupplierDt->total) . ' đ' }} '
+                        messageBottom: 'Nhà cung cấp: {{ $exSupplierDt->importCoupon->supplier->name }} - Tổng tiền:  {{ number_format($exSupplierDt->total) . ' đ' }} ',
+                        title: 'Phiếu Xuất',
                     },
                 ]
             });

@@ -78,6 +78,7 @@ class WarehouseCookRepository extends Controller implements IWarehouseCookReposi
     public function showWarehouseCook()
     {
         $cookWarehouse = $this->getCookWarehouse();
+        //dd($cookWarehouse);
         $cooks = $this->getCookActive();
         return view('warehousecook.index',compact('cookWarehouse','cooks'));
     }

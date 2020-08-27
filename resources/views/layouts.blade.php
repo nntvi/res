@@ -237,7 +237,7 @@
                         <a href="{{ route('order.index') }}">
                             <span class="photo"><img alt="avatar" src="img/`+ data.imgDish +`"></span>
                             <span class="subject">
-                            <span class="from"> Món: `+ data.nameDish +`</span>
+                            <span class="from">`+ data.nameDish +`</span>
                                 <span class="time">`+ data.nameTable +`</span>
                             </span>`;
                                 if(data.stt == '-1'){
@@ -257,5 +257,12 @@
                     notificationWrapperFinishDish.show();
             }
         });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#header_inbox_bar').click(function() {
+                $('span.notif-count-finish-dish').text(0);
+            });
+        })
     </script>
 @include('footer')

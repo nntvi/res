@@ -14,6 +14,8 @@ use App\WarehouseCook;
 use App\PaymentVoucher;
 use App\PaymentVoucherDetail;
 use App\Http\Controllers\Controller;
+use App\MaterialDetail;
+use App\Unit;
 
 class VoucherRepository extends Controller implements IVoucherRepository{
 
@@ -211,5 +213,23 @@ class VoucherRepository extends Controller implements IVoucherRepository{
             $this->plusQtyHistoryCook($idCook,$request->idMaterialDetail[$i],$request->qty[$i]);
         }
         return redirect(route('voucher.index'))->withSuccess("Tạo phiếu chi thành công");
+    }
+
+    public function createArrayEmer($arr,$idCook)
+    {
+        $temp = array();
+        foreach ($arr as $key => $value) {
+            $whCook = WarehouseCook::where('cook',$idCook)->where('id',$value)->first();
+            $t = [
+                'id' => $whCook->id,
+                'idMat' => $whCook->id_material_detail,
+                'nameMat' => MaterialDetail::where('id',$whCook->id_material_detail)->value('name'),
+                'qty' => $whCook->qty,
+                'idUnit' => $whCook->value('id_unit'),
+                'nameUnit' => Unit::where('id',$whCook->id_unit)->value('name')
+            ];
+            array_push($temp,$t);
+        }
+        return $temp;
     }
 }

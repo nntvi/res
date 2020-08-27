@@ -203,6 +203,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        Validator::extend('sale_price',function ($attribute,$value,$parameters,$validator)
+        {
+            $value % 1000 == 0 ? true : false;
+        });
+
         Validator::extend('special_character',function ($attribute,$value,$parameters,$validator)
         {
             $check = $this->checkSpecialCharacter($value);

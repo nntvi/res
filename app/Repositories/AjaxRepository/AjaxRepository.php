@@ -229,24 +229,14 @@ class AjaxRepository extends Controller implements IAjaxRepository{
         return $detailExport;
     }
 
-    public function searchMaterialDestroy($name)
+    public function searchMaterialDestroy($arrIdMaterial)
     {
-        $material = WareHouse::with('detailMaterial','unit')
-                            ->whereHas('detailMaterial', function ($query) use($name) {
-                                $query->where('name','LIKE','%'. $name . '%');
-                            })->whereHas('detailMaterial', function ($query) {
-                                $query->where('status','1');
-                            })->get();
+        $material = WareHouse::with('detailMaterial','unit')->whereIn('id_material_detail',$arrIdMaterial)->get();
         return $material;
     }
 
-    public function searchMaterialDestroyCook($id,$name){
-        $material = WarehouseCook::where('cook',$id)->with('detailMaterial','unit')
-                                    ->whereHas('detailMaterial', function ($query) use($name) {
-                                        $query->where('name','LIKE','%'. $name . '%');
-                                    })->whereHas('detailMaterial', function ($query) {
-                                        $query->where('status','1');
-                                    })->get();
+    public function searchMaterialDestroyCook($id,$arr){
+        $material = WarehouseCook::where('cook',$id)->whereIn('id_material_detail',$arr)->with('detailMaterial','unit')->get();
         return $material;
     }
 
