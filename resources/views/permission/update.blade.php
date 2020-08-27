@@ -20,35 +20,41 @@
                             </div>
                             <div class="form-group">
                                 <label>Cập nhật quyền <span style="color: #ff0000">*</span></label>
-                            </div>
-                            <div class="checkbox">
-                                @foreach($data as $value)
-                                    <div class="col-xs-6 col-sm-3 col-md-3">
-                                        @if($value['flag'] == true)
-                                            <label>
-                                                <input
-                                                    id="{{ $value['id'] . 'check' }}"
-                                                    value="{{ $value['id'] }}" type="checkbox"
-                                                    name="permissiondetail[]" checked />
-                                                {{ $value['name'] }}
-                                            </label>
+                                <div class="checkbox">
+                                    @foreach($data as $value)
+                                        <div class="col-xs-6 col-sm-3 col-md-3">
+                                            @if($value['flag'] == true)
+                                                <label>
+                                                    <input
+                                                        id="{{ $value['id'] . 'check' }}"
+                                                        value="{{ $value['id'] }}" type="checkbox"
+                                                        name="permissiondetail[]" checked />
+                                                    {{ $value['name'] }}
+                                                </label>
 
-                                        @else
-                                            <label>
-                                                <input
-                                                    id="{{ $value['id'] . 'check' }}"
-                                                    value="{{ $value['id'] }}" type="checkbox"
-                                                    name="permissiondetail[]" />
-                                                {{ $value['name'] }}
-                                            </label>
+                                            @else
+                                                <label>
+                                                    <input
+                                                        id="{{ $value['id'] . 'check' }}"
+                                                        value="{{ $value['id'] }}" type="checkbox"
+                                                        name="permissiondetail[]" />
+                                                    {{ $value['name'] }}
+                                                </label>
 
-                                        @endif
-                                    </div>
-                                @endforeach
-                                <span class="error-message">{{ $errors->first('permissiondetail') }}</span></p>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                    <span class="error-message">{{ $errors->first('permissiondetail') }}</span></p>
+                                </div>
                             </div>
-                            <div class="space"></div>
-                            <button type="submit" class="btn btn-info" style="margin-top: 15px">Submit</button>
+                            <div class="form-group">
+                                <div class="col-xs-12 text-center">
+                                    <div class="space"></div>
+                                    <div class="space"></div>
+                                    <a href="{{ route('permission.index') }}" class="btn btn-default">Trở về</a>
+                                    <button type="submit" class="btn btn-info">Lưu</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

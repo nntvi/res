@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\UpdateStatusMaterialWhCook;
+use Pusher\Pusher;
+use App\WarehouseCook;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,9 +15,6 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [
-        //
-    ];
 
     /**
      * Define the application's command schedule.
@@ -24,8 +24,25 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('status:update')
+                 ->everyMinute();
+        // $schedule->call(function () {
+        //     $count = WarehouseCook::selectRaw('count(status) as qty')->where('status','0')->value('qty');
+        //     if($count != 0){
+        //         $data['cook'] = $count;
+        //         $options = array(
+        //             'cluster' => 'ap1',
+        //             'useTLS' => true
+        //         );
+        //         $pusher = new Pusher(
+        //             'cc6422348edc9fbaff00',
+        //             '54d59c765665f5bc6194',
+        //             '994181',
+        //             $options
+        //         );
+        //         $pusher->trigger('NotifyOutOfStock', 'need-import-cook', $data);
+        //     }
+        // })->everyMinute();
     }
 
     /**

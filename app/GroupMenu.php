@@ -40,10 +40,7 @@ class GroupMenu extends Model
     {
         return $this->belongsTo('App\CookArea','id_cook');
     }
-    public function dishes()
-    {
-        return $this->hasMany('App\Dishes','id_groupmenu');
-    }
+
     public function topping()
     {
         return $this->hasMany('App\Topping','id_groupmenu');
@@ -52,5 +49,10 @@ class GroupMenu extends Model
     public function material()
     {
         return $this->hasMany('App\Material','id_groupmenu');
+    }
+
+    public function dishes()
+    {
+        return $this->hasMany(Dishes::class,'id_groupmenu')->where('stt','1')->where('status','1');
     }
 }

@@ -1,12 +1,17 @@
 <?php
 namespace App\Repositories\MaterialActionRepository;
 
+use App\HistoryWhCook;
 use App\Http\Controllers\Controller;
 use App\Material;
 use App\Unit;
 use App\MaterialDetail;
 use App\MaterialAction;
+use App\SettingPrice;
+use App\StartDay;
+use App\TypeMaterial;
 use App\WarehouseCook;
+use Carbon\Carbon;
 
 class MaterialActionRepository extends Controller implements IMaterialActionRepository{
 
@@ -18,19 +23,14 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
 
     public function getMaterialById($id)
     {
-        $material = Material::where('id',$id)
-                    ->with('materialAction.materialDetail','materialAction.unit')
-                    ->get();
+        $material = Material::where('id',$id)->with('materialAction.materialDetail','materialAction.unit')->first();
         return $material;
     }
+
     public function getMaterialDetails($id)
     {
-        $actions = MaterialAction::where('id_groupnvl',$id)
-                                ->get('id_material_detail');
-        $materialDetails = MaterialDetail::whereNotIn('id',$actions)
-                                            ->orderBy('name','asc')
-                                            ->with('unit')
-                                            ->get();
+        $actions = MaterialAction::where('id_groupnvl',$id)->get('id_material_detail');
+        $materialDetails = MaterialDetail::whereNotIn('id',$actions)->where('status','1')->orderBy('name','asc')->with('unit')->get();
         return $materialDetails;
     }
 
@@ -48,9 +48,7 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
 
     public function findMaterialActionById($id)
     {
-        $materialAction = MaterialAction::where('id',$id)
-                        ->with('materialDetail','unit','material')
-                        ->get();
+        $materialAction = MaterialAction::where('id',$id)->with('materialDetail','unit','material')->get();
         return $materialAction;
     }
 
@@ -72,18 +70,24 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         return view('materialaction.index',compact('materials'));
     }
 
+    public function getMaterialAction($id)
+    {
+        $ingredients = MaterialAction::where('id_groupnvl',$id)->with('materialDetail','unit')->get();
+        return $ingredients;
+    }
     public function viewStoreMaterialAction($id)
     {
         $material = $this->findMaterialById($id);
         $units = $this->getUnit();
         $materialDetails = $this->getMaterialDetails($id);
-        return view('materialaction.store',compact('material','units','materialDetails'));
+        $ingredients = $this->getMaterialAction($id);
+        $typeMaterialDetails = TypeMaterial::get();
+        return view('materialaction.store',compact('material','units','materialDetails','ingredients','typeMaterialDetails'));
     }
 
     public function getIdCookByIdMaterial($id_groupnvl)
     {
-        $material = Material::where('id',$id_groupnvl)
-                        ->with('groupMenu')->get();
+        $material = Material::where('id',$id_groupnvl)->with('groupMenu')->get();
         foreach ($material as $value) {
                 $idCook = $value->groupMenu->id_cook;
         }
@@ -111,6 +115,13 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         return false;
     }
 
+    public function checkStartDay()
+    {
+        $dayNow = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        $value = StartDay::where('date',$dayNow)->value('id');
+        return $value;
+    }
+
     public function addWarehouseCook($cook,$idMaterialDetail,$id_unit)
     {
         $rowCookWarehouse = new WarehouseCook();
@@ -118,65 +129,112 @@ class MaterialActionRepository extends Controller implements IMaterialActionRepo
         $rowCookWarehouse->id_material_detail = $idMaterialDetail;
         $rowCookWarehouse->qty = 0.00;
         $rowCookWarehouse->id_unit = $id_unit;
+        $rowCookWarehouse->status = '0';
         $rowCookWarehouse->save();
     }
+
+    public function addHistoryCook($cook,$idMaterialDetail,$id_unit)
+    {
+        $historyCook = new HistoryWhCook();
+        $historyCook->id_cook = $cook;
+        $historyCook->id_material_detail = $idMaterialDetail;
+        $historyCook->first_qty = 0;
+        $historyCook->last_qty = 0;
+        $historyCook->id_unit = $id_unit;
+        $historyCook->save();
+    }
+    public function checkHistoryCookandWarehouseCook($cook,$idMaterialDetail,$id_unit)
+    {
+        $checkStartDay = $this->checkStartDay();
+        if($checkStartDay == null || $checkStartDay == ""){ // chưa khai ca
+            $this->addWarehouseCook($cook,$idMaterialDetail,$id_unit);
+        }else{
+            $this->addWarehouseCook($cook,$idMaterialDetail,$id_unit);
+            $this->addHistoryCook($cook,$idMaterialDetail,$id_unit);
+        }
+    }
+
     public function getUnitByMaterialDetail($idMaterialDetail)
     {
-        $idUnit = MaterialDetail::where('id',$idMaterialDetail)
-                                    ->value('id_unit');
+        $idUnit = MaterialDetail::where('id',$idMaterialDetail)->value('id_unit');
         return $idUnit;
     }
 
-    public function addOneByOneMaterialAction($count,$request)
+    public function getSameMaterial($arrayMaterial)
     {
-        for ($i=0; $i < $count; $i++) {
-            $materialDetail = new MaterialAction();
-            $materialDetail->id_groupnvl = $request->id_groupnvl;
-            $cook = $this->getIdCookByIdMaterial($request->id_groupnvl);
-            $materialDetail->id_material_detail = $request->id_material[$i];
-            $materialDetail->id_dvt = $this->getUnitByMaterialDetail($request->id_material[$i]);
-            $materialDetail->qty = $request->qty[$i];
-            $materialDetail->save();
-            if($this->checkMaterialDetailInWarehouseCook($this->checkWarehouse($cook),$materialDetail->id_material_detail)){
-                $this->addWarehouseCook($cook,$materialDetail->id_material_detail,$materialDetail->id_dvt);
+        $temp = array();
+        $n = count($arrayMaterial);
+        for ($i=0; $i < $n; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                if ($arrayMaterial[$i] == $arrayMaterial[$j] && $j != $i) {
+                    array_push($temp,$j);
+                    $n--;
+                }
+            }
+        }
+        $temp = array_unique($temp);
+        return $temp;
+    }
+
+    public function addOneByOneMaterialAction($request,$i)
+    {
+        $materialDetail = new MaterialAction();
+        $materialDetail->id_groupnvl = $request->id_groupnvl;
+        $cook = $this->getIdCookByIdMaterial($request->id_groupnvl);
+        $materialDetail->id_material_detail = $request->id_material[$i];
+        $materialDetail->id_dvt = $this->getUnitByMaterialDetail($request->id_material[$i]);
+        $materialDetail->qty = $request->qty[$i];
+        $tempPrice = SettingPrice::where('id_material_detail',$request->id_material[$i])->value('price');
+        $materialDetail->price = $tempPrice;
+        $materialDetail->save();
+        if($this->checkMaterialDetailInWarehouseCook($this->checkWarehouse($cook),$materialDetail->id_material_detail)){
+            $this->checkHistoryCookandWarehouseCook($cook,$materialDetail->id_material_detail,$materialDetail->id_dvt);
+        }
+    }
+
+    public function checkUnique($count,$request)
+    {
+        $check = $this->getSameMaterial($request->id_material);
+        if(!empty($check)){ // có bị trùng
+            for ($i=0; $i < $count; $i++) {
+                for ($j=0; $j < count($check); $j++) {
+                    if($i != $check[$j]){
+                        $this->addOneByOneMaterialAction($request,$i);
+                    }
+                }
+            }
+        }else{
+            for ($i=0; $i < $count; $i++) {
+                $this->addOneByOneMaterialAction($request,$i);
             }
         }
     }
 
     public function storeMaterialAction($request,$id)
     {
+
         $count = $this->countMaterialRequest($request);
-        $this->addOneByOneMaterialAction($count,$request);
-        return redirect(route('material_action.index'));
+        $this->checkUnique($count,$request);
+        return redirect(route('material.index'))->withSuccess('Thiết lập công thức thành công');
     }
 
     public function showMoreDetailById($id)
     {
-        $materials = $this->getMaterialById($id);
-        return view('materialaction.detail',compact('materials'));
-    }
-
-    public function showViewUpdateMaterialAction($id)
-    {
-        $materialAction = $this->findMaterialActionById($id);
-        $units = $this->getUnit();
-        return view('materialaction.update',compact('materialAction','units'));
+        $material = $this->getMaterialById($id);
+        return view('materialaction.detail',compact('material'));
     }
 
     public function updateMaterialAction($request,$id)
     {
-        $mat_detail = $this->findRowMaterialAction($id);
-        $mat_detail->id_dvt = $request->id_dvt;
-        $mat_detail->qty = $request->qty;
-        $mat_detail->save();
-        return redirect(route('material_action.detail',['id' => $mat_detail->id_groupnvl]));
+        MaterialAction::where('id',$id)->update(['qty' => $request->qty ]);
+        $idGroupNVL = $this->findRowMaterialAction($id);
+        return redirect(route('material_action.detail',['id' => $idGroupNVL->id_groupnvl]))->with('info','Cập nhật công thức thành công');
     }
 
     public function deleteMaterialAction($id)
     {
         $mat_detail = $this->findRowMaterialAction($id);
-        $id_groupnvl = $mat_detail->id_groupnvl;
         $mat_detail->delete();
-        return redirect(route('material_action.detail',['id' => $id_groupnvl]));
+        return redirect(route('material_action.detail',['id' => $mat_detail->id_groupnvl]))->withSuccess('Xóa NVL thành công');
     }
 }

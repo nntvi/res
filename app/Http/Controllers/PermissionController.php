@@ -20,20 +20,15 @@ class PermissionController extends Controller
         $this->permissionRepository = $permissionRepository;
     }
 
-    // show permission
     public function index(){
         return $this->permissionRepository->showAllPermission();
     }
-    public function search(Request $request)
-    {
-        return $this->permissionRepository->searchMaterial($request);
-    }
-    // store permission
+
     public function store(Request $req){
         $this->permissionRepository->validatorRequestStore($req);
         return $this->permissionRepository->addPermission($req);
     }
-    // view Update Permission
+
     public function viewUpdateDetail($id)
     {
         $permissiondetails = $this->permissionRepository->getPermissionDetail();
@@ -43,7 +38,6 @@ class PermissionController extends Controller
         return view('permission/update',compact('permission','data', 'permissiondetails'));
     }
 
-    // post Update Permission
     public function postEdit(Request $req, $id)
     {
         $this->permissionRepository->validatorRequestStore($req);
@@ -62,7 +56,7 @@ class PermissionController extends Controller
         $permission = $this->permissionRepository->findPermission($id);
         return $this->permissionRepository->updatePermission($req,$permission);
     }
-    // delete Permission
+
     public function delete($id)
     {
         return $this->permissionRepository->deletePermission($id);

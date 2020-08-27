@@ -11,7 +11,7 @@ class Order extends Model
      *
      * @var string
      */
-    protected $table = 'order_table';
+    protected $table = 'orders';
 
     /**
      * The primary key associated with the table.
@@ -37,7 +37,10 @@ class Order extends Model
         'status',
         'total_price',
         'note',
-        'created_by'
+        'receive_cash',
+        'excess_cash',
+        'created_by',
+        'id_shift'
     ];
 
     public function orderDetail()
@@ -45,9 +48,23 @@ class Order extends Model
         return $this->hasMany('App\OrderDetailTable','id_bill');
     }
 
+    public function tableOrdered()
+    {
+        return $this->hasMany('App\OrderTable','id_order','id');
+    }
+
     public function table()
     {
         return $this->belongsTo('App\Table','id_table');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\User','created_by');
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo('App\Shift','id_shift');
+    }
 }

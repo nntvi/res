@@ -2,23 +2,35 @@
 namespace App\Repositories\AjaxRepository;
 
 interface IAjaxRepository{
-    function getAllCook();
-    function getUnit();
+    function getDateTime($id);
     function getMaterialBySupplier($idSupplier);
+    function getMaterialByIdPlan($idPlan);
+    function getDishToSearch($name);
+    function getUnit();
     function getMaterialWarehouseCook($idCook);
     function getIdMaterialByIdCook($materials);
     function findMaterialInWarehouse($idMaterialArray);
-    function getTypeByIdSupplier($idSupplier);
     function getMaterialInWarehouseByType($type);
-    function getAllWarehouseToDestroy();
-    function getTypeMaterial();
-    function getDateNow();
-    function getWeek();
-    function getMonth();
-    function getYear();
-    function warehouseBetweenTime($dateStart,$dateEnd);
-    function importBetween($dateStart,$dateEnd);
-    function exportBetween($dateStart,$dateEnd);
+    function getMaterialByIdType($idType);
+    function getMaterialOfDish($idGroupNVL);
+    function createArrayMethodForDish($materialDetails,$materialOfDish);
     function searchMaterialDestroy($name);
     function searchMaterialDestroyCook($id,$name);
+    function getCapitalPriceByIdMaterial($idMaterial);
+    function getRevenue($dateStart,$dateEnd);
+    function countPaidBill($dateStart,$dateEnd);
+    function countServingBill($dateStart,$dateEnd);
+    function countBill($dateStart,$dateEnd);
+    function getImportCouponToCreatePaymentVoucher($dateStart,$dateEnd,$idSupplier);
+    function getConcludeImportCoupon($coupons);
+    function getExpense($dateStart,$dateEnd);
+    function getAllQtyCustomer($time);
+
+    // test report dish
+    function getOrderByAllGroupMenu($dateStart,$dateEnd);
+    function getOrderByIdGroupMenu($dateStart,$dateEnd,$idGroupMenu);
+
+    function getCapitalPriceOfDish($dateStart,$dateEnd);
+    function getTotalPayment($dateStart,$dateEnd);
+    function getPayReturnSupplier($dateStart,$dateEnd);
 }

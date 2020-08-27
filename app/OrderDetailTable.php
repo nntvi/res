@@ -44,4 +44,9 @@ class OrderDetailTable extends Model
     {
         return $this->belongsTo('App\Dishes','id_dish');
     }
+
+    public function order()
+    {
+        return $this->belongsTo('App\Order','id_bill');
+    }
 }

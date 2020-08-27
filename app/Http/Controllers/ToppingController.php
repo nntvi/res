@@ -19,10 +19,7 @@ class ToppingController extends Controller
         $groupMenus = $this->toppingRepository->getAllGroupMenu();
         return view('topping.index',compact('groupMenus','toppings'));
     }
-    public function search(Request $request)
-    {
-        return $this->toppingRepository->searchTopping($request);
-    }
+
     public function store(Request $request)
     {
         $this->toppingRepository->validatorRequestStore($request);

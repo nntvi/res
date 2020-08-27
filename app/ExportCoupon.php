@@ -40,7 +40,7 @@ class ExportCoupon extends Model
 
     public function detailExportCoupon()
     {
-        return $this->hasMany('App\ExportCouponDetail','code_export','code');
+        return $this->hasMany('App\ExportCouponDetail','id_excoupon','id');
     }
 
     public function typeExport()

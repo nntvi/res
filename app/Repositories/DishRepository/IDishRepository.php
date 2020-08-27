@@ -2,16 +2,22 @@
 namespace App\Repositories\DishRepository;
 
 interface IDishRepository{
+    function checkRoleIndex($arr);
+    function checkRoleStore($arr);
+    function checkRoleUpdate($arr);
+    function checkRoleDelete($arr);
+
     function getGroupMenu();
     function getUnit();
     function getMaterialDetail();
     function addDish($request);
-    function showUpdateDish($id);
-    function updateDish($request, $id);
-    function searchDish($request);
     function validatorRequestStore($req);
     function deleteDish($id);
-    function validatorRequestUpdate($req);
-    function validatorRequestSearch($req);
     function getMaterial();
+    function updateImageDish($request,$id);
+    function validateImage($request);
+    function updateSalePriceDish($request,$id);
+    function updateUnitDish($request,$id);
+    function updateStatusDish($request,$id);
+    function updateNoteDish($request,$id);
 }

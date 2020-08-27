@@ -42,4 +42,8 @@ class PermissionDetail extends Model
         'action_code'
     ];
 
+    public function userPer()
+    {
+        return $this->hasMany('App\UserPermission','id_per_detail','id');
+    }
 }

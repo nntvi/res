@@ -2,11 +2,17 @@
 namespace App\Repositories\TableRepository;
 
 interface ITableRepository{
+    function checkRoleIndex($arr);
+    function checkRoleStore($arr);
+    function checkRoleUpdate($arr);
+    function checkRoleDelete($arr);
+
     function getAllTable();
-    function viewAddTable();
     function addTable($request);
-    function viewUpdateTable($id);
-    function updateTable($request, $id);
+    function updateNameTable($request,$id);
+    function updateAreaTable($request,$id);
+    function updateChair($request,$id);
     function deleteTable($id);
-    function validatorRequestStore($req);
+    function validateCodeTable($request);
+    function validateNameTable($req);
 }

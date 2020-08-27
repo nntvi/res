@@ -2,8 +2,20 @@
 
 namespace App\Providers;
 
+use App\Area;
+use App\User;
+use App\Table;
+use App\Material;
+use App\GroupMenu;
+use App\WarehouseCook;
+use App\MaterialDetail;
+use App\OrderDetailTable;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Helper\ICheckAction',
             'App\Helper\CheckAction'
+        );
+
+        $this->app->bind(
+            'App\Helper\IGetDateTime',
+            'App\Helper\GetDateTime'
         );
 
         $this->app->bind(
@@ -135,6 +152,41 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\ShiftRepository\IShiftRepository',
             'App\Repositories\ShiftRepository\ShiftRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\PositionRepository\IPositionRepository',
+            'App\Repositories\PositionRepository\PositionRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\ReportRepository\IReportRepository',
+            'App\Repositories\ReportRepository\ReportRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\BookingRepository\IBookingRepository',
+            'App\Repositories\BookingRepository\BookingRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\DayRepository\IDayRepository',
+            'App\Repositories\DayRepository\DayRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\VoucherRepository\IVoucherRepository',
+            'App\Repositories\VoucherRepository\VoucherRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\MethodRepository\IMethodRepository',
+            'App\Repositories\MethodRepository\MethodRepository'
+        );
+
+        $this->app->bind(
+            'App\Repositories\PlanRepository\IPlanRepository',
+            'App\Repositories\PlanRepository\PlanRepository'
+        );
     }
 
     /**
@@ -142,8 +194,81 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    public function checkSpecialCharacter($value)
+    {
+        $illegal = "#$%^&*()+=-[]';,./{}|:<>?~";
+            // 1: ko có chứa ký tự đặc biệt
+        return (false === strpbrk($value, $illegal)) ? 1 : 0;
+    }
+
     public function boot()
     {
-        //
+        Validator::extend('sale_price',function ($attribute,$value,$parameters,$validator)
+        {
+            $value % 1000 == 0 ? true : false;
+        });
+
+        Validator::extend('special_character',function ($attribute,$value,$parameters,$validator)
+        {
+            $check = $this->checkSpecialCharacter($value);
+            return $check == 1 ? true : false;
+        });
+
+        Validator::extend('status_area', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Area::selectRaw('count(id) as qty')->where('name',$value)->where('status','1')->value('qty');
+            return $check == 0 ? true : false ;
+        });
+
+        Validator::extend('code_table', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Table::selectRaw('count(id) as qty')->where('code',$value)->where('status','1')->value('qty');
+            return $check == 0 ? true : false ;
+        });
+
+        Validator::extend('status_table', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Table::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('check_status_mat_detail', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = MaterialDetail::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('status_groupmenu', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = GroupMenu::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('status_material', function ($attribute, $value, $parameters, $validator)
+        {
+            $check = Material::where('name',$value)->where('status','1')->get();
+            return count($check) == 0 ? true : false ;
+        });
+
+        Validator::extend('check_old_password', function ($attribute, $value, $parameters, $validator)
+        {
+            $getOldPw = $this->getPassword(auth()->user()->id);
+            return Hash::check($value, $getOldPw, []) == true ? true : false ;
+        });
+
+        Validator::extend('check_to_cook', function ($attribute, $value, $parameters, $validator)
+        {
+            dd($value);
+            // $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            // $check = OrderDetailTable::selectRaw('count(id) as qty')->whereBetween('updated_at',[$today . " 00:00:00",$today . " 23:59:59"])
+            //         ->where('status','1')->value('qty');
+            // return $check == 0 ? true : false ;
+        });
+    }
+
+    public function getPassword($idUser)
+    {
+        $password = User::where('id',$idUser)->value('password');
+        return $password;
     }
 }

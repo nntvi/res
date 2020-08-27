@@ -8,6 +8,50 @@ use App\TypeMaterial;
 
 class SupplierRepository extends Controller implements ISupplierRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleStore($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "TAO_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleDelete($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XOA_NHA_CUNG_CAP"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getTypeMarial()
     {
         $types = TypeMaterial::all();
@@ -20,48 +64,35 @@ class SupplierRepository extends Controller implements ISupplierRepository{
         return view('supplier.index',compact('suppliers'));
     }
 
-    public function validatorRequestStore($req){
-        $messeages = [
-            'code.required' => 'Không để trống mã nhà cung cấp',
-            'code.min' => 'Mã nhà cung cấp quá ngắn',
-            'code.max' => 'Không để trống mã nhà cung cấp',
-            'code.unique' => 'Mã đã tồn tại trong hệ thống',
+    public function validateCode($request)
+    {
+        $request->validate(['code' => 'unique:suppliers,code'],['code.unique' => 'Mã đã tồn tại trong hệ thống']);
+    }
 
-            'name.required' => 'Không để trống tên nhà cung cấp',
-            'name.min' => 'Tên nhà cung cấp quá ngắn',
-            'name.max' => 'Tên nhà cung cấp không vượt quá 70 ký tự',
-            'name.unique' => 'Tên nhà cung cấp đã tồn tại trong hệ thống',
-
-            'address.required' => 'Không để trống địa chỉ nhà cung cấp',
-            'address.min' => 'Địa chỉ nhà cung cấp quá ngắn',
-            'address.max' => 'Địa chỉ vượt quá 100 ký tự',
-
-            'email.required' => 'Không để trống email nhà cung cấp',
-            'email.unique' => 'Email nhà cung cấp đã tồn tại trong hệ thống',
-
-            'phone.required' => 'Không để trống số điẹn thoại ncc',
-            'phone.min' => 'Số điện thoại gồm 10 chữ số',
-            'phone.max' => 'Số điện thoại không vượt quá 10 chữ số',
-
-            'mst.required' => 'Không để trống số mã số thuế',
-            'mst.min' => 'Mã số thuế gồm không nhỏ hơn 10 chữ số',
-            'mst.max' => 'Mã số thuế không vượt quá 20 chữ số',
-
-            'status.required' => 'Vui lòng chọn trạng thái',
-        ];
-
-        $req->validate(
-            [
-                'code' => 'required|min:3|max:25|unique:suppliers,code',
-                'name' => 'required|min:3|max:70|unique:suppliers,name',
-                'email' => 'required|unique:suppliers,email',
-                'address' => 'required|min:10|max:100',
-                'phone' => 'required|min:10|max:10',
-                'mst' => 'required|min:10|max:20',
-                'status' => 'required'
-            ],
-            $messeages
+    public function validateName($request)
+    {
+        $request->validate(
+            ['name' => 'unique:suppliers,name|special_character'],
+            ['name.unique' => 'Tên nhà cung cấp đã tồn tại trong hệ thống',
+            'name.special_character' => 'Tên NCC không chứa kí tự đặc biệt']
         );
+    }
+
+    public function validateEmail($request)
+    {
+        $request->validate(['email' => 'unique:suppliers,email'],['email.unique' => 'Email nhà cung cấp đã tồn tại trong hệ thống']);
+    }
+
+    public function validatePhone($request)
+    {
+        $request->validate(['phone' => 'digits:10|regex:/(0)[0-9]{9}/'],
+                            ['phone.regex' => 'Số điện thoại không có thực',
+                            'phone.digits' => 'Chỉ gồm 10 số']);
+    }
+
+    public function validateStatus($request)
+    {
+        $request->validate(['status' => 'required'], ['status.required' => 'Vui lòng chọn trạng thái']);
     }
 
     public function addSupplier($request)
@@ -77,67 +108,39 @@ class SupplierRepository extends Controller implements ISupplierRepository{
         $supplier->note = $request->note;
         $supplier->id_type = $request->typeMaterial;
         $supplier->save();
-        return redirect(route('supplier.index'));
+        return redirect(route('supplier.index'))->withSuccess('Thêm mới NCC thành công');
     }
 
     public function showViewUpdateSupplier($id)
     {
         $supplier = Supplier::where('id',$id)->with('typeMaterial')->first();
-        //dd($supplier);
         $types = $this->getTypeMarial();
         return view('supplier.update',compact('supplier','types'));
     }
 
-    public function validatorRequestUpdate($req){
-        $messeages = [
-            'name.required' => 'Không để trống tên nhà cung cấp',
-            'name.min' => 'Tên nhà cung cấp quá ngắn',
-            'name.max' => 'Tên nhà cung cấp không vượt quá 30 ký tự',
-
-            'address.required' => 'Không để trống địa chỉ nhà cung cấp',
-            'address.min' => 'Địa chỉ nhà cung cấp quá ngắn',
-            'address.max' => 'Địa chỉ vượt quá 60 ký tự',
-
-            'phone.required' => 'Không để trống số điẹn thoại ncc',
-            'phone.min' => 'Số điện thoại gồm 10 chữ số',
-            'phone.max' => 'Số điện thoại không vượt quá 10 chữ số',
-
-            'mst.required' => 'Không để trống số mã số thuế',
-            'mst.min' => 'Mã số thuế gồm không nhỏ hơn 10 chữ số',
-            'mst.max' => 'Mã số thuế không vượt quá 20 chữ số',
-
-            'status.required' => 'Vui lòng chọn trạng thái',
-        ];
-
-        $req->validate(
-            [
-                'name' => 'required|min:3|max:30',
-                'address' => 'required|min:10|max:60',
-                'phone' => 'required|min:10|max:10',
-                'mst' => 'required|min:10|max:20',
-                'status' => 'required'
-            ],
-            $messeages
-        );
+    public function updateNameSupplier($request,$id)
+    {
+        Supplier::where('id',$id)->update(['name' => $request->name]);
+        return redirect(route('supplier.index'))->with('info','Cập nhật tên NCC thành công');
     }
-
     public function updateSupplier($request,$id)
     {
-        $supplier = Supplier::find($id);
-        $supplier->name = $request->name;
-        $supplier->phone = $request->phone;
-        $supplier->address = $request->address;
-        $supplier->mst = $request->mst;
-        $supplier->status = $request->status;
-        $supplier->note = $request->note;
-        $supplier->id_type = $request->typeMaterial;
-        $supplier->save();
-        return redirect(route('supplier.index'));
+        $temp = [
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'mst' => $request->mst,
+            'status' => $request->status,
+            'note' => $request->note,
+            'id_type' => $request->typeMaterial
+        ];
+        Supplier::where('id',$id)->update($temp);
+        return redirect(route('supplier.index'))->with('info','Cập nhật thông tin NCC thành công');
     }
 
     public function deleteSupplier($id)
     {
        $supplier = Supplier::find($id)->delete();
-       return redirect(route('supplier.index'));
+       return redirect(route('supplier.index'))->withSuccess('Xóa NCC thành công');
     }
+
 }

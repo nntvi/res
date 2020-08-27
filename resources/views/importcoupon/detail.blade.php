@@ -1,104 +1,95 @@
 @extends('layouts')
+<style>
+    .dt-buttons {
+        margin-left: 10px;
+    }
+</style>
 @section('content')
 <div class="table-agile-info">
     <div class="panel panel-default">
-        @foreach ($importCoupon as $item)
-            <div class="panel-heading">
-                Chi tiết Phiếu Nhập {{ $item->code }}
-            </div>
-            <div class="bs-example">
-					<table class="table">
-						<tbody>
-							<tr>
-								<td><h6>Ngày Nhập: {{$item->created_at}}</h6></td>
-								<td class="type-info text-right">
-                                    <div class="icon-box">
-                                        <a class="agile-icon" href="{{route('importcoupon.print_detail',['id' => $item->id])}}">
-                                            <i class="fa fa-print"></i>In phiếu
-                                        </a>
-                                    </div>
-                                </td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-            <div class="table-responsive">
-            <table class="table table-striped b-t b-light">
+        <div class="panel-heading">
+            Phiếu nhập <b>"{{ $importCoupon->code }}"</b> - {{ $importCoupon->created_at }}
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped b-t b-light" id="example">
                 <thead>
                     <tr>
-                        <th>STT</th>
+                        <th>Stt</th>
                         <th>Tên mặt hàng</th>
                         <th>Số lượng nhập</th>
-                        <th>Đơn vị tính</th>
-                        <th>Giá nhập</th>
-                        <th style="width:30px;"></th>
+                        <th>Đơn vị</th>
+                        <th class="text-right">Tổng giá nhập</th>
                     </tr>
                 </thead>
                 <tbody>
-                        @foreach ($item->detailImportCoupon as $key => $detail)
-                        <tr data-expanded="true">
-                            <td>{{$key+1}}</td>
-                            <td>{{ $detail->materialDetail->name }}</td>
-                            <td>{{ $detail->qty }}</td>
-                            <td>{{ $detail->unit->name}}</td>
-                            <td>{{ number_format($detail->price) . ' đ'}}</td>
-                            <td>
-                                <a href="#myModal{{$detail->id}}" data-toggle="modal" class="active" ui-toggle-class="">
-                                    <i class="fa fa-pencil-square-o text-success text-active"></i>
-                                </a>
-                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal{{$detail->id}}" class="modal fade">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                                    <h4 class="modal-title">Cập nhật chi tiết mặt hàng</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form role="form" action="{{route('importcoupon.p_detail',['id' => $detail->id])}}" method="POST">
-                                                        @csrf
-                                                        <div class="form-group">
-                                                            <div class="col-xs-12">
-                                                                <label>Tên mặt hàng</label>
-                                                                <input type="text" class="form-control" value="{{ $detail->materialDetail->name }}" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="col-xs-6">
-                                                                <div class="space"></div>
-                                                                <label >Số lượng nhập</label>
-                                                                <input type="number" class="form-control" value="{{ $detail->qty }}" name="qty" disabled>
-                                                            </div>
-                                                            <div class="col-xs-6">
-                                                                <div class="space"></div>
-                                                                <label >Đơn vị tính</label>
-                                                                <input class="form-control" value="{{ $detail->unit->name }}" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="col-xs-12">
-                                                                <label>Giá nhập</label>
-                                                                <input type="number" class="form-control" value="{{ $detail->price }}" name="price">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-xs-12 text-center">
-                                                                    <div class="space"></div>
-                                                                    <button type="submit" class="btn btn-default">Submit</button>
-                                                            </div>
-
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                            </td>
+                    @foreach ($importCoupon->detailImportCoupon as $key => $item)
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $item->materialDetail->name }}</td>
+                            <td>{{ $item->qty }}</td>
+                            <td>{{ $item->unit->name }}</td>
+                            <td class="text-right">{{ number_format($item->price) . ' đ' }}</td>
                         </tr>
                     @endforeach
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="bold text-center">Nhà cung cấp: {{ $importCoupon->supplier->name }}</td>
+                            <td class="bold">TỔNG: </td>
+                            <td class="bold text-right">{{ number_format($importCoupon->total) . ' đ' }}</td>
+                        </tr>
+                    </tfoot>
                 </tbody>
             </table>
-            </div>
-        @endforeach
+        </div>
     </div>
 </div>
+<script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.flash.min.js"></script>
+
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        messageTop: 'Mã phiếu nhập "{{ $importCoupon->code }}" - Ngày nhập: {{ $importCoupon->created_at }} ',
+                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} ',
+                        title: 'Phiếu Nhập',
+                    },
+                    {
+                        extend: 'pdf',
+                        messageTop: 'Mã phiếu nhập "{{ $importCoupon->code }}" - Ngày nhập: {{ $importCoupon->created_at }} ',
+                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} ',
+                    },
+                    {
+                        extend: 'print',
+                        header: 'oo',
+                        messageTop: 'Mã phiếu nhập "{{ $importCoupon->code }}" - <br>Ngày nhập: {{ $importCoupon->created_at }} ',
+                        messageBottom: 'Nhà cung cấp: {{ $importCoupon->supplier->name }} - <br> Tổng tiền: {{ number_format($importCoupon->total) . ' đ' }} ',
+                        title: 'Phiếu Nhập',
+                    },
+                ]
+            });
+            $('input[type="search"]').addClass('form-control');
+            $('.dt-button').addClass('btn btn-sm btn-default');
+            $('.dt-button').removeClass('dt-button');
+            $('div.dt-buttons').append(`<a href="{{ route('importcoupon.index') }}"
+                    class="btn btn-sm btn-default" type="button">
+                    Trở về </a>`
+            );
+        });
+    </script>
 @endsection

@@ -7,4 +7,5 @@ interface IPayRepository{
     function getTotalBill($bill);
     function showBill($id);
     function updateStatusOrder($request,$id);
+    function printBill($id);
 }

@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserPermission extends Model
 {
-
-
-
     /**
      * The table associated with the model.
      *
@@ -42,10 +39,11 @@ class UserPermission extends Model
      * @var array
      */
     protected $fillable = [
-        'id_per', 'id_user'
+        'id_per_detail', 'id_user'
     ];
-    public function permission()
+
+    public function permissionDetail()
     {
-        return $this->belongsTo('App\Permission','id_per','id');
+        return $this->belongsTo('App\PermissionDetail','id_per_detail','id');
     }
 }

@@ -7,6 +7,28 @@ use App\GroupMenu;
 
 class CookRepository extends Controller implements ICookRepository{
 
+    public function checkRoleIndex($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "XEM_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
+    public function checkRoleUpdate($arr)
+    {
+        $temp = 0;
+        for ($i=0; $i < count($arr); $i++) {
+            if($arr[$i] == "XEM_FULL" || $arr[$i] == "SUA_KHU_VUC"){
+                $temp++;
+            }
+        }
+        return $temp;
+    }
+
     public function getAllCook()
     {
         $groupmenus = GroupMenu::all();
@@ -20,31 +42,24 @@ class CookRepository extends Controller implements ICookRepository{
         return $cook;
     }
 
-    public function getGroupMenuByIdCook($idcook)
+    public function getStatusOfCook($id)
     {
-        $groupmenus = GroupMenu::where('id_cook',$idcook)->get();
-        return $groupmenus;
+        $status = CookArea::where('id',$id)->value('status');
+        return $status;
     }
+
     public function updateCook($request, $id)
     {
-        $cook = $this->findCookById($id);
-        $cook->status = $request->status;
-        $cook->save();
-
-        $groupmenus = $this->getGroupMenuByIdCook($id);
-        if($request->status == '0'){ // nếu bếp cập nhật lại ko hđ
-            foreach ($groupmenus as $key => $groupmenu) {
-                $groupmenu->id_cook = $request->status;
-                $groupmenu->save();
+        if ($this->getStatusOfCook($id) == $request->status) {
+            return redirect(route('cook.index'))->withErrors('Không cập nhật trạng thái trùng với trạng thái hiện tại');
+        } else {
+            $cook = $this->findCookById($id);
+            $cook->status = $request->status;
+            $cook->save();
+            if($request->status == '0'){ // nếu bếp cập nhật lại ko hđ
+                GroupMenu::where('id_cook',$id)->update(['status' => $request->status]);
             }
-        }else{ // = 1 cập nhật bếp đó hđ
-            foreach ($groupmenus as $key => $groupmenu) {
-                if($groupmenu->id_cook == $id){
-                    $groupmenu->id_cook = $id;
-                    $groupmenu->save();
-                }
-            }
+            return redirect(route('cook.index'))->withSuccess('Cập nhật thành công');
         }
-        return redirect(route('cook.index'));
     }
 }

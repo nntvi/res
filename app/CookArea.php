@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CookArea extends Model
 {
-   /**
+    /**
      * The table associated with the model.
      *
      * @var string

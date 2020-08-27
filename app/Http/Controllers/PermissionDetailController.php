@@ -21,7 +21,6 @@ class PermissionDetailController extends Controller
         $this->permissionDetailRepository = $permissionDetailRepository;
     }
 
-    // view detail
     public function index()
     {
         return $this->permissionDetailRepository->showAllDetail();
@@ -30,31 +29,15 @@ class PermissionDetailController extends Controller
     public function store(Request $req)
     {
         $this->permissionDetailRepository->validatorRequestStore($req);
-        $permissions = $req->permission;
-        $input['name'] = $req->action_name;
-        $str =  $req->action_name;
-        $s = $this->permissionDetailRepository->convertActionCode($str);
-        $input['action_code'] = $s;
-        PermissionDetail::create($input);
-        return redirect(route('perdetail.index'));
-    }
-
-    public function getEdit($id)
-    {
-        $permissionDetails = PermissionDetail::find($id);
-        return view('permissiondetail.update',compact('permissionDetails'));
+        return $this->permissionDetailRepository->storePermissionDetail($req);
     }
 
     public function postEdit(Request $req, $id)
     {
-        $permissionDetail = PermissionDetail::find($id);
-        $permissionDetail->name = $req->action_name;
-        $str =  $req->action_name;
-        $s = $this->permissionDetailRepository->convertActionCode($str);
-        $permissionDetail->action_code = $s;
-        $permissionDetail->save();
-        return redirect(route('perdetail.index'));
+        $this->permissionDetailRepository->validatorRequestStore($req);
+        return $this->permissionDetailRepository->updatePermissionDetail($req,$id);
     }
+
     public function delete($id)
     {
        return $this->permissionDetailRepository->deleteDetail($id);

@@ -5,77 +5,16 @@
         <div class="panel-heading">
             Thiết lập Ca làm việc cho nhân viên
         </div>
-        <div class="row w3-res-tb">
-            <div class="col-sm-3 m-b-xs">
-                <a href="#myModal" data-toggle="modal">
-                    <button class="btn btn-sm btn-success">Thêm mới</button>
-                </a>
-                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal"
-                    class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                <h4 class="modal-title">Thêm mới ca làm việc</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form role="form" action="{{ route('shift.p_store') }}" method="POST">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label>Tên ca</label>
-                                        <input class="form-control" name="nameShift" min="3" max="30" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-xs-6">
-                                                <label>Giờ bắt đầu</label>
-                                                <input type="time" class="time ui-timepicker-input form-control"
-                                                    name="hourStart" id="hourStart" required>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                    <label>Giờ kết thúc</label>
-                                                    <input type="time" class="form-control"
-                                                        name="hourEnd" required>
-                                                </div>
-                                        </div>
-                                    </div>
-                                    <div class="space"></div>
-                                    <div class="form-group">
-                                        <div class="col-xs-12 text-center">
-                                            <button type="submit" class="btn btn-info">Thêm mới</button>
-                                        </div>
-                                    </div>
-                                    <div class="space"></div>
-                                    <div class="space"></div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        <span class="error-message">{{ $error }}</span></p>
-                    @endforeach
-                @endif
-            </div>
-            <div class="col-sm-4">
-
-            </div>
-        </div>
         <div class="space"></div>
         <div class="table-responsive">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead style="background: lightyellow;">
+            <table class="table table-hover" id="example">
+                    <thead>
                         <tr>
                             <th>STT</th>
                             <th>Tên ca làm việc</th>
                             <th class="text-center">Giờ bắt đầu</th>
                             <th class="text-center">Giờ kết thúc</th>
                             <th class="text-center">Cập nhật</th>
-                            <th>Xóa</th>
                         </tr>
                     </thead>
                     <tbody id="tableGroupMenu">
@@ -83,17 +22,8 @@
                             <tr>
                                 <td>{{ $key+1 }}</td>
                                 <td>
-                                    {{ $shift->name }}
-                                </td>
-                                <td class="text-center">
-                                    {{ $shift->hour_start }}
-                                </td>
-                                <td class="text-center">
-                                    {{ $shift->hour_end }}
-                                </td>
-                                <td class="text-center">
-                                    <a href="#myModal{{ $shift->id }}" data-toggle="modal" class="btn-sm btn-success">
-                                        Sửa tên
+                                    <a href="#myModal{{ $shift->id }}" data-toggle="modal">
+                                        <i class="fa fa-pencil-square-o text-info" aria-hidden="true"></i>
                                     </a>
                                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
                                         id="myModal{{ $shift->id }}" class="modal fade" style="display: none;">
@@ -107,28 +37,41 @@
                                                 <div class="modal-body">
                                                     <form role="form" action="{{ route('shift.p_updatename',['id' => $shift->id]) }}" method="POST">
                                                         @csrf
-                                                        <div class="form-group">
-                                                            <label>Tên cũ</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $shift->name }}" disabled>
+                                                        <div class="form-group row">
+                                                            <div class="col-xs-6">
+                                                                <label>Tên hiện tại</label>
+                                                                <input type="text" class="form-control" value="{{ $shift->name }}" disabled>
+                                                            </div>
+                                                            <div class="col-xs-6">
+                                                                <label>Tên mới <span style="color: #ff0000">
+                                                                            *</span></label>
+                                                                <input type="text" size="40" class="form-control"
+                                                                        required="required" name="nameShift" maxlength="255"
+                                                                        value="{{ $shift->name }}">
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>Tên mới <span style="color: #ff0000">
-                                                                    *</span></label>
-                                                            <input type="text" size="40" class="form-control"
-                                                                required="required" name="nameShift" maxlength="255"
-                                                                value="{{ $shift->name }}">
+                                                        <div class="form-group row">
+                                                            <div class="space"></div>
+                                                            <div class="col-xs-12 text-center">
+                                                                <button type="submit" class="btn btn-info">Lưu</button>
+                                                            </div>
                                                         </div>
-                                                        <button type="submit" class="btn btn-info">Lưu</button>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    &nbsp;
+                                    {{ $shift->name }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $shift->hour_start }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $shift->hour_end }}
+                                </td>
+                                <td class="text-center">
                                     <a href="#myModal-1{{ $shift->id }}" data-toggle="modal"
-                                        class="btn-sm btn-warning">
-                                        Sửa thời gian
+                                        <i class="fa fa-clock-o" aria-hidden="true"> </i>Thời gian
                                     </a>
                                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1"
                                         id="myModal-1{{ $shift->id }}" class="modal fade">
@@ -140,22 +83,24 @@
                                                     <h4 class="modal-title">Sửa thời gian</h4>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form role="form" action="{{ route('shift.p_updatetime',['id' => $shift->id]) }}" method="POST">
+                                                    <form role="form"
+                                                        action="{{ route('shift.p_updatetime',['id' => $shift->id]) }}"
+                                                        method="POST">
                                                         @csrf
                                                         <div class="form-group">
                                                             <label>Tên ca</label>
                                                             <input type="text" class="form-control"
-                                                                    value="{{ $shift->name }}" disabled>
+                                                                value="{{ $shift->name }}" disabled>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Thời gian bắt đầu</label>
                                                             <input type="time" class="form-control" name="timeStart"
-                                                                value="{{ $shift->hour_start }}" required>
+                                                                value="{{ $shift->hour_start }}" min="06:00" max="01:00" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Thời gian kết thúc</label>
                                                             <input type="time" class="form-control" name="timeEnd"
-                                                                value="{{ $shift->hour_end }}" required>
+                                                                value="{{ $shift->hour_end }}" min="06:00" max="01:00" required>
                                                         </div>
                                                         <button type="submit"
                                                             class="btn btn-default text-center">Lưu</button>
@@ -165,20 +110,29 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <a href="{{ route('shift.delete',['id' => $shift->id]) }}"
-                                        class="btn default btn-xs red radius"
-                                        onclick="return confirm('Bạn có chắc muốn xóa dữ liệu này?')">
-                                        <i class="fa fa-trash-o"> Xóa</i>
-                                    </a>
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
-
     </div>
 </div>
+    <script>
+        @if(session('success'))
+            toastr.success('{{ session('success') }}')
+        @endif
+        @if(session('info'))
+            toastr.info('{{ session('info') }}')
+        @endif
+    </script>
+    <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>    <script>
+        $(document).ready( function () {
+            $('#example').dataTable();
+            $('#example_info').addClass('text-muted');
+            $('input[type="search"]').addClass('form-control');
+            $('.dataTables_length').hide();
+        } );
+    </script>
 @endsection

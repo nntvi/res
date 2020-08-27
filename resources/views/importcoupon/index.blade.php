@@ -1,77 +1,120 @@
 @extends('layouts')
+
 @section('content')
 <div class="table-agile-info">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Các Phiếu Nhập Kho
-            </div>
-            <div class="row w3-res-tb">
-            <div class="col-sm-4 m-b-xs">
-                <a class="agile-icon icon-box " href="{{route('warehouse.index')}}">
-                    <i class="fa fa-mail-reply"></i>
-                    Trở về
-                    <span class="text-muted">
-                    (Trang kho)
-                    </span>
-                </a>
-            </div>
-            <div class="col-sm-4">
-            </div>
-            <div class="col-sm-3">
-                <div class="input-group">
-                <input type="text" class="input-sm form-control" placeholder="Search">
-                <span class="input-group-btn">
-                    <button class="btn btn-sm btn-default" type="button">Go!</button>
-                </span>
-                </div>
-            </div>
-            </div>
-            <div class="table-responsive">
-            <table class="table table-striped b-t b-light">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="margin-bottom: 15px">
+            Các Phiếu Nhập Kho
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped b-t b-light" id="example">
                 <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Mã phiếu</th>
-                    <th>Tổng tiền</th>
-                    <th>Nhà cung cấp</th>
-                    <th>Ghi chú</th>
-                    <th>Ngày tạo</th>
-                    <th>Chi tiết</th>
-                </tr>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã phiếu</th>
+                        <th>Tổng tiền</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Ghi chú</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Chi tiết</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    @foreach ($listImports as $key => $import)
-                    <tr>
-                        <td>{{$key+1}}</td>
-                        <td>{{$import->code}}</td>
-                        <td>{{ number_format($import->total) . ' đ'}}</td>
-                         <td>{{$import->supplier->name}}</td>
-                        <td>{{$import->note}}</td>
-                        <td>{{$import->created_at}}</td>
-                        <td><a href="{{route('importcoupon.detail',['id' => $import->id])}}">Xem chi tiết</a></td>
-                    </tr>
+                    @foreach($listImports as $key => $import)
+                        <tr>
+                            <td>{{ $key+1 }}</td>
+                            <td>{{ $import->code }}</td>
+                            <td>{{ number_format($import->total) . ' đ' }}</td>
+                            <td>{{ $import->supplier->status == '1' ? $import->supplier->name : $import->supplier->name . '( ngưng hoạt động)' }}</td>
+                            <td>{{ $import->note }}</td>
+                            <td>
+                                @switch($import->status)
+                                    @case(0)
+                                        Chưa thanh toán
+                                        @break
+                                    @case(1)
+                                        Thanh toán một phần
+                                        @break
+                                    @case(2)
+                                        Đã thanh toán
+                                    @default
+                                @endswitch
+                            </td>
+                            <td>{{ $import->created_at }}</td>
+                            <td>
+                                <a href="{{ route('importcoupon.detail',['id' => $import->id]) }}" data-toggle="modal">Xem chi tiết</a>
+
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
-            </div>
-            <footer class="panel-footer">
-            <div class="row">
-
-                <div class="col-sm-5 text-center">
-                <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                </div>
-                <div class="col-sm-7 text-right text-center-xs">
-                <ul class="pagination pagination-sm m-t-none m-b-none">
-                    <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                    <li><a href="">1</a></li>
-                    <li><a href="">2</a></li>
-                    <li><a href="">3</a></li>
-                    <li><a href="">4</a></li>
-                    <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
-                </ul>
-                </div>
-            </div>
-            </footer>
         </div>
+        <script>
+            @if(session('success'))
+                toastr.success('{{ session('success') }}')
+            @endif
+        </script>
+        <script type="text/javascript" language="javascript" src="{{ asset('js/data.table.js') }}"></script>
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+        <script>
+            $(document).ready( function () {
+                $('#example').dataTable();
+                @foreach($listImports as $import)
+                    $('#detail{{ $import->id }}').dataTable();
+                    $('#detail{{ $import->id }}_length').remove();
+                    $('#detail{{ $import->id }}_filter').remove();
+                @endforeach
+                $('#example_info').addClass('text-muted');
+                $('input[type="search"]').addClass('form-control');
+                $('#example_length').html(
+                    `<a href="#imp" class="btn btn-sm btn-default" data-toggle="modal">
+                            <i class="fa fa-tasks"></i> Tạo phiếu nhập
+                    </a>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="imp"
+                    class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h4 class="modal-title">Chọn loại nhập</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form role="form" action="{{ route('importcoupon.gettype') }}"
+                                    method="GET">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="radio">
+                                            <div class="col-xs-5">
+                                                <label>
+                                                    <input type="radio" name="typeImp"
+                                                        value="1">
+                                                    Nhập thường
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-5">
+                                                <label>
+                                                    <input type="radio" name="typeImp"
+                                                        value="2">
+                                                    Nhập theo kế hoạch
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-2" style="margin-top: -10px">
+                                                <button type="submit" class="btn btn-default">Chọn</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+                )
+            } );
+        </script>
     </div>
+</div>
 @endsection

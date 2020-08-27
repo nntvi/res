@@ -35,15 +35,22 @@ class MaterialDetail extends Model
     protected $fillable = [
         'name',
         'id_type',
-        'id_unit'
+        'id_unit',
+        'status'
     ];
 
     public function typeMaterial()
     {
         return $this->belongsTo('App\TypeMaterial','id_type');
     }
+
     public function unit()
     {
         return $this->belongsTo('App\Unit','id_unit');
+    }
+
+    public function warehouse()
+    {
+        return $this->hasMany('App\Warehouse','id_material_detail','id');
     }
 }

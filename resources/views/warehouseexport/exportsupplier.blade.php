@@ -1,4 +1,10 @@
 @extends('layouts')
+<style>
+    div::-webkit-scrollbar {
+        width: 10px;
+        background: #f1f1f1;
+    }
+</style>
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -9,15 +15,14 @@
             <div class="pannel-body">
                     <div class="form">
                         <form class="panel-body" role="form" onsubmit="return validateFormExportSupplier()"
-                        action="{{route('exportcoupon.p_export')}}" method="POST">
+                        action="{{ route('exportcoupon.p_exportSupplier') }}" method="POST">
                             @csrf
                             <div class="col-md-12" style="margin-bottom: 20px">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <label class="control-label">Mã phiếu xuất<span style="color: #ff0000"> *</span></label>
                                         <div class="space"></div>
-                                        <input type="text" size="40" class="form-control" name="code" maxlength="200" id="codeExportSupplier">
-                                        <span class="error-message">{{ $errors->first('code') }}</span></p>
+                                        <input type="text" class="form-control" name="code" maxlength="200" id="codeExportSupplier" value="{{ $code }}"  required>
                                     </div>
                                     <div class="col-md-3">
                                         <input name="id_kind" value="2" hidden>
@@ -30,23 +35,35 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="control-label">Lý do trả hàng</label>
+                                        <label class="control-label">Phiếu nhập thuộc nhà cung cấp vừa chọn </label>
                                         <div class="space"></div>
-                                        <textarea type="text" size="40" class="form-control" rows="1"
-                                            name="note">
-                                        </textarea>
+                                        <select name="" id="importCoupons" class="form-control">
+
+                                        </select>
                                     </div>
                                 </div>
+                                <div class="row">
+                                        <div class="col-md-6 col-xs-12">
+
+                                        </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="space"></div>
+                                            <label class="control-label">Lý do trả </label>
+                                            <div class="space"></div>
+                                            <textarea class="form-control" name="note" rows="2" required></textarea>
+                                        </div>
+                                    </div>
                             </div>
                             <div class="grid_3 grid_5 wthree">
-                                <div class="col-md-12" id="warehouse">
-
+                                <div class="col-md-12" id="tableMaterialExportSupplier" style="height:500px; overflow:auto;">
+                                    <div class="space"></div>
                                 </div>
                                 <script>
                                     function clickToRemove($id){
                                         var row = document.getElementById('row'+$id);
                                         row.remove();
                                     }
+
                                 </script>
                                <div class="clearfix"> </div>
                             </div>

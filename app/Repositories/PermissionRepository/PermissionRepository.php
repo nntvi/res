@@ -6,6 +6,8 @@ use App\Repositories\PermissionRepository\IPermisionRepository;
 use App\Permission;
 use App\PermissionDetail;
 use App\PermissionAction;
+use App\Salary;
+use App\UserPermission;
 
 class PermissionRepository extends Controller implements IPermissionRepository
 {
@@ -16,7 +18,7 @@ class PermissionRepository extends Controller implements IPermissionRepository
     }
     public function showAllPermission()
     {
-        $permissions = Permission::with('peraction.permissiondetail')->paginate(6);
+        $permissions = Permission::with('peraction.permissiondetail')->paginate(10);
         $permissiondetails = $this->getAllPermissionDetails();
         return view('permission/index',compact('permissions','permissiondetails'));
     }
@@ -24,13 +26,10 @@ class PermissionRepository extends Controller implements IPermissionRepository
     public function validatorRequestStore($req){
         $messeages = [
             'name.unique' => 'Tên quyền vừa nhập đã tồn tại trong hệ thống',
-            'permissiondetail.required' => 'Vui lòng chọn ít nhất một hành động cho quyền'
         ];
-
         $req->validate(
             [
                 'name' => 'unique:permissions,name',
-                'permissiondetail' => 'required'
             ],
             $messeages
         );
@@ -44,27 +43,68 @@ class PermissionRepository extends Controller implements IPermissionRepository
         $req->validate(['permissiondetail' => 'required'],
                         ['permissiondetail.required' => 'Vui lòng chọn ít nhất một hành động cho quyền']);
     }
-    public function searchMaterial($request)
+
+    function vn_to_str ($str){
+        $unicode = array(
+            'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
+            'd'=>'đ',
+            'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
+            'i'=>'í|ì|ỉ|ĩ|ị',
+            'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+            'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+            'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+            'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+            'D'=>'Đ',
+            'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+            'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
+            'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+            'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+            'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+        );
+        foreach($unicode as $nonUnicode=>$uni){
+            $str = preg_replace("/($uni)/i", $nonUnicode, $str);
+        }
+        $str  = strtoupper($str);
+        $str = str_replace(' ','_',$str);
+        return $str;
+    }
+
+    public function add($arrPerDetail,$convertArrPerDetail,$idPermission)
     {
-        $name = $request->nameSearch;
-        $permissions = Permission::where('name','LIKE',"%{$name}%")->with('peraction.permissiondetail')->get();
-        $permissiondetails = $this->getAllPermissionDetails();
-        return view('permission.search',compact('permissions','permissiondetails'));
+        for ($i=0; $i < count($arrPerDetail); $i++) {
+            $temp = PermissionDetail::create(['name' => $arrPerDetail[$i],'action_code' => $convertArrPerDetail[$i]]);
+            PermissionAction::create(['id_per' => $idPermission, 'id_per_detail' => $temp->id]);
+        }
+    }
+    public function createPermissionDetail($namePermission)
+    {
+        $arrNameDetailPermission = array();
+        $newDetailView = "Xem " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailView);
+        $newDetailCreate = "Tạo " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailCreate);
+        $newDetailDelete = "Xóa " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailDelete);
+        $newDetailEdit = "Sửa " . $namePermission;
+        array_push($arrNameDetailPermission,$newDetailEdit);
+        return $arrNameDetailPermission;
+    }
+
+    public function createArrayVN($array)
+    {
+        $temp = array();
+        for ($i=0; $i < count($array); $i++) {
+            $string = $this->vn_to_str($array[$i]);
+            array_push($temp,$string);
+        }
+        return $temp;
     }
     public function addPermission($req)
     {
-        $input = $req->all();
         $permission = Permission::create(['name'=> $req->name]);
-        $idPermissionDetail = $req->permissiondetail;
-
-        // lấy từng chi tiết gắn với id tương xứng để thêm vào bảng action
-        foreach ($idPermissionDetail as $key => $id) {
-            $data = [
-                'id_per' => $permission->id,
-                'id_per_detail' => $id
-            ];
-            PermissionAction::create($data); // thêm vào bảng per_action
-        }
+        $arrPerDetail = $this->createPermissionDetail($req->name);
+        $convertArrPerDetail = $this->createArrayVN($arrPerDetail);
+        $this->add($arrPerDetail,$convertArrPerDetail,$permission->id);
         return redirect(route('permission.index'));
     }
     public function getPermissionDetail()
@@ -134,12 +174,21 @@ class PermissionRepository extends Controller implements IPermissionRepository
     public function updateName($request,$id)
     {
         Permission::where('id',$id)->update(['name' => $request->namePermissionUpdate]);
+        $nameDetailPerUpdate = $this->createPermissionDetail($request->namePermissionUpdate);
+        $perAction = PermissionAction::where('id_per',$id)->get();
+        foreach ($perAction as $key => $item) {
+            PermissionDetail::where('id',$item->id_per_detail)
+                            ->update(['name' => $nameDetailPerUpdate[$key],
+                                        'action_code' => $this->convertActionCode($nameDetailPerUpdate[$key])
+                            ]);
+        }
         return redirect(route('permission.index'));
     }
     public function deletePermission($id)
     {
         PermissionAction::where('id_per', $id)->delete();
-        $permission = Permission::find($id)->delete();
+        Permission::find($id)->delete();
+        UserPermission::where('id_per',$id)->delete();
         return redirect(route('permission.index'));
     }
 }

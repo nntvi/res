@@ -33,15 +33,10 @@ class Dishes extends Model
      * @var array
      */
     protected $fillable = [
-        'code',        'name',        'image',        'describe',   'dvt',
+        'code',     'name',        'image',        'describe',
         'status',        'sale_price',        'capital_price',
-        'id_topping',       'id_groupmenu',     'tax'
+        'id_groupnvl',        'id_dvt'
     ];
-
-    public function groupMenu()
-    {
-       return $this->belongsTo('App\GroupMenu','id_groupmenu');
-    }
 
     public function unit()
     {
@@ -51,6 +46,11 @@ class Dishes extends Model
     public function material()
     {
         return $this->belongsTo('App\Material','id_groupnvl');
+    }
+
+    public function groupMenu()
+    {
+       return $this->belongsTo('App\GroupMenu','id_groupmenu');
     }
 
 }
